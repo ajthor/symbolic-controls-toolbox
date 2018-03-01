@@ -15,32 +15,42 @@ function T = linearize(sys, varargin)
 a = assumptions;
 % assume(p.Results.assumptions{:});
 
-[tx, tu, tf, tg] = varSub(sys);
+[tx, tu, tf, ~] = varSub(sys);
 
 assume([tx; tu], 'clear');
-assume(tu == 0);
-
-% Find equilibrium point.
-S = solve(simplify(tf) == 0, tx);
 
 T = sys;
-T = subs(T, [tx tu]);
-A = subs(T.A, S);
-B = subs(T.B, S);
-T.f = A*T.states_ + B*T.inputs;
+T = subs(T, [tx; tu]);
+
+% Set equilibrium point.
+if nargin > 1
+    eq = reshape([varargin{:}], [], 1);
+else
+    eq = zeros(size(tx));
+end
+
+assume(tx == eq);
+assume(tu == 0);
+% Substitute the equilibrium point in for variables.
+A = subs(simplify(T.A), tx, eq);
+B = subs(simplify(T.B), tx, eq);
+% Compute linearized state equations.
+T.f = A*T.states + B*T.inputs;
 
 if ~isempty(T.g)
-    C = subs(T.C, S);
-    D = subs(T.D, S);
-    T.g = C*T.states_ + D*T.inputs;
+    C = simplify(T.C);
+    D = simplify(T.D);
+    T.g = C*T.states + D*T.inputs;
 end
 
 T = subs(T, [sys.states; sys.inputs]);
+
 % T.A = subs(subs(subs(T.A, sys.states, tx), S), tx, sys.states);
 % T.B = subs(subs(subs(T.B, sys.states, tx), S), tx, sys.states);
 % T.C = subs(subs(subs(T.C, sys.states, tx), S), tx, sys.states);
 % T.D = subs(subs(subs(T.D, sys.states, tx), S), tx, sys.states);
 
+assume([tx; tu], 'clear');
 assume(a);
 
 end
