@@ -4,7 +4,15 @@ classdef symss
     %
     %   Detailed explanation goes here
     
-    properties (SetAccess = private, Dependent)
+    % State Equations
+    properties (Dependent, AbortSet = true)
+        %State Equations
+        f
+        % Ouput Equations
+        g
+    end
+    % State Matrices
+    properties (SetAccess = protected, Dependent)
         % State matrix A
         A
         % Input matrix B
@@ -14,29 +22,20 @@ classdef symss
         % Feed-forward matrix D
         D
     end
-    
-    properties (Dependent, AbortSet = true)
-        %State Equations
-        f
-        % Ouput Equations
-        g
-    end
-    
+    % State Variables
     properties (Dependent)
         % State Variables
         states
         % Input Variables
         inputs
     end
-    
+    % Internal Variables
     properties (Access = private)
-        % Internal Variables
         f_ = sym([])
         g_ = sym([])
         
         states_ = sym([])
         inputs_ = sym([])
-        params_ = sym([])
         
         A_ = sym([])
         B_ = sym([])
@@ -101,8 +100,7 @@ classdef symss
                             obj.f = varargin{1}*obj.states_.';
                             obj.g = varargin{3}*obj.states_.';
                             
-%                             if (all(varargin{2} == 0) - m) ~= 0
-                            if all(varargin{2} == 0)
+                            if (all(varargin{2} == 0) - m) ~= 0
                                 obj.inputs_ = sym('u', [1, m]);
                                 obj.f = obj.f_ + varargin{2}*obj.inputs_.';
                                 obj.g = obj.g_ + varargin{4}*obj.inputs_.';
@@ -127,12 +125,12 @@ classdef symss
         function obj = set.states(obj, varargin)
             %Set state variables for state space model.
             obj.states_ = reshape(cell2sym(varargin), [], 1);
-            obj.params_ = setdiff(symvar(cell2sym(varargin)), obj.states_);
+%             obj.params_ = setdiff(symvar(cell2sym(varargin)), obj.states_);
         end
         function obj = set.inputs(obj, varargin)
             %Set input variables for the state space model.
             obj.inputs_ = reshape(cell2sym(varargin), [], 1);
-            obj.params_ = setdiff(symvar(cell2sym(varargin)), obj.inputs_);
+%             obj.params_ = setdiff(symvar(cell2sym(varargin)), obj.inputs_);
         end
         
         function states = get.states(obj), states = obj.states_; end
@@ -157,16 +155,37 @@ classdef symss
             obj.D_ = subs(obj.D_, [tx tu], [obj.states_ obj.inputs_]);
         end
         
-        function f = get.f(obj)
-            f = obj.f_.';
-%             [tx, tu, tf, ~] = varSub(obj);
-%             f = cell(size(tf)).';
-%             for k = 1:numel(tf)
-%                 f{k} = symfun(tf(k), [obj.params_; obj.states_ obj.inputs_]); 
-%                 f{k} = subs(f{k}, [tx, tu], [obj.states_ obj.inputs_]);
-%             end            
+        function f = get.f(obj), f = reshape(obj.f_, [], 1); end
+        function g = get.g(obj), g = reshape(obj.g_, [], 1); end
+        
+        function obj = set.A(obj, A)
+            obj.A_ = A;
+            obj.f_ = obj.A_*obj.states_;
+            if numel(obj.inputs_) > 0
+                obj.f_ = obj.f_ + obj.B_*obj.inputs_;
+            end
         end
-        function g = get.g(obj), g = obj.g_.'; end
+        function obj = set.B(obj, B)
+            obj.B_ = B;
+            obj.f_ = obj.A_*obj.states_;
+            if numel(obj.inputs_) > 0
+                obj.f_ = obj.f_ + obj.B_*obj.inputs_;
+            end
+        end
+        function obj = set.C(obj, C)
+            obj.C_ = C;
+            obj.g_ = obj.C_*obj.states_;
+            if numel(obj.inputs_) > 0
+                obj.g_ = obj.g_ + obj.B_*obj.inputs_;
+            end
+        end
+        function obj = set.D(obj, D)
+            obj.D_ = D;
+            obj.g_ = obj.D_*obj.states_;
+            if numel(obj.inputs_) > 0
+                obj.g_ = obj.g_ + obj.D_*obj.inputs_;
+            end
+        end
         
         function A = get.A(obj), A = simplify(obj.A_); end
         function B = get.B(obj), B = simplify(obj.B_); end

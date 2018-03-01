@@ -1,22 +1,18 @@
-function sys = subs(sys, old, new)
+function sys = subs(sys, varargin)
 %SUBS Replace a symbolic variable in state space.
 %   Detailed explanation goes here
 
-p = inputParser;
-validateSys = @(sys) isa(sys, 'symss');
-addRequired(p, 'sys', validateSys);
-addRequired(p, 'old');
-addRequired(p, 'new');
+% p = inputParser;
+% validateSys = @(sys) isa(sys, 'symss');
+% addRequired(p, 'sys', validateSys);
+% 
+% parse(p, sys, varargin{:});
 
-parse(p, sys, old, new);
-
-sys = p.Results.sys;
-old = p.Results.old;
-new = p.Results.new;
-
-sys.A = subs(sys.A, old, new);
-sys.B = subs(sys.B, old, new);
-sys.C = subs(sys.C, old, new);
-sys.D = subs(sys.D, old, new);
+states = sys.states;
+inputs = sys.inputs;
+sys.states = subs(sys.states, sys.states, varargin);
+sys.inputs = subs(sys.inputs, sys.inputs, varargin);
+sys.f = subs(sys.f, [states; inputs], varargin);
+sys.g = subs(sys.g, [states; inputs], varargin);
 
 end
