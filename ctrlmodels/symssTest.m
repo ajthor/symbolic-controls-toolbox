@@ -6,21 +6,15 @@ classdef symssTest < matlab.unittest.TestCase
         function testSystemCreation(testCase)
             % define syntax
             syms x1 x2 u1
-
-            sys = symss;
-            sys.states = [x1 x2];
-            sys.inputs = u1;
-
-            sys.f(1) = x1;
-            sys.f(2) = x2 + u1;
+            sys = symss([x1 x2], u1);
             
             testCase.verifyNumElements(sys.states, 2);
+            testCase.verifyNumElements(sys.inputs, 1);
         end
         
         function testNestedStateVariables(testCase)
             % define syntax
             syms x1 x2 x3 u1
-
             sys = symss;
             sys.states = [x1, [x2, x3]];
             sys.inputs = u1;
@@ -29,6 +23,14 @@ classdef symssTest < matlab.unittest.TestCase
             sys.f(2) = x2 + u1;
             
             testCase.verifyNumElements(sys.states, 3);
+            testCase.verifyNumElements(sys.inputs, 1);
+        end
+        
+        function testMatrixParameterCreation(testCase)
+            sys = symss([1 0; 0 1], [0; 0], [1 0], 0);
+            
+            testCase.verifyNumElements(sys.states, 2);
+            testCase.verifyNumElements(sys.inputs, 0);
         end
     end
 end

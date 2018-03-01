@@ -4,7 +4,7 @@ classdef symss
     %
     %   Detailed explanation goes here
     
-    properties (Access = public)
+    properties (SetAccess = private, Dependent)
         % State matrix A
         A
         % Input matrix B
@@ -15,37 +15,36 @@ classdef symss
         D
     end
     
-    properties (Access = public)
+    properties (Dependent, AbortSet = true)
         %State Equations
-        %   Example:
-        %       syms x1 x2
-        %       sys = symss;
-        %       sys.states = [x1 x2];
-        %       sys.f(1) = x1;
-        %       sys.f(2) = x2;
-        f = sym([])
+        f
         % Ouput Equations
-        g = sym([])
+        g
     end
     
-    properties (Access = public)
+    properties (Dependent)
         % State Variables
-        states = sym([])
+        states
         % Input Variables
-        inputs = sym([])
-        % Output Variables
-        outputs = sym([])
+        inputs
     end
     
-    properties (Hidden)
+    properties (Access = private)
+        % Internal Variables
         f_ = sym([])
         g_ = sym([])
+        
+        states_ = sym([])
+        inputs_ = sym([])
+        params_ = sym([])
+        
         A_ = sym([])
         B_ = sym([])
         C_ = sym([])
         D_ = sym([])
     end
     
+    % Constructor.
     methods
         function obj = symss(varargin)
             %SYMSS Construct a symbolic state space model.
@@ -57,9 +56,13 @@ classdef symss
             %   A must be an nxn matrix, B must be an nxm matrix, and C
             %   must be a pxn matrix. If D is specified, it must be a pxm
             %   matrix.
+            %
+            %   sys = SYMSS(states, inputs) creates a state space model
+            %   using the state variables and input variables provided.
             %   
             %   sys = SYMSS(n) creates a state space model with n state
-            %   variables.
+            %   variables. Get the state variables from the 'states'
+            %   property in order to use them in a state equation.
             % 
             %   sys = SYMSS(____, Ts) creates a discrete state space model
             %   with sample time Ts.
@@ -75,38 +78,47 @@ classdef symss
             
             if ni ~= 0
                 if ismatrix(varargin{1})
-                    if ni < 3 && isscalar(varargin{1})
+                    if ni == 1 && isscalar(varargin{1})
                         % First argument is just a number.
                         n = varargin{1};
-                        obj.states = sym('x', [1 n]);
-                        
-                        % obj.A = sym(eye(n));
-                        % obj.B = sym(zeros(n, 1));
-                        % obj.B(n) = 1;
-                        % obj.C = sym(zeros(1, n));
-                        % obj.C(1) = 1;
-                        % obj.D = sym(0);
-                    else
+                        obj.states_ = sym('x', [1, n]);
+                    elseif ni == 2 && ...
+                            isa(varargin{1}, 'sym') && ...
+                            isa(varargin{2}, 'sym')
+                        obj.states_ = cell2sym(varargin(1));
+                        obj.inputs_ = cell2sym(varargin(2));
+                    elseif ni == 4
                         % Ensure symbolic.
-                        varargin = cell2sym(varargin);
-                        % Define states.
-                        if isValid(varargin{:}) 
-                            
+                        for k = 1:ni
+                            varargin{k} = sym(varargin{k});
                         end
+                        
+                        if isValid(varargin{:}) 
+                            n = size(varargin{1}, 1);
+                            m = size(varargin{2}, 2);
+                            obj.states_ = sym('x', [1, n]);
+                            
+                            obj.f = varargin{1}*obj.states_.';
+                            obj.g = varargin{3}*obj.states_.';
+                            
+%                             if (all(varargin{2} == 0) - m) ~= 0
+                            if all(varargin{2} == 0)
+                                obj.inputs_ = sym('u', [1, m]);
+                                obj.f = obj.f_ + varargin{2}*obj.inputs_.';
+                                obj.g = obj.g_ + varargin{4}*obj.inputs_.';
+                            end
+                        end
+                    else
+                        error('symss:invalidArgument', ...
+                            'Invalid argument of type %s', class(varargin{1}));
                     end
                 else
-%                         if ischar([varargin{:}])
-%                         % One of the arguments is a character vector.
-%                         end
-
+                    error('symss:invalidArgument', ...
+                        'Invalid argument of type %s', class(varargin{1}));
                 end
-                    
-%                     error('symss:invalidArgument', ...
-%                         'Invalid argument %s of type %s', inputname(1), class(varargin{1}));
             else
                 % No input arguments.
             end
-            
         end
     end
     
@@ -114,111 +126,52 @@ classdef symss
     methods
         function obj = set.states(obj, varargin)
             %Set state variables for state space model.
-            obj.states = reshape(cell2sym(varargin), [], 1);
+            obj.states_ = reshape(cell2sym(varargin), [], 1);
+            obj.params_ = setdiff(symvar(cell2sym(varargin)), obj.states_);
         end
-        
         function obj = set.inputs(obj, varargin)
             %Set input variables for the state space model.
-            obj.inputs = reshape(cell2sym(varargin), [], 1);
+            obj.inputs_ = reshape(cell2sym(varargin), [], 1);
+            obj.params_ = setdiff(symvar(cell2sym(varargin)), obj.inputs_);
         end
+        
+        function states = get.states(obj), states = obj.states_; end
+        function inputs = get.inputs(obj), inputs = obj.inputs_; end
         
         function obj = set.f(obj, varargin)
-            %Set state function.
-            
-            % If the number of functions is greater than the number of
-            % states, error.
-%             if numel(varargin{:}) > numel(obj.states)
-%                 
-%             end
-            % If the functions are not the correct format, meaning they are
-            % symbolic expressions, not a function of the state variables,
-            % or are symbolic functions with arguments that are not
-            % parameters of the state variables, error.
-            args = argnames(cell2sym(varargin));
-%             for k = 1:numel(args)
-%                 if ~ismember(obj.states, args(k))
-%                     if ~ismember(symvar(obj.states), args(k))
-%                     end
-%                 end
-%             end
-            obj.f = formula(varargin{:});
-            
+            %Set state function f(x)
+            obj.f_ = formula(varargin{:});
             [tx, tu, tf, ~] = varSub(obj);
-            obj.A = jacobian(tf, tx);
-            obj.A = subs(obj.A, [tx tu], [obj.states obj.inputs]);
-            obj.B = jacobian(tf, tu);
-            obj.B = subs(obj.B, [tx tu], [obj.states obj.inputs]);
+            obj.A_ = jacobian(tf, tx);
+            obj.B_ = jacobian(tf, tu);
+            obj.A_ = subs(obj.A_, [tx tu], [obj.states_ obj.inputs_]);
+            obj.B_ = subs(obj.B_, [tx tu], [obj.states_ obj.inputs_]);
         end
-        
         function obj = set.g(obj, varargin)
             %Set output function g(x)
-            obj.g = formula(varargin{:});
+            obj.g_ = formula(varargin{:});
             [tx, tu, ~, tg] = varSub(obj);
-            obj.C = jacobian(tg, tx);
-            obj.C = subs(obj.C, [tx tu], [obj.states obj.inputs]);
-            obj.D = jacobian(tg, tx);
-            obj.D = subs(obj.D, [tx tu], [obj.states obj.inputs]);
+            obj.C_ = jacobian(tg, tx);
+            obj.D_ = jacobian(tg, tu);
+            obj.C_ = subs(obj.C_, [tx tu], [obj.states_ obj.inputs_]);
+            obj.D_ = subs(obj.D_, [tx tu], [obj.states_ obj.inputs_]);
         end
         
-        function obj = set.A(obj, A)
-            %Set state matrix.
-            obj.A = A;
-            obj.f = obj.A*obj.states + obj.B*obj.inputs;
+        function f = get.f(obj)
+            f = obj.f_.';
+%             [tx, tu, tf, ~] = varSub(obj);
+%             f = cell(size(tf)).';
+%             for k = 1:numel(tf)
+%                 f{k} = symfun(tf(k), [obj.params_; obj.states_ obj.inputs_]); 
+%                 f{k} = subs(f{k}, [tx, tu], [obj.states_ obj.inputs_]);
+%             end            
         end
+        function g = get.g(obj), g = obj.g_.'; end
         
-        function obj = set.B(obj, B)
-            %Set input matrix.
-            obj.B = B;
-            obj.f = obj.A*obj.states + obj.B*obj.inputs;
-        end
-        
-        function obj = set.C(obj, C)
-            %Set output matrix.
-            obj.C = C;
-            obj.g = sys.C*sys.states + sys.D*sys.inputs;
-        end
-        
-        function obj = set.D(obj, D)
-            %Set feed-forward matrix.
-            obj.D = D;
-            obj.g = sys.C*sys.states + sys.D*sys.inputs;
-        end
-        
-%         function Value = get.f(obj)
-%             syms t
-%             x = sym('x', [size(obj.A, 2), 1]);
-%             u = sym('u', [size(obj.B, 2), 1]);
-%             fun = obj.A*x + obj.B*u;
-%             
-%             for k = 1:numel(fun)
-%                 fn = symfun(fun(k), [t, x.', u.']);
-%                 Value(k) = fn;
-%             end
-%             Value = obj.f;
-%         end
-        
-%         function Value = get.g(obj)
-%             syms t
-%             x = sym('x', [size(obj.C, 2), 1]);
-%             u = sym('u', [size(obj.D, 2), 1]);
-%             fun = obj.C*x + obj.D*u;
-%             
-%             for k = 1:numel(fun)
-%                 fn = symfun(fun(k), [t, x.', u.']);
-%                 Value{k} = fn;
-%             end
-%         end
-        
-%         function obj = set.f(obj, expr)
-% %             disp(expr)
-%             obj.f = expr;
-%         end
-%         
-%         function obj = set.g(obj, expr)
-% %             disp(expr)
-%             obj.g = expr;
-%         end
-        
+        function A = get.A(obj), A = simplify(obj.A_); end
+        function B = get.B(obj), B = simplify(obj.B_); end
+        function C = get.C(obj), C = simplify(obj.C_); end
+        function D = get.D(obj), D = simplify(obj.D_); end
     end
     
     % Overloaded operators.
@@ -228,31 +181,5 @@ classdef symss
             %transformation syntax.
             obj = simtrans(obj, P);
         end
-        
     end
-    
-%     methods (Access = protected)
-%         function header = getHeader(obj)
-%             if ~isscalar(obj)
-%                 header = getHeader@matlab.mixin.CustomDisplay(obj);
-%             else
-%                 headerStr = matlab.mixin.CustomDisplay.getClassNameForHeader(obj);
-%                 headerStr = ['Symbolic state space ', headerStr, ' with properties:'];
-%                 header = sprintf('%s\n',headerStr);
-%             end
-%         end
-%    
-%         function propgrp = getPropertyGroups(obj)
-%             if ~isscalar(obj)
-%                 propgrp = getPropertyGroups@matlab.mixin.CustomDisplay(obj);
-%             else
-%                 propList1 = struct('A', obj.A, 'B', obj.B, ...
-%                                    'C', obj.C, 'D', obj.D);
-%                 propList2 = struct('f', obj.f, 'g', obj.g);
-%                 
-%                 propgrp(1) = matlab.mixin.util.PropertyGroup(propList1);
-%                 propgrp(2) = matlab.mixin.util.PropertyGroup(propList2);
-%             end
-%         end
-%     end
 end

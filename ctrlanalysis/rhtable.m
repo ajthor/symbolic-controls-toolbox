@@ -18,10 +18,7 @@ p = inputParser;
 validateSys = @(G) isa(G, 'symtf');
 addRequired(p, 'G', validateSys);
 addParameter(p, 'reverse', false);
-
 parse(p, G, varargin{:});
-
-G = p.Results.G;
 
 syms s
 den = G.Denominator;

@@ -7,13 +7,13 @@ p = inputParser;
 validateSys = @(sys) isa(sys, 'symss');
 addRequired(p, 'sys', validateSys);
 addParameter(p, 'Form', 'c');
-
 parse(p, sys, varargin{:});
 
-sys = p.Results.sys;
 form = p.Results.Form;
 
 A = sys.A; B = sys.B; C = sys.C; D = sys.D;
+states = sys.states;
+inputs = sys.inputs;
 
 % Determine the output 
 switch form
@@ -92,6 +92,8 @@ switch form
         C = C/P;
 
         sys = symss(A, B, C, D);
+        sys.states = states;
+        sys.inputs = inputs;
         
     % Observable form.
     case {'o', 'O', 'ob', 'Ob', 'observable'} 
@@ -174,6 +176,8 @@ switch form
         C = C*Q;
 
         sys = symss(A, B, C, D);
+        sys.states = states;
+        sys.inputs = inputs;
         
     % Diagonal or Jordan form.
     case {'d', 'diag', 'diagonal', 'j', 'jordan', 'Jordan'}
@@ -186,6 +190,8 @@ switch form
         C = C*V;
 
         sys = symss(A, B, C, D);
+        sys.states = states;
+        sys.inputs = inputs;
         
     otherwise
         error('Invalid form specified. Must be one of: controllable, observable, jordan')

@@ -6,15 +6,12 @@ function R = expm(sys)
 %   The standard 'expm' function computes the matrix exponential using a
 %   convergent power series method. While this method is formally defined
 %   as the matrix exponential, in practice the computation of this matrix
-%   can cause the Matlab to hang. Symbolically, it is easier to compute the
+%   can cause Matlab to hang. Symbolically, it is easier to compute the
 %   inverse laplace transform of inv(sI-A), and less error-prone.
 p = inputParser;
 validateSys = @(sys) isa(sys, 'symss');
 addRequired(p, 'sys', validateSys);
-
 parse(p, sys);
-
-sys = p.Results.sys;
 
 syms s t
 Phi = inv(s*eye(size(sys.A)) - sys.A);
