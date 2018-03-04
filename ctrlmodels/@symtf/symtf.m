@@ -1,4 +1,4 @@
-classdef symtf
+classdef (InferiorClasses = {?sym}) symtf
     %SYMTF Construct symbolic transfer function or convert model to
     %symbolic transfer function.
     %   
@@ -19,6 +19,8 @@ classdef symtf
         Numerator
         % Denominator
         Denominator
+        % Variable
+        Variable
     end
     
     properties (SetAccess = immutable, Dependent)
@@ -29,9 +31,9 @@ classdef symtf
     % Internal Properties
     properties (Access = private)
         % Numerator
-        num_ = []
+        num_ = sym([])
         % Denominator
-        den_ = []
+        den_ = sym([])
         % Transfer Function Variable
         tfvar_ = sym([])
     end
@@ -62,6 +64,8 @@ classdef symtf
                                 error('Transfer function variable must be one of {%c %c %c %c}', obj.allowed{:});
                             end
                             obj.tfvar_ = sym(varargin{1});
+                            obj.num_ = obj.tfvar_;
+                            obj.den_ = 1;
                         elseif isa(varargin{1}, 'sym')
                             V = obj.getTFVar(varargin{1});
                             if ~isempty(V)
@@ -83,10 +87,17 @@ classdef symtf
                     obj.Denominator = varargin{2};
                 end
             else
+                % No input arguments.
                 obj.tfvar_ = sym('s');
                 obj.num_ = 1;
                 obj.den_ = 1;
             end
+        end
+    end
+    
+    methods (Hidden)
+        function S = sym(obj)
+            S = obj.tf;
         end
     end
     
@@ -115,9 +126,9 @@ classdef symtf
         
         function obj = set.Numerator(obj, num)
             if isa(num, 'sym') && isscalar(num)
-                    obj.num_ = coeffs(num, obj.tfvar_, 'All');
+                obj.num_ = coeffs(num, obj.tfvar_, 'All');
             elseif ismatrix(num)
-                obj.num_ = num;
+                obj.num_ = sym(num);
             else
                 error('Invalid numerator.');
             end
@@ -126,7 +137,7 @@ classdef symtf
             if isa(den, 'sym') && isscalar(den)
                 obj.den_ = coeffs(den, obj.tfvar_, 'All');
             elseif ismatrix(den)
-                obj.den_ = den;
+                obj.den_ = sym(den);
             else
                 error('Invalid numerator.');
             end
@@ -137,28 +148,135 @@ classdef symtf
             D = obj.Denominator;
             Value = N/D;
         end
+        
+        function Value = get.Variable(obj), Value = obj.tfvar_; end
+        
+        function obj = set.Variable(obj, v)
+            if ~isa(v, 'sym')
+                obj.tfvar_ = sym(v);
+            else
+                obj.tfvar_ = v;
+            end
+        end
     end
     
     % Overloaded operators.
     methods
         function C = plus(A, B)
-            if A.tfvar_ ~= B.tfvar_
-                error('Transfer functions must have the same variable.');
+            %PLUS Overloaded to allow for transfer functions to be added
+            %without pole-zero cancellations.
+            C = symtf;
+            if ~isa(A, 'symtf')
+                G = B;
+                H = A;
+            else
+                G = A;
+                H = B;
             end
-            N = A.Numerator*B.Denominator + B.Numerator*A.Denominator;
-            D = A.Denominator*B.Denominator;
-            C = symtf(N, D);
-            C.tfvar_ = A.tfvar_;
+            
+            C.tfvar_ = G.tfvar_;
+            
+            if ~isa(H, 'symtf')
+                if ~isa(H, 'sym')
+                    H = sym(H);
+                end
+                
+                [N, D] = numden(H);
+                C.Numerator = G.Numerator*D + N*G.Denominator;
+                C.Denominator = G.Denominator*D;
+            else
+                if G.tfvar_ ~= H.tfvar_
+                    error('Transfer functions must have the same variable.');
+                end
+                C.Numerator = G.Numerator*H.Denominator + H.Numerator*G.Denominator;
+                C.Denominator = G.Denominator*H.Denominator;
+            end
         end
         
         function C = mtimes(A, B)
-            if A.tfvar_ ~= B.tfvar_
-                error('Transfer functions must have the same variable.');
+            %MTIMES Overloaded to allow for transfer functions to be
+            %multiplied without pole-zero cancellations.
+            C = symtf;
+            if ~isa(A, 'symtf')
+                G = B;
+                H = A;
+            else
+                G = A;
+                H = B;
             end
-            N = A.Numerator*B.Numerator;
-            D = A.Denominator*B.Denominator;
-            C = symtf(N, D);
-            C.tfvar_ = A.tfvar_;
+            
+            C.tfvar_ = G.tfvar_;
+            
+            if ~isa(H, 'symtf')
+                if ~isa(H, 'sym')
+                    H = sym(H);
+                end
+                
+                [N, D] = numden(H);
+                C.Numerator = G.Numerator*N;
+                C.Denominator = G.Denominator*D;
+            else
+                if G.tfvar_ ~= H.tfvar_
+                    error('Transfer functions must have the same variable.');
+                end
+                C.Numerator = G.Numerator*H.Numerator;
+                C.Denominator = G.Denominator*H.Denominator;
+            end
+        end
+        
+        function C = mrdivide(A, B)
+            %MRDIVIDE Overloaded to allow for transfer functions to be
+            %divided without pole-zero cancellations.
+            C = symtf;
+            if ~isa(A, 'symtf')
+                G = B;
+                G.Numerator = B.Denominator;
+                G.Denominator = B.Numerator;
+                H = A;
+            else
+                G = A;
+                H = B;
+            end
+            
+            C.tfvar_ = G.tfvar_;
+            
+            if ~isa(H, 'symtf')
+                C.Numerator = G.Numerator;
+                C.Denominator = G.Denominator*H;
+            else
+                if G.tfvar_ ~= H.tfvar_
+                    error('Transfer functions must have the same variable.');
+                end
+                C.Numerator = G.Numerator*H.Denominator;
+                C.Denominator = G.Denominator*H.Numerator;
+            end
+        end
+        
+        function C = mpower(A, B)
+            %MPOWER Overloaded to allow for transfer functions to use the
+            %matrix power operator without pole-zero cancellations.
+            C = symtf;
+            if ~isa(A, 'symtf')
+                G = B;
+                H = A;
+            else
+                G = A;
+                H = B;
+            end
+            
+            C.tfvar_ = G.tfvar_;
+            
+            if ~isa(H, 'symtf')
+                C.Numerator = G.Numerator^H;
+                C.Denominator = G.Denominator^H;
+            else
+                if G.tfvar_ ~= H.tfvar_
+                    error('Transfer functions must have the same variable.');
+                end
+                
+                C.Numerator = G.Numerator^H;
+                C.Denominator = G.Denominator^H;
+            end
         end
     end
     

@@ -39,6 +39,49 @@ classdef symtfTest < matlab.unittest.TestCase
             testCase.verifyEqual(G.Numerator, s+a);
             testCase.verifyEqual(G.Denominator, s+1);
         end
+        
+        function testTransferFunctionToStateSpace(testCase)
+            % should be able to convert a transfer function to state space
+            % when order(num) < order(den).
+            syms s
+            G = symtf(((s+5)*(s+4))/((s+1)*(s+2)*(s+3)));
+            sys = symtf2symss(G);
+            
+            testCase.verifyEqual(sys.A, sym([0 1 0; 0 0 1; -6 -11 -6]));
+        end
+        
+        function testTransferFunctionToStateSpace2(testCase)
+            % should be able to convert a transfer function to state space
+            % when roots are complex.
+            syms s
+            G = symtf((4/(s+1-1i))+(4/(s+1+1i))+(2/(s+5))+(3/(s+10)));
+            sys1 = symtf2symss(G);
+
+            A = [-5 0 0 0; 0 -10 0 0; 0 0 0 1; 0 0 -2 -2];
+            B = [1; 1; 0; 1];
+            C = [2 3 8 8];
+            D = 0;
+            sys2 = symss(A, B, C, D);
+            
+            sys2 = canon(sys2);
+            
+            testCase.verifyEqual(sys1.A, sys2.A);
+            testCase.verifyEqual(sys1.B, sys2.B);
+            testCase.verifyEqual(sys1.C, sys2.C);
+            testCase.verifyEqual(sys1.D, sys2.D);
+        end
+        
+        function testTransferFunctionCreationAsVar(testCase)
+            % should be able to create a transfer function using the tf as
+            % a varaible.
+            syms m k b
+            G = symtf([b/m 0], [1 b/m k/m]);
+            
+            s = symtf('s');
+            s = ((b/m)*s)/(s^2 + (b/m)*s + (k/m));
+            
+            testCase.verifyEqual(simplify(G.tf), simplify(s.tf));
+        end
     end
 end
 

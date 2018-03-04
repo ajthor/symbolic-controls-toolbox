@@ -2,7 +2,25 @@ classdef symss
     %SYMSS Construct symbolic state-space model or convert model to 
     %symbolic state-space.
     %
-    %   Detailed explanation goes here
+    %   sys = SYMSS(A, B, C, D)
+    %   Creates a state space model using the matrices A, B, C, D. 
+    %       dx/dt = Ax(t) + Bx(t)
+    %        y(t) = Cx(t) + Du(t)
+    %   A must be an nxn matrix, B must be an nxm matrix, and C
+    %   must be a pxn matrix. If D is specified, it must be a pxm
+    %   matrix.
+    %
+    %   sys = SYMSS(states, inputs) creates a state space model
+    %   using the state variables and input variables provided.
+    %   
+    %   sys = SYMSS(n) creates a state space model with n state
+    %   variables. Get the state variables from the 'states'
+    %   property in order to use them in a state equation.
+    % 
+    %   sys = SYMSS(____, Ts) creates a discrete state space model
+    %   with sample time Ts.
+    %
+    %   sys = SYMSS creates an empty state space representation.
     
     % State Equations
     properties (Dependent, AbortSet = true)
@@ -12,7 +30,7 @@ classdef symss
         g
     end
     % State Matrices
-    properties (SetAccess = protected, Dependent)
+    properties (SetAccess = immutable, Dependent)
         % State matrix A
         A
         % Input matrix B
@@ -29,44 +47,19 @@ classdef symss
         % Input Variables
         inputs
     end
-    % Internal Variables
+    % Internal Properties
     properties (Access = private)
         f_ = sym([])
         g_ = sym([])
         
         states_ = sym([])
         inputs_ = sym([])
-        
-        A_ = sym([])
-        B_ = sym([])
-        C_ = sym([])
-        D_ = sym([])
     end
     
     % Constructor.
     methods
         function obj = symss(varargin)
             %SYMSS Construct a symbolic state space model.
-            %
-            %   sys = SYMSS(A, B, C, D)
-            %   Creates a state space model using the matrices A, B, C, D. 
-            %       dx/dt = Ax(t) + Bx(t)
-            %        y(t) = Cx(t) + Du(t)
-            %   A must be an nxn matrix, B must be an nxm matrix, and C
-            %   must be a pxn matrix. If D is specified, it must be a pxm
-            %   matrix.
-            %
-            %   sys = SYMSS(states, inputs) creates a state space model
-            %   using the state variables and input variables provided.
-            %   
-            %   sys = SYMSS(n) creates a state space model with n state
-            %   variables. Get the state variables from the 'states'
-            %   property in order to use them in a state equation.
-            % 
-            %   sys = SYMSS(____, Ts) creates a discrete state space model
-            %   with sample time Ts.
-            %
-            %   sys = SYMSS creates an empty state space representation.
             ni = nargin;
             
             % Quick copy of class.
@@ -77,10 +70,15 @@ classdef symss
             
             if ni ~= 0
                 if ismatrix(varargin{1})
-                    if ni == 1 && isscalar(varargin{1})
-                        % First argument is just a number.
-                        n = varargin{1};
-                        obj.states_ = sym('x', [1, n]);
+                    if ni == 1 
+                        if isa(varargin{1}, 'symtf')
+                            % Convert transfer function to state space.
+                            obj = symtf2symss(varargin{1});
+                        elseif isscalar(varargin{1})
+                            % First argument is just a number.
+                            n = varargin{1};
+                            obj.states_ = sym('x', [1, n]);
+                        end
                     elseif ni == 2 && ...
                             isa(varargin{1}, 'sym') && ...
                             isa(varargin{2}, 'sym')
@@ -120,77 +118,62 @@ classdef symss
         end
     end
     
+    methods (Hidden)
+        function [A, B, C, D] = getMatrices(obj)
+            %GETMATRICES Helper function to return state space matrices.
+            A = obj.A;
+            B = obj.B;
+            C = obj.C;
+            D = obj.D;
+        end
+    end
+    
     % Getters and setters.
     methods
         function obj = set.states(obj, varargin)
             %Set state variables for state space model.
             obj.states_ = reshape(cell2sym(varargin), [], 1);
-%             obj.params_ = setdiff(symvar(cell2sym(varargin)), obj.states_);
         end
         function obj = set.inputs(obj, varargin)
             %Set input variables for the state space model.
             obj.inputs_ = reshape(cell2sym(varargin), [], 1);
-%             obj.params_ = setdiff(symvar(cell2sym(varargin)), obj.inputs_);
         end
         
-        function states = get.states(obj), states = obj.states_; end
-        function inputs = get.inputs(obj), inputs = obj.inputs_; end
+        function states = get.states(obj), states = obj.states_.'; end
+        function inputs = get.inputs(obj), inputs = obj.inputs_.'; end
         
         function obj = set.f(obj, varargin)
             %Set state function f(x)
             obj.f_ = formula(varargin{:});
-            [tx, tu, tf, ~] = varSub(obj);
-            obj.A_ = jacobian(tf, tx);
-            obj.B_ = jacobian(tf, tu);
-            obj.A_ = subs(obj.A_, [tx tu], [obj.states_ obj.inputs_]);
-            obj.B_ = subs(obj.B_, [tx tu], [obj.states_ obj.inputs_]);
         end
         function obj = set.g(obj, varargin)
             %Set output function g(x)
             obj.g_ = formula(varargin{:});
-            [tx, tu, ~, tg] = varSub(obj);
-            obj.C_ = jacobian(tg, tx);
-            obj.D_ = jacobian(tg, tu);
-            obj.C_ = subs(obj.C_, [tx tu], [obj.states_ obj.inputs_]);
-            obj.D_ = subs(obj.D_, [tx tu], [obj.states_ obj.inputs_]);
         end
         
         function f = get.f(obj), f = reshape(obj.f_, [], 1); end
         function g = get.g(obj), g = reshape(obj.g_, [], 1); end
         
-        function obj = set.A(obj, A)
-            obj.A_ = A;
-            obj.f_ = obj.A_*obj.states_;
-            if numel(obj.inputs_) > 0
-                obj.f_ = obj.f_ + obj.B_*obj.inputs_;
-            end
+        function A = get.A(obj)
+            [tx, tu, tf, ~] = varSub(obj);
+            A = jacobian(tf, tx);
+            A = subs(A, [tx tu], [obj.states_ obj.inputs_]);
         end
-        function obj = set.B(obj, B)
-            obj.B_ = B;
-            obj.f_ = obj.A_*obj.states_;
-            if numel(obj.inputs_) > 0
-                obj.f_ = obj.f_ + obj.B_*obj.inputs_;
-            end
+        function B = get.B(obj)
+            [tx, tu, tf, ~] = varSub(obj);
+            B = jacobian(tf, tu);
+            B = subs(B, [tx tu], [obj.states_ obj.inputs_]);
         end
-        function obj = set.C(obj, C)
-            obj.C_ = C;
-            obj.g_ = obj.C_*obj.states_;
-            if numel(obj.inputs_) > 0
-                obj.g_ = obj.g_ + obj.B_*obj.inputs_;
-            end
+        function C = get.C(obj)
+            [tx, tu, ~, tg] = varSub(obj);
+            C = jacobian(tg, tx);
+            C = subs(C, [tx tu], [obj.states_ obj.inputs_]);
         end
-        function obj = set.D(obj, D)
-            obj.D_ = D;
-            obj.g_ = obj.D_*obj.states_;
-            if numel(obj.inputs_) > 0
-                obj.g_ = obj.g_ + obj.D_*obj.inputs_;
-            end
+        function D = get.D(obj)
+            [tx, tu, ~, tg] = varSub(obj);
+            D = jacobian(tg, tu);
+            D = subs(D, [tx tu], [obj.states_ obj.inputs_]);
         end
-        
-        function A = get.A(obj), A = simplify(obj.A_); end
-        function B = get.B(obj), B = simplify(obj.B_); end
-        function C = get.C(obj), C = simplify(obj.C_); end
-        function D = get.D(obj), D = simplify(obj.D_); end
     end
     
     % Overloaded operators.
