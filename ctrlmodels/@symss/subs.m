@@ -1,27 +1,35 @@
 function sys = subs(sys, varargin)
-%SUBS Replace a symbolic variable in state space.
-%   Detailed explanation goes here
-
-% p = inputParser;
-% validateSys = @(sys) isa(sys, 'symss');
-% addRequired(p, 'sys', validateSys);
+%SUBS Replace symbolic variables in state space model.
+%   
+%   sys = SUBS(sys, ...) replaces symbolic variables in a state space
+%   model. 
+%   
+%   It is possible to replace state variables and input variables
+%   using this method as well as symbolic variables and symbolic functions
+%   present in the state equations.
 % 
-% parse(p, sys, varargin{:});
+%   sys = SUBS(sys, new) replaces state variables or input variables in the
+%   state space model.
+%   
+%   sys = SUBS(sys, old, new) replaces symbolic variables or symbolic
+%   functions in the state equations.
 
-if nargin == 2
-    S = sys.states;
-    I = sys.inputs;
-    sys.states = subs(sys.states, [S; I], varargin);
-    sys.inputs = subs(sys.inputs, [S; I], varargin);
-    sys.f = subs(sys.f, [S; I], varargin);
-    sys.g = subs(sys.g, [S; I], varargin);
-elseif nargin > 2
-    sys.states = subs(sys.states, varargin{:});
-    sys.inputs = subs(sys.inputs, varargin{:});
-    sys.f = subs(sys.f, varargin{:});
-    sys.g = subs(sys.g, varargin{:});
-else
-    sys = simplify(sys);
+switch nargin
+    case 1
+        sys = simplify(sys);
+        
+    case 2
+        old = reshape([sys.states; sys.inputs], [], 1);
+        new = reshape(varargin{:}, [], 1);
+
+        sys.states = subs(sys.states, old, new);
+        sys.inputs = subs(sys.inputs, old, new);
+        sys.f = subs(sys.f, old, new);
+        sys.g = subs(sys.g, old, new);
+    
+    otherwise
+        sys.f = subs(sys.f, varargin{:});
+        sys.g = subs(sys.g, varargin{:});
 end
 
 end

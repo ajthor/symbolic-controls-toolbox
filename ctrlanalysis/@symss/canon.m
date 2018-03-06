@@ -1,22 +1,18 @@
-function sys = canon(sys, varargin)
-%CANON Summary of this function goes here
+function T = canon(sys, type)
+%CANON Transform a state space model into a canonical form.
 % 
-%   SYS = CANON(SYS, ...) converts a state space representation to a
-%   canonical form via similarity transformation. 
-p = inputParser;
-validateSys = @(sys) isa(sys, 'symss');
-addRequired(p, 'sys', validateSys);
-addParameter(p, 'Form', 'c');
-parse(p, sys, varargin{:});
+%   T = CANON(sys, type) converts a state space representation to a
+%   canonical form via similarity transformation.
+%   
+%   Parameter 'type' can be one of the following:
+%   - Controllable: 'c', 'C', 'co', 'Co', 'controllable', 'companion'
+%   - Observable: 'o', 'O', 'ob', 'Ob', 'observable'
+%   - Jordan: 'j', 'jordan', 'Jordan'
 
-form = p.Results.Form;
-
-A = sys.A; B = sys.B; C = sys.C; D = sys.D;
-states = sys.states;
-inputs = sys.inputs;
+[A, B, C, D] = sys.getmatrices();
 
 % Determine the output 
-switch form
+switch type
     % Controllable or companion form.
     case {'c', 'C', 'co', 'Co', 'controllable', 'companion'} 
         % Get the number of inputs from the B matrix size.
@@ -91,9 +87,9 @@ switch form
         B = P*B;
         C = C/P;
 
-        sys = symss(A, B, C, D);
-        sys.states = states;
-        sys.inputs = inputs;
+        T = sys;
+        T.f = A*T.states + B*T.inputs;
+        T.g = C*T.states + D*T.inputs;
         
     % Observable form.
     case {'o', 'O', 'ob', 'Ob', 'observable'} 
@@ -175,9 +171,9 @@ switch form
         B = Q\B;
         C = C*Q;
 
-        sys = symss(A, B, C, D);
-        sys.states = states;
-        sys.inputs = inputs;
+        T = sys;
+        T.f = A*T.states + B*T.inputs;
+        T.g = C*T.states + D*T.inputs;
         
     % Diagonal or Jordan form.
     case {'d', 'diag', 'diagonal', 'j', 'jordan', 'Jordan'}
@@ -189,12 +185,12 @@ switch form
         B = V\B;
         C = C*V;
 
-        sys = symss(A, B, C, D);
-        sys.states = states;
-        sys.inputs = inputs;
+        T = sys;
+        T.f = A*T.states + B*T.inputs;
+        T.g = C*T.states + D*T.inputs;
         
     otherwise
-        error('Invalid form specified. Must be one of: controllable, observable, jordan')
+        error('Invalid type specified. Must be one of: controllable, observable, jordan');
 end
 
 end

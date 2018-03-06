@@ -1,4 +1,4 @@
-function [A, B, C, D] = eqn2symss(f, g, states, inputs, outputs)
+function [A, B, C, D] = eom2symss(f, g, states, inputs, outputs)
 %EQN2SYMSV Defines state variables for a symbolic system of equations.
 %   Detailed explanation goes here
 

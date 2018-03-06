@@ -1,7 +1,8 @@
 function Ob = obsvs(A, C)
 %OBSVS Symbolic observability matrix
 % 
-%   Co = OBSVS(SYS) returns the observability matrix [C; C*A; C*A^2; ...]
+%   Ob = OBSVS(A, C) returns the observability matrix 
+%       Ob = [C; C*A; C*A^2; ...]
 p = inputParser;
 validateA = @(A) validateattributes(A, {'sym'}, {'square', 'nonempty'});
 validateC = @(C) validateattributes(C, {'sym'}, {'nonempty'});

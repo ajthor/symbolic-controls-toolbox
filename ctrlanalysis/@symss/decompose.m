@@ -1,16 +1,15 @@
-function varargout = kd(sys)
-%KD Compute the Kalman decomposition of a state space.
+function varargout = decompose(sys)
+%DECOMPOSE Compute the Kalman decomposition of a state space.
 % 
-%   Ksys = KD(sys) computes the Kalman decomposition of a state
+%   sys = DECOMPOSE(sys) computes the Kalman decomposition of a state
 %   space realization.
-%   [Ksys, n] = KD(sys)
-%   [A, B, C, D] = KD(SYS)
+%   [sys, n] = DECOMPOSE(sys)
+%   [A, B, C, D] = DECOMPOSE(SYS)
 n_out = nargout;
 
 p = inputParser;
 validateSys = @(sys) isa(sys, 'symss');
 addRequired(p, 'sys', validateSys);
-
 parse(p, sys);
 
 % Find the controllable and uncontrollable states of the system. 

@@ -1,4 +1,4 @@
-classdef (InferiorClasses = {?sym}) symtf
+classdef (SupportExtensionMethods = true, InferiorClasses = {?sym}) symtf < ctrlmodel
     %SYMTF Construct symbolic transfer function or convert model to
     %symbolic transfer function.
     %   

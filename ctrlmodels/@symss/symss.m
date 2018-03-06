@@ -1,4 +1,4 @@
-classdef symss
+classdef (SupportExtensionMethods = true) symss < ctrlmodel
     %SYMSS Construct symbolic state-space model or convert model to 
     %symbolic state-space.
     %
@@ -77,31 +77,31 @@ classdef symss
                         elseif isscalar(varargin{1})
                             % First argument is just a number.
                             n = varargin{1};
-                            obj.states_ = sym('x', [1, n]);
+                            obj.states_ = sym('x', [n, 1]);
                         end
                     elseif ni == 2 && ...
                             isa(varargin{1}, 'sym') && ...
                             isa(varargin{2}, 'sym')
-                        obj.states_ = cell2sym(varargin(1));
-                        obj.inputs_ = cell2sym(varargin(2));
+                        obj.states_ = reshape(cell2sym(varargin(1)), [], 1);
+                        obj.inputs_ = reshape(cell2sym(varargin(2)), [], 1);
                     elseif ni == 4
                         % Ensure symbolic.
                         for k = 1:ni
                             varargin{k} = sym(varargin{k});
                         end
                         
-                        if isValid(varargin{:}) 
+                        if validabcd(varargin{:}) 
                             n = size(varargin{1}, 1);
                             m = size(varargin{2}, 2);
-                            obj.states_ = sym('x', [1, n]);
+                            obj.states_ = sym('x', [n, 1]);
                             
-                            obj.f = varargin{1}*obj.states_.';
-                            obj.g = varargin{3}*obj.states_.';
+                            obj.f = varargin{1}*obj.states_;
+                            obj.g = varargin{3}*obj.states_;
                             
                             if (all(varargin{2} == 0) - m) ~= 0
                                 obj.inputs_ = sym('u', [1, m]);
-                                obj.f = obj.f_ + varargin{2}*obj.inputs_.';
-                                obj.g = obj.g_ + varargin{4}*obj.inputs_.';
+                                obj.f = obj.f_ + varargin{2}*obj.inputs_;
+                                obj.g = obj.g_ + varargin{4}*obj.inputs_;
                             end
                         end
                     else
@@ -119,7 +119,7 @@ classdef symss
     end
     
     methods (Hidden)
-        function [A, B, C, D] = getMatrices(obj)
+        function [A, B, C, D] = getmatrices(obj)
             %GETMATRICES Helper function to return state space matrices.
             A = obj.A;
             B = obj.B;
@@ -139,8 +139,8 @@ classdef symss
             obj.inputs_ = reshape(cell2sym(varargin), [], 1);
         end
         
-        function states = get.states(obj), states = obj.states_.'; end
-        function inputs = get.inputs(obj), inputs = obj.inputs_.'; end
+        function states = get.states(obj), states = obj.states_; end
+        function inputs = get.inputs(obj), inputs = obj.inputs_; end
         
         function obj = set.f(obj, varargin)
             %Set state function f(x)
@@ -155,24 +155,24 @@ classdef symss
         function g = get.g(obj), g = reshape(obj.g_, [], 1); end
         
         function A = get.A(obj)
-            [tx, tu, tf, ~] = varSub(obj);
+            [tx, tu, tf, ~] = varsub(obj);
             A = jacobian(tf, tx);
-            A = subs(A, [tx tu], [obj.states_ obj.inputs_]);
+            A = subs(A, [tx; tu], [obj.states_; obj.inputs_]);
         end
         function B = get.B(obj)
-            [tx, tu, tf, ~] = varSub(obj);
+            [tx, tu, tf, ~] = varsub(obj);
             B = jacobian(tf, tu);
-            B = subs(B, [tx tu], [obj.states_ obj.inputs_]);
+            B = subs(B, [tx; tu], [obj.states_; obj.inputs_]);
         end
         function C = get.C(obj)
-            [tx, tu, ~, tg] = varSub(obj);
+            [tx, tu, ~, tg] = varsub(obj);
             C = jacobian(tg, tx);
-            C = subs(C, [tx tu], [obj.states_ obj.inputs_]);
+            C = subs(C, [tx; tu], [obj.states_; obj.inputs_]);
         end
         function D = get.D(obj)
-            [tx, tu, ~, tg] = varSub(obj);
+            [tx, tu, ~, tg] = varsub(obj);
             D = jacobian(tg, tu);
-            D = subs(D, [tx tu], [obj.states_ obj.inputs_]);
+            D = subs(D, [tx; tu], [obj.states_; obj.inputs_]);
         end
     end
     
