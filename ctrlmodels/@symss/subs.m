@@ -13,6 +13,8 @@ function sys = subs(sys, varargin)
 %   
 %   sys = SUBS(sys, old, new) replaces symbolic variables or symbolic
 %   functions in the state equations.
+% 
+%   See also sym/subs
 
 switch nargin
     case 1

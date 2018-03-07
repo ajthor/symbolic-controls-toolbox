@@ -4,7 +4,7 @@ classdef symssTest < matlab.unittest.TestCase
     
     methods (Test)
         function testSystemCreation(testCase)
-            % define syntax
+            % should be able to pass state variables to constructor.
             syms x1 x2 u1
             sys = symss([x1 x2], u1);
             
@@ -13,14 +13,11 @@ classdef symssTest < matlab.unittest.TestCase
         end
         
         function testNestedStateVariables(testCase)
-            % define syntax
+            % should be able to define state variables after construction.
             syms x1 x2 x3 u1
             sys = symss;
             sys.states = [x1, [x2, x3]];
             sys.inputs = u1;
-
-            sys.f(1) = x1;
-            sys.f(2) = x2 + u1;
             
             testCase.verifyNumElements(sys.states, 3);
             testCase.verifyNumElements(sys.inputs, 1);

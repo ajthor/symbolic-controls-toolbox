@@ -1,4 +1,4 @@
-function T = canon(sys, type)
+function T = canon(sys, varargin)
 %CANON Transform a state space model into a canonical form.
 % 
 %   T = CANON(sys, type) converts a state space representation to a
@@ -8,6 +8,12 @@ function T = canon(sys, type)
 %   - Controllable: 'c', 'C', 'co', 'Co', 'controllable', 'companion'
 %   - Observable: 'o', 'O', 'ob', 'Ob', 'observable'
 %   - Jordan: 'j', 'jordan', 'Jordan'
+
+if isempty(varargin)
+    type = 'c';
+else
+    type = varargin{1};
+end
 
 [A, B, C, D] = sys.getmatrices();
 

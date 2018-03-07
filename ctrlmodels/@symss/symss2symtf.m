@@ -11,7 +11,7 @@ ni = nargin;
 
 if ni == 1 && isa(varargin{1}, 'symss')
     sys = varargin{1};
-    [A, B, C, D] = sys.getMatrices();
+    [A, B, C, D] = sys.getmatrices();
 elseif ni == 4
     A = varargin{1};
     B = varargin{2};

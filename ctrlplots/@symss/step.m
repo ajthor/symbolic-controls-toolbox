@@ -1,6 +1,7 @@
 function y = step(sys, varargin)
 %STEP Compute the step response of a system.
 %   y = STEP(sys)
+
 syms s
 u = 1/s;
 

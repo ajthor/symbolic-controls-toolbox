@@ -2,7 +2,7 @@ function y = lsim(sys, u, varargin)
 %LSIM Compute the linear response of a system to arbitrary inputs.
 % 
 %   y = LSIM(sys, u) computes the linear response of a system to an
-%   arbitrary input where 'u' is an s-domain input signal.
+%   arbitrary input where 'u' is a symbolic s-domain input signal.
 % 
 %   y = LSIM(sys, u, x0) computes the linear response of a system with
 %   initial conditions.
@@ -13,12 +13,10 @@ function y = lsim(sys, u, varargin)
 %   y = LSIM(sys, u, t, x0) computes the linear response of a system to an
 %   arbitrary input where 'u' is time-series data, 't' is a time vector,
 %   and 'x0' are the initial conditions.
-ni = nargin;
-if ~isa(sys, 'symss')
-    error('sys must be a symbolic state space model.');
-end
 
-[A, B, C, D] = sys.getMatrices();
+ni = nargin;
+
+[A, B, C, D] = sys.getmatrices();
 
 if (isempty(u) || u ~= 0) && isempty(B)
     error('Invalid input matrix.');
@@ -37,7 +35,7 @@ end
 
 syms s t
 Phi = stm(sys);
-G = C*Phi*B + D;
+G = C/(s*eye(size(A), 'like', A) - A)*B + D;
 % if ~isa(u, 'sym')
 %     rg = 1:numel(u);
 %     g = ilaplace(G, s, t);
@@ -57,9 +55,11 @@ end
 
 if nargout == 0
     h = fplot(y);
-%     h.XRange = [0 10];
-%     xlabel('t');
-%     ylabel('y');
+    h.XRange = [0 10];
+    h.XRangeMode = 'auto';
+    h.ShowPoles = 'on';
+    xlabel('Time (seconds)');
+    ylabel('Amplitude');
 end
 
 end
