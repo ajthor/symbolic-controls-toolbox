@@ -7,14 +7,14 @@ sys = symss(sys);
 [A, B, ~, ~] = sys.getmatrices();
 
 n = length(A);
-L = eig(A);
-Co = zeros(1:numel(L));
+L = unique(eig(A));
+r = zeros(1:numel(L));
 
 for k = 1:numel(L)
-    Co(k) = rank([(L(k)*eye(n) - A), B]);
+    r(k) = rank([(L(k)*eye(n) - A), B]);
 end
 
-tf = ~any(Co < n);
+tf = ~any(r < n);
 
 end
 

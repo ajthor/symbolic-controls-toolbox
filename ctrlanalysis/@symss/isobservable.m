@@ -9,14 +9,14 @@ end
 [A, ~, C, ~] = sys.getMatrices();
 
 n = length(A);
-L = eig(A);
-Ob = zeros(1:numel(L));
+L = unique(eig(A));
+r = zeros(1:numel(L));
 
 for k = 1:numel(L)
-    Ob(k) = rank([(L(k)*eye(n) - A); C]);
+    r(k) = rank([(L(k)*eye(n) - A); C]);
 end
 
-tf = ~any(Ob < n);
+tf = ~any(r < n);
 
 end
 
