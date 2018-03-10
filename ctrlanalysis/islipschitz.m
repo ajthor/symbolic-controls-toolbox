@@ -2,8 +2,15 @@ function tf = islipschitz(f, varargin)
 %ISLIPSCHITZ Returns logical 1 (true) if a function is Lipschitz at a point
 %or logical 0 (false) if it is not.
 % 
-%   ISLIPSCHITZ tests for continuous differentiability first, and then
-%   checks for lipschitz conditions by 
+%   Tests for Lipschitz continuity using the following steps:
+%       1. Check for continuous differentiability by checking for
+%       discontinuities in the derivative of f in the range [x1, x2]. 
+%       
+%       2. Check for 
+%   
+%   If ISLIPSCHITZ is called to evaluate Lipscitz continuity at a point, we
+%   check if the function is continually differentiable at a point. If it
+%   is, the function is locally Lipschitz continuous.
 %   
 %   tf = ISLIPSCHITZ(f) tests for Lipschitz continuity on the interval
 %   (-Inf Inf). The function uses symvar to determine the variable.
@@ -41,90 +48,17 @@ end
 
 x1 = p.Results.x1;
 x2 = p.Results.x2;
-if ~any(strcmp('x1', p.UsingDefaults))
-    
-    if ~any(strcmp('x2', p.UsingDefaults))
-        
-    elseif x2 < x1
-        error('Invalid bounds x2 < x1.');
-    end
-end
-% if nargin == 3
-%     pt = x1;
-% else
-%     pt = [];
-% end
+x1default = any(strcmp('x1', p.UsingDefaults));
+x2default = any(strcmp('x2', p.UsingDefaults));
 
-% if ~isa(f, 'sym')
-%     error('Argument must be a symbolic function.');
-% end
-% 
-% switch nargin
-%     case 1
-%         S = symvar(f);
-%         idx = find(ismember(S, {'t', 's', 'p', 'z', 'q', 'x', 'y', 'z'}), 1);
-%         V = S(idx);
-%         x1 = -Inf;
-%         x2 = Inf;
-%     case 2
-%         V = varargin{1};
-%         x1 = -Inf;
-%         x2 = Inf;
-%     case 3
-%         V = varargin{1};
-%         x1 = varargin{2};
-%         x2 = NaN;
-%     case 4
-%         V = varargin{1};
-%         x1 = varargin{2};
-%         x2 = varargin{3};
-%         
-% end
-% 
-% if ~isa(V, 'sym')
-%     if ischar(V)
-%         V = sym(V);
-%     else
-%         error('Second argument must be a symbolic variable.');
-%     end
-% end
-
-% if nargin > 1
-%     V = varargin{1};
-%     if ~isa(V, 'sym')
-%         if ischar(V)
-%             V = sym(V);
-%         else
-%             error('Second argument must be a symbolic variable.');
-%         end
-%     end
-%     
-%     if nargin >= 3
-%         if numel(varargin{2}) > 2
-%             error('Interval has too many elements.');
-%         end
-%         
-%         x1 = varargin{2};
-%         if x2 > x1(1)
-%             error('Lower bound is greater than upper bound.')
-%         end
-%     else
-%         x1 = [-Inf Inf];
-%     end
-% else
-%     S = symvar(f);
-%     idx = find(ismember(S, {'t', 's', 'p', 'z', 'q', 'x', 'y', 'z'}), 1);
-%     V = S(idx);
-%     x1 = 0;
-% end
+df = diff(f, V);
 
 % Test for continuous differentiability.
-if numel(x1) == 1
+if ~x1default && x2default
     try
-        df = diff(f, V);
         flim = limit(df, V, x1);
-        tf = isnan(flim);
-        if tf
+        tf = ~isnan(flim);
+        if ~tf
             dffun = symfun(df, V);
             tf = isequal(flim, dffun(x1));
         end
@@ -137,27 +71,66 @@ if numel(x1) == 1
         end
     end
 else
-    df = diff(f, V);
     dcont = feval(symengine, 'discont', df, V);
-    tf = ~any(isAlways(x1 <= dcont && dcont <= x2));
+    % Check if discontinuities are in the range.
+    tf = ~any(isAlways(x1 <= dcont & dcont <= x2));
 end
-    
+
+g = abs(df);
+
 % Test for Lipschitz conditions.
 if ~tf
-    minfun = symfun(-abs(diff(f, V)), V);
+    % Try to find functional inverse if one exists.
     try
+        ginv = finverse(g, V);
+        if ~isempty(ginv)
+            llim = limit(ginv, V, x1, 'right');
+            rlim = limit(ginv, V, x2, 'left');
+            tf = isequal(llim, Inf);
+        end
+    catch ME
+        if strcmp(ME.identifier, 'something')
+            % do something
+        else
+        end
+    end
+end
+    
+if ~tf
+    try
+        minbnd = x1;
+        maxbnd = x2;
+        if isinf(minbnd)
+            minbnd = -double(realmax('single'));
+        end
+        if isinf(maxbnd)
+            maxbnd = double(realmax('single'));
+        end
+%         arg = feval(symengine, 'coerce', [{V > 0}, minfun], 'DOM_LIST')
+%         r = feval(symengine, 'linopt::maximize', 0 < V, minfun)
 %         options = optimset('PlotFcns',@optimplotfval);
 %         options = optimset('FunValCheck', 'on');
-        [x, fval, exitflag] = fminbnd(minfun, x1, x2);
+        minfun = symfun(-g, V);
+        [x, fval] = fminbnd(minfun, minbnd, maxbnd);
+        
+%         if isnan(fval) && isequal([x1 x2], [-Inf Inf])
+%             maxbnd = double(realmax('single'));
+% %             maxbnd = double(realmax);
+%             [x, fval] = fminbnd(minfun, -maxbnd, maxbnd);
+%         end
+        
+        tf = ~isnan(fval);
     catch ME
         if strcmp(ME.identifier, 'MATLAB:fminbnd:checkfun:NaNFval')
             warning('Could not determine supremum of function.');
+            tf = false;
+        elseif strcmp(ME.identifier, 'symbolic:specfunc:ExpectingArithmeticalExpression')
+            warning('fminbnd failed to find a minimum.');
             tf = false;
         else
             rethrow(ME)
         end
     end
-    tf = ~isnan(fval);
     
     if ~tf
         

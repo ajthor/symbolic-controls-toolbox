@@ -13,7 +13,7 @@ function R = roa(sys, V, varargin)
 %   3. Solve for the equation:
 %       V(z), where 'z' are the solutions to the previous equation.
 % 
-%   The result R is the greatest solution to the equation.
+%   The result R is the greatest solution to the equation V(z) = R.
 % 
 %   ROA(sys, V) plots the region of attraction for a state space model
 %   using a given Lyapunov equation.
@@ -41,11 +41,10 @@ try
     end
     
     if nargout == 0 && numel(sys.states) <= 2
-    
+        
         % Plot ROA curve.
         fi = fimplicit(V == R);
         
-        hold on
         rgx = fi.XRange*1.5;
         rgy = fi.YRange*1.5;
         fi.XRange = rgx;
@@ -56,28 +55,42 @@ try
         [X, Y] = meshgrid(linspace(rgx(1), rgx(2), 20), ...
                           linspace(rgy(1), rgy(2), 20));
         
-        % Plot VDot contours.
-%         fimplicit(DV)
-%         Ffun = matlabFunction(symfun(tf, tx));
-%         [XX, YY] = meshgrid(linspace(rgx(1), rgx(2), 3), linspace(rgy(1), rgy(2), 3));
-%         [ts,ys] = ode45(Ffun,[0,50],[XX; YY]);
-        Z = subs(DV, tx, {X; Y});
-        contour(X, Y, Z, 0:5);
+        ax = gca;
+        current_state = ax.NextPlot;
+        ax.NextPlot = 'add';
+        
+        % Plot VDot.
+%         fimplicit(ax, DV)
+%         Z = subs(DV, tx, {X; Y});
+%         contour(X, Y, Z, 0:5);
         
         % Plot function trajectories.
         F1 = subs(sys.f(1), sys.states, {X; Y});
         F2 = subs(sys.f(2), sys.states, {X; Y});
-        q = quiver(X, Y, F1, F2);
+        q = quiver(ax, X, Y, F1, F2);
         q.AutoScale = 'on';
         q.AlignVertexCenters = 'on';
         
+%         ax.Title.String = 'Region of Attraction';
+%         ax.XLabel.String = char(sys.states(1));
+%         ax.XLabel.Interpreter = 'latex';
+%         
+%         ax.YLabel.String = char(sys.states(2));
+%         ax.YLabel.Interpreter = 'latex';
+%         
+%         ax.Legend.String(1) = 'Region of Attraction';
+%         ax.Legend.String(2) = '$\dot{V}$';
+%         ax.Legend.String(3) = 'Trajectories';
+%         ax.Legend.Interpreter = 'latex';
+
         title('Region of Attraction');
-        xlabel(char(sys.states(1)));
-        ylabel(char(sys.states(2)));
-        legend({'Region of Attraction', '$\dot{V}$', 'Trajectories'}, 'Interpreter', 'latex');
-        hold off
+        xlabel(char(sys.states(1)), 'Interpreter', 'latex');
+        ylabel(char(sys.states(2)), 'Interpreter', 'latex');
+%         legend({'Region of Attraction', '$\dot{V}$', 'Trajectories'}, 'Interpreter', 'latex');
+        legend({'Region of Attraction', 'Trajectories'}, 'Interpreter', 'latex');
+        
+        ax.NextPlot = current_state;
     end
-    
 catch ME
     if strcmp(ME.identifier, 'something')
         % do something

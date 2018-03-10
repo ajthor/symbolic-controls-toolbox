@@ -57,7 +57,6 @@ if nargout == 0
     h = fplot(y);
     h.XRange = [0 10];
     h.XRangeMode = 'auto';
-    h.ShowPoles = 'on';
     xlabel('Time (seconds)');
     ylabel('Amplitude');
 end

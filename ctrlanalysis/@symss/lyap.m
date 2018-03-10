@@ -17,10 +17,16 @@ else
 end
 
 P = sym('p', size(A));
-S = solve(P*A + A.'*P == -Q, P);
+expr = P*A + A.'*P == -Q;
+S = solve(expr, P);
 
-P = subs(P, S);
-V = sys.states.'*P*sys.states;
+p = subs(P, S);
+if isempty(p)
+    warning('Could not find a solution to the ARE.');
+    V = sym([]);
+else
+    V = sys.states.'*P*sys.states;
+end
 
 end
 
