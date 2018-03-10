@@ -183,5 +183,14 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
             %transformation syntax.
             obj = simtrans(obj, P);
         end
+        
+        function T = or(obj, expr)
+            %OR Operator overloading to implement 'given that' syntax.
+            a = assumptions;
+            assume([expr{:}]);
+            T = simplify(obj);
+            assume([expr{:}], 'clear');
+            assume(a);
+        end
     end
 end

@@ -1,4 +1,4 @@
-function [x, u, f, g] = varsub(obj, varargin)
+function [tx, tu, tf, tg] = varsub(obj, varargin)
 %VARSUB Replaces variables with dummy variables for symbolic operations.
 
 nx = cell(size(obj.states_));
@@ -7,11 +7,11 @@ nx(:) = {'SUBX'};
 nu = cell(size(obj.inputs_));
 nu(:) = {'SUBU'};
 
-x = sym(genvarname(nx));
-u = sym(genvarname(nu));
+tx = sym(genvarname(nx, who));
+tu = sym(genvarname(nu, who));
 
-f = subs(obj.f_, [obj.states_; obj.inputs_], [x; u]);
-g = subs(obj.g_, [obj.states_; obj.inputs_], [x; u]);
+tf = subs(obj.f_, [obj.states_; obj.inputs_], [tx; tu]);
+tg = subs(obj.g_, [obj.states_; obj.inputs_], [tx; tu]);
 
 end
 
