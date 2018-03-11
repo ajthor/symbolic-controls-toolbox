@@ -16,7 +16,7 @@ function y = lsim(sys, u, varargin)
 
 ni = nargin;
 
-[A, B, C, D] = sys.getmatrices();
+[A, B, C, ~] = sys.getmatrices();
 
 if (isempty(u) || u ~= 0) && isempty(B)
     error('Invalid input matrix.');
@@ -33,24 +33,23 @@ else
     x0 = zeros(size(A, 1), 1);
 end
 
-syms s t
-Phi = stm(sys);
-G = C/(s*eye(size(A), 'like', A) - A)*B + D;
-% if ~isa(u, 'sym')
-%     rg = 1:numel(u);
-%     g = ilaplace(G, s, t);
-%     v = subs(g, t, rg);
-%     y = conv(double(v), reshape(u, 1, []), 'same');
-% else
-    Y = G*u;
-    y = ilaplace(Y, s, t);
-    yi = C*ilaplace(Phi, s, t)*x0;
-% end
+% Get the zero input response and the zero state response.
+if isa(u, 'sym')
+    Yi = zir(sys, x0);
+    Ys = zsr(sys, u);
+    
+    if ~isempty(Ys)
+        Y = Yi + Ys;
+    else
+        Y = Yi;
+    end
 
-if isempty(y)
-    y = yi;
+    syms s t
+    y = ilaplace(Y, s, t);
 else
-    y = y + yi;
+    yi = tzir(sys, x0);
+    ys = tzsr(sys, u);
+    y = yi + ys;
 end
 
 if nargout == 0

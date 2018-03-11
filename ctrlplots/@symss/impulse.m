@@ -2,7 +2,7 @@ function y = impulse(sys, varargin)
 %IMPULSE Compute the impulse response of a system.
 %   y = IMPULSE(sys)
 
-u = 1;
+u = sym(1);
 
 if nargout == 0
     lsim(sys, u, varargin{:});

@@ -3,7 +3,7 @@ function y = initial(sys, varargin)
 %   y = INITIAL(sys)
 %   y = INITIAL(sys, x0)
 
-u = 0;
+u = sym(0);
 
 if nargout == 0
     lsim(sys, u, varargin{:});
