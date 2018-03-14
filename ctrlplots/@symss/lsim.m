@@ -13,6 +13,9 @@ function y = lsim(sys, u, varargin)
 %   y = LSIM(sys, u, t, x0) computes the linear response of a system to an
 %   arbitrary input where 'u' is time-series data, 't' is a time vector,
 %   and 'x0' are the initial conditions.
+% 
+%   NOTE: Non-linear systems are linearized about the initial conditions
+%   passed to the function. 
 
 ni = nargin;
 
@@ -52,12 +55,29 @@ else
     y = yi + ys;
 end
 
+y = subs(y, sys.states, x0);
+
 if nargout == 0
-    h = fplot(y);
-    h.XRange = [0 10];
-    h.XRangeMode = 'auto';
-    xlabel('Time (seconds)');
-    ylabel('Amplitude');
+    if length(y) == 1
+        fplot(y);
+        ax = gca;
+        ax.XLim = [0 10];
+        ax.XLimMode = 'auto';
+        xlabel('Time (seconds)');
+        ylabel('Amplitude');
+    else
+        [m, n] = size(y);
+        for k = 1:numel(y)
+            subplot(n, m, k)
+            fplot(y(k));
+            ax = gca;
+            ax.XLim = [0 10];
+            ax.XLimMode = 'auto';
+            xlabel('Time (seconds)');
+            ylabel('Amplitude');
+            title(['Output ', num2str(m), ' for input ', num2str(n)]);
+        end
+    end
 end
 
 end
