@@ -4,10 +4,10 @@ function varargout = nlsim(sys, varargin)
 
 p = inputParser;
 validateX0 = @(x0) ...
-    validateattributes(x0, {'numeric'}, {'nonempty'});
+    validateattributes(x0, {'numeric', 'cell'}, {'nonempty'});
 addRequired(p, 'sys');
 addOptional(p, 'tspan', [0 10]);
-addOptional(p, 'x0', [0, 0], validateX0);
+addOptional(p, 'x0', {0}, validateX0);
 addParameter(p, 'vars', {});
 addParameter(p, 'solver', @ode45);
 parse(p, sys, varargin{:});
@@ -15,23 +15,46 @@ parse(p, sys, varargin{:});
 tspan = p.Results.tspan;
 
 x0 = p.Results.x0;
-
-vars = cell2sym(p.Results.vars);
-if length(vars) > 1
-    error('Too many output variables.');
+if ~iscell(x0)
+    x0 = {x0};
 end
 
-[t, ys] = nlsolver(sys, tspan, x0);
-y = ys(:, has(sys.states.', vars));
+if nargout ~= 0 && numel(x0) > 1
+    t = cell(size(x0));
+    y = cell(size(x0));
+end
+
+if any(strcmp('vars', p.UsingDefaults))
+    vars = sys.states(1);
+else
+    vars = cell2sym(p.Results.vars);
+    if length(vars) ~= 1
+        error('Incorrect number of output variables.');
+    end
+end
+
+for k = 1:numel(x0)
+    ic = reshape(x0{k}, [], 1);
+    [ts, ys] = nlsolver(sys, tspan, ic);
+    t{k} = ts;
+    y{k} = ys(:, has(sys.states.', vars));
+end
 
 if nargout ~= 0
     varargout{1} = t;
     varargout{2} = y;
 else
-    plot(t, y)
     ax = gca;
-    ax.XLim = tspan;
+    current_state = ax.NextPlot;
+    
+    for k = 1:numel(x0)
+        ax.NextPlot = 'add';
+        plot(t{k}, y{k})
+    end
+    
+    ax.NextPlot = current_state;
     ax.XLimMode = 'auto';
+    ax.YLimMode = 'auto';
     ax.XLabel.String = 'Time (seconds)';
     ax.YLabel.String = 'Amplitude';
 end

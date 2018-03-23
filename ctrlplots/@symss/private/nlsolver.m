@@ -14,8 +14,14 @@ addParameter(p, 'solver', @ode45, validateSolver);
 parse(p, sys, varargin{:});
 
 t = sym('t');
-Ffun = symfun(formula(sys.f), [t; sys.states]);
-odefun = matlabFunction(Ffun, 'vars', {t, sys.states});
+
+nx = cell(size(sys.states));
+nx(:) = {'SUBX'};
+tx = sym(genvarname(nx, who));
+tf = subs(sys.f, sys.states, tx);
+
+Ffun = symfun(formula(tf), [t; tx]);
+odefun = matlabFunction(Ffun, 'vars', {t, tx});
 
 tspan = p.Results.tspan;
 x0 = reshape(p.Results.x0, [], 1);

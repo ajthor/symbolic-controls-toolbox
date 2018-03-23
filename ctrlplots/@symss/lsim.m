@@ -17,6 +17,13 @@ function y = lsim(sys, u, varargin)
 %   NOTE: Non-linear systems are linearized about the initial conditions
 %   passed to the function. 
 
+% p = inputParser;
+% addRequired(p, 'sys');
+% addRequired(p, 'u');
+% addOptional(p, 't');
+% addOptional(p, 'x0');
+% parse(p, sys, u, varargin{:});
+
 ni = nargin;
 
 [A, B, C, ~] = sys.getmatrices();
