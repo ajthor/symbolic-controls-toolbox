@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Example Title</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-12-08"><meta name="DC.source" content="circuit.m"><style type="text/css">
+      --><title>Linearization Example</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-03-11"><meta name="DC.source" content="linearization_example.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,20 +66,63 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Example Title</h1><!--introduction--><p>Summary of example objective</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Section 1 Title</a></li><li><a href="#2">Section 2 Title</a></li></ul></div><h2 id="1">Section 1 Title</h2><p>Description of first code block</p><pre class="codeinput">a = 1;
-</pre><h2 id="2">Section 2 Title</h2><p>Description of second code block</p><pre class="codeinput">b = 2;
+  </style></head><body><div class="content"><h1>Linearization Example</h1><!--introduction--><p>Example showing linearization of a symbolic system of equations.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Define Symbolic Variables</a></li><li><a href="#3">Define the State Space Model</a></li><li><a href="#5">Linearize the System</a></li></ul></div><h2 id="1">Define Symbolic Variables</h2><p>Define the symbolic variables used in the state space equations.</p><pre class="codeinput">syms <span class="string">a</span> <span class="string">b</span> <span class="string">c</span> <span class="string">d</span> <span class="string">e</span> <span class="string">f</span>
+</pre><p>The state variables are <img src="linearization_example_eq06613056106014670631.png" alt="$x_1$" style="width:10px;height:7px;"> and <img src="linearization_example_eq03385156042344747669.png" alt="$x_2$" style="width:10px;height:7px;">.</p><pre class="codeinput">syms <span class="string">x1</span> <span class="string">x2</span>
+</pre><h2 id="3">Define the State Space Model</h2><p>The state space model of our system is defined using the equations:</p><p><img src="linearization_example_eq04532976633636692036.png" alt="$$f_1(x) = ax_1 - bx_1x_2 - cx_1^2$$" style="width:123px;height:13px;"></p><p><img src="linearization_example_eq10977934257529061094.png" alt="$$f_2(x) = dx_2 - ex_1x_2 - fx_2^2$$" style="width:125px;height:13px;"></p><pre class="codeinput">sys = symss;
+sys.states = [x1 x2];
+sys.f(1) = a*x1 - b*x1*x2 - c*x1^2;
+sys.f(2) = d*x2 - e*x1*x2 - f*x2^2;
+</pre><p>The state matrix of the system is given as:</p><pre class="codeinput">sys.A
+</pre><pre class="codeoutput"> 
+ans =
+ 
+[ a - b*x2 - 2*c*x1,             -b*x1]
+[             -e*x2, d - e*x1 - 2*f*x2]
+ 
+</pre><h2 id="5">Linearize the System</h2><p>Linearize the system about the equilibrium point <img src="linearization_example_eq09851563811330233251.png" alt="$f(x) = 0$" style="width:41px;height:11px;">.</p><pre class="codeinput">linsys = linearize(sys);
+</pre><p>The linearized state matrix becomes:</p><pre class="codeinput">linsys.A
+</pre><pre class="codeoutput"> 
+ans =
+ 
+[ a, 0]
+[ 0, d]
+ 
 </pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-%% Example Title
-% Summary of example objective
+%% Linearization Example
+% Example showing linearization of a symbolic system of equations.
 
-%% Section 1 Title
-% Description of first code block
-a = 1;
+%% Define Symbolic Variables
+% Define the symbolic variables used in the state space equations.
+syms a b c d e f
 
-%% Section 2 Title
-% Description of second code block
-b = 2;
+%%
+% The state variables are $x_1$ and $x_2$.
+syms x1 x2
+
+%% Define the State Space Model
+% The state space model of our system is defined using the equations:
+% 
+% $$f_1(x) = ax_1 - bx_1x_2 - cx_1^2$$
+% 
+% $$f_2(x) = dx_2 - ex_1x_2 - fx_2^2$$
+
+sys = symss;
+sys.states = [x1 x2];
+sys.f(1) = a*x1 - b*x1*x2 - c*x1^2;
+sys.f(2) = d*x2 - e*x1*x2 - f*x2^2;
+
+%%
+% The state matrix of the system is given as:
+sys.A
+
+%% Linearize the System
+% Linearize the system about the equilibrium point $f(x) = 0$.
+linsys = linearize(sys);
+
+%%
+% The linearized state matrix becomes:
+linsys.A
 
 ##### SOURCE END #####
 --></body></html>
