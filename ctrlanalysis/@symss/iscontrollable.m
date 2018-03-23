@@ -8,7 +8,7 @@ sys = symss(sys);
 
 n = length(A);
 L = unique(eig(A));
-r = zeros(1:numel(L));
+r = zeros([1 numel(L)]);
 
 for k = 1:numel(L)
     r(k) = rank([(L(k)*eye(n) - A), B]);
