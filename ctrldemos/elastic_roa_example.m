@@ -12,7 +12,8 @@ sys.f(2) = x1 + (x1^2 - 1)*x2;
 %% Region of Attraction (Lyapunov)
 % The standard method for determining the region of attraction uses the
 % Lyapunov method, and generally gives a conservative result. 
-roa(sys);
+linsys = linearize(sys);
+roa(linsys);
 
 %%
 % We can see that the default Lyapunov boundary produces a poor estimation

@@ -1,4 +1,4 @@
-function G = symss2symtf(varargin)
+function G = symss2symtf(sys)
 %SYMSS2SYMTF Convert a symbolic state space model to a symbolic transfer
 %function.
 %   
@@ -7,21 +7,8 @@ function G = symss2symtf(varargin)
 %   using the formula:
 %       G = C*((s*I - A)^-1)*B + D
 
-ni = nargin;
-
-if ni == 1 && isa(varargin{1}, 'symss')
-    sys = varargin{1};
-    [A, B, C, D] = sys.getmatrices();
-elseif ni == 4
-    A = varargin{1};
-    B = varargin{2};
-    C = varargin{3};
-    D = varargin{4};
-end
-
-if isempty(A) || isempty(B) || isempty(C)
-    error('System is not fully defined.');
-end
+validabcd(sys);
+[A, B, C, D] = sys.getabcd();
 
 syms s
 G = C/(s*eye(size(A)) - A)*B + D;

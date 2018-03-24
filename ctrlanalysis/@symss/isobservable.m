@@ -3,14 +3,12 @@ function tf = isobservable(sys)
 %observable. It returns a logical 1 (true) if the system is observable and
 %a logical 0 (false) if it is not.
 
-if isa(sys, 'symtf')
-    sys = symtf2symss(sys);
-end
-[A, ~, C, ~] = sys.getMatrices();
+sys = symtf2symss(sys);
+[A, ~, C, ~] = sys.getabcd();
 
 n = length(A);
 L = unique(eig(A));
-r = zeros(1:numel(L));
+r = zeros([1 numel(L)]);
 
 for k = 1:numel(L)
     r(k) = rank([(L(k)*eye(n) - A); C]);

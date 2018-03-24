@@ -1,18 +1,17 @@
 function T = subs(sys, varargin)
 %SUBS Replace symbolic variables in state space model.
 %   
-%   sys = SUBS(sys, ...) replaces symbolic variables in a state space
-%   model. 
+%   sys = SUBS(sys, ...) replaces symbolic variables, state variables, or
+%   input variables in the state equations of a state space model.
 %   
-%   It is possible to replace state variables and input variables
-%   using this method as well as symbolic variables and symbolic functions
-%   present in the state equations.
+%   Use this method instead of symss/simplify to replace state variables
+%   and input variables in the state equations.
 % 
-%   sys = SUBS(sys, new) replaces state variables or input variables in the
-%   state space model.
+%   sys = SUBS(sys, new) replaces symbolic variables, state variables, or
+%   input variables in the state space model.
 %   
-%   sys = SUBS(sys, old, new) replaces symbolic variables or symbolic
-%   functions in the state equations.
+%   sys = SUBS(sys, old, new) replaces symbolic variables, state variables,
+%   input variables, or symbolic functions in the state equations.
 % 
 %   See also sym/subs
 

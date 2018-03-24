@@ -27,7 +27,7 @@ addOptional(p, 'V', sym([]));
 parse(p, sys, varargin{:});
         
 if any(strcmp('V', p.UsingDefaults))
-    V = lyap(sys);
+    [V, P] = lyap(sys);
 else
     V = p.Results.V;
 end
@@ -95,22 +95,9 @@ if nargout == 0 && numel(sys.states) <= 2
     q.AutoScale = 'on';
     q.AlignVertexCenters = 'on';
 
-%         ax.Title.String = 'Region of Attraction';
-%         ax.XLabel.String = char(sys.states(1));
-%         ax.XLabel.Interpreter = 'latex';
-%         
-%         ax.YLabel.String = char(sys.states(2));
-%         ax.YLabel.Interpreter = 'latex';
-%         
-%         ax.Legend.String(1) = 'Region of Attraction';
-%         ax.Legend.String(2) = '$\dot{V}$';
-%         ax.Legend.String(3) = 'Trajectories';
-%         ax.Legend.Interpreter = 'latex';
-
     title('Region of Attraction');
     xlabel(char(sys.states(1)), 'Interpreter', 'latex');
     ylabel(char(sys.states(2)), 'Interpreter', 'latex');
-%         legend({'Region of Attraction', '$\dot{V}$', 'Trajectories'}, 'Interpreter', 'latex');
     legend({'Region of Attraction', 'Trajectories'}, 'Interpreter', 'latex');
 
     ax.NextPlot = current_state;

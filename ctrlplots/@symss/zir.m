@@ -11,7 +11,14 @@ function Yi = zir(sys, x0)
 %   yi(t) = Ce  x(0)
 % 
 
-[~, ~, C, ~] = getmatrices(sys);
+p = inputParser;
+validateSys = @(S) islinear(S.f, S.states);
+validateICs = @(IC) validateattributes(IC, {'sym', 'numeric'}, {'nonempty'});
+addRequired(p, 'sys', validateSys);
+addRequired(p, 'x0', validateICs);
+parse(p, sys, x0);
+
+[~, ~, C, ~] = getabcd(sys);
 Phi = stm(sys);
 
 Yi = C*Phi*x0;

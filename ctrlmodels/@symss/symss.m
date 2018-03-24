@@ -29,6 +29,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         % Ouput Equations
         g
     end
+    
     % State Matrices
     properties (SetAccess = immutable, Dependent)
         % State matrix A
@@ -40,6 +41,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         % Feed-forward matrix D
         D
     end
+    
     % State Variables
     properties (Dependent)
         % State Variables
@@ -47,6 +49,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         % Input Variables
         inputs
     end
+    
     % Internal Properties
     properties (Access = private)
         f_ = sym([])
@@ -119,8 +122,8 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
     end
     
     methods (Hidden)
-        function [A, B, C, D] = getmatrices(obj)
-            %GETMATRICES Helper function to return state space matrices.
+        function [A, B, C, D] = getabcd(obj)
+            %GETABCD Helper function to return state space matrices.
             A = obj.A;
             B = obj.B;
             C = obj.C;

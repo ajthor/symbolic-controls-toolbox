@@ -1,4 +1,4 @@
-function Phi = stm(varargin)
+function Phi = stm(sys)
 %STM Compute the state transition matrix of a system.
 %   
 %   Compute the state transition matrix defined by:
@@ -8,15 +8,16 @@ function Phi = stm(varargin)
 %   
 %   Phi = STM(A) computes the state transition matrix for a square state
 %   matrix A.
-ni = nargin;
-if ni == 1
-    if isa(varargin{1}, 'symss')
-        A = varargin{1}.A;
-    else
-        A = varargin{1};
-    end
+
+p = inputParser;
+validateSys = @(S) validateattributes(S, {'sym', 'symss'}, {'nonempty'});
+addRequired(p, 'sys', validateSys);
+parse(p, sys);
+
+if isa(sys, 'symss')
+    A = sys.A;
 else
-    error('Wrong number of arguments.');
+    A = sys;
 end
 
 syms s

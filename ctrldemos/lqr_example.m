@@ -25,3 +25,7 @@ Q = 1;
 
 [K, P, L] = lqr(sys, Q, R);
 
+double(K)
+double(P)
+double(L)
+

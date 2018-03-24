@@ -31,9 +31,9 @@ classdef (SupportExtensionMethods = true, InferiorClasses = {?sym}) symtf < ctrl
     % Internal Properties
     properties (Access = private)
         % Numerator
-        num_ = sym([])
+        num_ = {sym([])}
         % Denominator
-        den_ = sym([])
+        den_ = {sym([])}
         % Transfer Function Variable
         tfvar_ = sym([])
     end
@@ -64,8 +64,8 @@ classdef (SupportExtensionMethods = true, InferiorClasses = {?sym}) symtf < ctrl
                                 error('Transfer function variable must be one of {%c %c %c %c}', obj.allowed{:});
                             end
                             obj.tfvar_ = sym(varargin{1});
-                            obj.num_ = obj.tfvar_;
-                            obj.den_ = 1;
+                            obj.num_ = {obj.tfvar_};
+                            obj.den_ = {sym(1)};
                         elseif isa(varargin{1}, 'sym')
                             V = obj.getTFVar(varargin{1});
                             if ~isempty(V)
@@ -75,8 +75,10 @@ classdef (SupportExtensionMethods = true, InferiorClasses = {?sym}) symtf < ctrl
                             end
                             
                             [N, D] = numden(varargin{1});
-                            obj.num_ = coeffs(N, obj.tfvar_, 'All');
-                            obj.den_ = coeffs(D, obj.tfvar_, 'All');
+                            for k = 1:numel(N)
+                                obj.num_{k} = coeffs(N(k), obj.tfvar_, 'All');
+                                obj.den_{k} = coeffs(D(k), obj.tfvar_, 'All');
+                            end
                         else
                             
                         end
@@ -89,8 +91,8 @@ classdef (SupportExtensionMethods = true, InferiorClasses = {?sym}) symtf < ctrl
             else
                 % No input arguments.
                 obj.tfvar_ = sym('s');
-                obj.num_ = 1;
-                obj.den_ = 1;
+                obj.num_ = {sym(1)};
+                obj.den_ = {sym(1)};
             end
         end
     end
@@ -118,26 +120,34 @@ classdef (SupportExtensionMethods = true, InferiorClasses = {?sym}) symtf < ctrl
     % Getters and Setters
     methods  
         function Value = get.Numerator(obj)
-            Value = poly2sym(obj.num_, obj.tfvar_);
+            N = cell(size(obj.num_));
+            for k = 1:numel(obj.num_)
+                N{k} = poly2sym(obj.num_{k}, obj.tfvar_);
+            end
+            Value = cell2sym(N);
         end
         function Value = get.Denominator(obj)
-            Value = poly2sym(obj.den_, obj.tfvar_);
+            D = cell(size(obj.den_));
+            for k = 1:numel(obj.den_)
+                D{k} = poly2sym(obj.den_{k}, obj.tfvar_);
+            end
+            Value = cell2sym(D);
         end
         
         function obj = set.Numerator(obj, num)
             if isa(num, 'sym') && isscalar(num)
-                obj.num_ = coeffs(num, obj.tfvar_, 'All');
+                obj.num_ = {coeffs(num, obj.tfvar_, 'All')};
             elseif ismatrix(num)
-                obj.num_ = sym(num);
+                obj.num_ = {sym(num)};
             else
                 error('Invalid numerator.');
             end
         end
         function obj = set.Denominator(obj, den)
             if isa(den, 'sym') && isscalar(den)
-                obj.den_ = coeffs(den, obj.tfvar_, 'All');
+                obj.den_ = {coeffs(den, obj.tfvar_, 'All')};
             elseif ismatrix(den)
-                obj.den_ = sym(den);
+                obj.den_ = {sym(den)};
             else
                 error('Invalid numerator.');
             end
@@ -146,7 +156,11 @@ classdef (SupportExtensionMethods = true, InferiorClasses = {?sym}) symtf < ctrl
         function Value = get.tf(obj)
             N = obj.Numerator;
             D = obj.Denominator;
-            Value = N/D;
+            T = cell(size(obj.num_));
+            for k = 1:numel(obj.num_)
+                T{k} = N(k)/D(k);
+            end
+            Value = cell2sym(T);
         end
         
         function Value = get.Variable(obj), Value = obj.tfvar_; end

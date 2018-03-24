@@ -10,9 +10,17 @@ function Ys = zsr(sys, u)
 %            /t  A(t-s)
 %   ys(t) = C|  e      B u(s) ds + Du(t) = G(t) * u(t)
 %            /0
+% 
+
+p = inputParser;
+validateSys = @(S) islinear(S.f, S.states);
+validateInput = @(U) validateattributes(U, {'sym', 'numeric'}, {'nonempty'});
+addRequired(p, 'sys', validateSys);
+addRequired(p, 'u', validateInput);
+parse(p, sys, u);
 
 syms s
-[~, B, C, D] = getmatrices(sys);
+[~, B, C, D] = getabcd(sys);
 Phi = stm(sys);
 
 G = C*Phi*B + D;

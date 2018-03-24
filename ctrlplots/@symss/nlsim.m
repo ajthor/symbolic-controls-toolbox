@@ -3,11 +3,10 @@ function varargout = nlsim(sys, varargin)
 %   Detailed explanation goes here
 
 p = inputParser;
-validateX0 = @(x0) ...
-    validateattributes(x0, {'numeric', 'cell'}, {'nonempty'});
+validateICs = @(IC) validateattributes(IC, {'numeric', 'cell'}, {'nonempty'});
 addRequired(p, 'sys');
 addOptional(p, 'tspan', [0 10]);
-addOptional(p, 'x0', {0}, validateX0);
+addOptional(p, 'x0', {0}, validateICs);
 addParameter(p, 'vars', {});
 addParameter(p, 'solver', @ode45);
 parse(p, sys, varargin{:});

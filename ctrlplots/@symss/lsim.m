@@ -26,7 +26,7 @@ function y = lsim(sys, u, varargin)
 
 ni = nargin;
 
-[A, B, C, ~] = sys.getmatrices();
+[A, B, C, ~] = sys.getabcd();
 
 if (isempty(u) || u ~= 0) && isempty(B)
     error('Invalid input matrix.');
@@ -66,20 +66,18 @@ y = subs(y, sys.states, x0);
 
 if nargout == 0
     if length(y) == 1
-        fplot(y);
-        ax = gca;
-        ax.XLim = [0 10];
-        ax.XLimMode = 'auto';
+        h = fplot(y);
+        h.XRange = [0 10]; 
+        h.XRangeMode = 'auto'; 
         xlabel('Time (seconds)');
         ylabel('Amplitude');
     else
         [m, n] = size(y);
         for k = 1:numel(y)
             subplot(n, m, k)
-            fplot(y(k));
-            ax = gca;
-            ax.XLim = [0 10];
-            ax.XLimMode = 'auto';
+            h = fplot(y(k));
+            h.XRange = [0 10]; 
+            h.XRangeMode = 'auto'; 
             xlabel('Time (seconds)');
             ylabel('Amplitude');
             title(['Output ', num2str(m), ' for input ', num2str(n)]);

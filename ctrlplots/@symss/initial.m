@@ -3,6 +3,11 @@ function y = initial(sys, varargin)
 %   y = INITIAL(sys)
 %   y = INITIAL(sys, x0)
 
+p = inputParser;
+validateSys = @(S) islinear(S.f, S.states);
+addRequired(p, 'sys', validateSys);
+parse(p, sys);
+
 u = sym(0);
 
 if nargout == 0

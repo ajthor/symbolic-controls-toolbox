@@ -8,17 +8,20 @@ function T = symss2symss(sys, P)
 %       Dx = (P*A/P)x + (P*B)u
 %        y = (C/P) + D
 
-validateattributes(P, {'numeric', 'sym'}, {'square', 'nonempty'});
+p = inputParser;
+[A, B, C, D] = sys.getabcd();
+validateMatrix = @(M) validateattributes(M, {'sym', 'numeric'}, {'nonempty', 'square', 'size', size(A)});
+addRequired(p, 'sys');
+addRequired(p, 'P', validateMatrix);
+parse(p, sys, P);
+
 if ~isa(P, 'sym')
     P = sym(P);
 end
 
-[A, B, C, D] = sys.getmatrices();
-
 A = P*A/P;
 B = P*B;
 C = C/P;
-D = D;
 
 T = sys;
 T.f = A*T.states + B*T.inputs;

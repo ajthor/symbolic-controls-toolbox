@@ -4,11 +4,8 @@ function tf = validabcd(varargin)
 %   
 %   Checks whether A is nxn, B is nxm, C is pxn, and D is pxm.    
 if isa(varargin{1}, 'symss')
-    obj = varargin{1};
-    A = obj.A;
-    B = obj.B;
-    C = obj.C;
-    D = obj.D;
+    sys = varargin{1};
+    [A, B, C, D] = getabcd(sys);
 else
     A = varargin{1};
     B = varargin{2};

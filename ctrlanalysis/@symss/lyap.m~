@@ -44,10 +44,10 @@ end
 
 % METHOD 1
 % Construct Hamiltonian
-% H = [A, eye(size(A)); -Q, -A.'];
+% H = [A, zeros(size(A)); -Q, -A.'];
 % [U, ~] = qr(H, 'real');
 % U = mat2cell(U, size(A), size(A));
-% P = U{2, 1}/U{1, 1};
+% P = -U{2, 1}*inv(U{1, 1});
 
 % METHOD 2
 % [V, D] = eig(H);
@@ -62,9 +62,9 @@ end
 % P = XY{2}/XY{1};
 
 % METHOD 3
-% P = sym('P', size(A));
-% S = solve(A.'*P + P*A == -Q, P);
-% P = subs(P, S);
+P = sym('P', size(A));
+S = solve(A.'*P + P*A == -Q, P);
+P = subs(P, S);
 
 % METHOD 4
 % [V, D, p] = eig(H);
@@ -79,24 +79,6 @@ end
 % XY = mat2cell(XY, [length(A), length(A)]);
 % 
 % P = XY{2}/XY{1};
-
-% METHOD 5
-H = [A, zeros(size(A)); -Q, -A.'];
-[V, D, P] = eig(H);
-% Form a basis when the matrix has non-linearly independent eigenvectors.
-if ~isequal(size(V), size(H))
-    Vf = sym(zeros(size(H)));
-    for k = 1:size(V, 2)
-        L = any(D == D(P(k), P(k)), 1);
-        Vf(:, L) = repmat(V(:, k), 1, nnz(L));
-    end
-    V = Vf;
-end
-[~, idx] = sort(diag(real(D)));
-V = V(:, idx);
-[U, ~] = qr(V, 'real');
-U = mat2cell(U, size(A), size(A));
-P = U{2, 1}/U{1, 1};
 
 varargout{1} = sys.states.'*P*sys.states;
 varargout{2} = P;

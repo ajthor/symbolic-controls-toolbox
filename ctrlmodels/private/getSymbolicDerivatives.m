@@ -1,29 +1,24 @@
 function D = getSymbolicDerivatives(expr)
 %GETSYMBOLICDERIVATIVES Finds all symbolic derivatives in expression.
-%   Detailed explanation goes here
 
-% syms t
-% vars = symvar(expr);
-% vars = vars(vars ~= t);
+D = formula(expr);
 
-ch = expr;
-
-% Isolate derivatives by removing all terms that do not contain
-% derivatives.
+% Isolate derivatives by removing terms that do not contain derivatives.
 while true
-    nch = children(ch);
-    if iscell(nch)
-        nch = cell2sym(nch);
+    for k = 1:numel(D)
+        ch = {children(D(k))};
+        ch = cell2sym(ch);
+        
+        h = has(ch, 'diff');
+        if any(h)
+            D = [D(1:k - 1), ch(h), D(k + 1:end)];
+        end
     end
     
-    if ~any(has(nch, {'diff', 'int'}))
+    if ~any(has(ch, 'diff'))
         break;
     end
-    
-    ch = nch(has(nch, {'diff', 'int'}));
 end
-
-D = ch;
 
 end
 

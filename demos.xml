@@ -8,6 +8,12 @@
    <demosection>
       <label>ctrldemos</label>
       <demoitem>
+         <label>controllability_example</label>
+         <type>other</type>
+         <source>controllability_example</source>
+         <file>ctrldemos/html/controllability_example.html</file>
+      </demoitem>
+      <demoitem>
          <label>elastic_roa_example</label>
          <type>other</type>
          <source>elastic_roa_example</source>

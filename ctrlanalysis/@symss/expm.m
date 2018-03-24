@@ -8,6 +8,7 @@ function phi = expm(sys)
 %   as the matrix exponential, in practice the computation of this matrix
 %   can cause Matlab to hang. Symbolically, it is easier to compute the
 %   inverse laplace transform of (sI-A)^-1, and less error-prone.
+
 p = inputParser;
 validateSys = @(sys) isa(sys, 'symss');
 addRequired(p, 'sys', validateSys);

@@ -3,11 +3,10 @@ function varargout = nlsim2(sys, varargin)
 %   Detailed explanation goes here
 
 p = inputParser;
-validateX0 = @(x0) ...
-    validateattributes(x0, {'numeric', 'cell'}, {'nonempty'});
+validateICs = @(IC) validateattributes(IC, {'numeric', 'cell'}, {'nonempty'});
 addRequired(p, 'sys');
 addOptional(p, 'tspan', [0 10]);
-addOptional(p, 'x0', {[0, 0]}, validateX0);
+addOptional(p, 'x0', {[0, 0]}, validateICs);
 addParameter(p, 'vars', {});
 addParameter(p, 'solver', @ode45);
 addParameter(p, 'trajectory', 'off');
@@ -33,12 +32,6 @@ else
         error('Incorrect number of output variables.');
     end
 end
-
-% solver = p.Results.solver;
-% if ~any(strcmp(func2str(solver), {'ode45', 'ode23', 'ode113', ...
-%         'ode15s', 'ode23s', 'ode23t', 'ode23tb'}))
-%     error('Invalid ODE solver.');
-% end
 
 for k = 1:numel(x0)
     ic = reshape(x0{k}, [], 1);
@@ -97,13 +90,6 @@ else
     end
     
 end
-
-% if strcmp(p.Results.trajectory, 'on')
-%     [X1, X2] = meshgrid(...
-%         linspace(xl(1), xl(2), 20), ...
-%         linspace(yl(1), yl(2), 20));
-% %         F1 = subs(sys.f, 
-% end
 
 end
 

@@ -7,7 +7,7 @@ function Ob = obsv(sys)
 % 
 %   See also obsvs
 
-[A, ~, C, ~] = sys.getmatrices();
+[A, ~, C, ~] = sys.getabcd();
 Ob = obsvs(A, C);
 
 end

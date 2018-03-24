@@ -4,7 +4,7 @@ function tf = iscontrollable(sys)
 %and a logical 0 (false) if it is not.
 
 sys = symss(sys);
-[A, B, ~, ~] = sys.getmatrices();
+[A, B, ~, ~] = sys.getabcd();
 
 n = length(A);
 L = unique(eig(A));

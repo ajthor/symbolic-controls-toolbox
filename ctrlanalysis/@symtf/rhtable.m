@@ -14,9 +14,9 @@ function [T, rhp, lhp] = rhtable(G, varargin)
 %   the first column of the R-H table. For numerical symbolic values, this
 %   achieves the correct number of poles in the right-hand plane. For
 %   symbolic variables, this is not guaranteed to work.
+
 p = inputParser;
-validateSys = @(G) isa(G, 'symtf');
-addRequired(p, 'G', validateSys);
+addRequired(p, 'G');
 addParameter(p, 'reverse', false);
 parse(p, G, varargin{:});
 

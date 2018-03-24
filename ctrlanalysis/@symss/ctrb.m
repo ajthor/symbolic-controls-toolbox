@@ -7,7 +7,7 @@ function Co = ctrb(sys)
 % 
 %   See also ctrbs
 
-[A, B, ~, ~] = sys.getmatrices();
+[A, B, ~, ~] = sys.getabcd();
 Co = ctrbs(A, B);
 
 end

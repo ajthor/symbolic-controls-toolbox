@@ -1,4 +1,4 @@
-function sys = simplify(sys, varargin)
+function T = simplify(sys, varargin)
 %SIMPLIFY Simplify a state space model.
 %
 %   sys = SIMPLIFY(sys, ...)
@@ -6,11 +6,17 @@ function sys = simplify(sys, varargin)
 %   Extra parameters are passed to the internal sym/simplify calls.
 %   
 %   Used to apply assumptions defined in the workspace to a state space
-%   model.
+%   model. Does not apply assumptions that affect state variables or input
+%   variables.
 % 
 %   See also sym/simplify
 
-sys.f = simplify(sys.f, varargin{:});
-sys.g = simplify(sys.g, varargin{:});
+p = inputParser;
+addRequired(p, 'sys');
+parse(p, sys);
+
+T = sys;
+T.f = simplify(sys.f, varargin{:});
+T.g = simplify(sys.g, varargin{:});
 
 end

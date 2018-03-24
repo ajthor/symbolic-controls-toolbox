@@ -3,9 +3,10 @@ function Ob = obsvs(A, C)
 % 
 %   Ob = OBSVS(A, C) returns the observability matrix 
 %       Ob = [C; C*A; C*A^2; ...]
+
 p = inputParser;
-validateA = @(A) validateattributes(A, {'sym'}, {'square', 'nonempty'});
-validateC = @(C) validateattributes(C, {'sym'}, {'nonempty'});
+validateA = @(M) validateattributes(M, {'sym', 'numeric'}, {'square', 'nonempty'});
+validateC = @(M) validateattributes(M, {'sym', 'numeric'}, {'nonempty', 'ncols', size(A, 2)});
 addRequired(p, 'A', validateA);
 addRequired(p, 'C', validateC);
 parse(p, A, C);
