@@ -4,7 +4,8 @@ function ts = gettsdata(f, rg)
 
 p = inputParser;
 validateFunction = @(F) validateattributes(F, {'sym'}, {'nonempty'});
-validateRange = @(R) validateattributes(R, {'numeric'}, {'row', 'positive', 'increasing'});
+validateRange = @(R) ...
+    validateattributes(R, {'numeric'}, {'row', 'positive', 'increasing'});
 addRequired(p, 'f', validateFunction);
 addRequired(p, 'tspan', validateRange);
 parse(p, f, rg);

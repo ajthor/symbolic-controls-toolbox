@@ -12,13 +12,13 @@ function ys = tzsr(sys, u)
 %            /0
 
 syms s t
-[~, B, C, D] = getmatrices(sys);
+[~, B, C, D] = getabcd(sys);
 Phi = stm(sys);
 
 G = C*Phi*B + D;
 Gt = ilaplace(G, s, t);
 
-ys = conv(Gt, u, 'same');
+ys = conv(Gt, u, 'valid');
 
 end
 

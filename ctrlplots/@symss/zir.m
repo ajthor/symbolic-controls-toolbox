@@ -12,9 +12,9 @@ function Yi = zir(sys, x0)
 % 
 
 p = inputParser;
-validateSys = @(S) islinear(S.f, S.states);
-validateICs = @(IC) validateattributes(IC, {'sym', 'numeric'}, {'nonempty'});
-addRequired(p, 'sys', validateSys);
+validateICs = @(P) ...
+    validateattributes(P, {'sym', 'numeric'}, {'nonempty'});
+addRequired(p, 'sys');
 addRequired(p, 'x0', validateICs);
 parse(p, sys, x0);
 

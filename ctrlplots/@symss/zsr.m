@@ -13,9 +13,9 @@ function Ys = zsr(sys, u)
 % 
 
 p = inputParser;
-validateSys = @(S) islinear(S.f, S.states);
-validateInput = @(U) validateattributes(U, {'sym', 'numeric'}, {'nonempty'});
-addRequired(p, 'sys', validateSys);
+validateInput = @(U) ...
+    validateattributes(U, {'sym', 'numeric'}, {'nonempty'});
+addRequired(p, 'sys');
 addRequired(p, 'u', validateInput);
 parse(p, sys, u);
 

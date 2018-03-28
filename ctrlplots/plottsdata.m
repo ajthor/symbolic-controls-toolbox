@@ -3,8 +3,10 @@ function ax = plottsdata(ts, rg)
 %   Detailed explanation goes here
 
 p = inputParser;
-validateTsData = @(T) validateattributes(T, {'numeric'}, {'ncols', size(rg, 2)});
-validateRange = @(R) validateattributes(R, {'numeric'}, {'row', 'positive', 'increasing'});
+validateTsData = @(T) ...
+    validateattributes(T, {'numeric'}, {'ncols', size(rg, 2)});
+validateRange = @(R) ...
+    validateattributes(R, {'numeric'}, {'row', 'positive', 'increasing'});
 addRequired(p, 'ts', validateTsData);
 addRequired(p, 'rg', validateRange);
 parse(p, ts, rg);

@@ -1,14 +1,9 @@
-function y = lsim(sys, u, varargin)
+function varargout = lsim(sys, u, varargin)
 %LSIM Compute the linear response of a system to arbitrary inputs.
 % 
-%   y = LSIM(sys, u) computes the linear response of a system to an
-%   arbitrary input where 'u' is a symbolic s-domain input signal.
-% 
-%   y = LSIM(sys, u, x0) computes the linear response of a system with
-%   initial conditions.
-% 
 %   y = LSIM(sys, u, t) computes the linear response of a system to an
-%   arbitrary input where 'u' is time-series data and 't' is a time vector.
+%   arbitrary input where 'u' is a symbolic s-domain input signal or
+%   time-series data, and 't' is a time vector.
 %   
 %   y = LSIM(sys, u, t, x0) computes the linear response of a system to an
 %   arbitrary input where 'u' is time-series data, 't' is a time vector,
@@ -17,54 +12,44 @@ function y = lsim(sys, u, varargin)
 %   NOTE: Non-linear systems are linearized about the initial conditions
 %   passed to the function. 
 
-% p = inputParser;
-% addRequired(p, 'sys');
-% addRequired(p, 'u');
-% addOptional(p, 't');
-% addOptional(p, 'x0');
-% parse(p, sys, u, varargin{:});
+p = inputParser;
+validateInput = @(U) ...
+    validateattributes(U, {'sym', 'numeric', 'function_handle'}, ...
+                          {'nonempty'});
+validateTime = @(T) ...
+    validateattributes(T, {'numeric'}, ...
+                          {'nonempty', 'nonnegative', 'increasing'});
+validateICs = @(P) ...
+    validateattributes(P, {'numeric', 'cell'}, {'nonempty'});
+validateVars = @(V) ...
+    validateattributes(V, {'sym', 'cell'}, {'nonempty'});
+addRequired(p, 'sys');
+addRequired(p, 'u', validateInput);
+addOptional(p, 'tspan', [0 5], validateTime);
+addOptional(p, 'x0', cell.empty, validateICs);
+addParameter(p, 'vars', cell.empty, validateVars);
+parse(p, sys, u, varargin{:});
 
-ni = nargin;
+tspan = p.Results.tspan;
 
-[A, B, C, ~] = sys.getabcd();
-
-if (isempty(u) || u ~= 0) && isempty(B)
-    error('Invalid input matrix.');
-elseif isempty(C)
-    error('Invalid output matrix.');
+x0 = p.Results.x0;
+if ~iscell(x0)
+    x0 = {x0};
 end
 
-if ni == 3
-    if numel(varargin{1}) ~= size(A, 1)
-        error('Dimensions do not match.');
-    end
-    x0 = reshape(varargin{1}, [], 1);
+if nargout ~= 0 && numel(x0) > 1
+    y = cell(size(x0));
+end
+
+for k = 1:numel(x0)
+    ic = reshape(x0{k}, [], 1);
+    y{k} = linsolver(sys, u, tspan, ic);
+    y{k} = subs(y{k}, sys.states, ic);
+end
+
+if nargout ~= 0
+    varargout{1} = y;
 else
-    x0 = zeros(size(A, 1), 1);
-end
-
-% Get the zero input response and the zero state response.
-if isa(u, 'sym')
-    Yi = zir(sys, x0);
-    Ys = zsr(sys, u);
-    
-    if ~isempty(Ys)
-        Y = Yi + Ys;
-    else
-        Y = Yi;
-    end
-
-    syms s t
-    y = ilaplace(Y, s, t);
-else
-    yi = tzir(sys, x0);
-    ys = tzsr(sys, u);
-    y = yi + ys;
-end
-
-y = subs(y, sys.states, x0);
-
-if nargout == 0
     if length(y) == 1
         h = fplot(y);
         h.XRange = [0 10]; 

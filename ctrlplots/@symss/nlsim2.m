@@ -1,16 +1,28 @@
-function varargout = nlsim2(sys, varargin)
+function varargout = nlsim2(sys, u, varargin)
 %NLSIM2 Simulate a non-linear system in two variables.
 %   Detailed explanation goes here
 
 p = inputParser;
-validateICs = @(IC) validateattributes(IC, {'numeric', 'cell'}, {'nonempty'});
+validateInput = @(U) ...
+    validateattributes(U, {'sym', 'numeric', 'function_handle'}, ...
+                          {'nonempty'});
+validateTime = @(T) ...
+    validateattributes(T, {'numeric'}, ...
+                          {'nonempty', 'nonnegative', 'increasing'});
+validateICs = @(P) ...
+    validateattributes(P, {'numeric', 'cell'}, {'nonempty'});
+validateVars = @(V) ...
+    validateattributes(V, {'sym', 'cell'}, {'nonempty'});
+validateSolver = @(S) ...
+    validateattributes(S, {'function_handle'}, {'nonempty'});
 addRequired(p, 'sys');
-addOptional(p, 'tspan', [0 10]);
-addOptional(p, 'x0', {[0, 0]}, validateICs);
-addParameter(p, 'vars', {});
-addParameter(p, 'solver', @ode45);
+addRequired(p, 'u', validateInput);
+addOptional(p, 'tspan', [0 5], validateTime);
+addOptional(p, 'x0', cell.empty, validateICs);
+addParameter(p, 'vars', cell.empty, validateVars);
+addParameter(p, 'solver', @ode45, validateSolver);
 addParameter(p, 'trajectory', 'off');
-parse(p, sys, varargin{:});
+parse(p, sys, u, varargin{:});
 
 tspan = p.Results.tspan;
 
@@ -35,7 +47,7 @@ end
 
 for k = 1:numel(x0)
     ic = reshape(x0{k}, [], 1);
-    [ts, ys] = nlsolver(sys, tspan, ic);
+    [ts, ys] = nlsolver(sys, u, tspan, ic);
     t{k} = ts;
     y{k} = ys(:, has(sys.states.', vars));
 end

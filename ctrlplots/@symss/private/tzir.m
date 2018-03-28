@@ -12,7 +12,7 @@ function Yi = tzir(sys, x0)
 % 
 
 syms s t
-[~, ~, C, ~] = getmatrices(sys);
+[~, ~, C, ~] = getabcd(sys);
 phi = ilaplace(stm(sys), s, t);
 
 Yi = C*phi*x0;
