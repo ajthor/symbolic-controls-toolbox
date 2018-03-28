@@ -17,7 +17,7 @@ sys.g(1) = theta;
 
 linsys = linearize(sys);
 
-step(linsys)
+lsim(linsys, sym(0))
 % syms s
 % u = 10*exp(-1*s)/s + 2*exp(-2*s)/s - 10.5*exp(-3.5*s)/s;
 % lsim(linsys, u);

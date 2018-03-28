@@ -9,21 +9,17 @@ function T = canon(sys, varargin)
 %   - Observable: 'o', 'O', 'ob', 'Ob', 'observable'
 %   - Jordan: 'j', 'jordan', 'Jordan'
 
+types = {'c', 'C', 'co', 'Co', 'controllable', 'companion', ...
+         'o', 'O', 'ob', 'Ob', 'observable', ...
+         'j', 'jordan', 'Jordan'};
+
 p = inputParser;
-validateType = @(type) ismember(type, ...
-    {'c', 'C', 'co', 'Co', 'controllable', 'companion', ...
-    'o', 'O', 'ob', 'Ob', 'observable', ...
-    'j', 'jordan', 'Jordan'});
+validateType = @(T) ismember(T, types);
 addRequired(p, 'sys')
 addOptional(p, 'type', 'c', validateType)
 parse(p, sys, varargin{:});
 
 type = p.Results.type;
-% if isempty(varargin)
-%     type = 'c';
-% else
-%     type = varargin{1};
-% end
 
 [A, B, C, D] = sys.getmatrices();
 

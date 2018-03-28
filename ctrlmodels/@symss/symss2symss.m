@@ -10,7 +10,9 @@ function T = symss2symss(sys, P)
 
 p = inputParser;
 [A, B, C, D] = sys.getabcd();
-validateMatrix = @(M) validateattributes(M, {'sym', 'numeric'}, {'nonempty', 'square', 'size', size(A)});
+validateMatrix = @(M) ...
+    validateattributes(M, {'sym', 'numeric'}, ...
+                          {'nonempty', 'square', 'size', size(A)});
 addRequired(p, 'sys');
 addRequired(p, 'P', validateMatrix);
 parse(p, sys, P);

@@ -19,4 +19,4 @@ sys.g(1) = (1/R)*vC;
 linsys = linearize(sys);
 
 u = exp(-1*s)/s - exp(-2*s)/s + exp(-3*s)/s - exp(-4*s)/s + 20/(s+1000);
-lsim(sys, u);
+lsim(linsys, u);

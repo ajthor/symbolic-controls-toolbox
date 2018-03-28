@@ -8,8 +8,9 @@ function T = linearize(sys, varargin)
 %   defined by eq. For instance, T = LINEARIZE(sys, [x1(0) x2(0)]).
 
 p = inputParser;
-validateEQ = @(EQ) validateattributes(EQ, {'sym', 'numeric', 'cell'}, ...
-    {'size', size([sys.states; sys.inputs])});
+validateEQ = @(EQ) ...
+    validateattributes(EQ, {'sym', 'numeric', 'cell'}, ...
+                           {'size', size([sys.states; sys.inputs])});
 addRequired(p, 'sys');
 addOptional(p, 'eq', zeros(size([sys.states; sys.inputs])), validateEQ);
 parse(p, sys, varargin{:});

@@ -5,10 +5,13 @@ function Co = ctrbs(A, B)
 %       Co = [B, A*B, A^2*B, ...]
 
 p = inputParser;
-validateA = @(M) validateattributes(M, {'sym', 'numeric'}, {'square', 'nonempty'});
-validateB = @(M) validateattributes(M, {'sym', 'numeric'}, {'nonempty', 'nrows', size(A, 1)});
-addRequired(p, 'A', validateA);
-addRequired(p, 'B', validateB);
+validateStateMatrix = @(M) ...
+    validateattributes(M, {'sym', 'numeric'}, {'square', 'nonempty'});
+validateInputMatrix = @(M) ...
+    validateattributes(M, {'sym', 'numeric'}, ...
+                          {'nonempty', 'nrows', size(A, 1)});
+addRequired(p, 'A', validateStateMatrix);
+addRequired(p, 'B', validateInputMatrix);
 parse(p, A, B);
 
 nx = size(A, 1);

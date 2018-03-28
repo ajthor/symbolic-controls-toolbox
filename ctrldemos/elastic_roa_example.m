@@ -12,8 +12,7 @@ sys.f(2) = x1 + (x1^2 - 1)*x2;
 %% Region of Attraction (Lyapunov)
 % The standard method for determining the region of attraction uses the
 % Lyapunov method, and generally gives a conservative result. 
-linsys = linearize(sys);
-roa(linsys);
+roa(sys, 'Trajectory', true);
 
 %%
 % We can see that the default Lyapunov boundary produces a poor estimation
@@ -22,7 +21,7 @@ roa(linsys);
 
 %% Elastic Region of Attraction
 % Compute the elastic region of attraction using the standard method.
-R = elasticroa(sys, 'Points', 30, 'Radial', false);
+R = elroa(sys, 'Points', 30, 'Radial', false);
 
 %%
 % Convert the points to initial conditions.
@@ -33,9 +32,11 @@ ic = num2cell(R, 2);
 tspan = [0 10];
 
 plot(R(:, 1), R(:, 2), 'o')
+
 hold on
 nlsim2(sys, tspan, ic)
 hold off
+
 xlim([-3 3])
 ylim([-4 4])
 
@@ -47,15 +48,17 @@ ylim([-4 4])
 
 %% Elastic Region of Attraction (Radial)
 % Compute the elastic region of attraction using the radial method.
-R = elasticroa(sys, 'Points', 30, 'Radial', true);
+R = elroa(sys, 'Points', 30, 'Radial', true);
 ic = num2cell(R, 2);
 
 %%
 % Plot the trajectories using the initial conditions.
 plot(R(:, 1), R(:, 2), 'o')
+
 hold on
 nlsim2(sys, tspan, ic)
 hold off
+
 xlim([-3 3])
 ylim([-4 4])
 

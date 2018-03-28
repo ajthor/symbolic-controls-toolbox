@@ -2,10 +2,11 @@
 Thank you for your interest in contributing to the Symbolic Controls Toolbox!
 
 Contributions are welcome and appreciated in any format, including, but not limited to:
-- General Feedback
-- Issues
-- Code Submissions
-- Suggestions
+
+* General Feedback
+* Issues
+* Code Submissions
+* Suggestions
 
 This document is a guide for contributors giving guidelines for best practices. Please follow the guidelines listed below if you are considering contributing to the project.
 
@@ -15,19 +16,21 @@ This document is a guide for contributors giving guidelines for best practices. 
 
 ## Areas of Interest
 All contributions are welcome and encouraged. Some areas where contributions are specifically welcome and appreciated are:
-- Mathematical Corrections
-- Documentation
-- Robustness
-- Optimization
-- New Functions!
+
+* Mathematical Corrections
+* Documentation
+* Robustness
+* Optimization
+* New Functions!
 
 ## Issues
 Issues should be submitted through GitHub's issue tracker, and the corresponding Matlab code should be included.
 
 Steps to submitting an issue:
-- Check your code thoroughly for errors before submitting an issue.
-- Read through the documentation and help for a question about a specific function before submitting an issue.
-- Include all relevant code to reproduce your issue.
+
+* Check your code thoroughly for errors before submitting an issue.
+* Read through the documentation and help for a question about a specific function before submitting an issue.
+* Include all relevant code to reproduce your issue.
 
 Issues should use the following form:
 > ### Description of Issue ###
@@ -40,6 +43,7 @@ Issues should use the following form:
 > ```
 
 Types of issues that will not be addressed:
+
 1. Homework Problems(TM)
 1. How do I do X/Y in control systems theory?
 1. How do I do X/Y using the Symbolic Controls Toolbox?
@@ -59,9 +63,10 @@ Issues will be closed if no additional information can be given to clarify the i
 To submit a code contribution, submit a pull request.
 
 Code contributions should include:
-- Proper documentation of changes.
-- Well-formatted code.
-- Unit tests for the change.
+
+* Proper documentation of changes.
+* Well-formatted code.
+* Unit tests for the change.
 
 Code contributions can address any of the areas of interest. For code contributions that do not address one of the areas of interest, a suggestion should be submitted prior to submitting a pull request, giving the community time to gauge whether of not the feature is a good fit for the toolbox as a whole.
 

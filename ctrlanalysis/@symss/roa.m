@@ -20,22 +20,26 @@ function R = roa(sys, varargin)
 % 
 %   ROA(____) plots the region of attraction for a state space model
 %   using a given Lyapunov equation.
+% 
+%   See also symss/elroa
 
 p = inputParser;
 addRequired(p, 'sys');
-addOptional(p, 'V', sym([]));
+addOptional(p, 'V', sym.empty);
+addParameter(p, 'Trajectory', false);
 parse(p, sys, varargin{:});
-        
+
 if any(strcmp('V', p.UsingDefaults))
-    [V, P] = lyap(sys);
+    linsys = linearize(sys);
+    V = lyap(linsys);
 else
     V = p.Results.V;
 end
 
-[tx, tu, tf, ~] = varsub(sys);
+dV = lyapdiff(sys, V);
+    
+[tx, tu, ~, ~] = varsub(sys);
 tv = subs(V, [sys.states; sys.inputs], [tx; tu]);
-
-dV = gradient(tv, tx).'*reshape(tf, [], 1);
 dV = subs(dV, [sys.states; sys.inputs], [tx; tu]);
 
 % tv = subs(V, [sys.states; sys.inputs], [tx; tu]);
@@ -80,27 +84,25 @@ if nargout == 0 && numel(sys.states) <= 2
                       linspace(rgy(1), rgy(2), 20));
 
     ax = gca;
-    current_state = ax.NextPlot;
-    ax.NextPlot = 'add';
+    axcs = ax.NextPlot;
 
     % Plot VDot.
-%         fimplicit(ax, DV)
-%         Z = subs(DV, tx, {X; Y});
-%         contour(X, Y, Z, 0:5);
+%     ax.NextPlot = 'add';
+%     fimplicit(dV)
+%     Z = subs(DV, tx, {X; Y});
+%     contour(X, Y, Z, 0:5);
 
     % Plot function trajectories.
-    F1 = subs(sys.f(1), sys.states, {X; Y});
-    F2 = subs(sys.f(2), sys.states, {X; Y});
-    q = quiver(ax, X, Y, F1, F2);
-    q.AutoScale = 'on';
-    q.AlignVertexCenters = 'on';
+    if p.Results.Trajectory
+        ax.NextPlot = 'add';
+        F1 = subs(sys.f(1), sys.states, {X; Y});
+        F2 = subs(sys.f(2), sys.states, {X; Y});
+        q = quiver(ax, X, Y, F1, F2);
+        q.AutoScale = 'on';
+        q.AlignVertexCenters = 'on';
+    end
 
-    title('Region of Attraction');
-    xlabel(char(sys.states(1)), 'Interpreter', 'latex');
-    ylabel(char(sys.states(2)), 'Interpreter', 'latex');
-    legend({'Region of Attraction', 'Trajectories'}, 'Interpreter', 'latex');
-
-    ax.NextPlot = current_state;
+    ax.NextPlot = axcs;
 end
 
 end

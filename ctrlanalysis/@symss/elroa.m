@@ -1,8 +1,8 @@
-function varargout = elasticroa(sys, varargin)
-%ELASTICROA Elastic estimation of region of attraction.
+function varargout = elroa(sys, varargin)
+%ELROA Elastic estimation of region of attraction.
 %   
-%   R = ELASTICROA(sys, ...) estimates the region of attraction around the
-%   origin using an elastic method. 
+%   R = ELROA(sys, ...) estimates the region of attraction around the
+%   origin using an elastic method.
 % 
 %   The function creates a ring of points around the origin and grows the
 %   points until they encompass the region of attraction. The boundary
@@ -13,28 +13,40 @@ function varargout = elasticroa(sys, varargin)
 %   whether an initial condition is within the region of attraction.
 % 
 %   Example (For initial condition [1 1]):
-%       R = ELASTICROA(sys)
-%       b = CONVHULL(R)
-%       INPOLYGON(1, 1, R(b, 1), R(b, 2))
+%       R = ELROA(sys)
+%       b = convhull(R)
+%       inpolygon(1, 1, R(b, 1), R(b, 2))
 % 
 %   Use NLSIM2 to plot the trajectories at the points on the region of
 %   attraction boundary.
 % 
+%   Example:
+%       R = ELROA(sys)
+%       ic = num2cell(R, 2)
+%       tspan = [0 10]
+%       nlsim2(sys, tspan, ic)
+% 
+%   Parameters:
 %   - 'Points' specify how many points should be in the elastic ring.
+% 
 %   - 'T0' specify the initial temperature (default 2).
+% 
 %   - 'CoolingFactor' specify the temperature cooling factor (default
 %   1.02).
+% 
 %   - 'ZeroSpacing' specify the initial distance of the elastic ring from
 %   the origin (default 1E-3).
+% 
 %   - 'ComputationTime' specify the maximum allowed computation time in
 %   seconds (default 30).
+% 
 %   - 'Radial' specify whether the points should move in a strictly radial
 %   direction, or if the points can move along the trajectories (default
 %   false).
 % 
 %   Tips:
 %   The cooling factor is a positive number > 1. Small changes to the
-%   cooling factor can have a dramatic effect. Higher values produce less
+%   cooling factor can have a dramatic effect. Lower values produce less
 %   conservative results. It is recommended to change the cooling factor in
 %   increments of 1E-2 or 1E-3 if needed.
 % 
@@ -54,6 +66,7 @@ addParameter(p, 'CoolingFactor', 1.02);
 addParameter(p, 'ZeroSpacing', 1E-3);
 addParameter(p, 'ComputationTime', 30);
 addParameter(p, 'Radial', false);
+addParameter(p, 'Trajectory', false);
 parse(p, sys, varargin{:});
 
 np = p.Results.Points;
@@ -74,7 +87,7 @@ R = [zs*ones([np + 1, 1]), linspace(0, 2*pi, np + 1).'];
 R = R(1:end - 1, :);
 R = [R(:, 1).*cos(R(:, 2)), R(:, 1).*sin(R(:, 2))];
 
-current_state = warning('off');
+orig = warning('off');
 
 tic
 while true
@@ -121,13 +134,13 @@ while true
     elseif ~any(chg > 1E-5)
         break;
     elseif toc > t
-        warning(current_state);
+        warning(orig);
         warning('Computation time exceeded.');
         break;
     end
 end
 
-warning(current_state);
+warning(orig);
 
 if nargout ~= 0
     varargout{1} = R;
@@ -144,21 +157,19 @@ else
                       linspace(rgy(1), rgy(2), 20));
 
     ax = gca;
-    current_state = ax.NextPlot;
-    ax.NextPlot = 'add';
+    axcs = ax.NextPlot;
     
-    F1 = subs(sys.f(1), sys.states, {X; Y});
-    F2 = subs(sys.f(2), sys.states, {X; Y});
-    q = quiver(ax, X, Y, F1, F2);
-    q.AutoScale = 'on';
-    q.AlignVertexCenters = 'on';
+    % Plot function trajectories.
+    if p.Results.Trajectory
+        ax.NextPlot = 'add';
+        F1 = subs(sys.f(1), sys.states, {X; Y});
+        F2 = subs(sys.f(2), sys.states, {X; Y});
+        q = quiver(ax, X, Y, F1, F2);
+        q.AutoScale = 'on';
+        q.AlignVertexCenters = 'on';
+    end
     
-    title('Region of Attraction');
-    xlabel(char(sys.states(1)), 'Interpreter', 'latex');
-    ylabel(char(sys.states(2)), 'Interpreter', 'latex');
-    legend({'Region of Attraction', 'Trajectories'}, 'Interpreter', 'latex');
-
-    ax.NextPlot = current_state;
+    ax.NextPlot = axcs;
 end
 
 end

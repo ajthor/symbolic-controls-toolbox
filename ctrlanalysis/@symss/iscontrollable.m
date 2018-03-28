@@ -11,7 +11,7 @@ L = unique(eig(A));
 r = zeros([1 numel(L)]);
 
 for k = 1:numel(L)
-    r(k) = rank([(L(k)*eye(n) - A), B]);
+    r(k) = rank([(L(k)*speye(n) - A), B]);
 end
 
 tf = ~any(r < n);

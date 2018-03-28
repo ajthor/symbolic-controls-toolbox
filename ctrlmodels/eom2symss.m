@@ -23,7 +23,7 @@ sys.states = states;
 funs = diff(sys.states);
 if has(funs, 'diff')
     % Get all unique higher derivatives.
-    D = unique(getSymbolicDerivatives(eqns));
+    D = unique(getsymdiff(eqns));
     D = setdiff(D, sys.states);
     
     if ~isempty(D)

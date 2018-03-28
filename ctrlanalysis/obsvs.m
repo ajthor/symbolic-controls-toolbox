@@ -5,10 +5,13 @@ function Ob = obsvs(A, C)
 %       Ob = [C; C*A; C*A^2; ...]
 
 p = inputParser;
-validateA = @(M) validateattributes(M, {'sym', 'numeric'}, {'square', 'nonempty'});
-validateC = @(M) validateattributes(M, {'sym', 'numeric'}, {'nonempty', 'ncols', size(A, 2)});
-addRequired(p, 'A', validateA);
-addRequired(p, 'C', validateC);
+validateStateMatrix = @(M) ...
+    validateattributes(M, {'sym', 'numeric'}, {'square', 'nonempty'});
+validateOutputMatrix = @(M) ...
+    validateattributes(M, {'sym', 'numeric'}, ...
+                          {'nonempty', 'ncols', size(A, 2)});
+addRequired(p, 'A', validateStateMatrix);
+addRequired(p, 'C', validateOutputMatrix);
 parse(p, A, C);
 
 nx = size(A, 1);

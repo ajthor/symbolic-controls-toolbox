@@ -28,9 +28,9 @@ sys = linearize(sys);
 %%
 figure
 hold on
-initial(sys|{l==1, k==1}, sym([1 0]));
-initial(sys|{l==1, k==1}, sym([3 0]));
-initial(sys|{l==1, k==1}, sym([6 0]));
+initial(sys|{l==1, k==1}, [0 5], {[1 0], [3.5 0]});
+% initial(sys|{l==1, k==1}, [0 5], {[3 0]});
+% initial(sys|{l==1, k==1}, [0 5], {[6 0]});
 hold off
 
 % figure

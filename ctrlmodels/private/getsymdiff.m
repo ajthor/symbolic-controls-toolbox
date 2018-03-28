@@ -1,5 +1,5 @@
-function D = getSymbolicDerivatives(expr)
-%GETSYMBOLICDERIVATIVES Finds all symbolic derivatives in expression.
+function D = getsymdiff(expr)
+%GETSYMDIFF Finds all symbolic derivatives in expression.
 
 D = formula(expr);
 
