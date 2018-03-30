@@ -14,6 +14,7 @@ classdef (SupportExtensionMethods = true, InferiorClasses = {?sym}) symtf < ctrl
     %   
     %   G = SYMTF creates the transfer function G(s) = 1.
     
+    % Transfer Function Properties
     properties (Access = public, Dependent)
         % Numerator
         Numerator
@@ -23,19 +24,19 @@ classdef (SupportExtensionMethods = true, InferiorClasses = {?sym}) symtf < ctrl
         Variable
     end
     
-    properties (SetAccess = immutable, Dependent)
-        % Transfer Function
+    % Transfer Function
+    properties (Hidden, SetAccess = immutable, Dependent)
         tf
     end
     
     % Internal Properties
     properties (Access = private)
         % Numerator
-        num_ = {sym([])}
+        num_ = cell.empty
         % Denominator
-        den_ = {sym([])}
+        den_ = cell.empty
         % Transfer Function Variable
-        tfvar_ = sym([])
+        tfvar_ = sym.empty
     end
     
     % Constants
@@ -45,8 +46,7 @@ classdef (SupportExtensionMethods = true, InferiorClasses = {?sym}) symtf < ctrl
     
     methods
         function obj = symtf(varargin)
-            %SYMTF Symbolic transfer function.
-            %   Detailed explanation goes here
+            %SYMTF Symbolic transfer function constructor.
             ni = nargin;
             
             if ni == 1 && isa(varargin{1}, 'symtf')
@@ -57,6 +57,7 @@ classdef (SupportExtensionMethods = true, InferiorClasses = {?sym}) symtf < ctrl
             if ni ~= 0
                 if ni == 1
                     if isa(varargin{1}, 'symss')
+                        validatesystem(varargin{1}, {'full'});
                         obj = symss2symtf(varargin{1});
                     else
                         if ischar(varargin{1})
@@ -74,13 +75,31 @@ classdef (SupportExtensionMethods = true, InferiorClasses = {?sym}) symtf < ctrl
                                 obj.tfvar_ = sym('s');
                             end
                             
+                            obj.num_ = cell(size(varargin{1}));
+                            obj.den_ = cell(size(varargin{1}));
+                            
                             [N, D] = numden(varargin{1});
+                            N = expand(N, 'ArithmeticOnly', true);
+                            D = expand(D, 'ArithmeticOnly', true);
                             for k = 1:numel(N)
                                 obj.num_{k} = coeffs(N(k), obj.tfvar_, 'All');
                                 obj.den_{k} = coeffs(D(k), obj.tfvar_, 'All');
                             end
-                        else
-                            
+%                         elseif iscell(varargin{1})
+%                             V = obj.getTFVar(varargin{1});
+%                             if ~isempty(V)
+%                                 obj.tfvar_ = V;
+%                             else
+%                                 obj.tfvar_ = sym('s');
+%                             end
+%                             
+%                             obj.num_ = cell(size(varargin{1}));
+%                             obj.den_ = cell(size(varargin{1}));
+%                             
+%                             for k = 1:numel(varargin{1})
+%                                 obj.num_{k} = coeffs(N(k), obj.tfvar_, 'All');
+%                                 obj.den_{k} = coeffs(D(k), obj.tfvar_, 'All');
+%                             end
                         end
                     end
                 elseif ni == 2

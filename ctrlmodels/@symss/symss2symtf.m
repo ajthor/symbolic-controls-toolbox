@@ -14,7 +14,7 @@ parse(p, sys);
 [A, B, C, D] = sys.getabcd();
 
 syms s
-G = C/(s*eye(size(A)) - A)*B + D;
+G = C/(s*speye(size(A)) - A)*B + D;
 G = symtf(G);
 
 end

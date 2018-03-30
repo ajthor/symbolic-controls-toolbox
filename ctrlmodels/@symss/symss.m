@@ -52,11 +52,11 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
     
     % Internal Properties
     properties (Access = private)
-        f_ = sym([])
-        g_ = sym([])
+        f_ = sym.empty
+        g_ = sym.empty
         
-        states_ = sym([])
-        inputs_ = sym([])
+        states_ = sym.empty
+        inputs_ = sym.empty
     end
     
     % Constructor.
@@ -98,13 +98,13 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
                             m = size(varargin{2}, 2);
                             obj.states_ = sym('x', [n, 1]);
                             
-                            obj.f = varargin{1}*obj.states_;
-                            obj.g = varargin{3}*obj.states_;
+                            obj.f_ = varargin{1}*obj.states_;
+                            obj.g_ = varargin{3}*obj.states_;
                             
                             if (all(varargin{2} == 0) - m) ~= 0
-                                obj.inputs_ = sym('u', [1, m]);
-                                obj.f = obj.f_ + varargin{2}*obj.inputs_;
-                                obj.g = obj.g_ + varargin{4}*obj.inputs_;
+                                obj.inputs_ = sym('u', [m, 1]);
+                                obj.f_ = obj.f_ + varargin{2}*obj.inputs_;
+                                obj.g_ = obj.g_ + varargin{4}*obj.inputs_;
                             end
                         end
                     else

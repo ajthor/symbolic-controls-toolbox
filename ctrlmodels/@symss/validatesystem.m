@@ -40,9 +40,9 @@ for k = 1:numel(attributes)
             va_(sys.C, S, {'nonempty'}, mf_, 'output matrix');
             va_(sys.D, S, {'nonempty'}, mf_, 'feed-forward matrix');
         case 'hasinput'
-            va_(sys.inputs, S, {'nonempty'}, mf_, 'inputs');
+            va_(sys.B, S, {'nonempty'}, mf_, 'input matrix');
         case 'hasoutput'
-            va_(sys.g, S, {'nonempty'}, mf_, 'output equations');
+            va_(sys.C, S, {'nonempty'}, mf_, 'output matrix');
         case 'SISO'
             va_(sys.B, S, {'column'}, mf_, 'input matrix');
             va_(sys.C, S, {'row'}, mf_, 'output matrix');
