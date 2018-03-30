@@ -2,6 +2,10 @@ function varargout = nlsim(sys, u, varargin)
 %NLSIM Simulate a non-linear system in one variable.
 %   Detailed explanation goes here
 
+%   References:
+%   Khalil, Hassan K. "Noninear systems." 
+%   Prentice-Hall, New Jersey 2.5 (1996): 5-1.
+
 p = inputParser;
 validateInput = @(U) ...
     validateattributes(U, {'sym', 'numeric', 'function_handle'}, ...

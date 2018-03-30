@@ -13,6 +13,10 @@ function T = canon(sys, varargin)
 % 
 %   See also symss/normal
 
+%   References:
+%   Antsaklis, Panos J., and Anthony N. Michel. A linear systems primer. 
+%   Vol. 1. Boston: Birkhäuser, 2007.
+
 p = inputParser;
 validateType = @(T) ...
     ismember(T, {'c', 'C', 'co', 'Co', 'controllable', 'companion', ...

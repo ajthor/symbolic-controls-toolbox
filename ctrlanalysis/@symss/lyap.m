@@ -28,6 +28,18 @@ function varargout = lyap(sys, varargin)
 % 
 %   See also symss/care, lyap, dlyap
 
+%   References:
+%   Arnold, William F., and Alan J. Laub. "Generalized eigenproblem 
+%   algorithms and software for algebraic Riccati equations." Proceedings 
+%   of the IEEE 72.12 (1984): 1746-1754.
+% 
+%   Laub, Alan. "A Schur method for solving algebraic Riccati equations." 
+%   IEEE Transactions on automatic control 24.6 (1979): 913-921.
+% 
+%   https://stanford.edu/class/ee363/lectures/clqr.pdf
+%   http://www2.mpi-magdeburg.mpg.de/mpcsc/mitarbeiter/saak/lehre/Matrixgleichungen/pyuantong_09WS.pdf
+%   https://www.cs.cornell.edu/~bindel/class/cs6210-f16/lec/2016-11-02.pdf
+
 p = inputParser;
 [A, ~, ~, ~] = getabcd(sys);
 validateMatrix = @(M) isequal(M, M.') && isequal(size(M), size(A));
@@ -37,9 +49,38 @@ parse(p, sys, varargin{:});
 
 Q = p.Results.Q;
 
-% if ~ishurwitz(A)
-%     error('State matrix is not Hurwitz.');
-% end
+if ~ishurwitz(A)
+    warning('State matrix is not Hurwitz.');
+end
+
+% METHOD 5
+% Form the Hamiltonian.
+H = [A, zeros(size(A)); -Q, -A.'];
+
+% In matlab, eig uses the Schur decomposition of a matrix to produce V and
+% D. For the Schur decomposition satisfying the equation H = U*S*U.',
+% eig(H) produces matrices V = U, which are the eignvectors of the matrix,
+% and D, which are the diagonal elements of S, diag(S).
+[V, D] = eig(H);
+
+% If the Hamiltonian has linearly independent eigenvectors, no zero
+% eigenvalues, and no repeated eigenvalues, we can use U = V. We sort the
+% eigenvalues so that the eigenvectors corresponding to stable eigenvalues
+% appear in U_11 and U_22.
+if isequal(size(V), size(H)) % && ~any(imag(diag(D)))
+    [~, idx] = sort(diag(real(D)));
+    V = V(:, idx);
+    U = mat2cell(V, size(A), size(A));
+    P = U{2, 1}/U{1, 1};
+else
+    warning('Could not solve the Hamiltonian.');
+    warning('Attempting to solve symbolically.');
+    
+    P = sym('P', size(A));
+    S = solve(A.'*P + P*A == -Q, P);
+    P = subs(P, S);
+end
+
 
 % METHOD 1
 % % % Construct Hamiltonian
@@ -86,39 +127,6 @@ Q = p.Results.Q;
 % XY = mat2cell(XY, [length(A), length(A)]);
 % 
 % P = XY{2}/XY{1};
-
-% METHOD 5
-% Form the Hamiltonian.
-H = [A, zeros(size(A)); -Q, -A.'];
-% In matlab, eig uses the Schur decomposition of a matrix to produce V and
-% D. For the Schur decomposition satisfying the equation H = U*S*U.',
-% eig(H) produces matrices V = U, which are the eignvectors of the matrix,
-% and D, which are the diagonal elements of S, diag(S).
-[V, D] = eig(H);
-% If the Hamiltonian has linearly independent eigenvectors, no zero
-% eigenvalues, and no repeated eigenvalues, we can use U = V. We sort the
-% eigenvalues so that the eigenvectors corresponding to stable eigenvalues
-% appear in U_11 and U_22.
-if isequal(size(V), size(H)) % && ~any(imag(diag(D)))
-    [~, idx] = sort(diag(real(D)));
-    V = V(:, idx);
-    U = mat2cell(V, size(A), size(A));
-    P = U{2, 1}/U{1, 1};
-else
-%     V = orth([V, eye(size(H))], 'skipnormalization');
-
-%     Vf = sym(zeros(size(H)));
-%     for k = 1:size(V, 2)
-%         L = any(D == D(P(k), P(k)), 1);
-%         Vf(:, L) = repmat(V(:, k), 1, nnz(L));
-%     end
-%     V = Vf;
-
-    P = sym('P', size(A));
-    S = solve(A.'*P + P*A == -Q, P);
-    P = subs(P, S);
-end
-
 
 % METHOD 6
 % [U, ~] = eig(A);
