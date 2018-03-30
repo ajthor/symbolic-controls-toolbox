@@ -7,7 +7,10 @@ function G = symss2symtf(sys)
 %   using the formula:
 %       G = C*((s*I - A)^-1)*B + D
 
-validabcd(sys);
+p = inputParser;
+addRequired(p, 'sys', @(S) validatesystem(S, {'full'}));
+parse(p, sys);
+
 [A, B, C, D] = sys.getabcd();
 
 syms s

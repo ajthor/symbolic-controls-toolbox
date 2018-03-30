@@ -34,7 +34,7 @@ tspan = [0 10];
 plot(R(:, 1), R(:, 2), 'o')
 
 hold on
-nlsim2(sys, tspan, ic)
+nlsim2(sys, 0, tspan, ic)
 hold off
 
 xlim([-3 3])
@@ -56,7 +56,7 @@ ic = num2cell(R, 2);
 plot(R(:, 1), R(:, 2), 'o')
 
 hold on
-nlsim2(sys, tspan, ic)
+nlsim2(sys, 0, tspan, ic)
 hold off
 
 xlim([-3 3])

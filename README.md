@@ -6,10 +6,12 @@ toolbox designed to implement a wide array of functions and classes for working
 with control systems using the symbolic toolbox in Matlab.
 
 It is designed to address some of the limitations with the control systems toolbox currently available in Matlab and provide an interface for working with:
-- Linear Systems (LTI & LTV)
-- Non-linear Systems
-- Hybrid Systems
-- etc.
+
+* Linear Systems (LTI & LTV)
+* SISO & MIMO
+* Non-linear Systems
+* Hybrid Systems
+* etc.
 
 ## Getting Started
 1. Download the toolbox from the GitHub repository.

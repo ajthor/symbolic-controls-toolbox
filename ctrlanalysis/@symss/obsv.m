@@ -7,6 +7,10 @@ function Ob = obsv(sys)
 % 
 %   See also obsvs
 
+p = inputParser;
+addRequired(p, 'sys', @(S) validatesystem(S, {'hasoutput'}));
+parse(p, sys);
+
 [A, ~, C, ~] = sys.getabcd();
 Ob = obsvs(A, C);
 

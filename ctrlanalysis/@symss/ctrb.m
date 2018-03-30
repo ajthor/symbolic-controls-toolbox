@@ -7,6 +7,10 @@ function Co = ctrb(sys)
 % 
 %   See also ctrbs
 
+p = inputParser;
+addRequired(p, 'sys', @(S) validatesystem(S, {'hasinput'}));
+parse(p, sys);
+
 [A, B, ~, ~] = sys.getabcd();
 Co = ctrbs(A, B);
 

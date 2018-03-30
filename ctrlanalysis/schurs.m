@@ -1,5 +1,8 @@
 function [U, S] = schurs(H, varargin)
 %SCHURS Symbolic Schur decomposition.
+% 
+%   This function returns the Schur decomposition of a matrix by computing
+%   the eigenvectors of a matrix and performing a QR decomposition.
 
 p = inputParser;
 validateMatrix = @(M) validateattributes(M, {'sym', 'numeric'}, {'nonempty'});
@@ -19,25 +22,20 @@ end
 
 % Form a basis when the matrix has non-linearly independent eigenvectors.
 if ~isequal(size(V), size(H))
+%     V = orth(V, 'skipnormalization');
     Vf = sym(zeros(size(H)));
     for k = 1:size(V, 2)
         L = any(D == D(P(k), P(k)), 1);
         Vf(:, L) = repmat(V(:, k), 1, nnz(L));
     end
     V = Vf;
+else
+    [~, idx] = sort(diag(D));
+    V = V(:, idx);
+
+    [U, ~] = qr(V, 'real');
 end
 
-[~, idx] = sort(diag(D), 'descend');
-V = V(:, idx);
-
-% HB = H;
-[U, ~] = qr(V, 'real');
-
-% for k = 1:steps
-%     [Q, R] = qr(HB, 0);
-%     HB = Q*R;
-% end
-% U = Q;
 S = U.'*H*U;
 
 end
