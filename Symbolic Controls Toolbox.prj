@@ -144,7 +144,6 @@ runTests.m
       <file>/Users/adam/Documents/MATLAB/Add-Ons/Toolboxes/Symbolic Controls Toolbox/code/ctrldesign/@symss/place.m</file>
       <file>/Users/adam/Documents/MATLAB/Add-Ons/Toolboxes/Symbolic Controls Toolbox/code/ctrlmodels/@ctrlmodel/ctrlmodel.m</file>
       <file>/Users/adam/Documents/MATLAB/Add-Ons/Toolboxes/Symbolic Controls Toolbox/code/ctrlmodels/@symss/block.m</file>
-      <file>/Users/adam/Documents/MATLAB/Add-Ons/Toolboxes/Symbolic Controls Toolbox/code/ctrlmodels/@symss/private/isvalidsys.m</file>
       <file>/Users/adam/Documents/MATLAB/Add-Ons/Toolboxes/Symbolic Controls Toolbox/code/ctrlmodels/@symss/private/validabcd.m</file>
       <file>/Users/adam/Documents/MATLAB/Add-Ons/Toolboxes/Symbolic Controls Toolbox/code/ctrlmodels/@symss/private/varsub.m</file>
       <file>/Users/adam/Documents/MATLAB/Add-Ons/Toolboxes/Symbolic Controls Toolbox/code/ctrlmodels/@symss/simplify.m</file>
@@ -152,6 +151,7 @@ runTests.m
       <file>/Users/adam/Documents/MATLAB/Add-Ons/Toolboxes/Symbolic Controls Toolbox/code/ctrlmodels/@symss/symss.m</file>
       <file>/Users/adam/Documents/MATLAB/Add-Ons/Toolboxes/Symbolic Controls Toolbox/code/ctrlmodels/@symss/symss2symss.m</file>
       <file>/Users/adam/Documents/MATLAB/Add-Ons/Toolboxes/Symbolic Controls Toolbox/code/ctrlmodels/@symss/symss2symtf.m</file>
+      <file>/Users/adam/Documents/MATLAB/Add-Ons/Toolboxes/Symbolic Controls Toolbox/code/ctrlmodels/@symss/validatesystem.m</file>
       <file>/Users/adam/Documents/MATLAB/Add-Ons/Toolboxes/Symbolic Controls Toolbox/code/ctrlmodels/@symtf/subs.m</file>
       <file>/Users/adam/Documents/MATLAB/Add-Ons/Toolboxes/Symbolic Controls Toolbox/code/ctrlmodels/@symtf/symtf.m</file>
       <file>/Users/adam/Documents/MATLAB/Add-Ons/Toolboxes/Symbolic Controls Toolbox/code/ctrlmodels/@symtf/symtf2symss.m</file>

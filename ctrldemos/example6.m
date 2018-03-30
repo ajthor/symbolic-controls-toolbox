@@ -1,23 +1,24 @@
 clear, clc
 
-syms m l b g
-syms theta(t) T y
+syms m l k g
+syms theta(t) u y
 
-m = 1;
-l = 10;
-b = 10;
-g = 9.8;
+% m = 1;
+% l = 10;
+% b = 10;
+% g = 9.8;
 
-f1 = m*l^2*diff(theta, t, t) + b*l*diff(theta, t) + m*g*l*sin(theta) == T;
+f1 = m*l^2*diff(theta, t, t) + k*l*diff(theta, t) + m*g*l*sin(theta) == u;
 g1 = y == theta;
 
 sys = eom2symss(f1, [theta, diff(theta)]);
-sys.inputs = T;
+sys.inputs = u;
 sys.g(1) = theta;
 
-linsys = linearize(sys);
+% linsys = linearize(sys);
+% 
+% lsim(linsys, sym(0))
 
-lsim(linsys, sym(0))
 % syms s
 % u = 10*exp(-1*s)/s + 2*exp(-2*s)/s - 10.5*exp(-3.5*s)/s;
 % lsim(linsys, u);
