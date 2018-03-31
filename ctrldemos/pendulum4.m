@@ -11,4 +11,4 @@ sys.f(1) = x2;
 sys.f(2) = -(k*l*x2 - u + g*l*m*sin(x1))/(l^2*m);
 sys.g(1) = x1;
 
-savedemo('pendulum4', sys)
+savedemo('pendulum4', sys, {m, l, g, k});

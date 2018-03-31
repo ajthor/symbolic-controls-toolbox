@@ -8,4 +8,4 @@ sys.states = [x1 x2];
 sys.f(1) = x2;
 sys.f(2) = -sin(x1) - x2;
 
-savedemo('pendulum2', sys)
+savedemo('pendulum2', sys);
