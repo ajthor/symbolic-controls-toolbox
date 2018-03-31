@@ -6,30 +6,30 @@
    <website/>
    <description/>
    <demosection>
-      <label>ctrldemos</label>
+      <label>examples</label>
       <demoitem>
          <label>controllability_example</label>
          <type>other</type>
          <source>controllability_example</source>
-         <file>ctrldemos/html/controllability_example.html</file>
+         <file>doc/examples/html/controllability_example.html</file>
       </demoitem>
       <demoitem>
          <label>elastic_roa_example</label>
          <type>other</type>
          <source>elastic_roa_example</source>
-         <file>ctrldemos/html/elastic_roa_example.html</file>
+         <file>doc/examples/html/elastic_roa_example.html</file>
       </demoitem>
       <demoitem>
          <label>linearization_equilibrium_example</label>
          <type>other</type>
          <source>linearization_equilibrium_example</source>
-         <file>ctrldemos/html/linearization_equilibrium_example.html</file>
+         <file>doc/examples/html/linearization_equilibrium_example.html</file>
       </demoitem>
       <demoitem>
          <label>linearization_example</label>
          <type>other</type>
          <source>linearization_example</source>
-         <file>ctrldemos/html/linearization_example.html</file>
+         <file>doc/examples/html/linearization_example.html</file>
       </demoitem>
    </demosection>
 </demos>

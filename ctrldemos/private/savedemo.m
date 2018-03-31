@@ -3,7 +3,8 @@ function savedemo(name, sys)
 %   Detailed explanation goes here
 
 p = inputParser;
-validateName = @(arg) validateattributes(arg, {'char', 'string'}, {'nonempty'});
+validateName = @(arg) ...
+    validateattributes(arg, {'char', 'string'}, {'nonempty'});
 addRequired(p, 'name', validateName);
 addRequired(p, 'sys')
 parse(p, name, sys);
