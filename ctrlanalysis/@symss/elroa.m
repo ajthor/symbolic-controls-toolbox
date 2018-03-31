@@ -97,6 +97,7 @@ while true
     
     % Compute the trajectories.
     PF = PFfun(R(:, 1), R(:, 2));
+    PF = reshape(PF, 1, []);
     PF = double(cell2sym(PF))/T;
     
     b = convhull(R);
