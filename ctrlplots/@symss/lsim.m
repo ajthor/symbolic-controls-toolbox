@@ -37,7 +37,11 @@ if ~iscell(x0)
     x0 = {x0};
 end
 
-if nargout ~= 0 && numel(x0) > 1
+if isempty(x0)
+    x0 = {zeros(1, numel(sys.states))};
+end
+
+if numel(x0) > 1
     y = cell(size(x0));
 end
 
@@ -50,24 +54,26 @@ end
 if nargout ~= 0
     varargout{1} = y;
 else
-    if length(y) == 1
-        h = fplot(y);
-        h.XRange = [0 10]; 
-        h.XRangeMode = 'auto'; 
-        xlabel('Time (seconds)');
-        ylabel('Amplitude');
-    else
-        [m, n] = size(y);
-        for k = 1:numel(y)
-            subplot(n, m, k)
-            h = fplot(y(k));
-            h.XRange = [0 10]; 
-            h.XRangeMode = 'auto'; 
-            xlabel('Time (seconds)');
-            ylabel('Amplitude');
-            title(['Output ', num2str(m), ' for input ', num2str(n)]);
-        end
-    end
+    plotoutput(y, tspan);
+    
+%     if length(y) == 1
+%         h = fplot(y);
+%         h.XRange = tspan; 
+%         h.XRangeMode = 'auto'; 
+%         xlabel('Time (seconds)');
+%         ylabel('Amplitude');
+%     else
+%         [m, n] = size(y{:});
+%         for k = 1:numel(y{:})
+%             subplot(n, m, k)
+%             h = fplot(y{:}(k));
+%             h.XRange = tspan; 
+%             h.XRangeMode = 'auto'; 
+%             xlabel('Time (seconds)');
+%             ylabel('Amplitude');
+% %             title(['Output ', num2str(m), ' for input ', num2str(n)]);
+%         end
+%     end
 end
 
 end

@@ -34,7 +34,7 @@ if isa(u, 'sym')
     iL = ilaplace(Y, s, t);
     y = subs(iL, sys.states, x0);
 else
-    yi = tzir(sys, ic);
+    yi = tzir(sys, x0);
     ys = tzsr(sys, u);
     
     if ~isempty(ys)

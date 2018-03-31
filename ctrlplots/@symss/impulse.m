@@ -2,11 +2,6 @@ function y = impulse(sys, varargin)
 %IMPULSE Compute the impulse response of a system.
 %   y = IMPULSE(sys)
 
-p = inputParser;
-validateSys = @(S) islinear(S.f, S.states);
-addRequired(p, 'sys', validateSys);
-parse(p, sys);
-
 u = sym(1);
 
 if nargout == 0

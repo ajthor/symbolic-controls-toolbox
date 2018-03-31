@@ -34,7 +34,7 @@ if ~iscell(x0)
     x0 = {x0};
 end
 
-if nargout ~= 0 && numel(x0) > 1
+if numel(x0) > 1
     t = cell(size(x0));
     y = cell(size(x0));
 end
@@ -59,19 +59,21 @@ if nargout ~= 0
     varargout{1} = t;
     varargout{2} = y;
 else
-    ax = gca;
-    current_state = ax.NextPlot;
+    plotoutput(y, tspan);
     
-    for k = 1:numel(x0)
-        ax.NextPlot = 'add';
-        plot(t{k}, y{k})
-    end
-    
-    ax.NextPlot = current_state;
-    ax.XLimMode = 'auto';
-    ax.YLimMode = 'auto';
-    ax.XLabel.String = 'Time (seconds)';
-    ax.YLabel.String = 'Amplitude';
+%     ax = gca;
+%     current_state = ax.NextPlot;
+%     
+%     for k = 1:numel(x0)
+%         ax.NextPlot = 'add';
+%         plot(t{k}, y{k})
+%     end
+%     
+%     ax.NextPlot = current_state;
+%     ax.XLimMode = 'auto';
+%     ax.YLimMode = 'auto';
+%     ax.XLabel.String = 'Time (seconds)';
+%     ax.YLabel.String = 'Amplitude';
 end
 
 end
