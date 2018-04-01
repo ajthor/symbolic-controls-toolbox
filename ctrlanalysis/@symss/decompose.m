@@ -1,74 +1,59 @@
 function varargout = decompose(sys)
-%DECOMPOSE Compute the Kalman decomposition of a state space.
+%DECOMPOSE Compute the Kalman decomposition of a state-space realization.
 % 
-%   sys = DECOMPOSE(sys) computes the Kalman decomposition of a state
-%   space realization.
-%   [sys, n] = DECOMPOSE(sys)
-%   [A, B, C, D] = DECOMPOSE(SYS)
-n_out = nargout;
+%   sys = DECOMPOSE(sys) computes the Kalman decomposition of a state-space
+%   realization.
+%   
+%   [sys, n] = DECOMPOSE(sys) computes the Kalman decomposition of a
+%   state-space realization and returns the dimensions of the controllable
+%   and observable subspace of A.
+%   
+%   [A, B, C, D] = DECOMPOSE(sys) computes the Kalman decomposition of a
+%   state-space realization and returns the controllable and observable
+%   subspace of the system.
+
+%   References:
+%   R. E. Kalman, "On the Computation of the Reachable/Observable 
+%   Canonical Form," SIAM J. Control and Optimization, Vol. 20, No. 2, 
+%   pp. 258-260, 1982
+% 
+%   http://ece.iit.edu/~gaw/ece531/ECE531_18S_kalman.pdf
+%   https://ece.gmu.edu/~gbeale/ece_521/xmpl-521-kalman-min-real-01.pdf
 
 p = inputParser;
-validateSys = @(sys) isa(sys, 'symss');
-addRequired(p, 'sys', validateSys);
+addRequired(p, 'sys', @(S) validatesystem(S, {'full'}));
 parse(p, sys);
 
-% Find the controllable and uncontrollable states of the system. 
-Co = ctrb(sys);
-Ob = obsv(sys);
+[A, B, C, ~] = getabcd(sys);
 
-Co_basis = orth(Co, 'real', 'skipnormalization');
-Ob_basis = null(Ob);
+% Find the controllability and observability matrices. 
+Co = ctrbs(A, B);
+Ob = obsvs(A, C);
 
-% Compute the dimensions of the submatrices.
-% n = length(sys.A);
-% 
-% n_c = rank(Co);
-% n_cb = n - n_c;
-% 
-% n_o = rank(Ob);
-% n_ob = n - n_o;
-% 
-% n_cob = rank(intersect(Co_basis, Ob_basis));
-
-% if n_cb
-%     Q = orth([Co, eye(size(Co, 1))], 'real', 'skipnormalization');
-%     Cosys = sys*inv(Q);
-% end
-
-% if n_ob
-%     P = orth([Ob.', eye(size(Ob, 2))], 'real', 'skipnormalization');
-%     Obsys = sys*P.';
-% end
-
-% Compute the similarity transform matrix, P.
-Q = orth([Co_basis, Ob_basis, eye(length(sys.A))], ...
-    'real', 'skipnormalization');
-P = inv(Q);
+% Compute an orthonormal transformation matrix.
+P = orth([Co, null(Ob), eye(size(A))], 'real');
 
 % Compute the Kalman decomposition of the system.
-Ksys = sys*P;
+T = symss2symss(sys, P.');
 
-if n_out == 1
-    varargout{1} = Ksys;
-elseif n_out == 2
-    varargout{1} = Ksys;
+nout = nargout;
+if nout == 1
+    varargout{1} = T;
+else
+    nc = rank(Co);
+    no = rank(Ob);
     
-    n_c = rank(Co);
-    n_o = rank(Ob);
-    varargout{2} = [n_c n_o];
-elseif n_out > 3
-    varargout{1} = Ksys.A;
-    varargout{2} = Ksys.B;
-    varargout{3} = Ksys.C;
-%     A = sym('A%d%d', [4 4]);
-%     
-%     A11 = [1 0; 1 1];
-%     
-%     A = subs(A, [A(1,2) A(1,4) A(3,1) A(3,2) A(3,4) A(4,1) A(4,2)], ...
-%         [0 0 0 0 0 0 0]);
-    
-    if n_out == 4
-        varargout{4} = Ksys.D;
+    if nout == 2
+        varargout{1} = T;
+        varargout{2} = [nc, no];
+    elseif nargout > 3
+        n = min([nc, no]);
+        varargout{1} = T.A(1:n, 1:n);
+        varargout{2} = T.B(1:n, :);
+        varargout{3} = T.C(:, 1:n);
+        if nout == 4
+            varargout{4} = T.D;
+        end
     end
 end
 
