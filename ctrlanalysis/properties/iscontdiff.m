@@ -1,7 +1,12 @@
 function tf = iscontdiff(f, varargin)
 %ISCONTDIFF Returns logical 1 (true) if a function is continuously
 %differentiable at a point or logical 0 (false) if it is not.
-%   Detailed explanation goes here
+% 
+%   ISCONTDIFF(f, ...) checks for continuous differentiability of a
+%   function by searching for discontinuities in a range. 
+% 
+%   ISCONTDIFF(f, var, x1, x2) checks for continuous differentiability of a
+%   function with respect to var on the interval [x1 x2].
 
 p = inputParser;
 validateFunction = @(F) validateattributes(F, {'sym', 'function_handle'}, {'nonempty'});
