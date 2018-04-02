@@ -1,6 +1,11 @@
 function D = getsymdiff(expr)
 %GETSYMDIFF Finds all symbolic derivatives in expression.
 
+if ~has(expr, 'diff')
+    D = sym.empty;
+    return;
+end
+
 D = formula(expr);
 
 % Isolate derivatives by removing terms that do not contain derivatives.
