@@ -2,13 +2,15 @@ function D = ctrldemo(name, varargin)
 %CTRLDEMO Loads a demo system from memory.
 % 
 %   Available demo systems:
-%       - massspring    (
-%       - pendulum      (No friction)
-%       - pendulum2     (No constants)
-%       - pendulum3     (With constants)
-%       - quadrotor     (Quadrotor, euler angles)
-%       - vanderpol     (Van der Pol equation, forward time)
-%       - vanderpol2    (Van der Pol equation, reverse time)
+%       - massspring    LTI, (Single mass)
+%       - massspring2   LTI, (Double mass)
+%       - pendulum      NLTI, (No friction)
+%       - pendulum2     NLTI, (No constants)
+%       - pendulum3     NLTI, (With constants)
+%       - pendulum4     NLTI, (With constants, input)
+%       - quadrotor     NLTI, (Quadrotor, euler angles)
+%       - vanderpol     NLTI, (Van der Pol equation, forward time)
+%       - vanderpol2    NLTI, (Van der Pol equation, reverse time)
 
 p = inputParser;
 validateName = @(arg) ...

@@ -1,7 +1,11 @@
 %% Mass Spring Damper 2
 % Mass, spring, damper system, two frictionless masses.
 
-syms M1 B B1 K K1 M2 B2 K2 positive
+% References:
+% Antsaklis, Panos J., and Anthony N. Michel. A linear systems primer.
+% Vol. 1. Boston: Birkhäuser, 2007.
+
+syms M1 B B1 K K1 M2 B2 K2
 syms u1 u2
 syms x1 x2 x3 x4
 
