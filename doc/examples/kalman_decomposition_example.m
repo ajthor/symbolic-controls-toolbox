@@ -42,4 +42,5 @@ D = zeros(2);
 
 sys = symss(A, B, C, D);
 
-T = canon(sys, 'k');
+% T = canon(sys, 'k');
+T = decompose(sys)
