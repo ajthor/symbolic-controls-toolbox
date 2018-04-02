@@ -2,10 +2,24 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
     %SYMSS Construct symbolic state-space model or convert model to 
     %symbolic state-space.
     %
+    %   sys = SYMSS creates an empty state space representation.
+    %
+    %   A state-space model is similarly defined by state equations and
+    %   output equations, given by:
+    %
+    %       dx/dt = f(t, x, u)
+    %           y = g(t, x, u)
+    %
+    %   In order to define a state-space model, begin with an empty state
+    %   space model, define states and inputs, and then define state
+    %   equations and output equations.
+    %
     %   sys = SYMSS(A, B, C, D)
     %   Creates a state space model using the matrices A, B, C, D. 
+    %
     %       dx/dt = Ax(t) + Bx(t)
     %        y(t) = Cx(t) + Du(t)
+    %
     %   A must be an nxn matrix, B must be an nxm matrix, and C
     %   must be a pxn matrix. If D is specified, it must be a pxm
     %   matrix.
@@ -19,8 +33,10 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
     % 
     %   sys = SYMSS(____, Ts) creates a discrete state space model
     %   with sample time Ts.
-    %
-    %   sys = SYMSS creates an empty state space representation.
+    
+    %   References:
+    %   Antsaklis, Panos J., and Anthony N. Michel. A linear systems
+    %   primer. Vol. 1. Boston: Birkhäuser, 2007.
     
     % State Equations
     properties (Dependent, AbortSet = true)
@@ -57,6 +73,8 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         
         states_ = sym.empty
         inputs_ = sym.empty
+        
+        Ts = sym.empty
     end
     
     % Constructor.
@@ -184,7 +202,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         function obj = mtimes(obj, P)
             %MTIMES Operator overloading to implement similarity
             %transformation syntax.
-            obj = simtrans(obj, P);
+            obj = symss2symss(obj, P);
         end
         
         function T = or(obj, expr)

@@ -8,9 +8,7 @@ function varargout = lsim(sys, u, varargin)
 %   y = LSIM(sys, u, t, x0) computes the linear response of a system to an
 %   arbitrary input where 'u' is time-series data, 't' is a time vector,
 %   and 'x0' are the initial conditions.
-% 
-%   NOTE: Non-linear systems are linearized about the initial conditions
-%   passed to the function. 
+
 
 p = inputParser;
 validateInput = @(U) ...
@@ -23,7 +21,7 @@ validateICs = @(P) ...
     validateattributes(P, {'numeric', 'cell'}, {'nonempty'});
 validateVars = @(V) ...
     validateattributes(V, {'sym', 'cell'}, {'nonempty'});
-addRequired(p, 'sys');
+addRequired(p, 'sys', @(S) validatesystem(S, {'full'}));
 addRequired(p, 'u', validateInput);
 addOptional(p, 'tspan', [0 5], validateTime);
 addOptional(p, 'x0', cell.empty, validateICs);
