@@ -27,12 +27,12 @@ P = -U{2, 1}*inv(U{1, 1});
 % 
 % P = U{2, 1}*inv(U{1, 1});
 
-[V, D] = eig(H);
-D = reshape(diag(D), 1, []);
-rV = V(:, ~all(isAlways(real(D) < 0) == 0, 1));
-XY = mat2cell(rV, [length(A), length(A)]);
-
-P = real(XY{2}/XY{1});
+% [V, D] = eig(H);
+% D = reshape(diag(D), 1, []);
+% rV = V(:, ~all(isAlways(real(D) < 0) == 0, 1));
+% XY = mat2cell(rV, [length(A), length(A)]);
+% 
+% P = real(XY{2}/XY{1});
 
 end
 

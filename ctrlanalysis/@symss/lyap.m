@@ -15,6 +15,17 @@ function varargout = lyap(sys, varargin)
 %   returns the Lyapunov function, the solution P, and the Lyapunov
 %   function derivative.
 % 
+%   Methodology: 
+%   In Matlab, EIG uses the Schur decomposition of a matrix to produce V
+%   and D. For the Schur decomposition satisfying the equation H = U*T*U.',
+%   EIG(H) produces matrices V = U, which are the eignvectors of the
+%   matrix, and D, which are the diagonal elements of T, diag(T).
+% 
+%   If the Hamiltonian has linearly independent eigenvectors, no zero
+%   eigenvalues, and no repeated eigenvalues, we can use U = V. We sort the
+%   eigenvalues so that the eigenvectors corresponding to stable
+%   eigenvalues appear in U_11 and U_22.
+% 
 %   Tips:
 %   - If a solution cannot be found, the function emits a warning and
 %   returns a zero result.
@@ -57,16 +68,8 @@ end
 % Form the Hamiltonian.
 H = [A, zeros(size(A)); -Q, -A.'];
 
-% In matlab, eig uses the Schur decomposition of a matrix to produce V and
-% D. For the Schur decomposition satisfying the equation H = U*S*U.',
-% eig(H) produces matrices V = U, which are the eignvectors of the matrix,
-% and D, which are the diagonal elements of S, diag(S).
 [V, D] = eig(H);
 
-% If the Hamiltonian has linearly independent eigenvectors, no zero
-% eigenvalues, and no repeated eigenvalues, we can use U = V. We sort the
-% eigenvalues so that the eigenvectors corresponding to stable eigenvalues
-% appear in U_11 and U_22.
 if isequal(size(V), size(H)) % && ~any(imag(diag(D)))
     [~, idx] = sort(diag(real(D)));
     V = V(:, idx);

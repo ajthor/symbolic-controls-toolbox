@@ -1,42 +1,41 @@
-function [U, S] = schurs(H, varargin)
+function [U, T] = schurs(A, varargin)
 %SCHURS Symbolic Schur decomposition.
 % 
 %   This function returns the Schur decomposition of a matrix by computing
 %   the eigenvectors of a matrix and performing a QR decomposition.
 
 p = inputParser;
-validateMatrix = @(M) validateattributes(M, {'sym', 'numeric'}, {'nonempty'});
-validateSteps = @(s) validateattributes(s, {'numeric'}, {'integer'});
+validateMatrix = @(M) ...
+    validateattributes(M, {'sym', 'numeric'}, {'nonempty'});
 addRequired(p, 'H', validateMatrix);
-addParameter(p, 'steps', 10, validateSteps);
-parse(p, H, varargin{:});
+parse(p, A, varargin{:});
 
-steps = p.Results.steps;
+if ~isa(A, 'sym')
+    A = sym(A);
+end
 
 % HB = feval(symengine, 'linalg::hessenberg', H);
-if ~isa(H, 'sym')
-    H = sym(H);
+
+[V, D, P] = eig(A);
+
+% Form an eigenbasis when the matrix has non-linearly independent
+% eigenvectors.
+if ~isequal(size(V), size(A))
+    V = orth([V, eye(size(A))], 'real');
+%     Vf = sym(zeros(size(A)));
+%     for k = 1:size(V, 2)
+%         L = any(D == D(P(k), P(k)), 1);
+%         Vf(:, L) = repmat(V(:, k), 1, nnz(L));
+%     end
+%     V = Vf;
 end
 
-[V, D, P] = eig(H);
+[~, idx] = sort(diag(D));
+V = V(:, idx);
 
-% Form a basis when the matrix has non-linearly independent eigenvectors.
-if ~isequal(size(V), size(H))
-%     V = orth(V, 'skipnormalization');
-    Vf = sym(zeros(size(H)));
-    for k = 1:size(V, 2)
-        L = any(D == D(P(k), P(k)), 1);
-        Vf(:, L) = repmat(V(:, k), 1, nnz(L));
-    end
-    V = Vf;
-else
-    [~, idx] = sort(diag(D));
-    V = V(:, idx);
+[U, ~] = qr(V, 'real');
 
-    [U, ~] = qr(V, 'real');
-end
-
-S = U.'*H*U;
+T = U.'*A*U;
 
 end
 

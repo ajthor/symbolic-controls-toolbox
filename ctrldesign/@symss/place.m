@@ -4,7 +4,8 @@ function K = place(sys, varargin)
 
 p = inputParser;
 [A, B, ~, ~] = getabcd(sys);
-validatePoles = @(L) validateattributes(L, {'sym', 'numeric'}, {'row', 'numel', size(A, 1)});
+validatePoles = @(L) ...
+    validateattributes(L, {'sym', 'numeric'}, {'row', 'numel', size(A, 1)});
 addRequired(p, 'sys');
 addOptional(p, 'P', sym.empty, validatePoles);
 addOptional(p, 'r', sym.empty);
