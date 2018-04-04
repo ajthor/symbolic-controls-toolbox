@@ -15,6 +15,10 @@ toolbox currently available in Matlab and provide an interface for working with:
 * Hybrid Systems (Coming soon)
 * etc.
 
+New [releases](https://github.com/ajthor/symbolic-controls-toolbox/releases) are kept in the GitHub repository.
+
+New (untested) code is found in the [development branch](https://github.com/ajthor/symbolic-controls-toolbox/tree/development).
+
 ## Getting Started
 1. Download the toolbox from the GitHub repository.
 1. Install the toolbox.
@@ -41,7 +45,12 @@ nlsim2(sys, 0, [0 10], {[1 1]});
 
 ## Demonstration Systems
 Several demonstration systems are provided to get started using the toolbox,
-including pendulum equations, mass-spring systems, quadrotor dynamics, etc.
+including:
+
+* pendulum equations
+* mass-spring systems
+* quadrotor dynamics
+* etc.
 
 The demo systems are located in the `ctrldemos` folder.
 
@@ -58,7 +67,7 @@ sys = ctrldemo('<system>');
 
 ## Examples
 Several example scripts are provided in the `doc/examples` directory. Be sure
-to check the examples for demonstrations and tips on using functions and
+to check the examples and demonstrations for tips on using functions and
 systems provided with the toolbox.
 
 ## Testing
