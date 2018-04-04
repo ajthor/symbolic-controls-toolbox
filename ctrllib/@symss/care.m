@@ -37,29 +37,11 @@ end
 
 S = p.Results.S;
 
+% Form the Hamiltonian.
 H = [A, -B*inv(R)*B.'; -S.'*Q*S, -A.'];
-if ~ishamiltonian(H)
-    error('Could not form the Hamiltonian.');
-end
 
-% Compute the Schur decomposition.
-[U, ~] = schurs(H);
-
-% Compute the solution to the Lyapunov equation.
-U = mat2cell(U, size(A), size(A));
-
-cs = warning('off', 'all');
-
-P = U{2, 1}/U{1, 1};
-
-% Compute the inverse using the Moore-Penrose pseudoinverse if the
-% inverse does not exist.
-if any(isinf(P))
-    P = U{2, 1}*pinv(U{1, 1});
-end
-
-warning(cs);
-
+% Solve the continuous algebraic Riccati equation using the Hamiltonian.
+P = slvham(H);
 
 end
 
