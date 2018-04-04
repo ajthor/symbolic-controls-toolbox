@@ -23,22 +23,6 @@ end
 if ~isequal(size(V), size(A))
     [V, J] = jordan(A);
     D = diag(J);
-    
-%     % Fill eigenvector matrix with repeated eigenvectors.
-%     Vf = sym(zeros(size(A)));
-%     Vf(:, P) = V;
-% 
-%     L = diag(D).';
-%     
-%     for k = 1:numel(L)
-%         if ismember(k, P)
-%             continue;
-%         end
-%         % Compute generalized eigenvectors.
-%         Vf(:, k) = (A - L(k)*eye(size(A)))\Vf(:, k - 1);
-%     end
-%     
-%     V = Vf;
 end
 
 [~, idx] = sort(real(diag(D)));

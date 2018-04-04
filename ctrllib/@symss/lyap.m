@@ -36,9 +36,9 @@ H = [A, zeros(size(A)); -Q, -A.'];
 % Solve the Lyapunov equation using the Hamiltonian. 
 P = slvham(H);
 
+% Compute the symbolic Lyapunov function and derivative.
 V = sys.states.'*P*sys.states;
 dV = -sys.states.'*Q*sys.states;
-
 
 end
 

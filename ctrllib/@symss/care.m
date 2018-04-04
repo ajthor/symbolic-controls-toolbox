@@ -1,4 +1,4 @@
-function P = care(sys, varargin)
+function [P, K] = care(sys, varargin)
 %CARE Solve the continuous algebraic Riccati equation.
 %   
 %   P = CARE(sys) solves the continuous algebraic Riccati equation for
@@ -7,6 +7,9 @@ function P = care(sys, varargin)
 %   P = CARE(sys, Q, R, S) solves the continuous algebraic Riccati equation
 %   using the matrices Q, R, and S. If omitted, Q defaults to I, R defaults
 %   to I, and S defaults to 0.
+% 
+%   [P, K] = CARE(sys, ...) solves the continuous algebraic Riccati
+%   equation and returns the gain matrix, K.
 
 %   References:
 %   Arnold, William F., and Alan J. Laub. "Generalized eigenproblem 
@@ -37,11 +40,16 @@ end
 
 S = p.Results.S;
 
+Ri = inv(R);
+
 % Form the Hamiltonian.
-H = [A, -B*inv(R)*B.'; -S.'*Q*S, -A.'];
+H = [A, -B*Ri*B.'; -S.'*Q*S, -A.'];
 
 % Solve the continuous algebraic Riccati equation using the Hamiltonian.
 P = slvham(H);
+
+% Compute the gain matrix, K.
+K = Ri*B.'*P;
 
 end
 
