@@ -13,9 +13,10 @@ classdef lyapTest < matlab.unittest.TestCase
             
             sys.f = A*sys.states;
             
-            V = lyap(sys);
+            Q = eye(size(A));
+            P = lyap(sys, Q);
             
-            testCase.verifyTrue(islyap(sys, V));
+            testCase.verifyTrue(islyap(P, Q));
         end
         
         function testLyapFunctionNumericDefective(testCase)
@@ -32,9 +33,10 @@ classdef lyapTest < matlab.unittest.TestCase
              
             sys.f = A*sys.states;
             
-            V = lyap(sys);
+            Q = eye(size(A));
+            P = lyap(sys, Q);
             
-            testCase.verifyTrue(islyap(sys, V));
+            testCase.verifyTrue(islyap(P, Q));
         end
         
         function testLyapFunctionSymbolicNonlinear1(testCase)
@@ -43,9 +45,10 @@ classdef lyapTest < matlab.unittest.TestCase
             sys = ctrldemo('pendulum2');
             sys = linearize(sys);
             
-            V = lyap(sys);
+            Q = eye(size(sys.A));
+            P = lyap(sys, Q);
             
-            testCase.verifyTrue(islyap(sys, V));
+            testCase.verifyTrue(islyap(P, Q));
         end
         
         function testLyapFunctionSymbolicNonlinear2(testCase)
@@ -59,9 +62,10 @@ classdef lyapTest < matlab.unittest.TestCase
             
             sys = linearize(sys);
             
-            V = lyap(sys);
+            Q = eye(size(sys.A));
+            P = lyap(sys, Q);
             
-            testCase.verifyTrue(islyap(sys, V));
+            testCase.verifyTrue(islyap(P, Q));
         end
     end
 end
