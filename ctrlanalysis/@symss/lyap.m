@@ -1,4 +1,4 @@
-function varargout = lyap(sys, varargin)
+function [V, P, dV] = lyap(sys, varargin)
 %LYAP Solves the lyapunov equation for a system.
 %   
 %   V = LYAP(sys) 
@@ -15,29 +15,28 @@ function varargout = lyap(sys, varargin)
 %   returns the Lyapunov function, the solution P, and the Lyapunov
 %   function derivative.
 % 
-%   Methodology: 
-%   In Matlab, EIG uses the Schur decomposition of a matrix to produce V
-%   and D. For the Schur decomposition satisfying the equation H = U*T*U.',
-%   EIG(H) produces matrices V = U, which are the eignvectors of the
-%   matrix, and D, which are the diagonal elements of T, diag(T).
+%   Methodology:
+%   The Hamiltonian of (A, Q) is formed in order to solve the Lyapunov
+%   equation A.'P + PA = -Q. If the Hamiltonian has linearly independent
+%   eigenvectors, no zero eigenvalues, and no repeated eigenvalues, we can
+%   use the Schur decomposition to compute the matrix P.
 % 
-%   If the Hamiltonian has linearly independent eigenvectors, no zero
-%   eigenvalues, and no repeated eigenvalues, we can use U = V. We sort the
-%   eigenvalues so that the eigenvectors corresponding to stable
-%   eigenvalues appear in U_11 and U_22.
+%   We sort the eigenvalues so that the eigenvectors corresponding to
+%   stable eigenvectors appear in U_11 and U_21 and compute U_21*U_11^-1.
+%   
+%   In the case of a defective matrix, the inverse may not produce the
+%   actual inverse of the matrix. In these cases, the Moore-Penrose
+%   pseudoinverse is used. See PINV for more information.
 % 
 %   Tips:
-%   - If a solution cannot be found, the function emits a warning and
-%   returns a zero result.
-% 
-%   - Use a linearized system for nonlinear state space models if a result
-%   cannot be obtained.
+%   - In almost all cases, use a linearized system for nonlinear state
+%   space models to compute the Lyapunov equation.
 % 
 %   - Rank-deficient state matrices will not produce a unique result, and
-%   the P matrix will not be symmetric. Check the rank of A before running
+%   the P matrix may not be symmetric. Check the rank of A before running
 %   the function.
 % 
-%   See also symss/care, lyap, dlyap
+%   See also symss/care, lyap, dlyap, pinv
 
 %   References:
 %   Arnold, William F., and Alan J. Laub. "Generalized eigenproblem 
@@ -60,29 +59,59 @@ parse(p, sys, varargin{:});
 
 Q = p.Results.Q;
 
-if ~ishurwitz(A)
-    warning('State matrix is not Hurwitz.');
-end
-
-% METHOD 5
 % Form the Hamiltonian.
 H = [A, zeros(size(A)); -Q, -A.'];
 
-[V, D] = eig(H);
+% Compute the Schur decomposition.
+[U, ~] = schurs(H);
 
-if isequal(size(V), size(H)) % && ~any(imag(diag(D)))
-    [~, idx] = sort(diag(real(D)));
-    V = V(:, idx);
-    U = mat2cell(V, size(A), size(A));
-    P = U{2, 1}/U{1, 1};
-else
-    warning('Could not solve the Hamiltonian.');
-    warning('Attempting to solve symbolically.');
-    
-    P = sym('P', size(A));
-    S = solve(A.'*P + P*A == -Q, P);
-    P = subs(P, S);
+% Compute the solution to the Lyapunov equation.
+U = mat2cell(U, size(A), size(A));
+
+cs = warning('off', 'all');
+
+P = U{2, 1}/U{1, 1};
+
+% Compute the inverse using the Moore-Penrose pseudoinverse if the
+% inverse does not exist.
+if any(isinf(P))
+    P = U{2, 1}*pinv(U{1, 1});
 end
+
+% if any(isinf(P))
+%     warning('Could not solve the Hamiltonian.');
+%     warning('Attempting to solve symbolically.');
+% 
+%     P = sym('P', size(A));
+%     S = solve(A.'*P + P*A == -Q, P);
+%     P = subs(P, S);
+% 
+%     if isempty(P)
+%         error('Could not find a solution to the Lyapunov equation.');
+%     end
+% end
+
+
+V = sys.states.'*P*sys.states;
+dV = -sys.states.'*Q*sys.states;
+
+warning(cs);
+
+% [V, D] = eig(H);
+% 
+% if isequal(size(V), size(H)) % && ~any(imag(diag(D)))
+%     [~, idx] = sort(diag(real(D)));
+%     V = V(:, idx);
+%     U = mat2cell(V, size(A), size(A));
+%     P = U{2, 1}/U{1, 1};
+% else
+%     warning('Could not solve the Hamiltonian.');
+%     warning('Attempting to solve symbolically.');
+%     
+%     P = sym('P', size(A));
+%     S = solve(A.'*P + P*A == -Q, P);
+%     P = subs(P, S);
+% end
 
 
 % METHOD 1
@@ -139,14 +168,6 @@ end
 
 % AH = feval(symengine, 'linalg::hessenberg', A);
 % [S, ~] = qr(AH);
-
-if ~isempty(P)
-    varargout{1} = sys.states.'*P*sys.states;
-    varargout{2} = P;
-    varargout{3} = -sys.states.'*Q*sys.states;
-else
-    error('Could not find a solution to the Lyapunov equation.');
-end
 
 end
 

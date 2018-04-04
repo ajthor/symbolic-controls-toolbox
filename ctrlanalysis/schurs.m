@@ -2,38 +2,49 @@ function [U, T] = schurs(A, varargin)
 %SCHURS Symbolic Schur decomposition.
 % 
 %   This function returns the Schur decomposition of a matrix by computing
-%   the eigenvectors of a matrix and performing a QR decomposition.
+%   the generalized eigenvectors of a matrix and performing a QR
+%   decomposition.
 
 p = inputParser;
 validateMatrix = @(M) ...
     validateattributes(M, {'sym', 'numeric'}, {'nonempty'});
-addRequired(p, 'H', validateMatrix);
+addRequired(p, 'A', validateMatrix);
 parse(p, A, varargin{:});
 
 if ~isa(A, 'sym')
     A = sym(A);
 end
 
-% HB = feval(symengine, 'linalg::hessenberg', H);
+[V, D] = eig(A);
 
-[V, D, P] = eig(A);
-
-% Form an eigenbasis when the matrix has non-linearly independent
-% eigenvectors.
+% Find generalized eigenvectors when the matrix is defective, i.e. has
+% non-linearly independent eigenvectors. The Matlab command JORDAN returns
+% the generalized eigenvectors of a matrix.
 if ~isequal(size(V), size(A))
-    V = orth([V, eye(size(A))], 'real');
+    [V, J] = jordan(A);
+    D = diag(J);
+    
+%     % Fill eigenvector matrix with repeated eigenvectors.
 %     Vf = sym(zeros(size(A)));
-%     for k = 1:size(V, 2)
-%         L = any(D == D(P(k), P(k)), 1);
-%         Vf(:, L) = repmat(V(:, k), 1, nnz(L));
+%     Vf(:, P) = V;
+% 
+%     L = diag(D).';
+%     
+%     for k = 1:numel(L)
+%         if ismember(k, P)
+%             continue;
+%         end
+%         % Compute generalized eigenvectors.
+%         Vf(:, k) = (A - L(k)*eye(size(A)))\Vf(:, k - 1);
 %     end
+%     
 %     V = Vf;
 end
 
-[~, idx] = sort(diag(D));
+[~, idx] = sort(real(diag(D)));
 V = V(:, idx);
 
-[U, ~] = qr(V, 'real');
+[U, ~] = qr(V, 0, 'real');
 
 T = U.'*A*U;
 
