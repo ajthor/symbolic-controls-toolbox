@@ -24,7 +24,7 @@ function varargout = elroa(sys, varargin)
 %       R = ELROA(sys)
 %       ic = num2cell(R, 2)
 %       tspan = [0 10]
-%       nlsim2(sys, tspan, ic)
+%       nlsim2(sys, 0, tspan, ic)
 % 
 %   Parameters:
 %   - 'Points' specify how many points should be in the elastic ring.
@@ -154,17 +154,19 @@ else
     xlim(rgx);
     ylim(rgy);
 
-    [X, Y] = meshgrid(linspace(rgx(1), rgx(2), 20), ...
-                      linspace(rgy(1), rgy(2), 20));
-
     ax = gca;
     axcs = ax.NextPlot;
     
     % Plot function trajectories.
     if p.Results.Trajectory
         ax.NextPlot = 'add';
+        
+        [X, Y] = meshgrid(linspace(rgx(1), rgx(2), 20), ...
+                          linspace(rgy(1), rgy(2), 20));
+                  
         F1 = subs(sys.f(1), sys.states, {X; Y});
         F2 = subs(sys.f(2), sys.states, {X; Y});
+        
         q = quiver(ax, X, Y, F1, F2);
         q.AutoScale = 'on';
         q.AlignVertexCenters = 'on';
