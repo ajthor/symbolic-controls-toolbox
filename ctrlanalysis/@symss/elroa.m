@@ -27,22 +27,16 @@ function varargout = elroa(sys, varargin)
 %       nlsim2(sys, 0, tspan, ic)
 % 
 %   Parameters:
-%   - 'Points' specify how many points should be in the elastic ring.
-% 
-%   - 'T0' specify the initial temperature (default 2).
-% 
-%   - 'CoolingFactor' specify the temperature cooling factor (default
-%   1.02).
-% 
-%   - 'ZeroSpacing' specify the initial distance of the elastic ring from
-%   the origin (default 1E-3).
-% 
-%   - 'ComputationTime' specify the maximum allowed computation time in
-%   seconds (default 30).
-% 
-%   - 'Radial' specify whether the points should move in a strictly radial
-%   direction, or if the points can move along the trajectories (default
-%   false).
+%       Points - specify the number of points in the ring (default 20).
+%       T0 - specify the initial temperature (default 2).
+%       CoolingFactor - specify the cooling factor (default 1.02).
+%       ZeroSpacing - specify the radial distance of the ring from the
+%           origin (default 1E-3).
+%       ComputationTime - The maximum computation time of the function, in
+%           seconds (default 30).
+%       Radial - specify whether the points should move in a strictly
+%           radial direction, or if the points can move along the
+%           trajectories (default false).
 % 
 %   Tips:
 %   The cooling factor is a positive number > 1. Small changes to the
@@ -66,7 +60,6 @@ addParameter(p, 'CoolingFactor', 1.02);
 addParameter(p, 'ZeroSpacing', 1E-3);
 addParameter(p, 'ComputationTime', 30);
 addParameter(p, 'Radial', false);
-addParameter(p, 'Trajectory', false);
 parse(p, sys, varargin{:});
 
 np = p.Results.Points;
@@ -105,23 +98,6 @@ while true
     in = inpolygon(R(:, 1) + PF(:, 1), R(:, 2) + PF(:, 2),...
         R(b, 1), R(b, 2));
     
-%     plot(R(:, 1), R(:, 2), 'o')
-%     hold on
-%     plot(R(b, 1), R(b, 2))
-%     quiver(R(:, 1), R(:, 2), PF(:, 1), PF(:, 2));
-% %     quiver(R(:, 1), R(:, 2), NF(:, 1), NF(:, 2));
-% %     plot(R(in, 1) + PF(in, 1)/T, R(in, 2) + PF(in, 2)/T, 'rx')
-% %     plot(R(in, 1) + NF(in, 1)/2, R(in, 2) + NF(in, 2)/2, 'ks')
-%     quiver(R(in, 1), R(in, 2), R(in, 1) - 0, R(in, 2) - 0)
-%     
-% %     chg = dot(R(in, :) - 0, (PF(in, :)/norm(PF(in, :))), 2);
-%     
-% %     quiver(R(in, 1), R(in, 2), chg(:, 1), chg(:, 2), 'AutoScale', 'off')
-%     hold off
-    
-%     R(in, :) = R(in, :) - PF(in, :)/T;
-%     R(in, :) = R(in, :) - sqrt((PF(in, 1)/T).^2 + (PF(in, 2)/T).^2);
-
     if radial
         chg = (dot(PF(in, :), R(in, :) - 0, 1)/vecnorm(R(in, :) - 0, 2, 1).^2)*(R(in, :) - 0);
     else
@@ -148,31 +124,6 @@ if nargout ~= 0
 else
     b = convhull(R);
     plot(R(b, 1), R(b, 2));
-    
-    rgx = xlim*1.5;
-    rgy = ylim*1.5;
-    xlim(rgx);
-    ylim(rgy);
-
-    ax = gca;
-    axcs = ax.NextPlot;
-    
-    % Plot function trajectories.
-    if p.Results.Trajectory
-        ax.NextPlot = 'add';
-        
-        [X, Y] = meshgrid(linspace(rgx(1), rgx(2), 20), ...
-                          linspace(rgy(1), rgy(2), 20));
-                  
-        F1 = subs(sys.f(1), sys.states, {X; Y});
-        F2 = subs(sys.f(2), sys.states, {X; Y});
-        
-        q = quiver(ax, X, Y, F1, F2);
-        q.AutoScale = 'on';
-        q.AlignVertexCenters = 'on';
-    end
-    
-    ax.NextPlot = axcs;
 end
 
 end
