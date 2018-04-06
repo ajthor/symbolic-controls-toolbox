@@ -12,12 +12,12 @@ function [P, V, dV] = lyap(sys, varargin)
 %   Lyapunov function derivative dV = -x.'*Q*x.
 % 
 %   Tips:
-%   - In almost all cases, it is necessary to use a linearized system for
-%   nonlinear state space models to compute the Lyapunov equation.
+%       In almost all cases, it is necessary to use a linearized system for
+%       nonlinear state space models to compute the Lyapunov equation.
 % 
-%   - Rank-deficient state matrices will not produce a unique result, and
-%   the P matrix may not be symmetric. Check the rank of A before running
-%   the function.
+%       Rank-deficient state matrices will not produce a unique result, and
+%       the P matrix may not be symmetric. Check the rank of A before
+%       running the function.
 % 
 %   See also symss/care, lyap, pinv
 

@@ -10,7 +10,7 @@ function u = lyapctrl(sys, V)
 
 p = inputParser;
 [A, ~, ~, ~] = getabcd(sys);
-addRequired(p, 'sys', @(S) validatesystem(S, {'full'}));
+addRequired(p, 'sys', @(S) validatesystem(S, {'hasinputs'}));
 addRequired(p, 'V');
 parse(p, sys, V);
 
@@ -33,10 +33,10 @@ f = cell2sym(f).';
 g = cell2sym(g).';
 
 % Find dV.
-dV = gradient(V, sys.states);
+dV = gradient(V, sys.states).';
 
-dVf = dV*f;
-dVg = dV*g;
+dVf = dV*reshape(f, [], 1);
+dVg = dV*reshape(g, [], 1);
 
 % Sontag's formula.
 u = -(dVf + sqrt((dVf)^2 + (dVg)^4))/(dVg);

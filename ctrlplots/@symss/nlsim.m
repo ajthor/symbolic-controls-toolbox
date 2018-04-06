@@ -59,21 +59,19 @@ if nargout ~= 0
     varargout{1} = t;
     varargout{2} = y;
 else
-    plotoutput(y, tspan);
+    ax = gca;
+    current_state = ax.NextPlot;
     
-%     ax = gca;
-%     current_state = ax.NextPlot;
-%     
-%     for k = 1:numel(x0)
-%         ax.NextPlot = 'add';
-%         plot(t{k}, y{k})
-%     end
-%     
-%     ax.NextPlot = current_state;
-%     ax.XLimMode = 'auto';
-%     ax.YLimMode = 'auto';
-%     ax.XLabel.String = 'Time (seconds)';
-%     ax.YLabel.String = 'Amplitude';
+    for k = 1:numel(x0)
+        ax.NextPlot = 'add';
+        plot(t{k}, y{k})
+    end
+    
+    ax.NextPlot = current_state;
+    ax.XLimMode = 'auto';
+    ax.YLimMode = 'auto';
+    ax.XLabel.String = 'Time (seconds)';
+    ax.YLabel.String = 'Amplitude';
 end
 
 end

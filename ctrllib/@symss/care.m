@@ -25,7 +25,7 @@ validateMatrix = @(M) ...
 addRequired(p, 'sys');
 addOptional(p, 'Q', eye(size(A)), validateMatrix);
 addOptional(p, 'R', eye(size(A)));
-addOptional(p, 'S', C);
+addOptional(p, 'S', C.'*C);
 parse(p, sys, varargin{:});
 
 Q = p.Results.Q;

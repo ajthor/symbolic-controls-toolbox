@@ -36,13 +36,15 @@ function varargout = reach(sys, X, varargin)
 %   See also symss/elroa
 
 p = inputParser;
+validateNumber = @(N) ...
+    validateattributes(N, {'numeric'}, {'scalar', 'positive', 'integer'});
 addRequired(p, 'sys', @(S) validatesystem(S, {'full'}));
 addRequired(p, 'x');
-addParameter(p, 'Points', 20);
-addParameter(p, 'Ts', 1E-3);
-addParameter(p, 'Tf', 10);
-addParameter(p, 'ZeroSpacing', 1E-3);
-addParameter(p, 'ComputationTime', 30);
+addParameter(p, 'Points', 20, validateNumber);
+addParameter(p, 'Ts', 1E-3, validateNumber);
+addParameter(p, 'Tf', 10, validateNumber);
+addParameter(p, 'ZeroSpacing', 1E-3, validateNumber);
+addParameter(p, 'ComputationTime', 30, validateNumber);
 parse(p, sys, X, varargin{:});
 
 np = p.Results.Points;

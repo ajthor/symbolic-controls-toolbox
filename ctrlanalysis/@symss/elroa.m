@@ -53,12 +53,14 @@ function varargout = elroa(sys, varargin)
 %   See also boundary, convhull, inpolygon, symss/roa, symss/nlsim2
 
 p = inputParser;
+validateNumber = @(N) ...
+    validateattributes(N, {'numeric'}, {'scalar', 'positive', 'integer'});
 addRequired(p, 'sys');
-addParameter(p, 'Points', 20);
-addParameter(p, 'T0', 2);
-addParameter(p, 'CoolingFactor', 1.02);
-addParameter(p, 'ZeroSpacing', 1E-3);
-addParameter(p, 'ComputationTime', 30);
+addParameter(p, 'Points', 20, validateNumber);
+addParameter(p, 'T0', 2, validateNumber);
+addParameter(p, 'CoolingFactor', 1.02, validateNumber);
+addParameter(p, 'ZeroSpacing', 1E-3, validateNumber);
+addParameter(p, 'ComputationTime', 30, validateNumber);
 addParameter(p, 'Radial', false);
 parse(p, sys, varargin{:});
 
