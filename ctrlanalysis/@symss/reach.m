@@ -12,7 +12,7 @@ function varargout = reach(sys, X, varargin)
 % 
 %   The function creates a ring of points around the state X and performs
 %   gradient ascent along the function trajectories in order to find the
-%   boundary of a shape that gives the backward-reachable set of initial
+%   boundary of a shape that gives the backward-reachable region of initial
 %   conditions that will allow a system to reach the desired state.
 % 
 %   Use BOUNDARY or CONVHULL in conjunction with INPOLYGON to estimate
@@ -26,6 +26,12 @@ function varargout = reach(sys, X, varargin)
 %           point, X (default 1E-3).
 %       ComputationTime - The maximum computation time of the function, in
 %           seconds (default 30).
+% 
+%   Tips:
+%       The approximated region is more accurate when the sampling time
+%       Ts is small. However, a smaller sampling time can lead to long
+%       computation times for the function. Try using a relaxed function
+%       first, before decreasing the sampling time. 
 % 
 %   See also symss/elroa
 
@@ -44,7 +50,7 @@ zs = p.Results.ZeroSpacing;
 t = p.Results.ComputationTime;
 
 Ts = p.Results.Ts;
-Tf = p.Results.Tf/Ts;
+Tf = p.Results.Tf;
 
 [tx, ~, tf, ~] = varsub(sys);
 PFfun = symfun(tf, tx);
@@ -70,8 +76,6 @@ while true
     nPF = PFfun(PF(:, 1), PF(:, 2));
     nPF = reshape(nPF, 1, []);
     nPF = double(cell2sym(nPF))*Ts;
-    
-%     nPF = nPF./vecnorm(nPF, 2, 2);
     
     % Take the negative gradient.
     nPF = PF - nPF;

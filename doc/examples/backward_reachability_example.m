@@ -8,7 +8,8 @@ sys.f
 % Find the backward reachable set. 
 x = {[1.5, 1.5]};
 
-[R, S] = reach(sys, x, 'Points', 10, 'Tf', 10, 'Ts', 1E-3);
+[R, S] = reach(sys, x, 'Points', 10, 'Tf', 1, 'Ts', 1E-3, ...
+               'ComputationTime', Inf);
 
 %%
 % Plot the boundary of the regions.
@@ -25,5 +26,5 @@ hold off
 polyin = polyshape(S(:, 1), S(:, 2));
 [X, Y] = centroid(polyin);
 
-nlsim2(sys, 0, [0 10], {[X, Y]});
+nlsim2(sys, 0, [0 1], {[X, Y]});
 

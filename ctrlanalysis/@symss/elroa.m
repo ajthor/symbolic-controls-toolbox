@@ -39,18 +39,18 @@ function varargout = elroa(sys, varargin)
 %           trajectories (default false).
 % 
 %   Tips:
-%   The cooling factor is a positive number > 1. Small changes to the
-%   cooling factor can have a dramatic effect. Lower values produce less
-%   conservative results. It is recommended to change the cooling factor in
-%   increments of 1E-2 or 1E-3 if needed.
+%       The cooling factor is a positive number > 1. Small changes to the
+%       cooling factor can have a dramatic effect. Lower values produce
+%       less conservative results. It is recommended to change the cooling
+%       factor in increments of 1E-2 or 1E-3 if needed.
 % 
-%   If 'Radial' is set, the points move along the projection of the
-%   trajectory evaluated at the point with a radial vector from the origin
-%   to the point. This option can be useful if the points move too far down
-%   a limit cycle during computation, but can give points outside the
-%   region of attraction if the cooling factor is too high.
+%       If 'Radial' is set, the points move along the projection of the
+%       trajectory evaluated at the point with a radial vector from the
+%       origin to the point. This option can be useful if the points move
+%       too far down a limit cycle during computation, but can give points
+%       outside the region of attraction if the cooling factor is too high.
 %   
-%   See also boundary, inpolygon, symss/roa, symss/nlsim2
+%   See also boundary, convhull, inpolygon, symss/roa, symss/nlsim2
 
 p = inputParser;
 addRequired(p, 'sys');
