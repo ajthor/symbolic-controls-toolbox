@@ -15,22 +15,7 @@ addRequired(p, 'V');
 parse(p, sys, V);
 
 % Find f(x) and g(x).
-f = cell([size(A, 1), 1]);
-g = cell([size(A, 1), 1]);
-
-for k = 1:numel(sys.f)
-    C = coeffs(sys.f(k), sys.inputs, 'All');
-    if numel(C) == 2
-        f{k} = C(2);
-        g{k} = C(1);
-    else
-        f{k} = C;
-        g{k} = 0;
-    end
-end
-
-f = cell2sym(f).';
-g = cell2sym(g).';
+[f, g] = nlsep(sys);
 
 % Find dV.
 dV = gradient(V, sys.states).';
