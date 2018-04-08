@@ -8,6 +8,12 @@
    <demosection>
       <label>examples</label>
       <demoitem>
+         <label>backward_reachability_example</label>
+         <type>other</type>
+         <source>backward_reachability_example</source>
+         <file>doc/examples/html/backward_reachability_example.html</file>
+      </demoitem>
+      <demoitem>
          <label>controllability_example</label>
          <type>other</type>
          <source>controllability_example</source>
