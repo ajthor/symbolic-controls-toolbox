@@ -14,10 +14,10 @@ addRequired(p, 'sys');
 addOptional(p, 'u', sym.empty, validateInput);
 addOptional(p, 'tspan', [0 5], validateTspan);
 addOptional(p, 'x0', []);
-addParameter(p, 'solver', @ode45, validateSolver);
+addParameter(p, 'Solver', @ode45, validateSolver);
 parse(p, sys, u, varargin{:});
 
-t = sym('t');
+T = sym('t');
 
 [tx, tu, tf, ~] = varsub(sys);
 
@@ -28,13 +28,13 @@ u = subs(u, sys.states, tx);
 tf = subs(tf, tu, u);
 
 % Create a Matlab function.
-Ffun = symfun(formula(tf), [t; tx]);
-odefun = matlabFunction(Ffun, 'vars', {t, tx});
+Ffun = symfun(formula(tf), [T; tx]);
+odefun = matlabFunction(Ffun, 'vars', {T, tx});
 
 tspan = p.Results.tspan;
 x0 = reshape(p.Results.x0, [], 1);
 
-solver = p.Results.solver;
+solver = p.Results.Solver;
 
 % Solve the function.
 [t, y] = feval(solver, odefun, tspan, x0);
