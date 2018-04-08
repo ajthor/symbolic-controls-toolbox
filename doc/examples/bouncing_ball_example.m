@@ -15,7 +15,18 @@ sys.f = piecewise(x1 >= 0, f1, x1 <= 0 & x2 <= 0, f2);
 
 %% Simulate the System
 tspan = [0 10];
-ic = {[15, 0]};
+ic = {[5, 5]};
 
-hysim(sys, sym(0), tspan, ic);
+[t, y] = hysim(sys, sym(0), tspan, ic);
 
+t = t{:};
+y = y{:};
+
+%% Plot the Position Response
+plot(t, y(:, 1))
+
+%% Plot the Velocity Response
+plot(t, y(:, 2))
+
+%% Plot the Position vs. Velocity Response
+plot(y(:, 1), y(:, 2))

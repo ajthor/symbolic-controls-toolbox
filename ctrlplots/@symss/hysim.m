@@ -1,6 +1,12 @@
 function varargout = hysim(sys, u, varargin)
 %HSIM Compute the hybrid system response of a system to arbitrary inputs.
-%   Detailed explanation goes here
+%   
+%   [t, y] = HYSIM(sys, u, t) computes the response of a hybrid system to
+%   an arbitrary input. 
+
+% References:
+% Lygeros, John, Claire Tomlin, and Shankar Sastry. "Hybrid systems:
+% modeling, analysis and control." preprint (1999).
 
 p = inputParser;
 validateInput = @(U) ...

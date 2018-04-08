@@ -18,3 +18,4 @@ tspan = [0 120];
 ic = {15, 20, 25};
 
 hysim(sys, sym(0), tspan, ic);
+
