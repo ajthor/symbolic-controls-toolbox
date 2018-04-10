@@ -38,7 +38,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
     %   Antsaklis, Panos J., and Anthony N. Michel. A linear systems
     %   primer. Vol. 1. Boston: Birkhäuser, 2007.
     
-    % State Equations
+    % State equations.
     properties (Dependent, AbortSet = true)
         %State Equations
         f
@@ -46,7 +46,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         g
     end
     
-    % State Matrices
+    % State matrices.
     properties (SetAccess = immutable, Dependent)
         % State matrix A
         A
@@ -58,7 +58,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         D
     end
     
-    % State Variables
+    % State variables.
     properties (Dependent)
         % State Variables
         states
@@ -66,7 +66,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         inputs
     end
     
-    % Internal Properties
+    % Internal properties.
     properties (Access = private)
         f_ = sym.empty
         g_ = sym.empty
@@ -140,7 +140,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         end
     end
     
-    % Utility Methods
+    % Utility methods.
     methods (Hidden)
         function [A, B, C, D] = getabcd(obj)
             %GETABCD Helper function to return state space matrices.
@@ -151,7 +151,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         end
     end
     
-    % Getters and Setters
+    % Getters and setters.
     methods
         function obj = set.states(obj, varargin)
             % Set state variables for state-space model.
@@ -191,7 +191,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         end
     end
     
-    % Overloaded Operators
+    % Overloaded operators.
     methods (Access = public)
         function obj = mtimes(obj, P)
             %MTIMES Operator overloading to implement similarity
@@ -209,7 +209,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         end
     end
     
-    % Overloadable Protected Methods
+    % Overloadable protected methods.
     methods (Access = protected)
         function obj = privSetF(obj, varargin)
             obj.f_ = formula(varargin{:});

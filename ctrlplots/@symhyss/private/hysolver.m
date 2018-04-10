@@ -19,20 +19,25 @@ parse(p, sys, u, varargin{:});
 
 T = sym('t');
 
+% Get the state equations and conditions.
 [tx, tu, tf, ~] = varsub(sys);
+conds = sys.cond;
 
 % Substitute variables into the input.
 u = p.Results.u;
 u = subs(u, sys.states, tx);
 
-% Substitute the input into the state equations.
-tf = subs(tf, tu, u);
 
-% Get the state equations and conditions.
-ch = children(tf);
+for k = 1:numel(tf)
+    % Substitute the input into the state equations.
+    tf{k} = subs(tf{k}, tu, u);
+    
+    conds{k} = subs(conds{k}, [sys.states; sys.inputs], [tx; tu]);
+    conds{k} = subs(conds{k}, tu, u);
+end
 
+% Get time span.
 tspan = p.Results.tspan;
-
 t0 = tspan(1);
 tmax = tspan(end);
 
@@ -47,18 +52,18 @@ while t0 < tmax
     x0 = reshape(x0, [], 1);
 
     % Select a function.
-    cond = isAlways(subs(ch(:, 2), tx, x0));
+    cond = isAlways(subs(conds, tx, x0));
     idx = find(cond, 1);
 
     % Create a Matlab function.
-    Ffun = symfun(ch(idx, 1), [T; tx]);
+    Ffun = symfun(tf{idx}, [T; tx]);
     odefun = matlabFunction(Ffun, 'Vars', {T, tx});
     
     % Handle discontinuous jumps. If the function evaluated at the next
     % time step would violate the current conditions, set the new
     % conditions to the evaluated ones and continue.
     xt = round(x0, 6) + odefun(0, x0)*eps('double');
-    if ~isAlways(subs(ch(idx, 2), tx, xt))
+    if ~isAlways(subs(conds(idx), tx, xt))
         xe = odefun(0, x0);
         t(end + 1, :) = t(end) + eps('double');
         y(end + 1, :) = (xe).';
@@ -81,7 +86,7 @@ end
     % simulation violates the conditions for being in the current state and
     % ends the ODE solver.
     function [value, isterminal, direction] = odeEvent(t, x)
-        if isAlways(subs(ch(idx, 2), tx, x))
+        if isAlways(subs(conds(idx), tx, x))
             value = 1;
         else
             value = 0;
