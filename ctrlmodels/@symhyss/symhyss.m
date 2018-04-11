@@ -4,19 +4,28 @@ classdef (SupportExtensionMethods = true) symhyss < symss
     %   hsys = SYMHYSS creates an empty hybrid state-space representation.
     %
     %   A hybrid state-space model is defined by both continuous and
-    %   discrete dynamics along with switching conditions.
+    %   discrete dynamics along with switching conditions and an adjacency
+    %   matrix.
     %
-    %   Define system dynamics by specifying the state equations and the
-    %   guard condition for the dynamics of each mode. The first index
-    %   corresponds to the set of dynamics for a mode. The second index
-    %   defines the equation in the dynamics. For example,
+    %   Define system dynamics by specifying the state equations for each
+    %   mode. The first index corresponds to the dynamics of a mode. The
+    %   second index defines the equation in the dynamics. For example,
     %                              .
     %       f(1, 3) corresponds to x3 = f3(t, x, u) in mode 1.
     %
-    %   The conditions are specified as an inequality, directing the system
-    %   to a new mode. For example,
+    %   The conditions are specified as an inequality matrix, indicating
+    %   the condition for switching to a new mode. For example,
     %   
-    %       cond(1, 2) = x < 0 switches from mode 1 to mode 2 when x < 0.
+    %       cond(1, 2) = x < 0 switches from mode 1 to mode 2 when x >= 0.
+    %
+    %   Additionally, the adjacency matrix defines the modes which are
+    %   available to switch to from the current mode. For example,
+    %
+    %       edge(1, 2) = 1 means the system is allowed switch to mode 2
+    %       from mode 1.
+    %
+    %   If a condition is specified for a specific transition, it also
+    %   modifies the adjacency matrix to allow for the transition.
     %
     %   Example (Thermostat):
     %       syms x a
