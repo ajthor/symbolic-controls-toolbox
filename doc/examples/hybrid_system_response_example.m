@@ -10,17 +10,19 @@ sys.states = x;
 a = 0.008;
 
 %%
-% The first index when defining system dynamics corresponds to a state,
-% while the second index corresponds to a state function in the current
+% The first index when defining system dynamics corresponds to a mode,
+% while the second index corresponds to a state equation in the current
 % dynamics. I.e.
 %                              .
 %   sys.f(2, 3) corresponds to x3 = f3(t, x, u) in state 2.
-%   sys.cond(2) corresponds to the condition for being in state 2.
+% 
+%   sys.cond(1, 2) corresponds to the guard condition for the system
+%   switching from mode 1 to mode 2.
 sys.f(1, 1) = -a*x;
-sys.cond(1) = x >= 20;
+sys.cond(1, 2) = x >= 20;
 
 sys.f(2, 1) = -a*(x - 30);
-sys.cond(2) = x <= 22;
+sys.cond(2, 1) = x <= 22;
 
 %% Simulate the System
 % Define the time span and the initial conditions. 
