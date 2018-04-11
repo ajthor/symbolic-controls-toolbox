@@ -11,7 +11,7 @@ classdef (SupportExtensionMethods = true) symhyss < symss
     %   corresponds to the set of dynamics for a state. The second index
     %   defines the equation in the dynamics. For example,
     %                              .
-    %       f(1, 3) corresponds to x3 = f3(t, x, u) in the first state.
+    %       f(1, 3) corresponds to x3 = f3(t, x, u) in state 1.
     %
     %   Example (Thermostat):
     %       syms x a
@@ -30,6 +30,20 @@ classdef (SupportExtensionMethods = true) symhyss < symss
     %
     %       [f1, f2, ...] = sys.f
     %       [c1, c2, ...] = sys.cond
+    %
+    %   See also symss
+    
+    %   References:
+    %   Van Der Schaft, Arjan J., and Johannes Maria Schumacher. An
+    %   introduction to hybrid dynamical systems. Vol. 251. London:
+    %   Springer, 2000.
+    %
+    %   Goebel, Rafal, Ricardo G. Sanfelice, and Andrew R. Teel. "Hybrid
+    %   dynamical systems." IEEE Control Systems 29.2 (2009): 28-93.
+    %
+    %   Savkin, Andrey V., and Robin J. Evans. Hybrid dynamical systems:
+    %   controller and sensor switching problems. Springer Science &
+    %   Business Media, 2002.
     
     % Dependent properties.
     properties (Dependent, AbortSet = true)
