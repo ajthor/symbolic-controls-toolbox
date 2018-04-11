@@ -7,11 +7,16 @@ classdef (SupportExtensionMethods = true) symhyss < symss
     %   discrete dynamics along with switching conditions.
     %
     %   Define system dynamics by specifying the state equations and the
-    %   condition for the dynamics of each state. The first index
-    %   corresponds to the set of dynamics for a state. The second index
+    %   guard condition for the dynamics of each mode. The first index
+    %   corresponds to the set of dynamics for a mode. The second index
     %   defines the equation in the dynamics. For example,
     %                              .
-    %       f(1, 3) corresponds to x3 = f3(t, x, u) in state 1.
+    %       f(1, 3) corresponds to x3 = f3(t, x, u) in mode 1.
+    %
+    %   The conditions are specified as an inequality, directing the system
+    %   to a new mode. For example,
+    %   
+    %       cond(1, 2) = x < 0 switches from mode 1 to mode 2 when x < 0.
     %
     %   Example (Thermostat):
     %       syms x a
@@ -19,17 +24,10 @@ classdef (SupportExtensionMethods = true) symhyss < symss
     %       sys.states = x
     %       
     %       sys.f(1, 1) = -a*x
-    %       sys.cond(1) = x >= 20
+    %       sys.cond(1, 2) = x >= 20
     %       
     %       sys.f(2, 1) = -a*(x - 30)
-    %       sys.cond(2) = x <= 22
-    %
-    %   Accessing specific dynamics and conditions can be done using
-    %   indexing. Otherwise, the dynamics and conditions are returned as
-    %   elements of an array. For example,
-    %
-    %       [f1, f2, ...] = sys.f
-    %       [c1, c2, ...] = sys.cond
+    %       sys.cond(2, 1) = x <= 22
     %
     %   See also symss
     
@@ -49,15 +47,29 @@ classdef (SupportExtensionMethods = true) symhyss < symss
     properties (Dependent, AbortSet = true)
         % Switching Conditions
         cond
+        
+        % Adjacency Matrix
+        edge
     end
     
     % Internal properties.
     properties (Access = private)
-        % 1xn cell array. Each column represents distinct dynamics. Each
-        % element in the cell array is a 1xm symbolic array.
+        % State Dynamics
+        % 1xn cell array. Each column represents a mode. Each element in
+        % the cell array is a 1xm symbolic array representing system
+        % dynamics of the mode.
         f_ = cell.empty(1, 0)
         
-        cond_ = cell.empty(1, 0)
+        % Switching Conditions
+        % nxn cell array. Each row and column represents a mode. Each
+        % element in the cell array represents the switching conditions for
+        % activating the mode.
+        cond_ = sym.empty
+        
+        % Adjacency Matrix 
+        % The elements of the adjacency matrix represent the possibility of
+        % switching to another mode.
+        edge_ = double.empty
     end
     
     % Constructor
@@ -105,16 +117,23 @@ classdef (SupportExtensionMethods = true) symhyss < symss
     % Getters and setters.
     methods
         function obj = set.cond(obj, varargin)
-            % Set switching conditions for hybrid state-space model.
-            obj.cond_ = privSetCond(obj, varargin{:});
+            % Set switching conditions for hybrid modes.
+            obj = privSetCond(obj, varargin{:});
+        end
+        function obj = set.edge(obj, varargin)
+            % Set adjacency for hybrid modes.
+            obj = privSetEdge(obj, varargin{:});
         end
         
         function cond = get.cond(obj)
             cond = privGetCond(obj);
         end
+        function edge = get.edge(obj)
+            edge = privGetEdge(obj);
+        end
     end
     
-    % Overloaded protected methods.
+    % Overloadable protected methods.
     methods (Access = protected)
         function obj = privSetF(obj, varargin)
             if nargin == 2
@@ -131,6 +150,8 @@ classdef (SupportExtensionMethods = true) symhyss < symss
                 
                 obj.f_(idx(1)) = {reshape(d, [], 1)};
             end
+            
+            obj = privReshapeDim(obj);
         end
         function f = privGetF(obj, varargin)
             if nargin == 1
@@ -186,24 +207,55 @@ classdef (SupportExtensionMethods = true) symhyss < symss
                 B = subs(B, [tx; tu], [obj.states; obj.inputs]);
             end
         end
-    end
-    
-    % Overloadable protected methods.
-    methods (Access = protected)
+
         function obj = privSetCond(obj, varargin)
-            if nargin == 2
-                obj.cond_ = varargin{:};
-            else
-                idx = varargin{1};
-                obj.cond_(idx) = varargin(2);
+            obj.cond_ = formula(varargin{:});
+            
+            % Set any unset edges that correspond to set conditions 1.
+            obj = privReshapeDim(obj);
+            idx = find(obj.cond_);
+            for nz = idx.'
+                if obj.edge_(nz) == 0
+                    obj.edge_(nz) = 1;
+                end
             end
         end
-        function cond = privGetCond(obj, varargin)
-            if nargin == 1
-                cond = obj.cond_;
-            else
-                idx = varargin(1);
-                cond = obj.cond_{idx{:}};
+        function obj = privSetEdge(obj, varargin)
+            obj.edge_ = varargin{:};
+        end
+        
+        function cond = privGetCond(obj)
+            cond = obj.cond_;
+        end
+        function edge = privGetEdge(obj)
+            edge = obj.edge_;
+        end
+    end
+    
+    methods (Access = private)
+        function obj = privReshapeDim(obj)
+            % Reshape internal matrices to be as large as the number of
+            % modes, or as large as the largest matrix.
+            nf = numel(obj.f_);
+            [nc, mc] = size(obj.cond_);
+            [ne, me] = size(obj.edge_);
+            
+            n = max([nf, nc, mc, ne, mc]);
+            
+            if ~isequal(size(obj.cond_), [n, n])
+                C = zeros([n, n], 'sym');
+                if ~isempty(obj.cond_)
+                    C(1:nc, 1:mc) = obj.cond_;
+                end
+                obj.cond_ = C;
+            end
+            
+            if ~isequal(size(obj.edge_), [n, n])
+                E = zeros([n, n], 'double');
+                if ~isempty(obj.edge_)
+                    E(1:ne, 1:me) = obj.edge_;
+                end
+                obj.edge_ = E;
             end
         end
     end
@@ -219,20 +271,18 @@ classdef (SupportExtensionMethods = true) symhyss < symss
                         switch S(1).subs
                             case 'f'
                                 varargout = {privGetF(obj, idx)};
-                            case 'cond'
-                                varargout = {privGetCond(obj, idx)};
                             case 'A'
                                 varargout = {privGetA(obj, idx)};
                             case 'B'
                                 varargout = {privGetB(obj, idx)};
                             otherwise
-                                varargout = builtin('subsref', obj, S);
+                                [varargout{1:nargout}] = builtin('subsref', obj, S);
                         end
                     else
-                        varargout = builtin('subsref', obj, S);
+                        [varargout{1:nargout}] = builtin('subsref', obj, S);
                     end
                 otherwise
-                    varargout = builtin('subsref', obj, S);
+                    [varargout{1:nargout}] = builtin('subsref', obj, S);
             end
         end
         
@@ -245,16 +295,14 @@ classdef (SupportExtensionMethods = true) symhyss < symss
                         switch S(1).subs
                             case 'f'
                                 obj = privSetF(obj, idx, varargin{:});
-                            case 'cond'
-                                obj = privSetCond(obj, idx, varargin{:});
                             otherwise
-                                obj = builtin('subsasgn', obj, S, varargin{:});
+                                obj = builtin('subsasgn', obj, S, varargin);
                         end
                     else
-                        obj = builtin('subsasgn', obj, S, varargin{:});
+                        obj = builtin('subsasgn', obj, S, varargin);
                     end
                 otherwise
-                    obj = builtin('subsasgn', obj, S, varargin{:});
+                    obj = builtin('subsasgn', obj, S, varargin);
             end
         end
     end
