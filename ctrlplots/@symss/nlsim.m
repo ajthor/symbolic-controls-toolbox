@@ -39,7 +39,7 @@ if numel(x0) > 1
     y = cell(size(x0));
 end
 
-if any(strcmp('vars', p.UsingDefaults))
+if any(strcmp('Vars', p.UsingDefaults))
     vars = sys.states(1);
 else
     vars = cell2sym(p.Results.Vars);
