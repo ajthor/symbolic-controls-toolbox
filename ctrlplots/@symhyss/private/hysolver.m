@@ -27,14 +27,13 @@ conds = sys.cond;
 u = p.Results.u;
 u = subs(u, sys.states, tx);
 
-
+% Substitute the input into the state equations.
 for k = 1:numel(tf)
-    % Substitute the input into the state equations.
     tf{k} = subs(tf{k}, tu, u);
-    
-    conds{k} = subs(conds{k}, [sys.states; sys.inputs], [tx; tu]);
-    conds{k} = subs(conds{k}, tu, u);
 end
+
+conds = subs(conds, [sys.states; sys.inputs], [tx; tu]);
+conds = subs(conds, tu, u);
 
 % Get time span.
 tspan = p.Results.tspan;
@@ -48,22 +47,31 @@ solver = p.Results.Solver;
 t = double.empty;
 y = double.empty;
 
+% Simulate the hybrid system.
 while t0 < tmax
+    
     x0 = reshape(x0, [], 1);
-
-    % Select a function.
+    
+    % Select a mode.
     cond = isAlways(subs(conds, tx, x0));
-    idx = find(cond, 1);
-
+    mode = find(cond, 1);
+    
+    % Find the dynamics that correspond to the mode.
+    [d, ~] = ind2sub(size(cond), mode);
+    
+    if isempty(mode)
+        break;
+    end
+    
     % Create a Matlab function.
-    Ffun = symfun(tf{idx}, [T; tx]);
+    Ffun = symfun(tf{d}, [T; tx]);
     odefun = matlabFunction(Ffun, 'Vars', {T, tx});
     
     % Handle discontinuous jumps. If the function evaluated at the next
     % time step would violate the current conditions, set the new
     % conditions to the evaluated ones and continue.
     xt = round(x0, 6) + odefun(0, x0)*eps('double');
-    if ~isAlways(subs(conds(idx), tx, xt))
+    if ~isAlways(subs(conds(mode), tx, xt))
         xe = odefun(0, x0);
         t(end + 1, :) = t(end) + eps('double');
         y(end + 1, :) = (xe).';
@@ -86,7 +94,7 @@ end
     % simulation violates the conditions for being in the current state and
     % ends the ODE solver.
     function [value, isterminal, direction] = odeEvent(t, x)
-        if isAlways(subs(conds(idx), tx, x))
+        if isAlways(subs(conds(mode), tx, x))
             value = 1;
         else
             value = 0;
