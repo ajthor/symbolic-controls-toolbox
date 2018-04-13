@@ -32,7 +32,7 @@ uSM = slidectrl(sys, S);
 
 %% Simulate the Output
 % Simulate the output for the system using |nlsim|.
-tspan = [0 8];
+tspan = [0 10];
 ic = {[1, 1, 1]};
 
 figure
@@ -40,5 +40,15 @@ nlsim(sys, uSM, tspan, ic);
 
 %% Plot the Control Effort
 % Plot the control effort for the system using |effort|.
+figure
+effort(sys, uSM, tspan, ic);
+
+%% Simulate the Output Using Continuous Switching
+
+uSM = slidectrl(sys, S, 'SwitchingFunction', @tanh);
+
+figure
+nlsim(sys, uSM, tspan, ic);
+
 figure
 effort(sys, uSM, tspan, ic);
