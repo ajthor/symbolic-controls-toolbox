@@ -30,13 +30,15 @@ sf = p.Results.SwitchingFunction;
 
 sigma = S*sys.states;
 
+% Compute equivalent control.
 [A, B, ~, ~] = getabcd(sys);
 ueq = -(S*B)\S*A*sys.states;
 
+% Compute surface control.
 eta = 1;
-
 us = eta*(S*B)\sf(sigma);
 
+% Compute total control.
 u = ueq - us;
 
 end
