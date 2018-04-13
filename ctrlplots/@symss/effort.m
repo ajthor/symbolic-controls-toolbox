@@ -1,7 +1,14 @@
 function varargout = effort(sys, u, varargin)
 %EFFORT Compute the control effort of a system to arbitrary inputs.
 %   
-%   [t, y] = EFFORT(sys, u, t) computes the control effort of a system.
+%   [t, y] = EFFORT(sys, u, t) computes the control effort of a system and
+%   returns the time series data in 't' and the control efforts in 'y'.
+% 
+%   EFFORT uses the simulated output of a system to compute the control
+%   effort. It uses the simulated outputs as inputs to the control function
+%   'u' to compute the control inputs at each time step.
+% 
+%   When no outputs are specified, EFFORT plots the output.
 
 p = inputParser;
 validateInput = @(U) ...
