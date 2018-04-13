@@ -40,7 +40,7 @@ if numel(x0) > 1
 end
 
 if any(strcmp('Vars', p.UsingDefaults))
-    vars = sys.states(1);
+    vars = sys.states;
 else
     vars = cell2sym(p.Results.Vars);
     if length(vars) ~= 1
