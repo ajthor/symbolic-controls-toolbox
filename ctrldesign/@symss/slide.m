@@ -1,6 +1,26 @@
 function S = slide(sys, varargin)
 %SLIDE Computes a sliding surface for a system.
-%   Detailed explanation goes here
+%   
+%   S = SLIDE(sys, ...) computes an optimal sliding surface for a system
+%   using quadratic minimaztion techniques. The function returns a matrix S
+%   which satisfies the equation:
+% 
+%   sigma = Sx
+%   
+%   S = SLIDE(sys, Q, L) computes an optimal sliding surface using the
+%   matrices Q and L. 
+% 
+%   Q is a matrix specified for the optimal performance measure and L is a
+%   weighting matrix for the equation:
+%            -1
+%   S2 = L*B2
+% 
+%   S = S2[M I(mxm)]Tr
+% 
+%   If omitted, Q defaults to the identity matrix (nxn), and L defaults to
+%   the identity matrix (mxm).
+% 
+%   See also symss/slidectrl
 
 % References:
 % Shtessel, Yuri, et al. Sliding mode control and observation. Vol. 10. New
@@ -17,7 +37,7 @@ p = inputParser;
 [A, B, ~, ~] = getabcd(sys);
 addRequired(p, 'sys', @(S) validatesystem(S, {'hasinputs'}));
 addOptional(p, 'Q', eye(size(A)));
-addOptional(p, 'Lambda', sym.empty);
+addOptional(p, 'L', sym.empty);
 parse(p, sys, varargin{:});
 
 Q = p.Results.Q;
@@ -50,11 +70,11 @@ Phat = U{2, 1}/U{1, 1};
 M = Qbar{2, 2}\(Qbar{1, 2}.') + Qbar{2, 2}\(Abar{1, 2}.')*Phat;
 
 % Calculate S.
-if ~any(strcmp('Lambda', p.UsingDefaults))
-    Lambda = p.Results.Lambda;
+if ~any(strcmp('L', p.UsingDefaults))
+    L = p.Results.L;
     Bbar = Tr*B;
     B2 = Bbar(end - m + 1:end, end - m + 1:end);
-    S2 = Lambda/B2;
+    S2 = L/B2;
 else
     S2 = eye(m);
 end

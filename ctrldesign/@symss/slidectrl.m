@@ -1,6 +1,24 @@
 function u = slidectrl(sys, S, varargin)
-%SLIDECTRL Computes an equivalent control input for sliding mode control.
-%   Detailed explanation goes here
+%SLIDECTRL Computes a control input for sliding mode control.
+%   
+%   u = SLIDECTRL(sys, S, ...) computes a control input for sliding mode
+%   control using a matrix defining the sliding surfaces S. The total
+%   control is defined by the equation:
+% 
+%   u = ueq - us
+% 
+%   Where the equivalent control 'ueq' is defined by:
+%              -1
+%   ueq = -(SB)  SAx
+% 
+%   and the surface control is defined by:
+%                -1
+%   us = eta*(SB)  sign(sigma)
+% 
+%   The switching function, which defaults to 'sign' can be changed by
+%   setting the 'SwitchingFunction' parameter. 
+% 
+%   See also symss/slide
 
 p = inputParser;
 addRequired(p, 'sys');
