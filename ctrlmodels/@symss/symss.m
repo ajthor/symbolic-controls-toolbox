@@ -40,7 +40,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
     
     % State equations.
     properties (Dependent, AbortSet = true)
-        %State Equations
+        % State Equations
         f
         % Ouput Equations
         g
