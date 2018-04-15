@@ -23,20 +23,21 @@ validateMatrix = @(M) ...
     validateattributes(M, {'sym', 'numeric'}, ...
                        {'square', 'nonnegative', 'size', size(A)});
 addRequired(p, 'sys');
-addOptional(p, 'Q', eye(size(A)), validateMatrix);
+addOptional(p, 'Q', eye(size(A)));
 addOptional(p, 'R', eye(size(A)));
 addOptional(p, 'S', C.'*C);
+addParameter(p, 'exact', false);
 parse(p, sys, varargin{:});
 
 Q = p.Results.Q;
-if ~issymmetric(Q)
-    error('Q must be symmetric.');
-end
+% if ~issymmetric(Q)
+%     error('Q must be symmetric.');
+% end
 
 R = p.Results.R;
-if ~issymmetric(R)
-    error('R must be symmetric.');
-end
+% if ~issymmetric(R)
+%     error('R must be symmetric.');
+% end
 
 S = p.Results.S;
 
@@ -46,7 +47,7 @@ Ri = inv(R);
 H = [A, -B*Ri*B.'; -S.'*Q*S, -A.'];
 
 % Solve the continuous algebraic Riccati equation using the Hamiltonian.
-P = slvham(H);
+P = slvham(H, 'exact', p.Results.exact);
 
 % Compute the gain matrix, K.
 K = Ri*B.'*P;
