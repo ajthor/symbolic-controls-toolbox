@@ -13,16 +13,16 @@ g = ch(~eq);
 h = ch(eq);
 
 % Define Lagrangian multipliers.
-na = cell(1, nnz(~eq));
+na = cell(nnz(~eq), 1);
 na(:) = {'a'};
 a = sym(genvarname(na, [who; {'a'}]));
 
-nb = cell(1, nnz(eq));
+nb = cell(nnz(eq), 1);
 nb(:) = {'b'};
 b = sym(genvarname(nb, [who; {'b'}]));
 
 % Form the Lagrangian.
-L = [opt.f, g, h]*[1; a; b];
+L = [opt.f; g; h].'*[1; a; b];
 
 end
 

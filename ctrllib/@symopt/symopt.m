@@ -42,6 +42,7 @@ classdef symopt
         st_ = sym.empty
     end
     
+    % Constructor
     methods
         function obj = symopt(varargin)
             %SYMOPT Construct a symbolic optimization function.
@@ -62,7 +63,9 @@ classdef symopt
                     if ni > 1
                         vars = [varargin{2:end}];
                         if ~ismember(args, vars)
-                            error('Objective function must be a function of the minimization variable.');
+                            error(['Objective function must be a ', ...
+                                   'function of the minimization ', ...
+                                   'variable.']);
                         end
                         
                         obj.vars_ = vars;
@@ -70,7 +73,8 @@ classdef symopt
                         obj.vars_ = args;
                     end
                 else
-                    error('Objective function must be a symbolic expresion.');
+                    error(['Objective function must be a ', ...
+                          'symbolic expresion.']);
                 end
             end
         end
