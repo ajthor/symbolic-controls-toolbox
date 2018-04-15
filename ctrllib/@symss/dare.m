@@ -1,14 +1,22 @@
 function [P, K] = dare(sys, varargin)
-%DAR Summary of this function goes here
-%   Detailed explanation goes here
+%DARE Solve the discrete algebraic Riccati equation.
+%   
+%   P = DARE(sys) solves the discrete algebraic Riccati equation for
+%   a symbolic state-space model and returns the solution P.
+% 
+%   P = DARE(sys, Q, R) solves the discrete algebraic Riccati equation
+%   using the matrices Q and R. If omitted, Q defaults to I, and R defaults
+%   to I.
+% 
+%   [P, K] = DARE(sys, ...) solves the discrete algebraic Riccati
+%   equation and returns the gain matrix, K.
 
 % References:
-% Ku?era, Vladimír. "The discrete Riccati equation of optimal control."
+% Kucera, Vladimir. "The discrete Riccati equation of optimal control."
 % Kybernetika 8.5 (1972): 430-447.
 
 p = inputParser;
 [A, B, ~, ~] = getabcd(sys);
-% validateMatrix = @(M) isequal(M, M.') && isequal(size(A), size(M));
 validateMatrix = @(M) ...
     validateattributes(M, {'sym', 'numeric'}, ...
                        {'square', 'nonnegative', 'size', size(A)});
@@ -36,7 +44,7 @@ BB = B*Ri*B.';
 CC = Q;
 
 % Form the symplectic matrix.
-H = [A + BB*Ai*CC, -BB*Ai; -Ai*CC, Ai]
+H = [A + BB*Ai*CC, -BB*Ai; -Ai*CC, Ai];
 
 % Solve the continuous algebraic Riccati equation using the Hamiltonian.
 P = slvdham(H, 'exact', p.Results.exact);

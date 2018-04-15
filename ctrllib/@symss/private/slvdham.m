@@ -3,7 +3,7 @@ function P = slvdham(H, varargin)
 %   Detailed explanation goes here
 
 p = inputParser;
-addRequired(p, 'H');
+addRequired(p, 'H', @(H) issymplectic(H));
 addParameter(p, 'exact', false);
 parse(p, H, varargin{:});
 
