@@ -26,6 +26,30 @@ classdef careTest < matlab.unittest.TestCase
             testCase.verifyEqual(double(P), verP, 'AbsTol', 1E-3);
             testCase.verifyEqual(double(K), verK, 'AbsTol', 1E-3);
         end
+        
+        function testCare2(testCase)
+            % should return a solution to the continuous ARE.
+            A = [0, 1; 0, 0];
+            B = [0; 1];
+
+            Q = [1, 0; 0, 1];
+            R = 1;
+
+            syms x1 x2 u
+            sys = symss;
+            sys.states = [x1, x2];
+            sys.inputs = u;
+
+            sys.f = A*sys.states + B*sys.inputs;
+            [P, K] = care(sys, Q, R);
+            
+            verP = [    1.7321    1.0000
+                        1.0000    1.7321 ];
+            verK = [    1.0000    1.7321 ];
+            
+            testCase.verifyEqual(double(P), verP, 'AbsTol', 1E-3);
+            testCase.verifyEqual(double(K), verK, 'AbsTol', 1E-3);
+        end
     end
 end
 

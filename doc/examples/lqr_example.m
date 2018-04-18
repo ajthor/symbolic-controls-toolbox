@@ -18,9 +18,9 @@ R = rho;
 [K, P, L] = lqr(sys, Q, R);
 
 %%
-A = [-3 2; 1 1];
+A = [-3, 2; 1, 1];
 B = [0; 1];
-C = [1 -1];
+C = [1, -1];
 
 syms x1 x2 u
 sys = symss;
@@ -30,7 +30,7 @@ sys.f = A*sys.states + B*sys.inputs;
 sys.g = C*sys.states;
 
 R = 3;
-Q = eye(2);
+Q = C.'*C;
 
 [K, P, L] = lqr(sys, Q, R);
 
