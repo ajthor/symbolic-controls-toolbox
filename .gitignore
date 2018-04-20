@@ -1,0 +1,4 @@
+# Ignore Matlab Project Files
+
+*.prj
+*.mltbx
