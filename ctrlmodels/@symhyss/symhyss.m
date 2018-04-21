@@ -14,12 +14,17 @@ classdef (SupportExtensionMethods = true) symhyss < symss
     %       f(1, 3) corresponds to x3 = f3(t, x, u) in mode 1.
     %
     %   The conditions are specified as an inequality matrix, indicating
-    %   the condition for switching to a new mode. For example,
+    %   the guard condition for switching to a new mode. For example,
     %   
     %       cond(1, 2) = x < 0 switches from mode 1 to mode 2 when x >= 0.
     %
+    %   Discontinuous jump states can be specified by setting the guard
+    %   condition along the main diagonal to 0 for the mode. For example,
+    %
+    %       cond(2, 2) = 0 specifies that mode 2 is discontinuous.
+    %
     %   Additionally, the adjacency matrix defines the modes which are
-    %   available to switch to from the current mode. For example,
+    %   available from the current mode. For example,
     %
     %       edge(1, 2) = 1 means the system is allowed switch to mode 2
     %       from mode 1.
@@ -54,7 +59,7 @@ classdef (SupportExtensionMethods = true) symhyss < symss
     
     % Dependent properties.
     properties (Dependent, AbortSet = true)
-        % Switching Conditions
+        % Guard Conditions
         cond
         
         % Adjacency Matrix
@@ -71,12 +76,12 @@ classdef (SupportExtensionMethods = true) symhyss < symss
         
         % Switching Conditions
         % nxn cell array. Each row and column represents a mode. Each
-        % element in the cell array represents the switching conditions for
-        % activating the mode.
+        % element in the cell array represents the guard conditions for
+        % switching the mode.
         cond_ = sym.empty
         
         % Adjacency Matrix 
-        % The elements of the adjacency matrix represent the possibility of
+        % The elements of the adjacency matrix represent the probability of
         % switching to another mode.
         edge_ = double.empty
     end
@@ -252,7 +257,7 @@ classdef (SupportExtensionMethods = true) symhyss < symss
             n = max([nf, nc, mc, ne, mc]);
             
             if ~isequal(size(obj.cond_), [n, n])
-                C = zeros([n, n], 'sym');
+                C = ones([n, n], 'sym');
                 if ~isempty(obj.cond_)
                     C(1:nc, 1:mc) = obj.cond_;
                 end

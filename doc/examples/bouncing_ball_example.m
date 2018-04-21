@@ -17,6 +17,7 @@ sys.cond(1, 2) = x1 >= 0;
 sys.f(2, 1) = -x1;
 sys.f(2, 2) = -0.8*x2;
 sys.cond(2, 1) = x1 <= 0 & x2 <= 0;
+sys.cond(2, 2) = 0;
 
 %% Simulate the System
 tspan = [0 10];
