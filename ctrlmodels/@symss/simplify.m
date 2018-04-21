@@ -11,10 +11,6 @@ function sys = simplify(sys, varargin)
 % 
 %   See also sym/simplify
 
-p = inputParser;
-addRequired(p, 'sys');
-parse(p, sys);
-
 sys.f = simplify(sys.f, varargin{:});
 sys.g = simplify(sys.g, varargin{:});
 

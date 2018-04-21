@@ -92,8 +92,6 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
             end
 
             if ni ~= 0
-                p = inputParser;
-
                 if ni == 1
                     arg = varargin{1};
                     if isa(arg, 'symtf')
