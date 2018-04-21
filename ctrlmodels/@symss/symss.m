@@ -61,98 +61,95 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         % Input Variables
         inputs
     end
-    
+
     % Hidden dependent properties.
     properties (Dependent, Hidden)
         % Sampling Time
         Ts
     end
-    
+
     % Internal properties.
     properties (Access = private)
         f_ = sym.empty
         g_ = sym.empty
-        
+
         states_ = sym.empty
         inputs_ = sym.empty
-        
+
         Ts_ = double.empty
     end
-    
+
     % Constructor
     methods
         function obj = symss(varargin)
             %SYMSS Construct a symbolic state space model.
             ni = nargin;
-            
-            % Quick copy of class.
+
+            % Quick handle copy of class.
             if ni == 1 && isa(varargin{1}, 'symss')
                 obj = varargin{1};
                 return;
             end
-            
+
             if ni ~= 0
-                if ismatrix(varargin{1})
-                    if ni == 1 
-                        if isa(varargin{1}, 'symtf')
-                            % Convert transfer function to state space.
-                            obj = symtf2symss(varargin{1});
-                        elseif isscalar(varargin{1})
-                            % First argument is just a number. This
-                            % indicates a discrete system.
-                            obj.Ts_ = varargin{1};
-                        end
-                    elseif ni == 2 && ...
-                            isa(varargin{1}, 'sym') && ...
-                            isa(varargin{2}, 'sym')
-                        obj.states_ = reshape(cell2sym(varargin(1)), [], 1);
-                        obj.inputs_ = reshape(cell2sym(varargin(2)), [], 1);
-                    elseif ni == 4
-                        % Ensure symbolic.
-                        for k = 1:ni
-                            varargin{k} = sym(varargin{k});
-                        end
-                        
-                        validateabcd(varargin{:})
-                        
-                        n = size(varargin{1}, 1);
-                        m = size(varargin{2}, 2);
-                        obj.states_ = sym('x', [n, 1]);
+                p = inputParser;
 
-                        obj.f_ = varargin{1}*obj.states_;
-                        obj.g_ = varargin{3}*obj.states_;
-
-                        if (all(varargin{2} == 0) - m) ~= 0
-                            obj.inputs_ = sym('u', [m, 1]);
-                            obj.f_ = obj.f_ + varargin{2}*obj.inputs_;
-                            obj.g_ = obj.g_ + varargin{4}*obj.inputs_;
-                        end
+                if ni == 1
+                    arg = varargin{1};
+                    if isa(arg, 'symtf')
+                        % Convert transfer function to state space.
+                        obj = symtf2symss(arg);
                     else
-                        error('symss:invalidArgument', ...
-                              'Invalid arguments to symss constructor.');
+                        % First argument is just a number.
+                        % This indicates a discrete system.
+                        validateattributes(arg, {'numeric'}, {'nonnegative'});
+                        obj.Ts_ = double(arg);
+                    end
+                elseif ni == 2
+                    validateattributes(varargin{1}, {'sym'}, {'nonempty'});
+                    validateattributes(varargin{2}, {'sym'}, {'nonempty'});
+                    obj.states_ = reshape(cell2sym(varargin(1)), [], 1);
+                    obj.inputs_ = reshape(cell2sym(varargin(2)), [], 1);
+                elseif ni == 4
+                    % Ensure symbolic.
+                    for k = 1:ni
+                        varargin{k} = sym(varargin{k});
+                    end
+
+                    validateabcd(varargin{:})
+
+                    n = size(varargin{1}, 1);
+                    m = size(varargin{2}, 2);
+                    obj.states_ = sym('x', [n, 1]);
+
+                    obj.f_ = varargin{1}*obj.states_;
+                    obj.g_ = varargin{3}*obj.states_;
+
+                    if (all(varargin{2} == 0) - m) ~= 0
+                        obj.inputs_ = sym('u', [m, 1]);
+                        obj.f_ = obj.f_ + varargin{2}*obj.inputs_;
+                        obj.g_ = obj.g_ + varargin{4}*obj.inputs_;
                     end
                 else
                     error('symss:invalidArgument', ...
-                          'Invalid argument of type %s', ...
-                          class(varargin{1}));
+                          'Invalid arguments to symss constructor.');
                 end
-            else
-                % No input arguments.
             end
         end
     end
-    
+
     % Utility methods.
     methods (Hidden)
-        function [A, B, C, D] = getabcd(obj)
+        function varargout = getabcd(obj)
             %GETABCD Helper function to return state space matrices.
-            A = obj.A;
-            B = obj.B;
-            C = obj.C;
-            D = obj.D;
+            nout = nargout;
+            varargout{1} = obj.A;
+            if nout > 1, varargout{2} = obj.B; end
+            if nout > 2, varargout{3} = obj.C; end
+            if nout > 3, varargout{4} = obj.D; end
         end
     end
-    
+
     % Getters and setters.
     methods
         function obj = set.states(obj, varargin)
