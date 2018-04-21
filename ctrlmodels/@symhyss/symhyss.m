@@ -19,8 +19,11 @@ classdef (SupportExtensionMethods = true) symhyss < symss
     %       cond(1, 2) = x < 0 switches from mode 1 to mode 2 when x >= 0.
     %
     %   Discontinuous jump states can be specified by setting the guard
-    %   condition along the main diagonal to 0 for the mode. For example,
+    %   condition along the main diagonal to 0 for the mode. Any nonzero
+    %   numeric values along the main diagonal are considered continuous.
+    %   For example,
     %
+    %       cond(1, 1) = 1 specifies that mode 1 is continuous.
     %       cond(2, 2) = 0 specifies that mode 2 is discontinuous.
     %
     %   Additionally, the adjacency matrix defines the modes which are
@@ -29,7 +32,7 @@ classdef (SupportExtensionMethods = true) symhyss < symss
     %       edge(1, 2) = 1 means the system is allowed switch to mode 2
     %       from mode 1.
     %
-    %   By default, all edges are enabled. 
+    %   By default, all edges are enabled.
     %
     %   If a condition is specified for a specific transition, it also
     %   modifies the adjacency matrix to allow for the transition.
@@ -74,10 +77,10 @@ classdef (SupportExtensionMethods = true) symhyss < symss
         % 1xn cell array. Each column represents a mode. Each element in
         % the cell array is a 1xm symbolic array representing system
         % dynamics of the mode.
-        f_ = cell.empty(1, 0)
+        f_ = cell.empty(0, 1)
         
         % Switching Conditions
-        % nxn cell array. Each row and column represents a mode. Each
+        % nxn symbolic matrix. Each row and column represents a mode. Each
         % element in the cell array represents the guard conditions for
         % switching the mode.
         cond_ = sym.empty
@@ -297,7 +300,13 @@ classdef (SupportExtensionMethods = true) symhyss < symss
             switch S(1).type
                 case '.'
                     if numel(S) > 1
-                        idx = cell2mat(S(2).subs);
+                        idx = S(2).subs;
+                        c = strcmp(idx, ':');
+                        if any(c)
+                            idx(c) = {1:numel(obj.f)};
+                        end
+                        
+                        idx = cell2mat(idx);
                         
                         switch S(1).subs
                             case 'f'
