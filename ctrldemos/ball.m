@@ -34,6 +34,4 @@ sys.f(2, 2) = -k*x2;
 sys.cond(2, 1) = x1 <= 0 & x2 <= 0;
 sys.cond(2, 2) = 0;
 
-% sys.f = piecewise(x1 >= 0, f1, x1 <= 0 & x2 <= 0, f2);
-
 savedemo('ball', sys, {g, k});

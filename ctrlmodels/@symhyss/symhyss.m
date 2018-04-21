@@ -227,7 +227,7 @@ classdef (SupportExtensionMethods = true) symhyss < symss
             
             % Set any unset edges that correspond to set conditions 1.
             obj = privReshapeDim(obj);
-            idx = find(obj.cond_);
+            idx = find(obj.cond_(obj.cond_ ~= 1));
             for nz = idx.'
                 if obj.edge_(nz) == 0
                     obj.edge_(nz) = 1;
@@ -257,7 +257,7 @@ classdef (SupportExtensionMethods = true) symhyss < symss
             n = max([nf, nc, mc, ne, mc]);
             
             if ~isequal(size(obj.cond_), [n, n])
-                C = ones([n, n], 'sym');
+                C = eye([n, n], 'sym');
                 if ~isempty(obj.cond_)
                     C(1:nc, 1:mc) = obj.cond_;
                 end
@@ -310,13 +310,13 @@ classdef (SupportExtensionMethods = true) symhyss < symss
                             case 'f'
                                 obj = privSetF(obj, idx, varargin{:});
                             otherwise
-                                obj = builtin('subsasgn', obj, S, varargin);
+                                obj = builtin('subsasgn', obj, S, varargin{:});
                         end
                     else
-                        obj = builtin('subsasgn', obj, S, varargin);
+                        obj = builtin('subsasgn', obj, S, varargin{:});
                     end
                 otherwise
-                    obj = builtin('subsasgn', obj, S, varargin);
+                    obj = builtin('subsasgn', obj, S, varargin{:});
             end
         end
     end
