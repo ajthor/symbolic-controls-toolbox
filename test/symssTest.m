@@ -31,14 +31,26 @@ classdef symssTest < matlab.unittest.TestCase
             testCase.verifyNumElements(sys.inputs, 0);
         end
         
+        function testDiscreteSystemCreation(testCase)
+            % should be able to pass matrices to constructor.
+            sys = symss(1);
+            
+            testCase.verifyEqual(sys.Ts, 1);
+            
+            sys.Ts = 5;
+            
+            testCase.verifyEqual(sys.Ts, 5);
+        end
+        
         function testStateSpaceToTransferFunctionConversion(testCase)
             % should convert transfer function to state space
-            sys = symss([0 1 0; 0 0 1; -1 -2 -3], [0; 0; 1], [1 0 0], 0);
-            G = symss2symtf(sys);
+            sys1 = symss([0 1 0; 0 0 1; -1 -2 -3], [0; 0; 1], [1 0 0], 0);
+            
+            G = symss2symtf(sys1);
 
             sys2 = symtf2symss(G);
 
-            testCase.verifyEqual(sys.A, sys2.A);
+            testCase.verifyEqual(sys1.A, sys2.A);
         end
     end
 end

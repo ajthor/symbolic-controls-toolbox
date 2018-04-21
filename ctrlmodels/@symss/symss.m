@@ -85,7 +85,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
             %SYMSS Construct a symbolic state space model.
             ni = nargin;
 
-            % Quick handle copy of class.
+            % Quick copy.
             if ni == 1 && isa(varargin{1}, 'symss')
                 obj = varargin{1};
                 return;
@@ -95,17 +95,21 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
                 if ni == 1
                     arg = varargin{1};
                     if isa(arg, 'symtf')
-                        % Convert transfer function to state space.
+                        % Convert transfer function to state-space.
                         obj = symtf2symss(arg);
+                    elseif isa(arg, 'sym')
+                        % First argument is a vector of states.
+                        validateattributes(arg, {'sym'}, {'vector'});
+                        obj.states_ = reshape(cell2sym(varargin(1)), [], 1);
                     else
                         % First argument is just a number.
                         % This indicates a discrete system.
-                        validateattributes(arg, {'numeric'}, {'nonnegative'});
+                        validateattributes(arg, {'numeric'}, {'positive'});
                         obj.Ts_ = double(arg);
                     end
                 elseif ni == 2
-                    validateattributes(varargin{1}, {'sym'}, {'nonempty'});
-                    validateattributes(varargin{2}, {'sym'}, {'nonempty'});
+                    validateattributes(varargin{1}, {'sym'}, {'vector'});
+                    validateattributes(varargin{2}, {'sym'}, {'vector'});
                     obj.states_ = reshape(cell2sym(varargin(1)), [], 1);
                     obj.inputs_ = reshape(cell2sym(varargin(2)), [], 1);
                 elseif ni == 4
@@ -129,7 +133,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
                         obj.g_ = obj.g_ + varargin{4}*obj.inputs_;
                     end
                 else
-                    error('symss:invalidArgument', ...
+                    error('symss:invalidArguments', ...
                           'Invalid arguments to symss constructor.');
                 end
             end
@@ -152,10 +156,12 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
     methods
         function obj = set.states(obj, varargin)
             % Set state variables for state-space model.
+            validateattributes(varargin{:}, {'sym'}, {'vector'});
             obj.states_ = reshape(cell2sym(varargin), [], 1);
         end
         function obj = set.inputs(obj, varargin)
             % Set input variables for the state-space model.
+            validateattributes(varargin{:}, {'sym'}, {'vector'});
             obj.inputs_ = reshape(cell2sym(varargin), [], 1);
         end
 
@@ -218,9 +224,11 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
     % Overloadable protected methods.
     methods (Access = protected)
         function obj = privSetF(obj, varargin)
+            validateattributes(varargin{:}, {'sym'}, {'vector'});
             obj.f_ = formula(varargin{:});
         end
         function obj = privSetG(obj, varargin)
+            validateattributes(varargin{:}, {'sym'}, {'vector'});
             obj.g_ = formula(varargin{:});
         end
 

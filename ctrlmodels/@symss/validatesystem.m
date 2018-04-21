@@ -73,6 +73,7 @@ for k = 1:numel(attributes)
             va_(sys.g, S, {'numel', ng}, mf_, 'output equations');
     end
 end
+
     % Helper function to get arguments from list.
     function arg = getarg(attr, k)
         try

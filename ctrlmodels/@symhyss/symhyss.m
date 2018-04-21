@@ -94,41 +94,29 @@ classdef (SupportExtensionMethods = true) symhyss < symss
     % Constructor
     methods
         function obj = symhyss(varargin)
-            %SYMHYSS Construct an instance of this class
-            %   Detailed explanation goes here
+            %SYMHYSS Construct a hybrid state-space model.
             ni = nargin;
 
+            % Quick copy.
             if ni == 1 && isa(varargin{1}, 'symhyss')
                 obj = varargin{1};
                 return;
             end
 
             if ni ~= 0
-                % Handle states.
-                if isscalar(varargin{1})
-                    % First argument is numeric.
-                    n = varargin{1};
-                    obj.states_ = sym('x', [n, 1]);
-                elseif isa(varargin{1}, 'sym')
-                    obj.states = varargin(1);
+                if ni == 1
+                    arg = varargin{1};
+                    validateattributes(arg, {'sym'}, {'vector'});
+                    obj.states_ = reshape(cell2sym(varargin(1)), [], 1);
+                elseif ni == 2
+                    validateattributes(varargin{1}, {'sym'}, {'vector'});
+                    validateattributes(varargin{2}, {'sym'}, {'vector'});
+                    obj.states_ = reshape(cell2sym(varargin(1)), [], 1);
+                    obj.inputs_ = reshape(cell2sym(varargin(2)), [], 1);
                 else
-                    error('symhyss:invalidArgument', ...
-                          'Invalid argument to symhyss constructor.');
+                    error('symhyss:invalidArguments', ... 
+                          'Invalid arguments to symhyss constructor.'); 
                 end
-
-                % Handle inputs.
-                if isscalar(varargin{2})
-                    % Second argument is numeric.
-                    m = varargin{2};
-                    obj.inputs_ = sym('u', [m, 1]);
-                elseif isa(varargin{2}, 'sym')
-                    obj.inputs = varargin(2);
-                else
-                    error('symhyss:invalidArgument', ...
-                          'Invalid argument to symhyss constructor.');
-                end
-            else
-                % No output arguments.
             end
         end
     end
@@ -228,9 +216,11 @@ classdef (SupportExtensionMethods = true) symhyss < symss
         end
 
         function obj = privSetCond(obj, varargin)
+            validateattributes(varargin{:}, {'sym'}, {'nonempty'});
             obj.cond_ = formula(varargin{:});
         end
         function obj = privSetEdge(obj, varargin)
+            validateattributes(varargin{:}, {'sym'}, {'nonempty'});
             obj.edge_ = varargin{:};
         end
 
