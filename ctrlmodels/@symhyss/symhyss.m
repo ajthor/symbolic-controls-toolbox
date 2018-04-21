@@ -29,6 +29,8 @@ classdef (SupportExtensionMethods = true) symhyss < symss
     %       edge(1, 2) = 1 means the system is allowed switch to mode 2
     %       from mode 1.
     %
+    %   By default, all edges are enabled. 
+    %
     %   If a condition is specified for a specific transition, it also
     %   modifies the adjacency matrix to allow for the transition.
     %
@@ -224,15 +226,6 @@ classdef (SupportExtensionMethods = true) symhyss < symss
 
         function obj = privSetCond(obj, varargin)
             obj.cond_ = formula(varargin{:});
-            
-            % Set any unset edges that correspond to set conditions 1.
-            obj = privReshapeDim(obj);
-            idx = find(obj.cond_(obj.cond_ ~= 1));
-            for nz = idx.'
-                if obj.edge_(nz) == 0
-                    obj.edge_(nz) = 1;
-                end
-            end
         end
         function obj = privSetEdge(obj, varargin)
             obj.edge_ = varargin{:};
@@ -265,7 +258,7 @@ classdef (SupportExtensionMethods = true) symhyss < symss
             end
             
             if ~isequal(size(obj.edge_), [n, n])
-                E = zeros([n, n], 'double');
+                E = double(~eye([n, n], 'double'));
                 if ~isempty(obj.edge_)
                     E(1:ne, 1:me) = obj.edge_;
                 end
