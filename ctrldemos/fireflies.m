@@ -1,6 +1,21 @@
-%% Firefly Synchronization Demo System
-% Demo system showing firefly synchronization for 10 fireflies.
+%% Firefly Synchronization
+% The firefly synchronization demo for N fireflies is a hybrid system
+% showing a biological example of fireflies synchronizing their flashing.
 % 
+% When one firefly flashes, the other fireflies jump to a higher energy,
+% eventually synchronizing their flashes. 
+% 
+% Model:
+% 
+%   Mode 1                  Mode 2
+%    ___________         ________________________
+%   |           |       |                        |
+%   | dx/dt = 1 | ----> | dx/dt = (1 + epsilon)x |
+%   |           |       |                        |
+%   | x < 0     | <---- | x >= 1                 |
+%   |___________|       |________________________|
+% 
+% Constants:
 % epsilon - synchronization threshold
 
 syms epsilon
