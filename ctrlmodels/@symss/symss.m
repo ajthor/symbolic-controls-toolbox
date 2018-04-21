@@ -1,5 +1,5 @@
 classdef (SupportExtensionMethods = true) symss < ctrlmodel
-    %SYMSS Construct symbolic state-space model or convert model to 
+    %SYMSS Construct symbolic state-space model or convert model to
     %symbolic state-space.
     %
     %   sys = SYMSS creates an empty state-space representation.
@@ -15,7 +15,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
     %   equations and output equations.
     %
     %   sys = SYMSS(A, B, C, D)
-    %   Creates a state space model using the matrices A, B, C, D. 
+    %   Creates a state space model using the matrices A, B, C, D.
     %
     %       dx/dt = Ax(t) + Bx(t)
     %        y(t) = Cx(t) + Du(t)
@@ -26,22 +26,22 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
     %
     %   sys = SYMSS(states, inputs) creates a state space model
     %   using the state variables and input variables provided.
-    %   
+    %
     %   sys = SYMSS(Ts) creates a discrete state space model with sampling
     %   time Ts.
-    
+
     %   References:
     %   Antsaklis, Panos J., and Anthony N. Michel. A linear systems
-    %   primer. Vol. 1. Boston: Birkhäuser, 2007.
-    
+    %   primer. Vol. 1. Boston: Birkhï¿½user, 2007.
+
     % State equations.
-    properties (Dependent, AbortSet = true)
+    properties (Dependent)
         % State Equations
         f
         % Ouput Equations
         g
     end
-    
+
     % State matrices.
     properties (SetAccess = immutable, Dependent)
         % State matrix A
@@ -53,7 +53,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         % Feed-forward matrix D
         D
     end
-    
+
     % State variables.
     properties (Dependent)
         % State Variables
@@ -163,10 +163,10 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
             % Set input variables for the state-space model.
             obj.inputs_ = reshape(cell2sym(varargin), [], 1);
         end
-        
+
         function states = get.states(obj), states = obj.states_; end
         function inputs = get.inputs(obj), inputs = obj.inputs_; end
-        
+
         function obj = set.f(obj, varargin)
             % Set state equation f(x)
             obj = privSetF(obj, varargin{:});
@@ -175,10 +175,10 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
             % Set output equation g(x)
             obj = privSetG(obj, varargin{:});
         end
-        
+
         function f = get.f(obj), f = privGetF(obj); end
         function g = get.g(obj), g = privGetG(obj); end
-        
+
         function A = get.A(obj)
             A = privGetA(obj);
         end
@@ -191,17 +191,17 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         function D = get.D(obj)
             D = privGetD(obj);
         end
-        
+
         function obj = set.Ts(obj, varargin)
             % Set sampling time Ts.
             obj.Ts_ = varargin{1};
         end
-        
+
         function Ts = get.Ts(obj)
             Ts = obj.Ts_;
         end
     end
-    
+
     % Overloaded operators.
     methods (Access = public)
         function obj = mtimes(obj, P)
@@ -209,7 +209,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
             %transformation syntax.
             obj = symss2symss(obj, P);
         end
-        
+
         function T = or(obj, expr)
             %OR Operator overloading to implement 'given that' syntax.
             a = assumptions;
@@ -219,7 +219,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
             assume(a);
         end
     end
-    
+
     % Overloadable protected methods.
     methods (Access = protected)
         function obj = privSetF(obj, varargin)
@@ -228,31 +228,31 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
         function obj = privSetG(obj, varargin)
             obj.g_ = formula(varargin{:});
         end
-        
+
         function f = privGetF(obj)
             f = reshape(obj.f_, [], 1);
         end
         function g = privGetG(obj)
             g = reshape(obj.g_, [], 1);
         end
-        
+
         function A = privGetA(obj)
-            [tx, tu, tf, ~] = varsub(obj);
+            [tx, tu, tf] = subvars(obj);
             A = jacobian(tf, tx);
             A = subs(A, [tx; tu], [obj.states_; obj.inputs_]);
         end
         function B = privGetB(obj)
-            [tx, tu, tf, ~] = varsub(obj);
+            [tx, tu, tf] = subvars(obj);
             B = jacobian(tf, tu);
             B = subs(B, [tx; tu], [obj.states_; obj.inputs_]);
         end
         function C = privGetC(obj)
-            [tx, tu, ~, tg] = varsub(obj);
+            [tx, tu, ~, tg] = subvars(obj);
             C = jacobian(tg, tx);
             C = subs(C, [tx; tu], [obj.states_; obj.inputs_]);
         end
         function D = privGetD(obj)
-            [tx, tu, ~, tg] = varsub(obj);
+            [tx, tu, ~, tg] = subvars(obj);
             D = jacobian(tg, tu);
             D = subs(D, [tx; tu], [obj.states_; obj.inputs_]);
         end
