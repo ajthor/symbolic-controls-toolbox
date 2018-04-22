@@ -1,18 +1,18 @@
-function T = linearize(sys, varargin)
+function sys = linearize(sys, varargin)
 %LINEARIZE Linearize a system around an equilibrium point.
 %
 %   T = LINEARIZE(sys) linearizes a system around an equilibrium point. If
 %   no point is specified, the system is linearized around f(x) = 0.
 %
 %   T = LINEARIZE(sys, eq) linearizes a system around the equilibrium point
-%   defined by eq. For instance, T = LINEARIZE(sys, [x1(0) x2(0)]).
+%   defined by eq. For instance, T = LINEARIZE(sys, [x1(0), x2(0)]).
 
 p = inputParser;
-validateEQ = @(EQ) ...
-    validateattributes(EQ, {'sym', 'numeric', 'cell'}, ...
-                           {'size', size([sys.states; sys.inputs])});
+sz = size([sys.states; sys.inputs]);
 addRequired(p, 'sys');
-addOptional(p, 'eq', zeros(size([sys.states; sys.inputs])), validateEQ);
+addOptional(p, 'eq', zeros(sz), ...
+    @(arg) validateattributes(arg, {'sym', 'numeric', 'cell'}, ...
+                                   {'size', sz}));
 parse(p, sys, varargin{:});
 
 eq = p.Results.eq;
@@ -20,16 +20,15 @@ if iscell(eq)
     eq = cell2sym(eq);
 end
 
-[A, B, C, D] = getabcd(sys);
+[A, B, C, D] = sys.getabcd();
 M = cellfun(@(X) {subs(X, [sys.states; sys.inputs], eq)}, {A, B, C, D});
 
-T = sys;
-T.f = M{1}*T.states;
-T.g = M{3}*T.states;
+sys.f = M{1}*sys.states;
+sys.g = M{3}*sys.states;
 
 if ~isempty(B)
-     T.f = T.f + M{2}*T.inputs;
-     T.g = T.g + M{4}*T.inputs;
+     sys.f = sys.f + M{2}*sys.inputs;
+     sys.g = sys.g + M{4}*sys.inputs;
 end
 
 end

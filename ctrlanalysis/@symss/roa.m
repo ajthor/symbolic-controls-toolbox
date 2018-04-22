@@ -36,7 +36,7 @@ if any(strcmp('V', p.UsingDefaults))
     linsys = linearize(sys);
 
     Q = eye(size(sys.A));
-    [~, V] = lyap(linsys, Q);
+    V = lyap(linsys, Q);
 else
     V = p.Results.V;
 end

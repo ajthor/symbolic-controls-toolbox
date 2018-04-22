@@ -70,13 +70,13 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
 
     % Internal properties.
     properties (Access = private)
-        f_ = sym.empty
-        g_ = sym.empty
+        f_@sym
+        g_@sym
 
-        states_ = sym.empty
-        inputs_ = sym.empty
+        states_@sym
+        inputs_@sym
 
-        Ts_ = double.empty
+        Ts_@double
     end
 
     % Constructor
