@@ -21,7 +21,7 @@ T = sym('t');
 
 % Get the state equations and conditions.
 [tx, tu, tf] = subvars(sys);
-conds = sys.cond;
+conds = sys.guard;
 edges = sys.edge;
 
 % Substitute variables into the input.

@@ -18,10 +18,9 @@ if nout > 1
 end
 
 if nout > 2
-    nmodes = numel(obj.f_);
-    tf = cell([1, nmodes]);
+    tf = cell([1, obj.nmodes]);
 
-    for k = 1:nmodes
+    for k = 1:obj.nmodes
         tf{k} = subs(obj.f(k), [obj.states; obj.inputs], [tx; tu]);
     end
     
