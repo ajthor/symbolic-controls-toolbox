@@ -40,7 +40,7 @@ classdef symhyssTest < matlab.unittest.TestCase
             sys.f(1, 1) = 1;
         end
 
-        function testSetModes(testcase)
+        function testSetModes(testCase)
             syms x
             sys = symhyss;
             sys.states = x;
