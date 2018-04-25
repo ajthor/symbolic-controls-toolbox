@@ -1,4 +1,4 @@
-classdef mdp < symss
+classdef mdp < handle
     %MDP Construct Markov decision process (MDP) or convert system to MDP.
     %
     %   m = MDP creates an empty Markov decision process.
@@ -24,7 +24,7 @@ classdef mdp < symss
     %       X is help in R.
     %
     %   In the case of discrete-time systems, the transition probabilities
-    %   P : XxUxX -> [0, 1] describe the probability P{x'|x,u} that the
+    %   P : X x U x X -> [0, 1] describe the probability P{x'|x,u} that the
     %   system will transition to state x' given the current state x and
     %   control input u.
     %
@@ -56,14 +56,21 @@ classdef mdp < symss
     end
 
     properties (Access = private)
+        % x in X
         X_
-        U_
+        % u in U
+        U_@cell
+        % P : X x U x X -> [0, 1]
         P_
+        % R : X x U x X -> R
         R_
         
-        gamma_
+        gamma_@double
         
-        Td_
+        Td_@double
+        
+        % pi : X x U -> [0, 1]
+        policy_
     end
 
     % Constructor
@@ -81,10 +88,9 @@ classdef mdp < symss
             if ni ~= 0
                 if ni == 1
                     arg = varargin{1};
-                    obj.states = arg.states;
-                    obj.inputs = arg.inputs;
-                    obj.f = arg.f;
-                    obj.g = arg.g;
+                    if isa(arg, 'symss')
+%                         obj.X = arg.states;
+                    end
                 end
             end
         end
@@ -96,17 +102,82 @@ classdef mdp < symss
             % Set the current state for the MDP.
             obj.X_ = X;
         end
+        
         function obj = set.U(obj, U)
             % Set the allowable inputs for the MDP.
+%             if ~isa(U{:}, 'sym')
+%                 U{:} = sym(U{:});
+%             end
             obj.U_ = U;
         end
+        
         function obj = set.P(obj, P)
             % Set the transition probabilities for the MDP.
+            if ~isscalar(P)
+                szX = numel(obj.X_);
+                szU = length(obj.U_);
+                validateattributes(P, {'numeric'}, ...
+                                   {'size', [szX, szX, szU]});
+%                 for k = 1:size(P, 1)
+%                     if any(sum(P(k, :, :)) ~= 1)
+%                         error(['Probabilities in row ', num2str(k), ...
+%                                ' do not sum to 1.']);
+%                     end
+%                 end
+            else
+                validateattributes(P, {'symfun', 'function_handle'}, ...
+                                      {'scalar'});
+                args = argnames(P);
+                if any(~has([obj.X_], args))
+                    error(['Function must have all states ', ...
+                           'as parameters.']);
+                end
+            end
             obj.P_ = P;
         end
+        
         function obj = set.R(obj, R)
             % Set the reward matrix for the MDP.
+            if ~isscalar(R)
+                szX = numel(obj.X_);
+                szU = length(obj.U_);
+                validateattributes(R, {'numeric'}, ...
+                                   {'size', [szX, szX, szU]});
+            else
+                validateattributes(R, {'symfun', 'function_handle'}, ...
+                                      {'scalar'});
+                args = argnames(R);
+                if any(~has([obj.X_], args))
+                    error(['Function must have all states ', ...
+                           'as parameters.']);
+                end
+            end
             obj.R_ = R;
+        end
+        
+        function obj = set.gamma(obj, gamma)
+            % Set the discount value for the MDP.
+            validateattributes(gamma, {'numeric'}, {'nonnegative', '<', 1});
+            obj.gamma = gamma;
+        end
+        
+        function obj = set.policy(obj, policy)
+            % Set the policy for the MDP.
+            if ~isscalar(policy)
+                szX = length(obj.X_);
+                szU = length(obj.U_);
+                validateattributes(policy, {'numeric'}, ...
+                                   {'size', [szX, szU]});
+            else
+                validateattributes(policy, {'symfun', 'function_handle'}, ...
+                                      {'scalar'});
+                args = argnames(policy);
+                if any(~has([obj.X_], args))
+                    error(['Function must have all states ', ...
+                           'as parameters.']);
+                end
+            end
+            obj.policy_ = policy;
         end
 
         function X = get.X(obj)
@@ -116,10 +187,49 @@ classdef mdp < symss
             U = obj.U_;
         end
         function P = get.P(obj)
-            P = obj.P_;
+            if isempty(obj.P_)
+                if ~isempty(obj.X_) && ~isempty(obj.U_)
+                    % If the probability matrix is empty, return a 
+                    % size[X, X, U] matrix of zeros.
+                    szX = numel(obj.X_);
+                    szU = length(obj.U_);
+                    P = zeros([szX, szX, szU]);
+                else
+                    P = double.empty;
+                end
+            else
+                P = obj.P_;
+            end
         end
         function R = get.R(obj)
-            R = obj.R_;
+            if isempty(obj.R_)
+                if ~isempty(obj.X_) && ~isempty(obj.U_)
+                    % If the reward matrix is empty, return a 
+                    % size[X, X, U] matrix of zeros.
+                    szX = numel(obj.X_);
+                    szU = length(obj.U_);
+                    R = zeros([szX, szX, szU]);
+                else
+                    R = double.empty;
+                end
+            else
+                R = obj.R_;
+            end
+        end
+        function p = get.policy(obj)
+            if isempty(obj.policy_)
+                if ~isempty(obj.X_) && ~isempty(obj.U_)
+                    % If the reward matrix is empty, return a size[X, U]
+                    % matrix of zeros.
+                    szX = numel(obj.X_);
+                    szU = length(obj.U_);
+                    p = zeros([szX, szU]);
+                else
+                    p = double.empty;
+                end
+            else
+                p = obj.policy_;
+            end
         end
     end
 end
