@@ -1,19 +1,21 @@
-function [X, Xf] = dspace(sys, blocks, varargin)
+function varargout = dspace(m, sys, blocks, varargin)
 %DSPACE Discretize a state-space into blocks.
 %
-%   X = DSPACE(sys, blocks) computes a discretized state space for use with
-%   an MDP.
+%   X = DSPACE(m, sys, blocks) computes a discretized state space for use
+%   with an MDP.
 %
 %   The function partitions a continuous state space into discrete chunks,
 %   allowing the MDP to utilize a discretized model for planning.
 %
-%   The function returns a symbolic matrix of inequalities, which can be
-%   used to determine the current partition the state is currently in.
+%   [X, in, Xf] = DSPACE(m, sys, blocks) computes a discretized state space
+%   for use with an MDP and also returns a symbolic matrix of inequalities
+%   and an indexing function, which can be used to determine the current
+%   partition the state is currently in.
 %
 %   For example, discretizing a 2-D state space using the following
 %   command:
 %
-%   X = DSPACE(sys, {[0, 3, 8, 10], [0, 2, 5]})
+%   X = DSPACE(m, sys, {[0, 3, 8, 10], [0, 2, 5]})
 %
 %   would create the following space discretization:
 %
@@ -39,19 +41,21 @@ function [X, Xf] = dspace(sys, blocks, varargin)
 %
 %   For the above example, this means that for {x1 = 9, x2 = 3}, the
 %   partition which would return a 1 when the equalities are evaluated
-%   would be {3, 2}.
+%   would be {3, 2} = 6.
 %
 %   The inequalities default to include the bounds to the right, meaning
 %   for {x1 = 8, x2 = 2} in the above example, the partition that would
-%   return a 1 would be {2, 1}. In order to flip the inequalities, set the
-%   'LeftInequalities' parameter to true. If set, the above example would
-%   evaluate to partition {3, 2}.
+%   return a 1 would be {2, 1} = 2. In order to flip the inequalities, set
+%   the 'LeftInequalities' parameter to true. If set, the above example
+%   would evaluate to partition {3, 2} = 6.
 %
 %   Example:
 %       syms x1 x2
+%       sys = symss
+%       sys.states = [x1, x2]
+%       
 %       m = mdp
-%       m.states = [x1, x2]
-%       [X, Xf] = DSPACE(m, {[0, 3, 8, 10], [0, 2, 5]})
+%       [X, in, Xf] = DSPACE(m, {[0, 3, 8, 10], [0, 2, 5]})
 %       [x1, x2] = ind2sub(size(X), Xf(5, 2))
 %
 %   Outputs:
@@ -61,10 +65,11 @@ function [X, Xf] = dspace(sys, blocks, varargin)
 %   See also mdp
 
 p = inputParser;
+addRequired(p, 'm');
 addRequired(p, 'sys');
 addRequired(p, 'blocks');
 addParameter(p, 'LeftInequalities', false)
-parse(p, sys, blocks, varargin{:});
+parse(p, m, sys, blocks, varargin{:});
 
 left = p.Results.LeftInequalities;
 
@@ -78,14 +83,19 @@ n = numel(sz);
 L = cell(1, n);
 [L{:}] = ndgrid(blocks{:});
 
-X = sym(ones(sz - 1));
+X = double(ones(sz - 1));
+for k = 1:numel(X)
+    X(k) = k;
+end
+
+in = sym(ones(sz - 1));
 idx = cell(size(sz));
 
 for k = 1:numel(L)
     d = L{k};
 
-    for m = 1:numel(d)
-        [idx{:}] = ind2sub(sz, m);
+    for r = 1:numel(d)
+        [idx{:}] = ind2sub(sz, r);
         if any([idx{:}] >= sz)
             continue;
         end
@@ -94,22 +104,35 @@ for k = 1:numel(L)
 
         if left
             % Bounds are to the left.
-            X(idx{:}) = ...
+            in(idx{:}) = ...
                         d(idx{:}) <= sys.states(k) ...
                         & sys.states(k) < d(ni{:}) ...
-                        & X(idx{:});
+                        & in(idx{:});
         else
             % Default behavior. Bounds are to the right.
-            X(idx{:}) = ...
+            in(idx{:}) = ...
                         d(idx{:}) < sys.states(k) ...
                         & sys.states(k) <= d(ni{:}) ...
-                        & X(idx{:});
+                        & in(idx{:});
         end
     end
 end
 
-% Create helper function.
-Xf = symfun(X, sys.states);
-Xf = @(varargin) find(isAlways(Xf(varargin{:})));
+if nargout ~= 0
+    % Return the indices of the discretized space.
+    varargout{1} = X;
+    
+    if nargout > 1
+        varargout{2} = in;
+
+        % Create helper function.
+        Xf = symfun(in, sys.states);
+        Xf = @(varargin) find(isAlways(Xf(varargin{:})));
+
+        varargout{3} = Xf;
+    end
+else
+    m.X = X;
+end
 
 end

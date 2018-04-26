@@ -118,12 +118,12 @@ classdef mdp < handle
                 szU = length(obj.U_);
                 validateattributes(P, {'numeric'}, ...
                                    {'size', [szX, szX, szU]});
-%                 for k = 1:size(P, 1)
-%                     if any(sum(P(k, :, :)) ~= 1)
-%                         error(['Probabilities in row ', num2str(k), ...
-%                                ' do not sum to 1.']);
-%                     end
-%                 end
+                for k = 1:size(P, 1)
+                    if any(sum(P(k, :, :)) > 1)
+                        error(['Probabilities in row ', num2str(k), ...
+                               ' cannot exceed 1.']);
+                    end
+                end
             else
                 validateattributes(P, {'symfun', 'function_handle'}, ...
                                       {'scalar'});

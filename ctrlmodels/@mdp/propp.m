@@ -27,13 +27,13 @@ function varargout = propp(m, uidx, pattern)
 %   overlaid pattern may be displayed like below.
 %
 %       +-----+-----+-----+-----+       +-----+-----+-----+-----+
-%       |     |     |     |     |       |     |     |     |     |
-%       +-----+-----+-----+-----+       +-----+-----+-----+-----+
 %       |  0  | 0.8 |  0  |     |       |     |  0  | 0.8 |  0  |
-%     Y +-----+--^--+-----+-----+  -->  +-----+-----+--^--+-----+
+%       +-----+--^--+-----+-----+       +-----+-----+--^--+-----+
 %       | 0.1 |  X  | 0.1 |     |       |     | 0.1 |  X  | 0.1 |
-%       +-----+-----+-----+-----+       +-----+-----+-----+-----+
+%     Y +-----+-----+-----+-----+  -->  +-----+-----+-----+-----+
 %       |  0  |  0  |  0  |     |       |     |  0  |  0  |  0  |
+%       +-----+-----+-----+-----+       +-----+-----+-----+-----+
+%       |     |     |     |     |       |     |     |     |     |
 %       +-----+-----+-----+-----+       +-----+-----+-----+-----+
 %                   X
 %
@@ -115,32 +115,45 @@ for k = 1:numel(psz)
 end
 
 Z(psz{:}) = pattern{2};
-Z = reshape(Z, 1, []);
+% Z = reshape(Z, 1, []);
 zidx = find(isnan(Z));
-Z(zidx) = nanval;
+% Z(zidx) = nanval;
 
 nidx = numel([idx{:}]);
 
 P = m.P;
 
 for k = 1:numel(pidx)
-    if pidx(k) < zidx
-        rem = sum(Z(1:zidx - pidx(k)));
-        
-        P(pidx(k), 1:pidx(k) - 1, uidx) = Z(zidx - pidx(k) + 1:zidx - 1);
-        
-        P(pidx(k), pidx(k):pidx(k) + nidx - zidx, uidx) = Z(zidx:end);
-        
-        P(pidx(k), pidx(k), uidx) = Z(pidx(k)) + rem;
-    elseif pidx(k) > zidx
-        rem = sum(Z(zidx + 1:end));
-        
-        P(pidx(k), pidx(k) - nidx + zidx:pidx(k) - 1, uidx) = Z(1:zidx - 1);
-        
-        P(pidx(k), pidx(k):end, uidx) = Z(zidx:pidx(k) - zidx) + rem;
-    else
-        P(pidx(k), :, uidx) = Z(:);
-    end
+    Zt = squeezepattern(m.X, Z, pidx(k));
+    Zt = reshape(Zt, 1, []);
+    
+    Zt(isnan(Zt)) = 1 - sum(Zt, 'omitnan');
+    
+%     P(pidx(k), pidx(k):pidx(k) + length(Zt) - 1, uidx) = Zt;
+    P(pidx(k), 1:length(Zt), uidx) = Zt;
+    
+%     if pidx(k) < zidx
+% %         prerem = sum(pre(1:pidx(k) - 1));
+% %         postrem = sum(post(pidx(k) + 1:
+% 
+%         P(pidx(k), 1:pidx(k) - 1, uidx) = pre(end - pidx(k) + 1:end);
+%         P(pidx(k), pidx(k), uidx) = post(1);
+%         P(pidx(k), pidx(k) + 1, uidx) = post(2:end);
+% 
+% %         P(pidx(k), 1:pidx(k) - 1, uidx) = Z(zidx - pidx(k) + 1:zidx - 1);
+% %
+% %         P(pidx(k), pidx(k):pidx(k) + nidx - zidx, uidx) = Z(zidx:end);
+% %
+% %         P(pidx(k), pidx(k), uidx) = Z(pidx(k)) + rem;
+%     elseif pidx(k) > zidx
+% %         rem = sum(Z(zidx + 1:end));
+% %
+% %         P(pidx(k), pidx(k) - nidx + zidx:pidx(k) - 1, uidx) = Z(1:zidx - 1);
+% %
+% %         P(pidx(k), pidx(k):end, uidx) = Z(zidx:pidx(k) - zidx) + rem;
+%     else
+%         P(pidx(k), :, uidx) = Z(:);
+%     end
 end
 
 if nargout ~= 0
