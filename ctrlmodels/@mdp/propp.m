@@ -1,20 +1,21 @@
-function varargout = propp(m, uidx, pattern)
+function varargout = propp(m, xidx, uidx, pattern)
 %PROPP Propagate probability pattern through matrix.
 %
-%   P = PROPP(m, uidx, pattern)
+%   P = PROPP(m, xidx, uidx, pattern)
 %
 %   Propagate probability pattern through matrix.
 %
 %       m - mdp object
+%       xidx - state index
 %       uidx - input index
 %       pattern - probability pattern
 %
-%   The probability pattern has the form: {[idx], [probability]}, where idx
-%   can be an array or cell, and probability is a matrix.
+%   The pattern must have exactly one NaN value, which serves as an
+%   alignment indicator.
 %
-%   Specify ignored values of the state with NaN. Specify the pattern as a
-%   matrix centered around the current state, with the state specified by
-%   NaN.
+%   Specify all values of the state ':' with NaN. Specify the pattern as a
+%   matrix centered around the current state, with the indicator specified
+%   by NaN.
 %
 %   If no output is specified, the function updates P in the mdp object.
 %
@@ -28,15 +29,15 @@ function varargout = propp(m, uidx, pattern)
 %   propagate the probabilities through the matrix by specifying the
 %   pattern as:
 %
-%   prob = [   0, 0.8,   0 ;
-%            0.1, NaN, 0.1 ;
-%              0,   0,   0 ]
+%   pattern = [  0 , 0.8,  0  ;
+%               0.1, NaN, 0.1 ;
+%                0 ,  0 ,  0  ]
 %
-%   P = PROPP(m, 1, {[NaN, NaN], prob});
-%             ^  ^        ^        ^
-%             |  |        |        probability pattern
-%             |  |        {x1, x2} values to iterate over (NaN for all)
-%             |  input index
+%   P = PROPP(m, [NaN, NaN], 1, pattern);
+%             ^       ^      ^     ^
+%             |       |      |     probability pattern
+%             |       |      input index
+%             |       {x1, x2} values to iterate over (NaN for all)
 %             mdp object
 %
 %   This will iterate over all specified values of X and Y and place the
@@ -111,38 +112,36 @@ function varargout = propp(m, uidx, pattern)
 %       +-----+-----+-----+-----+       +-----+-----+-----+-----+
 %                   Y
 %
-%   See also mpc, propr
+%   See also mdp, propr, propr2
 
 % References:
 % https://people.eecs.berkeley.edu/~pabbeel/cs287-fa12/slides/mdps-exact-methods.pdf
 
 p = inputParser;
 addRequired(p, 'm');
+addRequired(p, 'xidx', ...
+    @(arg) validateattributes(arg, {'numeric', 'cell'}, ...
+                              {'row', 'numel', ndims(m.X)}));
 addRequired(p, 'uidx', ...
     @(arg) validateattributes(arg, {'numeric'}, ...
                               {'scalar', 'positive', '<=', length(m.U)}));
 addRequired(p, 'pattern', ...
-    @(arg) validateattributes(arg, {'cell'}, {'size', [NaN, 2]}));
-parse(p, m, uidx, pattern);
+    @(arg) validateattributes(arg, {'numeric'}, {'nonnegative'}));
+parse(p, m, xidx, uidx, pattern);
 
-validateattributes(pattern{1}, {'numeric', 'cell'}, ...
-                   {'size', [1, ndims(m.X)]});
-validateattributes(pattern{2}, {'numeric'}, ...
-                               {'nonnegative', 'ndims', ndims(m.X)});
-
-psum = sum(pattern{2}(:), 'omitnan');
+psum = sum(pattern(:), 'omitnan');
 if psum > 1
     error('Probabilities in pattern must not exceed 1.');
 end
 
-if numel(find(isnan(pattern{2}))) ~= 1
+if numel(find(isnan(pattern))) ~= 1
     error('Pattern must have exactly one ''NaN'' value.');
 end
 
-if ~iscell(pattern{1})
-    idx = num2cell(pattern{1});
+if ~iscell(xidx)
+    idx = num2cell(xidx);
 else
-    idx = pattern{1};
+    idx = xidx;
 end
 
 % Replace NaN values in indices.
@@ -159,12 +158,12 @@ pidx = find(Z);
 Z(idx{:}) = 0;
 
 % Convert pattern to an array.
-psz = num2cell(size(pattern{2}));
+psz = num2cell(size(pattern));
 for k = 1:numel(psz)
     psz{k} = 1:psz{k};
 end
 
-Z(psz{:}) = pattern{2};
+Z(psz{:}) = pattern;
 
 P = m.P;
 

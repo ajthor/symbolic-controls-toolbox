@@ -18,10 +18,10 @@ sys = subs(sys, d, 1);
 m = mdp;
 
 %% Discretize the State Space
-% Because the system dynamics are
-% continuous, we need to create a discretized space for the MDP to work in.
-% We can either discretize the system dynamics, or discretize the state
-% space and interpolate the state from the current state of the system.
+% Because the system dynamics are continuous, we need to create a
+% discretized space for the MDP to work in. We can either discretize the
+% system dynamics, or discretize the state space and interpolate the state
+% from the current state of the system.
 %
 % For this example, we create a 10x10 grid for the x/y coordinates, and
 % divide the angle of the nonholonomic robot into an approximate NSEW
@@ -78,16 +78,16 @@ m.U{3} = [pi/4, -pi/4];
 pattern = zeros(3, 3, 3);
 
 pattern(:, :, 2) = [0, 0.9, 0; 0.05, NaN, 0.05; 0, 0, 0];
-propp(m, 1, {[NaN, NaN, 1], pattern});
+propp(m, [NaN, NaN, 1], 1, pattern);
 
 pattern(:, :, 2) = [0, 0.05, 0; 0.9, NaN, 0; 0, 0.05, 0];
-propp(m, 1, {[NaN, NaN, 2], pattern});
+propp(m, [NaN, NaN, 2], 1, pattern);
 
 pattern(:, :, 2) = [0, 0, 0; 0.05, NaN, 0.05; 0, 0.9, 0];
-propp(m, 1, {[NaN, NaN, 3], pattern});
+propp(m, [NaN, NaN, 3], 1, pattern);
 
 pattern(:, :, 2) = [0, 0.05, 0; 0, NaN, 0.9; 0, 0.05, 0];
-propp(m, 1, {[NaN, NaN, 4], pattern});
+propp(m, [NaN, NaN, 4], 1, pattern);
 
 %%
 % Next, we define the pattern for turning left and right. For simplicity,
@@ -96,16 +96,16 @@ propp(m, 1, {[NaN, NaN, 4], pattern});
 pattern = zeros(1, 1, 4);
 
 pattern(:, :, :) = [NaN; 1; 0; 0];
-propp(m, 2, {[NaN, NaN, 1], pattern});
-propp(m, 2, {[NaN, NaN, 2], pattern});
-propp(m, 2, {[NaN, NaN, 3], pattern});
-propp(m, 2, {[NaN, NaN, 4], pattern});
+propp(m, [NaN, NaN, 1], 2, pattern);
+propp(m, [NaN, NaN, 2], 2, pattern);
+propp(m, [NaN, NaN, 3], 2, pattern);
+propp(m, [NaN, NaN, 4], 2, pattern);
 
 pattern(:, :, :) = [0; 0; 1; NaN];
-propp(m, 3, {[NaN, NaN, 1], pattern});
-propp(m, 3, {[NaN, NaN, 2], pattern});
-propp(m, 3, {[NaN, NaN, 3], pattern});
-propp(m, 3, {[NaN, NaN, 4], pattern});
+propp(m, [NaN, NaN, 1], 3, pattern);
+propp(m, [NaN, NaN, 2], 3, pattern);
+propp(m, [NaN, NaN, 3], 3, pattern);
+propp(m, [NaN, NaN, 4], 3, pattern);
 
 %% Define the Reward Matrix
 % From here, we need to define a reward matrix in order to set goals and
@@ -127,9 +127,9 @@ propp(m, 3, {[NaN, NaN, 4], pattern});
 % define negative rewards if the robot stays in the region, but the reward
 % value typically penalizes actions taken to reach an undesirable state.
 
-pattern = zeros(2, 1, 1);
-pattern(:, :, :) = [NaN; -100];
-propr(m, 1, {[9, NaN, 3], pattern});
+pattern = zeros(2, 1, 2);
+pattern(:, :, 1) = [NaN; -100];
+propr(m, [9, NaN, 3], 1, pattern);
 
 %%
 % Next we define an object that we want to avoid. In this case, we define
@@ -139,14 +139,14 @@ propr(m, 1, {[9, NaN, 3], pattern});
 % say that any action that would lead to the state is penalized. In order
 % to specify this, use |propr2|.
 
-pattern = zeros(5, 5, 1);
-pattern(:, :, :) = [   0,   0,  -2,   0,   0 ;
+pattern = zeros(5, 5, 3);
+pattern(:, :, 2) = [   0,   0,  -2,   0,   0 ;
                        0,  -2,  -5,  -2,   0 ;
                       -2,  -5, NaN,  -5,  -2 ;
                        0,  -2,  -5,  -2,   0 ;
                        0,   0,  -2,   0,   0 ];
 
-propr2(m, 1, {[5, 5, NaN], pattern}, 'nanvalue', -10);
+propr2(m, [5, 5, NaN], 1, pattern, 'nanvalue', -10);
 
 %%
 % We can also use this method to specify the goal state. We don't
@@ -155,13 +155,13 @@ propr2(m, 1, {[5, 5, NaN], pattern}, 'nanvalue', -10);
 % we place the goal state somewhere on the grid. In our case, we will set
 % the goal state at (1, 10).
 
-propr2(m, 1, {[1, 10, NaN], pattern}, 'nanvalue', 100);
+propr2(m, [1, 10, NaN], 1, NaN, 'nanvalue', 100);
 
 %%
 % We will define another object close to the goal state that we want the
 % system to avoid.
 
-propr2(m, 1, {{2:3, 8:10, NaN}, NaN}, 'nanvalue', -10);
+propr2(m, {2:3, 8:10, NaN}, 1, NaN, 'nanvalue', -10);
 
 %%
 % Now, we should have a reward space that roughly resembles the following:
@@ -189,7 +189,7 @@ propr2(m, 1, {{2:3, 8:10, NaN}, NaN}, 'nanvalue', -10);
 %       +-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
 %          1     2     3     4     5     6     7     8     9     10
 %                                     Y
-% 
+%
 % where all of the empty spaces have a zero reward.
 
 %%

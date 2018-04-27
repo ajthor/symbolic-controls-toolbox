@@ -1,20 +1,21 @@
-function varargout = propr(m, uidx, pattern, varargin)
+function varargout = propr(m, xidx, uidx, pattern, varargin)
 %PROPR Propagate reward pattern through matrix.
 %
-%   R = PROPR(m, uidx, pattern)
+%   R = PROPR(m, xidx, uidx, pattern)
 %
 %   Propagate reward pattern through matrix.
 %
 %       m - mdp object
+%       xidx - state index
 %       uidx - input index
 %       pattern - reward pattern
 %
-%   The reward pattern has the form: {[idx], [probability]}, where idx can
-%   be an array or cell, and probability is a matrix.
+%   The pattern must have exactly one NaN value, which serves as an
+%   alignment indicator.
 %
-%   Specify ignored values of the state with NaN. Specify the pattern as a
-%   matrix centered around the current state, with the state specified by
-%   NaN.
+%   Specify all values of the state ':' with NaN. Specify the pattern as a
+%   matrix centered around the current state, with the indicator specified
+%   by NaN.
 %
 %   If no output is specified, the function updates R in the mdp object.
 %
@@ -26,13 +27,13 @@ function varargout = propr(m, uidx, pattern, varargin)
 %   propagate the rewards through the matrix by specifying the
 %   pattern as:
 %
-%   reward = [1; NaN]
+%   pattern = [1; NaN]
 %
-%   R = PROPR(m, 1, {{2, 2:3}, reward)
-%             ^  ^      ^         ^
-%             |  |      |         reward pattern
-%             |  |      {x1, x2} values to iterate over (NaN for all)
-%             |  input index
+%   R = PROPR(m, {2, 2:3}, 1, pattern)
+%             ^     ^      ^     ^
+%             |     |      |     reward pattern
+%             |     |      input index
+%             |     {x1, x2} values to iterate over (NaN for all)
 %             mdp object
 %
 %   This will iterate over all specified values of X and Y and place the
@@ -88,31 +89,30 @@ function varargout = propr(m, uidx, pattern, varargin)
 %                +-----------+-----------+-----------+
 %                                 ...
 %
-%   See also mpc, propp
+%   See also mdp, propp, propr2
 
 p = inputParser;
 addRequired(p, 'm');
+addRequired(p, 'xidx', ...
+    @(arg) validateattributes(arg, {'numeric', 'cell'}, ...
+                              {'row', 'numel', ndims(m.X)}));
 addRequired(p, 'uidx', ...
     @(arg) validateattributes(arg, {'numeric'}, ...
                               {'scalar', 'positive', '<=', length(m.U)}));
 addRequired(p, 'pattern', ...
-    @(arg) validateattributes(arg, {'cell'}, {'size', [NaN, 2]}));
+    @(arg) validateattributes(arg, {'numeric'}, {'nonempty'}));
 addParameter(p, 'nanvalue', 0, ...
     @(arg) validateattributes(arg, {'numeric'}, {'scalar'}));
-parse(p, m, uidx, pattern, varargin{:});
+parse(p, m, xidx, uidx, pattern, varargin{:});
 
-validateattributes(pattern{1}, {'numeric', 'cell'}, ...
-                   {'size', [1, ndims(m.X)]});
-% validateattributes(pattern{2}, {'numeric'}, {'ndims', ndims(m.X)});
-
-if numel(find(isnan(pattern{2}))) ~= 1
+if numel(find(isnan(pattern))) ~= 1
     error('Pattern must have exactly one ''NaN'' value.');
 end
 
-if ~iscell(pattern{1})
-    idx = num2cell(pattern{1});
+if ~iscell(xidx)
+    idx = num2cell(xidx);
 else
-    idx = pattern{1};
+    idx = xidx;
 end
 
 % Replace NaN values in indices.
@@ -129,12 +129,12 @@ pidx = find(Z);
 Z(idx{:}) = 0;
 
 % Convert pattern to an array.
-psz = num2cell(size(pattern{2}));
+psz = num2cell(size(pattern));
 for k = 1:numel(psz)
     psz{k} = 1:psz{k};
 end
 
-Z(psz{:}) = pattern{2};
+Z(psz{:}) = pattern;
 
 R = m.R;
 

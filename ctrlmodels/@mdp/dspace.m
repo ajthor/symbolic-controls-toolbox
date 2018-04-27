@@ -69,7 +69,8 @@ function varargout = dspace(m, sys, blocks, varargin)
 p = inputParser;
 addRequired(p, 'm');
 addRequired(p, 'sys');
-addRequired(p, 'blocks');
+addRequired(p, 'blocks', ...
+    @(arg) validateattributes(arg, {'cell'}, {'nonempty'}));
 addParameter(p, 'LeftInequalities', false)
 parse(p, m, sys, blocks, varargin{:});
 

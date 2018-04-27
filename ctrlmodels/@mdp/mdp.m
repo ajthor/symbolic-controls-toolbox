@@ -158,8 +158,9 @@ classdef mdp < handle
         
         function set.gamma(obj, gamma)
             % Set the discount value for the MDP.
-            validateattributes(gamma, {'numeric'}, {'nonnegative', '<', 1});
-            obj.gamma = gamma;
+            validateattributes(gamma, {'numeric'}, ...
+                               {'nonnegative', '<', 1});
+            obj.gamma_ = gamma;
         end
         
         function set.policy(obj, policy)
@@ -217,9 +218,11 @@ classdef mdp < handle
                 R = obj.R_;
             end
         end
+        
         function gamma = get.gamma(obj)
             gamma = obj.gamma_;
         end
+        
         function p = get.policy(obj)
             if isempty(obj.policy_)
                 if ~isempty(obj.X_) && ~isempty(obj.U_)
@@ -228,6 +231,14 @@ classdef mdp < handle
                     szX = numel(obj.X_);
                     szU = length(obj.U_);
                     p = zeros([szX, szU]);
+                    
+                    for k = 1:szX
+                        r = rand(1, szU);
+                        r = r/sum(r);
+                        p(k, :) = r;
+                    end
+                    
+                    obj.policy_ = p;
                 else
                     p = double.empty;
                 end
