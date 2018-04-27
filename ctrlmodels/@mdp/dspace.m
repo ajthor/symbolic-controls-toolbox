@@ -11,6 +11,8 @@ function varargout = dspace(m, sys, blocks, varargin)
 %   for use with an MDP and also returns a symbolic matrix of inequalities
 %   and an indexing function, which can be used to determine the current
 %   partition the state is currently in.
+% 
+%   If no output is specified, the function updates X in the mdp object.
 %
 %   For example, discretizing a 2-D state space using the following
 %   command:

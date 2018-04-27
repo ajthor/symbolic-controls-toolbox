@@ -11,26 +11,30 @@ classdef mdp < handle
     %   the transition probabilities, R is the reward for taking action u
     %   while in state x, and gamma is the discount factor.
     %
-    %       The set of states X is characterized by a list of states of the
-    %       system and their current values.
+    %       The set of states X is a list of all possible states of the
+    %       system.
     %
     %       The set of allowable inputs U is a list of all possible control
-    %       inputs to the system given the state X.
+    %       inputs to the system.
     %
     %       The set of probabilities of selecting an allowable input U in
     %       state X is held in P.
     %
     %       The set of rewards for selecting an allowable input U in state
-    %       X is help in R.
+    %       X is held in R.
     %
     %   In the case of discrete-time systems, the transition probabilities
     %   P : X x U x X -> [0, 1] describe the probability P{x'|x,u} that the
     %   system will transition to state x' given the current state x and
     %   control input u.
     %
+    %   The transition rewards R : X x U x X -> Reals describe the expected
+    %   reward E{x'|x,u} that the system will receive a reward given the
+    %   current state x and control input u.
+    %
     %   In continuous-time systems, the state space must be discretized,
-    %   either by creating a discrete system, or by specifying state value
-    %   ranges using dspace.
+    %   either by converting to a discrete system, or by specifying state
+    %   value ranges using dspace and a decision interval Td.
     %
     %   See also mdp/dspace
 
@@ -48,7 +52,7 @@ classdef mdp < handle
         % Discount Factor
         gamma
         
-        % Decision Time
+        % Decision Interval
         Td
 
         % Policy
@@ -98,20 +102,17 @@ classdef mdp < handle
 
     % Getters and setters.
     methods
-        function obj = set.X(obj, X)
+        function set.X(obj, X)
             % Set the current state for the MDP.
             obj.X_ = X;
         end
         
-        function obj = set.U(obj, U)
+        function set.U(obj, U)
             % Set the allowable inputs for the MDP.
-%             if ~isa(U{:}, 'sym')
-%                 U{:} = sym(U{:});
-%             end
             obj.U_ = U;
         end
         
-        function obj = set.P(obj, P)
+        function set.P(obj, P)
             % Set the transition probabilities for the MDP.
             if ~isscalar(P)
                 szX = numel(obj.X_);
@@ -136,7 +137,7 @@ classdef mdp < handle
             obj.P_ = P;
         end
         
-        function obj = set.R(obj, R)
+        function set.R(obj, R)
             % Set the reward matrix for the MDP.
             if ~isscalar(R)
                 szX = numel(obj.X_);
@@ -155,13 +156,13 @@ classdef mdp < handle
             obj.R_ = R;
         end
         
-        function obj = set.gamma(obj, gamma)
+        function set.gamma(obj, gamma)
             % Set the discount value for the MDP.
             validateattributes(gamma, {'numeric'}, {'nonnegative', '<', 1});
             obj.gamma = gamma;
         end
         
-        function obj = set.policy(obj, policy)
+        function set.policy(obj, policy)
             % Set the policy for the MDP.
             if ~isscalar(policy)
                 szX = length(obj.X_);
@@ -215,6 +216,9 @@ classdef mdp < handle
             else
                 R = obj.R_;
             end
+        end
+        function gamma = get.gamma(obj)
+            gamma = obj.gamma_;
         end
         function p = get.policy(obj)
             if isempty(obj.policy_)

@@ -4,43 +4,63 @@ function varargout = propp(m, uidx, pattern)
 %   P = PROPP(m, uidx, pattern)
 %
 %   Propagate probability pattern through matrix.
-%   m - mdp object
-%   uidx - input index
-%   pattern - probability pattern
 %
-%   The probability pattern has the form: {[idx], [probability]}
+%       m - mdp object
+%       uidx - input index
+%       pattern - probability pattern
+%
+%   The probability pattern has the form: {[idx], [probability]}, where idx
+%   can be an array or cell, and probability is a matrix.
 %
 %   Specify ignored values of the state with NaN. Specify the pattern as a
-%   matrix centered around the current state.
+%   matrix centered around the current state, with the state specified by
+%   NaN.
+%
+%   If no output is specified, the function updates P in the mdp object.
+%
+%   The pattern values (omitting the NaN) cannot exceed 1, representing the
+%   probability of reaching a future state. If the values of the pattern
+%   are less than 1, the NaN value is replaced with the remaining
+%   probability.
 %
 %   For example, if the state space is the canonical grid world example,
 %   with two states, X and Y, and one input, such as "move forward", we
 %   propagate the probabilities through the matrix by specifying the
 %   pattern as:
 %
-%   P = pprop(m, 1, {[NaN, NaN], [0, 0.8, 0; 0.1, NaN, 0.1; 0, 0, 0]});
+%   prob = [   0, 0.8,   0 ;
+%            0.1, NaN, 0.1 ;
+%              0,   0,   0 ]
 %
-%   In effect, this will iterate over all values of X and Y and place the
+%   P = PROPP(m, 1, {[NaN, NaN], prob});
+%             ^  ^        ^        ^
+%             |  |        |        probability pattern
+%             |  |        {x1, x2} values to iterate over (NaN for all)
+%             |  input index
+%             mdp object
+%
+%   This will iterate over all specified values of X and Y and place the
 %   pattern on top of the probability matrix. For this example, X and Y
-%   form a NxP matrix, where N is the number of discrete values for X, and
-%   P is the number of discrete values of Y. The grid coordinates with an
+%   form an NxM matrix, where N is the number of discrete values of X, and
+%   M is the number of discrete values of Y. The grid coordinates with an
 %   overlaid pattern may be displayed like below.
 %
 %       +-----+-----+-----+-----+       +-----+-----+-----+-----+
 %       |  0  | 0.8 |  0  |     |       |     |  0  | 0.8 |  0  |
 %       +-----+--^--+-----+-----+       +-----+-----+--^--+-----+
-%       | 0.1 |  X  | 0.1 |     |       |     | 0.1 |  X  | 0.1 |
-%     Y +-----+-----+-----+-----+  -->  +-----+-----+-----+-----+
+%       | 0.1 | NaN | 0.1 |     |       |     | 0.1 | NaN | 0.1 |
+%     X +-----+-----+-----+-----+  -->  +-----+-----+-----+-----+
 %       |  0  |  0  |  0  |     |       |     |  0  |  0  |  0  |
 %       +-----+-----+-----+-----+       +-----+-----+-----+-----+
 %       |     |     |     |     |       |     |     |     |     |
 %       +-----+-----+-----+-----+       +-----+-----+-----+-----+
-%                   X
+%                   Y
 %
 %   However, the probability matrix defines a from/to relationship, so the
-%   probability matrix is an NxNxP matrix.
+%   probability matrix is an (NxM)x(NxM)xU matrix.
 %
-%   This means that the X/Y coordinate matrix above has 16 possible states.
+%   For the example above, the X/Y coordinate matrix above has 16 possible
+%   states.
 %
 %       +-----+-----+-----+-----+
 %       |  1  |  5  |  9  | 13  |
@@ -58,6 +78,9 @@ function varargout = propp(m, uidx, pattern)
 %
 %     P{x'|x, u}
 %
+%   Which can be read as "the probability that x' will be reached, given
+%   the current state x and taking action u".
+%
 %               To
 %          From \      1           2           3
 %                +-----------+-----------+-----------+
@@ -68,6 +91,30 @@ function varargout = propp(m, uidx, pattern)
 %              3 | P{1|3, 1} | P{2|3, 1} | P{3|3, 1} |
 %                +-----------+-----------+-----------+
 %                                 ...
+%
+%   In order to propagate the pattern into the space, the pattern is
+%   "squeezed" into a smaller space by folding the probabilities along each
+%   dimension into the available space. For example, if we apply the
+%   pattern above to state 1 and 5, the probabilities that would lie
+%   outside of the possible space are added along the X and Y dimensions
+%   iteratively, where NaN (which would be in state 1 and 5) is replaced by
+%   the remaining probability. Example below.
+%
+%       +--^--+-----+-----+-----+       +-----+--^--+-----+-----+
+%       | 0.9 | 0.1 |     |     |       | 0.1 | 0.8 | 0.1 |     |
+%       +-----+-----+-----+-----+       +-----+-----+-----+-----+
+%       |  0  |  0  |     |     |       |  0  |  0  |  0  |     |
+%     X +-----+-----+-----+-----+  -->  +-----+-----+-----+-----+
+%       |     |     |     |     |       |     |     |     |     |
+%       +-----+-----+-----+-----+       +-----+-----+-----+-----+
+%       |     |     |     |     |       |     |     |     |     |
+%       +-----+-----+-----+-----+       +-----+-----+-----+-----+
+%                   Y
+%
+%   See also mpc, propr
+
+% References:
+% https://people.eecs.berkeley.edu/~pabbeel/cs287-fa12/slides/mdps-exact-methods.pdf
 
 p = inputParser;
 addRequired(p, 'm');
@@ -78,22 +125,25 @@ addRequired(p, 'pattern', ...
     @(arg) validateattributes(arg, {'cell'}, {'size', [NaN, 2]}));
 parse(p, m, uidx, pattern);
 
-validateattributes(pattern{1}, {'numeric'}, {'size', [1, ndims(m.X)]});
+validateattributes(pattern{1}, {'numeric', 'cell'}, ...
+                   {'size', [1, ndims(m.X)]});
 validateattributes(pattern{2}, {'numeric'}, ...
                                {'nonnegative', 'ndims', ndims(m.X)});
 
 psum = sum(pattern{2}(:), 'omitnan');
 if psum > 1
     error('Probabilities in pattern must not exceed 1.');
-else
-    nanval = 1 - psum;
 end
 
 if numel(find(isnan(pattern{2}))) ~= 1
     error('Pattern must have exactly one ''NaN'' value.');
 end
 
-idx = num2cell(pattern{1});
+if ~iscell(pattern{1})
+    idx = num2cell(pattern{1});
+else
+    idx = pattern{1};
+end
 
 % Replace NaN values in indices.
 for k = 1:numel(idx)
@@ -115,45 +165,19 @@ for k = 1:numel(psz)
 end
 
 Z(psz{:}) = pattern{2};
-% Z = reshape(Z, 1, []);
-zidx = find(isnan(Z));
-% Z(zidx) = nanval;
-
-nidx = numel([idx{:}]);
 
 P = m.P;
 
+% Propagate pattern through probability matrix.
 for k = 1:numel(pidx)
+    % "Squeeze" pattern into state space.
     Zt = squeezepattern(m.X, Z, pidx(k));
     Zt = reshape(Zt, 1, []);
-    
+
+    % Ensure probabilities equal 1.
     Zt(isnan(Zt)) = 1 - sum(Zt, 'omitnan');
-    
-%     P(pidx(k), pidx(k):pidx(k) + length(Zt) - 1, uidx) = Zt;
+
     P(pidx(k), 1:length(Zt), uidx) = Zt;
-    
-%     if pidx(k) < zidx
-% %         prerem = sum(pre(1:pidx(k) - 1));
-% %         postrem = sum(post(pidx(k) + 1:
-% 
-%         P(pidx(k), 1:pidx(k) - 1, uidx) = pre(end - pidx(k) + 1:end);
-%         P(pidx(k), pidx(k), uidx) = post(1);
-%         P(pidx(k), pidx(k) + 1, uidx) = post(2:end);
-% 
-% %         P(pidx(k), 1:pidx(k) - 1, uidx) = Z(zidx - pidx(k) + 1:zidx - 1);
-% %
-% %         P(pidx(k), pidx(k):pidx(k) + nidx - zidx, uidx) = Z(zidx:end);
-% %
-% %         P(pidx(k), pidx(k), uidx) = Z(pidx(k)) + rem;
-%     elseif pidx(k) > zidx
-% %         rem = sum(Z(zidx + 1:end));
-% %
-% %         P(pidx(k), pidx(k) - nidx + zidx:pidx(k) - 1, uidx) = Z(1:zidx - 1);
-% %
-% %         P(pidx(k), pidx(k):end, uidx) = Z(zidx:pidx(k) - zidx) + rem;
-%     else
-%         P(pidx(k), :, uidx) = Z(:);
-%     end
 end
 
 if nargout ~= 0
