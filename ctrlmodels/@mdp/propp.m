@@ -24,6 +24,8 @@ function varargout = propp(m, xidx, uidx, pattern)
 %   are less than 1, the NaN value is replaced with the remaining
 %   probability.
 %
+%   ----------
+%
 %   For example, if the state space is the canonical grid world example,
 %   with two states, X and Y, and one input, such as "move forward", we
 %   propagate the probabilities through the matrix by specifying the

@@ -22,6 +22,8 @@ function varargout = propr(m, xidx, uidx, pattern, varargin)
 %   The pattern values represent the expected reward for taking action U at
 %   state X to reach state X'.
 %
+%   ----------
+%
 %   For example, if the state space is the canonical grid world example,
 %   with two states, X and Y, and one input, such as "move forward", we
 %   propagate the rewards through the matrix by specifying the

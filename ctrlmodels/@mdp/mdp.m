@@ -1,4 +1,4 @@
-classdef mdp < handle
+classdef (SupportExtensionMethods = true) mdp < handle
     %MDP Construct Markov decision process (MDP) or convert system to MDP.
     %
     %   m = MDP creates an empty Markov decision process.
@@ -171,12 +171,15 @@ classdef mdp < handle
                 validateattributes(policy, {'numeric'}, ...
                                    {'size', [szX, szU]});
             else
-                validateattributes(policy, {'symfun', 'function_handle'}, ...
-                                      {'scalar'});
-                args = argnames(policy);
-                if any(~has([obj.X_], args))
-                    error(['Function must have all states ', ...
-                           'as parameters.']);
+                validateattributes(policy, ...
+                                   {'symfun', 'function_handle'}, ...
+                                   {'scalar'});
+                if isa(policy, 'symfun')
+                    args = argnames(policy);
+                    if any(~has([obj.X_], args))
+                        error(['Function must have all states ', ...
+                               'as parameters.']);
+                    end
                 end
             end
             obj.policy_ = policy;
