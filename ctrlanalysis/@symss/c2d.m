@@ -22,7 +22,7 @@ switch method
         % Zero-Order Hold
         % Ad = e^AT
         % Bd = A^-1(Ad - I)B
-        Ad = expm(sys);
+        Ad = subs(expm(sys), sym('t'), Ts);
         Bd = A\(Ad - eye(size(A)))*B;
         
     case 'approx'
