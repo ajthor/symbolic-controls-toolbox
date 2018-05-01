@@ -1,4 +1,4 @@
-function varargout = effort(sys, u, varargin)
+function varargout = effort(sys, varargin)
 %EFFORT Compute the control effort of a system to arbitrary inputs.
 %
 %   [t, y] = EFFORT(sys, u, t) computes the control effort of a system and
@@ -11,29 +11,14 @@ function varargout = effort(sys, u, varargin)
 %   When no outputs are specified, EFFORT plots the output.
 
 p = inputParser;
-validateInput = @(U) ...
-    validateattributes(U, {'sym', 'numeric', 'function_handle'}, ...
-                          {'nonempty'});
-validateTime = @(T) ...
-    validateattributes(T, {'numeric'}, ...
-                          {'nonempty', 'nonnegative', 'increasing'});
-validateICs = @(P) ...
-    validateattributes(P, {'numeric', 'cell'}, {'nonempty'});
-validateVars = @(V) ...
-    validateattributes(V, {'sym', 'cell'}, {'nonempty'});
-validateSolver = @(S) ...
-    validateattributes(S, {'function_handle'}, {'nonempty'});
-addRequired(p, 'sys', @(S) validatesystem(S, {'full'}));
-addRequired(p, 'u', validateInput);
-addOptional(p, 'tspan', [0 5], validateTime);
-addOptional(p, 'x0', cell.empty, validateICs);
-addParameter(p, 'Vars', cell.empty, validateVars);
-addParameter(p, 'Solver', @ode45, validateSolver);
-parse(p, sys, u, varargin{:});
 
+% Validate sim inputs.
+validatesimargs(p, sys, varargin{:});
+
+u = p.Results.u;
 tspan = p.Results.tspan;
-
 x0 = p.Results.x0;
+
 if ~iscell(x0)
     x0 = {x0};
 end
