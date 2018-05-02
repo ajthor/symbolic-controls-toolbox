@@ -23,39 +23,32 @@ if ~iscell(x0)
     x0 = {x0};
 end
 
-if numel(x0) > 1
-    y = cell(size(x0));
-end
+y = cell(size(x0));
 
 for k = 1:numel(x0)
     ic = reshape(x0{k}, [], 1);
-    y{k} = linsolver(sys, u, tspan, ic);
-    y{k} = subs(y{k}, sys.states, ic);
+    ys = linsolver(sys, u, tspan, ic);
+    y{k} = ys;
 end
 
 if nargout ~= 0
     varargout{1} = y;
 else
-    plotoutput(y, tspan);
+    for k = 1:numel(y)
+        out = y{k};
+        [m, n] = size(out);
+        for p = 1:numel(out)
+            ax = subplot(n, m, p);
+            ax.NextPlot = 'add';
 
-%     if length(y) == 1
-%         h = fplot(y);
-%         h.XRange = tspan;
-%         h.XRangeMode = 'auto';
-%         xlabel('Time (seconds)');
-%         ylabel('Amplitude');
-%     else
-%         [m, n] = size(y{:});
-%         for k = 1:numel(y{:})
-%             subplot(n, m, k)
-%             h = fplot(y{:}(k));
-%             h.XRange = tspan;
-%             h.XRangeMode = 'auto';
-%             xlabel('Time (seconds)');
-%             ylabel('Amplitude');
-% %             title(['Output ', num2str(m), ' for input ', num2str(n)]);
-%         end
-%     end
+            h = fplot(out(p));
+            h.XRange = tspan;
+            h.XRangeMode = 'auto';
+
+            [input, output] = ind2sub([m, n], p);
+            title(['Output [', num2str(output), ', ', num2str(input), ']']);
+        end
+    end
 end
 
 end
