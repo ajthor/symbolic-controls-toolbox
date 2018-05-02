@@ -1,4 +1,4 @@
-function T = subs(sys, varargin)
+function sys = subs(sys, varargin)
 %SUBS Replace symbolic variables in state space model.
 %
 %   sys = SUBS(sys, ...) replaces symbolic variables, state variables, or
@@ -15,8 +15,8 @@ function T = subs(sys, varargin)
 %
 %   See also symss/simplify, sym/subs
 
-T = copy(sys);
-T.f = subs(T.f, varargin{:});
-T.g = subs(T.g, varargin{:});
+sys = copy(sys);
+sys.f = subs(sys.f, varargin{:});
+sys.g = subs(sys.g, varargin{:});
 
 end

@@ -1,34 +1,33 @@
 classdef (SupportExtensionMethods = true) symss < ctrlmodel
-    %SYMSS Construct symbolic state-space model or convert model to
-    %symbolic state-space.
+    %SYMSS Construct symbolic state-space model or convert model to symbolic
+    %state-space.
     %
     %   sys = SYMSS creates an empty state-space representation.
     %
-    %   A state-space model is defined by state equations and
-    %   output equations, given by:
+    %   A state-space model is defined by state equations and output equations,
+    %   given by:
     %
     %       dx/dt = f(t, x, u)
     %           y = g(t, x, u)
     %
-    %   In order to define a state-space model, begin with an empty state
-    %   space model, define states and inputs, and then define state
-    %   equations and output equations.
+    %   In order to define a state-space model, begin with an empty state space
+    %   model, define states and inputs, and then define state equations and
+    %   output equations.
     %
-    %   sys = SYMSS(A, B, C, D)
-    %   Creates a state space model using the matrices A, B, C, D.
+    %   sys = SYMSS(A, B, C, D) Creates a state space model using the matrices
+    %   A, B, C, D.
     %
     %       dx/dt = Ax(t) + Bx(t)
     %        y(t) = Cx(t) + Du(t)
     %
-    %   A must be an nxn matrix, B must be an nxm matrix, and C
-    %   must be a pxn matrix. If D is specified, it must be a pxm
-    %   matrix.
+    %   A must be an nxn matrix, B must be an nxm matrix, and C must be a pxn
+    %   matrix. If D is specified, it must be a pxm matrix.
     %
-    %   sys = SYMSS(states, inputs) creates a state space model
-    %   using the state variables and input variables provided.
+    %   sys = SYMSS(states, inputs) creates a state space model using the state
+    %   variables and input variables provided.
     %
-    %   sys = SYMSS(Ts) creates a discrete state space model with sampling
-    %   time Ts.
+    %   sys = SYMSS(Ts) creates a discrete state space model with sampling time
+    %   Ts.
 
     %   References:
     %   Antsaklis, Panos J., and Anthony N. Michel. A linear systems

@@ -1,12 +1,12 @@
-function T = subs(sys, varargin)
+function sys = subs(sys, varargin)
 %SUBS Replace symbolic variables in hybrid state space model.
 
-T = copy(sys);
+sys = copy(sys);
 
-for k = 1:T.nmodes
-    T.f_{k} = subs(T.f_{k}, varargin{:});
+for k = 1:sys.nmodes
+    sys.f_{k} = subs(sys.f_{k}, varargin{:});
 end
 
-T.g = subs(T.g, varargin{:});
+sys.g = subs(sys.g, varargin{:});
 
 end
