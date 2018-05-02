@@ -4,7 +4,9 @@ function validatesimargs(p, sys, varargin)
 va_ = @validateattributes;
 
 validateattributes(sys.states, {'sym'}, {'nonempty'});
-validateattributes(sys.f, {'sym'}, {'nonempty'});
+for k = 1:sys.nmodes
+    validateattributes(sys.f{k}, {'sym'}, {'nonempty'});
+end
 
 nX = numel(sys.states);
 

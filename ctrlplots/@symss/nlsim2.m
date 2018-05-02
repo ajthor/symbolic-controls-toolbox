@@ -20,10 +20,8 @@ if ~iscell(x0)
     x0 = {x0};
 end
 
-if nargout ~= 0 && numel(x0) > 1
-    t = cell(size(x0));
-    y = cell(size(x0));
-end
+t = cell(size(x0));
+y = cell(size(x0));
 
 if any(strcmp('Vars', p.UsingDefaults))
     vars = sys.states(1:2);

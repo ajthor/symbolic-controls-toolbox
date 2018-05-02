@@ -15,7 +15,6 @@ p = inputParser;
 % Validate sim inputs.
 validatesimargs(p, sys, varargin{:});
 
-u = p.Results.u;
 tspan = p.Results.tspan;
 x0 = p.Results.x0;
 
@@ -25,33 +24,34 @@ end
 
 if numel(x0) > 1
     t = cell(size(x0));
-    us = cell(size(x0));
+    u = cell(size(x0));
 end
 
 T = sym('t');
 
-[ts, ys] = nlsim(sys, u, varargin{:});
+[ts, ys] = nlsim(sys, varargin{:});
 
 tx = subvars(sys);
-Ufun = symfun(subs(u, sys.states, tx), [T; tx]);
 
+% Create a Matlab function.
+Ufun = symfun(subs(p.Results.u, sys.states, tx), [T; tx]);
 odefun = matlabFunction(Ufun, 'Vars', {T, tx});
 
 for k = 1:numel(x0)
     t{k} = ts{k};
-    us{k} = odefun(ts{k}.', ys{k}.').';
+    u{k} = odefun(ts{k}.', ys{k}.').';
 end
 
 if nargout ~= 0
     varargout{1} = t;
-    varargout{2} = us;
+    varargout{2} = u;
 else
     ax = gca;
     current_state = ax.NextPlot;
 
     for k = 1:numel(x0)
         ax.NextPlot = 'add';
-        plot(t{k}, us{k})
+        plot(t{k}, u{k})
     end
 
     ax.NextPlot = current_state;
