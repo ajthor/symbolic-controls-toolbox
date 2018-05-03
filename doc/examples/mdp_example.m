@@ -198,3 +198,15 @@ propr2(m, {2:3, 8:10, NaN}, 1, NaN, 'nanvalue', -10);
 % system looks. For this example, we set the discount factor to 0.95.
 
 m.gamma = 0.95;
+
+%% Perform Policy Iteration
+% 
+
+%% Simulate the Policy
+%
+
+opts = mdpset(m, 'StateFunction', Xf);
+
+[t, y] = mdpsim(sys, m, [0 5], {[2.5, 7.5, pi/2]}, 'MdpOptions', opts);
+
+plot3(y{1}(:, 1), y{1}(:, 2), y{1}(:, 3))
