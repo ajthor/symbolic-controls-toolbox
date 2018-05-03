@@ -200,13 +200,51 @@ propr2(m, {2:3, 8:10, NaN}, 1, NaN, 'nanvalue', -10);
 m.gamma = 0.95;
 
 %% Perform Policy Iteration
-% 
+%
 
 %% Simulate the Policy
 %
 
+%%
+% Because our system is a continuous system, we need to specify a function that
+% will determine which state the system is currently in at any given time.
+%
+% For example, if the robot moves from state 1 to state 2, we need a way of
+% determining where the robot is in the discretized state space. This is
+% because the continuous dynamics may place the robot anywhere within 1, so
+% when it takes an action to move to 2, the same control action may result in
+% the robot reaching different states. We need a way of determining whether it
+% made it to 2 or overshoots into 3 or goes into some other state.
+%
+%                    1             2             3
+%              +-------------+-------------+-------------+
+%             /|            /|            /|            /|
+%            / |        o--/-|-----------/-|--->x      / |
+%           +-------------+-------------+-------------+  |
+%           |  |          |  |          |  |          |  |
+%           |  |    o-----|--|----->x   |  |          |  |
+%           |  |          |  |          |  |          |  |
+%           |  + - - - - -|- + - - - - -|- + - - - - -|- +
+%           | /       o---|-/---->x     | /           | /
+%           |/            |/            |/            |/
+%           +-------------+-------------+-------------+
+%
+% Luckily, this is given by the |dspace| function above, and is returned as Xf.
+% We can use this function in our options to the |mdpsim| function.
+
 opts = mdpset(m, 'StateFunction', Xf);
 
-[t, y] = mdpsim(sys, m, [0 5], {[2.5, 7.5, pi/2]}, 'MdpOptions', opts);
+%%
+% Finally, we can simulate the output of the system. We want to see where the
+% robot will get in 10 seconds using the policy we optimized earlier. We give
+% it some initial conditions, and pass the MDP object as our input.
+[t, y] = mdpsim(sys, m, [0 10], {[2.5, 7.5, pi/2]}, 'MdpOptions', opts);
 
-plot3(y{1}(:, 1), y{1}(:, 2), y{1}(:, 3))
+%%
+% From here, we can plot the x/y coordinates of the robot as it moves around.
+plot(y{1}(:, 1), y{1}(:, 2));
+
+%%
+% We can also plot all 3 states simultaneously. Movement up and down correspond
+% to changes in the orientation of the robot.
+plot3(y{1}(:, 1), y{1}(:, 2), y{1}(:, 3));
