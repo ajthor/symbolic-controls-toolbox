@@ -104,7 +104,8 @@ end
     % Event function. This function detects when the current value of the
     % simulation triggers a terminating event and ends the ODE solver.
     function [value, isterminal, direction] = odeEvent(t, x)
-        if term(t, x) == 1
+        X = num2cell(x);
+        if term(t, X) == 1
             value = 0;
         else
             value = 1;
