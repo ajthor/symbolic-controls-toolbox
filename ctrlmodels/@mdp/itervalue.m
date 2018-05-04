@@ -3,8 +3,11 @@ function varargout = itervalue(m, H, varargin)
 %   Detailed explanation goes here
 
 % References:
-% http://artint.info/html/ArtInt_227.html
-% http://aima.cs.berkeley.edu/python/mdp.html
+% Poole, David L., and Alan K. Mackworth. Artificial Intelligence: foundations
+% of computational agents. Cambridge University Press, 2010.
+%
+% Russell, Stuart J., and Peter Norvig. Artificial intelligence: a modern
+% approach. Malaysia; Pearson Education Limited,, 2016.
 
 p = inputParser;
 addRequired(p, 'm');
@@ -38,7 +41,7 @@ while true
     for a = 1:nU
         Q(:, a) = PR(:, a) + P(:, :, a)*g*V0;
     end
-    
+
     [Vi, idx] = max(Q, [], 2);
 
     if all(abs(Vi - V0) < tol)
@@ -56,7 +59,7 @@ policy = zeros([nX, nU]);
 for k = 1:numel(idx)
     policy(k, idx(k)) = 1;
 end
-    
+
 if nargout ~= 0
     varargout{1} = Vi;
     varargout{2} = policy;
