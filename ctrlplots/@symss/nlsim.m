@@ -14,6 +14,7 @@ validatesimargs(p, sys, varargin{:});
 u = p.Results.u;
 tspan = p.Results.tspan;
 x0 = p.Results.x0;
+options = p.Results.options;
 
 if ~iscell(x0)
     x0 = {x0};
@@ -31,9 +32,11 @@ else
     end
 end
 
+slvparams = {'Solver', p.Results.Solver};
+
 for k = 1:numel(x0)
     ic = reshape(x0{k}, [], 1);
-    [ts, ys] = nlsolver(sys, u, tspan, ic);
+    [ts, ys] = nlsolver(sys, u, tspan, ic, options, slvparams{:});
     t{k} = ts;
     y{k} = ys(:, has(sys.states.', vars));
 end

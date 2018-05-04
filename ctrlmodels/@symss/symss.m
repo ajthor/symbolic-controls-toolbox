@@ -31,7 +31,7 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
 
     %   References:
     %   Antsaklis, Panos J., and Anthony N. Michel. A linear systems
-    %   primer. Vol. 1. Boston: Birkh�user, 2007.
+    %   primer. Vol. 1. Boston: Birkhauser, 2007.
 
     % State equations.
     properties (Dependent)
@@ -148,6 +148,14 @@ classdef (SupportExtensionMethods = true) symss < ctrlmodel
             if nout > 1, varargout{2} = obj.B; end
             if nout > 2, varargout{3} = obj.C; end
             if nout > 3, varargout{4} = obj.D; end
+        end
+        
+        function varargout = dim(obj)
+            %DIM Helper function to return state space dimensions.
+            nout = nargout;
+            varargout{1} = size(obj.A, 1);
+            if nout > 1, varargout{2} = size(obj.B, 2); end
+            if nout > 2, varargout{3} = size(obj.C, 1); end
         end
     end
 

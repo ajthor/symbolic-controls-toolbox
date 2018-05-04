@@ -21,6 +21,7 @@ for k = 1:numel(m.U)
     validateattributes(m.U{k}, {'sym', 'numeric'}, {'numel', nU});
 end
 
+% Ensure a decision interval.
 mdpopts = p.Results.MdpOptions;
 if isempty(mdpopts.Td)
     mdpopts = mdpset(m, mdpopts, 'Td', 1);

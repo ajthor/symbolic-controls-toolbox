@@ -29,10 +29,7 @@ tmax = tspan(end);
 
 Ts = sys.Ts;
 
-% Td = m.Td;
-% if isempty(Td)
-    Td = mdpopts.Td;
-% end
+Td = mdpopts.Td;
 
 options = p.Results.options;
 
@@ -72,7 +69,7 @@ while t0 < tmax
     end
 
     u = reshape(u, [], 1);
-    
+
     % Substitute the input into the state equations.
     funs = subs(funs, tu, u);
 

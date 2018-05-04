@@ -3,6 +3,7 @@ function [t, y] = nlsolver(sys, u, tspan, x0, varargin)
 %   Detailed explanation goes here
 
 p = inputParser;
+p.StructExpand = false;
 addRequired(p, 'sys');
 addRequired(p, 'u');
 addRequired(p, 'tspan');
