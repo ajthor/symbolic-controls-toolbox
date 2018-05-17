@@ -1,5 +1,5 @@
-#ifndef CONTROL_MODELS_STATE_SPACE_H
-#define CONTROL_MODELS_STATE_SPACE_H
+#ifndef CONTROL_MODELS_STATE_SPACE_HPP
+#define CONTROL_MODELS_STATE_SPACE_HPP
 
 #include <vector>
 #include <symengine/basic.h>
@@ -14,7 +14,10 @@ using SymEngine::DenseMatrix;
 using SymEngine::Symbol;
 using SymEngine::RCP;
 
-class StateSpace {
+namespace controllib {
+namespace model {
+
+class StateSpace : public System {
 public:
   StateSpace();
 
@@ -49,4 +52,7 @@ private:
   std::vector<RCP<const Basic>> g_;
 };
 
-#endif /* end of include guard: CONTROL_MODELS_STATE_SPACE_H */
+} // model
+} // controllib
+
+#endif /* end of include guard: CONTROL_MODELS_STATE_SPACE_HPP */

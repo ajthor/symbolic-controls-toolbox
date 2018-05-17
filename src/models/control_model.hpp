@@ -1,9 +1,15 @@
-#ifndef CONTROL_MODELS_CONTROL_MODEL_H
-#define CONTROL_MODELS_CONTROL_MODEL_H
+#ifndef CONTROL_MODELS_CONTROL_MODEL_HPP
+#define CONTROL_MODELS_CONTROL_MODEL_HPP
+
+namespace controllib {
+namespace model {
 
 class ControlModel {
 public:
   ControlModel();
 };
 
-#endif /* end of include guard: CONTROL_MODELS_CONTROL_MODEL_H */
+} // model
+} // controllib
+
+#endif /* end of include guard: CONTROL_MODELS_CONTROL_MODEL_HPP */

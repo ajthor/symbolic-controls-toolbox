@@ -21,17 +21,17 @@ std::vector<RCP<const Symbol>> StateSpace::get_states() {
 //   inputs_.insert(inputs_.end(), arg.begin(), arg.end());
 // }
 
-// DenseMatrix StateSpace::get_A_matrix() {
-//   unsigned n = states_.size();
-//
-//   DenseMatrix X = DenseMatrix(n, 1, {states_});
-//
-//   DenseMatrix J = DenseMatrix(n, n);
-//   jacobian(f_, X, J);
-//
-//   return J;
-// }
-//
+DenseMatrix StateSpace::get_A_matrix() {
+  unsigned n = states_.size();
+
+  DenseMatrix X = DenseMatrix(n, 1, {states_});
+
+  DenseMatrix J = DenseMatrix(n, n);
+  jacobian(f_, X, J);
+
+  return J;
+}
+
 // DenseMatrix StateSpace::get_B_matrix() {
 //   unsigned n = states_.size();
 //   unsigned m = inputs_.size();
@@ -69,9 +69,16 @@ std::vector<RCP<const Symbol>> StateSpace::get_states() {
 // }
 
 // ---------------------------------------------------------------------------
-// C Wrapper Functions
+// C Wrapper API Function Definitions
 //
-StateSpace_C StateSpaceInit() {
-  StateSpace* ret = new StateSpace();
-  return (void*)ret;
+struct StateSpace_C {
+  StateSpace m;
+};
+
+StateSpace_C statespace_new() {
+  return new StateSpace_C;
+}
+
+void statespace_free(StateSpace_C* obj) {
+  delete obj;
 }
