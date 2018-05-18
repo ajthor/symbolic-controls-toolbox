@@ -2,11 +2,8 @@
 // C Wrapper API Interface
 //
 
-#ifndef C_WRAPPER_HPP
-#define C_WRAPPER_HPP
-
-#include "models/state_space.hpp"
-#include "models/transfer_function.hpp"
+#ifndef MODELS_C_WRAPPER_HPP
+#define MODELS_C_WRAPPER_HPP
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,4 +32,4 @@ void transferfunction_free(TransferFunction_C* obj);
 }
 #endif
 
-#endif /* end of include guard: C_WRAPPER_HPP */
+#endif /* end of include guard: MODELS_C_WRAPPER_HPP */

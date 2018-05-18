@@ -1,5 +1,5 @@
-#ifndef CONTROL_MODELS_STATE_SPACE_HPP
-#define CONTROL_MODELS_STATE_SPACE_HPP
+#ifndef MODELS_STATE_SPACE_HPP
+#define MODELS_STATE_SPACE_HPP
 
 #include <vector>
 #include <symengine/basic.h>
@@ -8,6 +8,8 @@
 #include <symengine/matrix.h>
 
 #include "system.hpp"
+
+using Controls::System;
 
 using SymEngine::Basic;
 using SymEngine::DenseMatrix;
@@ -48,10 +50,13 @@ private:
   // Vector of symbolic inputs.
   std::vector<RCP<const Symbol>> inputs_;
 
+  // Vector of state equations.
   std::vector<RCP<const Basic>> f_;
+
+  // Vector of output equations.
   std::vector<RCP<const Basic>> g_;
 };
 
 } // Controls
 
-#endif /* end of include guard: CONTROL_MODELS_STATE_SPACE_HPP */
+#endif /* end of include guard: MODELS_STATE_SPACE_HPP */

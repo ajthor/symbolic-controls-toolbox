@@ -4,6 +4,9 @@
 
 #include "c_wrapper.hpp"
 
+#include "state_space.hpp"
+#include "transfer_function.hpp"
+
 using Controls::StateSpace;
 using Controls::TransferFunction;
 

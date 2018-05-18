@@ -1,5 +1,5 @@
-#ifndef CONTROL_MODELS_TRANSFER_FUNCTION_HPP
-#define CONTROL_MODELS_TRANSFER_FUNCTION_HPP
+#ifndef MODELS_TRANSFER_FUNCTION_HPP
+#define MODELS_TRANSFER_FUNCTION_HPP
 
 #include <vector>
 #include <symengine/basic.h>
@@ -37,4 +37,4 @@ private:
 
 } // Controls
 
-#endif /* end of include guard: CONTROL_MODELS_TRANSFER_FUNCTION_HPP */
+#endif /* end of include guard: MODELS_TRANSFER_FUNCTION_HPP */

@@ -50,7 +50,7 @@ std::vector<RCP<const Symbol>> StateSpace::get_states() {
 //
 //   return J;
 // }
-//
+
 // DenseMatrix StateSpace::get_C_matrix() {
 //   unsigned n = states_.size();
 //   unsigned p = inputs_.size();
@@ -62,7 +62,7 @@ std::vector<RCP<const Symbol>> StateSpace::get_states() {
 //
 //   return J;
 // }
-//
+
 // DenseMatrix StateSpace::get_D_matrix() {
 //   unsigned m = inputs_.size();
 //   unsigned p = g_.size();

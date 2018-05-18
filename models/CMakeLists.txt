@@ -4,8 +4,10 @@
 # point to files with extern "C" function definitions.
 set(SRC
   c_wrapper.cc
-  models/state_space.cc
-  models/transfer_function.cc
+  control_model.cc
+  system.cc
+  state_space.cc
+  transfer_function.cc
 )
 
 # SET_SOURCE_FILES_PROPERTIES(${SRC} PROPERTIES LANGUAGE CXX)
@@ -13,8 +15,10 @@ set(SRC
 # A list of all header files with C header definitions.
 set(HEADERS
   c_wrapper.hpp
-  models/state_space.hpp
-  models/transfer_function.hpp
+  control_model.hpp
+  system.hpp
+  state_space.hpp
+  transfer_function.hpp
 )
 
 add_library(ctrl SHARED ${SRC})
