@@ -14,11 +14,12 @@ using SymEngine::DenseMatrix;
 using SymEngine::Symbol;
 using SymEngine::RCP;
 
-namespace controllib {
-namespace model {
+namespace Controls {
 
 class TransferFunction : public System {
 public:
+  TransferFunction();
+  ~TransferFunction();
 
   void set_num(const std::vector<RCP<const Basic>> &arg);
   void set_den(const std::vector<RCP<const Basic>> &arg);
@@ -34,7 +35,6 @@ private:
   std::vector<RCP<const Basic>> den_;
 };
 
-} // model
-} // controllib
+} // Controls
 
 #endif /* end of include guard: CONTROL_MODELS_TRANSFER_FUNCTION_HPP */

@@ -1,5 +1,12 @@
 #include "transfer_function.hpp"
-#include "transfer_function.h"
+
+using Controls::TransferFunction;
+
+namespace Controls {
+
+TransferFunction::TransferFunction() {}
+
+TransferFunction::~TransferFunction() {}
 
 void TransferFunction::set_num(const std::vector<RCP<const Basic>> &arg) {
   num_ = arg;
@@ -17,17 +24,4 @@ std::vector<RCP<const Basic>> TransferFunction::get_den() {
   return den_;
 }
 
-// ---------------------------------------------------------------------------
-// C Wrapper API Function Definitions
-//
-struct TransferFunction_C {
-  TransferFunction m;
-};
-
-TransferFunction_C transferfunction_new() {
-  return new TransferFunction_C;
-}
-
-void transferfunction_free(TransferFunction_C* obj) {
-  delete obj;
-}
+} // Controls

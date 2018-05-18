@@ -3,15 +3,13 @@
 
 #include "control_model.hpp"
 
-namespace controllib {
-namespace model {
+namespace Controls {
 
 class System : public ControlModel {
 public:
   System();
 };
 
-} // model
-} // controllib
+} // Controls
 
 #endif /* end of include guard: CONTROL_MODELS_SYSTEM_HPP */

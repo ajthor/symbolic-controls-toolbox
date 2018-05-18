@@ -14,12 +14,12 @@ using SymEngine::DenseMatrix;
 using SymEngine::Symbol;
 using SymEngine::RCP;
 
-namespace controllib {
-namespace model {
+namespace Controls {
 
 class StateSpace : public System {
 public:
   StateSpace();
+  ~StateSpace();
 
   void set_states(const std::vector<RCP<const Symbol>> &arg);
   // void set_inputs(const std::vector<RCP<const Symbol>> &arg);
@@ -52,7 +52,6 @@ private:
   std::vector<RCP<const Basic>> g_;
 };
 
-} // model
-} // controllib
+} // Controls
 
 #endif /* end of include guard: CONTROL_MODELS_STATE_SPACE_HPP */
