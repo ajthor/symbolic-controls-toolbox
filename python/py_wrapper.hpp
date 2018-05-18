@@ -1,0 +1,21 @@
+#ifndef PYTHON_PY_WRAPPER_HPP
+#define PYTHON_PY_WRAPPER_HPP
+
+#include <Python.h>
+
+namespace Controls {
+
+static PyObject* spam_system(PyObject *self, PyObject *args) {
+  const char* command;
+  int sts;
+
+  if (!PyArg_ParseTuple(args, "s", &command))
+    return NULL;
+
+  sts = system(command);
+  return PyLong_FromLong(sts);
+}
+
+} // Controls
+
+#endif /* end of include guard: PYTHON_PY_WRAPPER_HPP */

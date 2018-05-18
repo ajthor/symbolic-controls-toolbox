@@ -1,11 +1,11 @@
-function loadcontrolslib()
+function loadlibcontrols()
 
 addpath(fileparts(mfilename('fullpath')));
 
-if not(libisloaded('controlslib'))
-    loadlibrary('controlslib');
+if not(libisloaded('libctrl'))
+    loadlibrary('libctrl');
 end
 
-libfunctions('controlslib')
+libfunctions('libctrl')
 
 end
