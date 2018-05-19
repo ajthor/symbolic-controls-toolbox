@@ -5,6 +5,7 @@
 * [C Interface](#c-interface)
 * [CMake](#cmake)
 * [Directory Structure](#directory-structure)
+* [Language Bindings](#language-bindings)
 
 ## Design Decisions
 
@@ -14,9 +15,7 @@ In order to make the controls library cross-platform and language agnostic`*`, t
 
 ## C++ Library
 
-The reason for writing the library in C++ is to interface directly with the [SymEngine](https://github.com/symengine/symengine) library. The backbone of the symbolic controls library is the ability to work with symbolic variables and to be able to perform symbolic algebra calculations.
-
-This functionality is important for working with nonlinear and hybrid systems.
+The reason for writing the library in C++ is to interface directly with the [SymEngine](https://github.com/symengine/symengine) library. The backbone of the symbolic controls library is the ability to work with symbolic variables and to be able to perform symbolic algebra calculations. This functionality is important for working with nonlinear and hybrid systems.
 
 ## C Interface
 
@@ -61,11 +60,13 @@ Each class needs to have, at minimum, a dummy structure to hold the class instan
 
 ## CMake
 
-CMake is used in order to build the library.
+CMake is used in order to build the library. The versatility of CMake allows us to provide a sufficiently complex build environment without the maintenance issues associated with a single Makefile.
 
 ## Directory Structure
 
 The library is organized by module. Each module contains code relevant to a specific functionality available in the library. On a basic level, the core C++ classes are contained in the [`models`](https://github.com/ajthor/symbolic-controls-toolbox/tree/master/models) directory, while the functionality which works with these models resides in the appropriate directories at the top level.
+
+An example of the modular directory structure is given by the following directory structure.
 
 ```shell
 top
@@ -83,3 +84,11 @@ top
 │  └─ state_space.cc
 └─ CMakeLists.txt
 ```
+
+## Language Bindings
+
+The two primary language bindings which are included in the toolbox are for Matlab and Python. This is a design decision to cater to the scientific computing community. Other bindings are possible, given that the library provides a C interface for working with the underlying C++ code.
+
+The bindings are located in the `matlab` and `python` directories, and include instructions for building the appropriate toolboxes and libraries to use with the Symbolic Controls Toolbox.
+
+In order to use the library with other languages, a C wrapper should be created which encapsulates the desired functionality. See the `c_wrapper.cc` and `c_wrapper.hpp` files in the module directories for information on how to interface with the C language bindings. 
