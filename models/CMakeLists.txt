@@ -25,16 +25,12 @@ add_library(ctrl SHARED ${SRC})
 
 install(TARGETS ctrl DESTINATION lib)
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    set_target_properties(ctrl PROPERTIES COMPILE_FLAGS "-Wconversion -Wno-sign-conversion")
-endif()
-
 target_link_libraries(ctrl ${LIBS})
 
 macro(INSTALL_HEADERS_WITH_DIRECTORY HEADER_LIST)
     FOREACH(HEADER ${${HEADER_LIST}})
         STRING(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-        install(FILES ${HEADER} DESTINATION include/ctrllib/${DIR})
+        install(FILES ${HEADER} DESTINATION include/libctrl/${DIR})
     ENDFOREACH(HEADER HEADER_LIST)
 endmacro(INSTALL_HEADERS_WITH_DIRECTORY)
 

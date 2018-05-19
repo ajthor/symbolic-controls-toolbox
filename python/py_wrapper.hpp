@@ -1,21 +1,21 @@
+// ---------------------------------------------------------------------------
+// Python Wrapper API Interface
+//
 #ifndef PYTHON_PY_WRAPPER_HPP
 #define PYTHON_PY_WRAPPER_HPP
 
-#include <Python.h>
+#include "Python.h"
 
-namespace Controls {
+#include "libctrl/c_wrapper.hpp"
 
-static PyObject* spam_system(PyObject *self, PyObject *args) {
-  const char* command;
-  int sts;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-  if (!PyArg_ParseTuple(args, "s", &command))
-    return NULL;
+static PyObject* pyctrl_symss(PyObject* self, PyObject* args);
 
-  sts = system(command);
-  return PyLong_FromLong(sts);
+#ifdef __cplusplus
 }
-
-} // Controls
+#endif
 
 #endif /* end of include guard: PYTHON_PY_WRAPPER_HPP */
