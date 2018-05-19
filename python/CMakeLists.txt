@@ -8,6 +8,8 @@ find_package(SymEngine CONFIG REQUIRED)
 find_package(PythonLibs REQUIRED)
 find_package(PythonInterp REQUIRED)
 
+find_package(Cython REQUIRED)
+include_directories(${PYTHON_INCLUDE_PATH})
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 # A list of all source files to be included in the shared library.
@@ -20,6 +22,7 @@ set(HEADERS
   py_wrapper.hpp
 )
 
+add_cython_target(pyctrl CXX py_wrapper.pyx)
 add_library(pyctrl SHARED ${SRC})
 
 target_link_libraries(pyctrl ${PYTHON_LIBRARIES})

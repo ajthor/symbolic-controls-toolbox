@@ -1,12 +1,37 @@
+import os
 from setuptools import setup, Extension
 
-module = Extension(
-    "pyctrl",
-    sources=["py_wrapper.cc"],
-    include_dirs=['/usr/local/include'],
-    libraries=['libctrl'],
-    library_dirs=['/usr/local/lib'],
-)
+# Check if the USE_SETUPTOOLS environment variable is set.
+use_cython = True
+use_setuptools = os.getenv('USE_SETUPTOOLS')
+
+if use_setuptools is not None:
+    if use_setuptools.lower() == 'true':
+        use_cython = False
+
+# Load Cython.
+if use_cython:
+    try:
+        from Cython.Build import cythonize
+    except ImportError:
+        use_cython = False
+
+if not use_cython:
+    # If the USE_SETUPTOOLS flag is set, or if Cython is not installed, install
+    # the library using setuptools as a Python/C extension.
+    module = Extension(
+        "pyctrl",
+        sources=["py_wrapper.cc"],
+        include_dirs=['/usr/local/include'],
+    )
+else:
+    module = cythonize(Extension(
+        'pyctrl',
+        sources=['py_wrapper.pyx'],
+        include_dirs=['/usr/local/include'],
+        extra_compile_args=['-std=c++11'],
+        language='c++',
+    ))
 
 long_description = '''
 The Symbolic Controls Toolbox is a C++ symbolic library for working with control systems licensed under the MIT general license.

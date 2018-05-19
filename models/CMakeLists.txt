@@ -30,7 +30,7 @@ target_link_libraries(ctrl ${LIBS})
 macro(INSTALL_HEADERS_WITH_DIRECTORY HEADER_LIST)
     FOREACH(HEADER ${${HEADER_LIST}})
         STRING(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-        install(FILES ${HEADER} DESTINATION include/libctrl/${DIR})
+        install(FILES ${HEADER} DESTINATION include/libctrl/models/${DIR})
     ENDFOREACH(HEADER HEADER_LIST)
 endmacro(INSTALL_HEADERS_WITH_DIRECTORY)
 
