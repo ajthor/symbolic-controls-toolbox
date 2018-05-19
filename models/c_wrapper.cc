@@ -44,11 +44,11 @@ struct StateSpace_C {
   Controls::StateSpace m;
 };
 
-StateSpace_C* statespace_new() {
+StateSpace_C* symss_new() {
   return new StateSpace_C;
 }
 
-void statespace_free(StateSpace_C* obj) {
+void symss_free(StateSpace_C* obj) {
   delete obj;
 }
 
@@ -59,11 +59,11 @@ struct TransferFunction_C {
   Controls::TransferFunction m;
 };
 
-TransferFunction_C* transferfunction_new() {
+TransferFunction_C* symtf_new() {
   return new TransferFunction_C;
 }
 
-void transferfunction_free(TransferFunction_C* obj) {
+void symtf_free(TransferFunction_C* obj) {
   delete obj;
 }
 

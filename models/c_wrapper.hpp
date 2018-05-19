@@ -14,18 +14,18 @@ extern "C" {
 //
 typedef struct StateSpace_C StateSpace_C;
 
-StateSpace_C* statespace_new();
-void statespace_free(StateSpace_C* obj);
+StateSpace_C* symss_new();
+void symss_free(StateSpace_C* obj);
 
-// void statespace_set_states(StateSpace_C* obj);
+// void symss_set_states(StateSpace_C* obj);
 
 // ---------------------------------------------------------------------------
 // C Wrapper for TransferFunction Interface
 //
 typedef struct TransferFunction_C TransferFunction_C;
 
-TransferFunction_C* transferfunction_new();
-void transferfunction_free(TransferFunction_C* obj);
+TransferFunction_C* symtf_new();
+void symtf_free(TransferFunction_C* obj);
 
 
 #ifdef __cplusplus
