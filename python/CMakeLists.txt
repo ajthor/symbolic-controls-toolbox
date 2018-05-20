@@ -5,7 +5,6 @@
 
 find_package(SymEngine CONFIG REQUIRED)
 
-
 find_package(PythonLibs REQUIRED)
 find_package(PythonInterp REQUIRED)
 
@@ -20,43 +19,52 @@ execute_process(
   OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
+set(PYCTRL_LIB_PATH ${PYTHON_SITE_PACKAGES}/pyctrl/lib)
+
 set(SYMENGINE_PATH ${PYTHON_SITE_PACKAGES}/symengine)
 set(SYMENGINE_LIB_PATH ${SYMENGINE_PATH}/lib)
-set(SYMENGINE_INCLUDE_PATH ${SYMENGINE_PATH}/include)
 
-# A list of all source files to be included in the shared library.
-set(SRC
-  py_wrapper.cc
-)
-
-# A list of all header files with C header definitions.
-set(HEADERS
-  py_wrapper.hpp
-)
-
-add_library(pyctrl_wrapper SHARED ${SRC})
+#
+# # A list of all source files to be included in the shared library.
+# set(SRC
+#   py_wrapper.cc
+# )
+#
+# # A list of all header files with C header definitions.
+# set(HEADERS
+#   py_wrapper.hpp
+# )
+#
+# # message("After ${SRC}")
+#
+# add_library(pyctrl_wrapper SHARED ${SRC})
+#
+# target_link_libraries(pyctrl_wrapper ${LIBS})
+# target_link_libraries(pyctrl_wrapper ${PYTHON_LIBRARIES})
 
 set(CYTHON_INCLUDE_DIRECTORIES ${SYMENGINE_LIB_PATH})
-# list(APPEND CYTHON_INCLUDE_DIRECTORIES ${SYMENGINE_LIB_PATH})
 
 cython_compile_pyx(pyctrl ${SYMENGINE_LIB_PATH})
 
-list(APPEND SRC pyctrl.cc)
+set(SRC
+  pyctrl.cc
+)
 
-add_library(pyctrl SHARED pyctrl.cc)
+add_library(pyctrl SHARED ${SRC})
+
 target_include_directories(pyctrl PUBLIC ${SYMENGINE_LIB_PATH})
+
 target_link_libraries(pyctrl ${PYTHON_LIBRARIES})
-target_link_libraries(pyctrl pyctrl_wrapper)
+target_link_libraries(pyctrl ctrl)
 
-install(TARGETS pyctrl DESTINATION lib)
+# target_link_libraries(pyctrl pyctrl_wrapper)
 
-target_link_libraries(pyctrl ${LIBS})
+install(TARGETS pyctrl
+  RUNTIME DESTINATION ${PYCTRL_LIB_PATH}
+  ARCHIVE DESTINATION ${PYCTRL_LIB_PATH}
+  LIBRARY DESTINATION ${PYCTRL_LIB_PATH}
+)
 
-macro(INSTALL_HEADERS_WITH_DIRECTORY HEADER_LIST)
-    foreach(HEADER ${${HEADER_LIST}})
-        string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-        install(FILES ${HEADER} DESTINATION include/ctrllib/${DIR})
-    endforeach(HEADER HEADER_LIST)
-endmacro(INSTALL_HEADERS_WITH_DIRECTORY)
-
-INSTALL_HEADERS_WITH_DIRECTORY(HEADERS)
+install(FILES __init__.py
+  DESTINATION ${PYCTRL_LIB_PATH}
+)

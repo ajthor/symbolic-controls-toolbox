@@ -18,16 +18,65 @@ include(ExternalProject)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
 
-include_directories("${PROJECT_SOURCE_DIR}/models")
-add_subdirectory(models)
+macro(INSTALL_HEADERS_WITH_DIRECTORY HEADER_LIST)
+    foreach(HEADER ${${HEADER_LIST}})
+        string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
+        install(FILES ${HEADER} DESTINATION include/libctrl/${DIR})
+    endforeach()
+endmacro()
+
+# Macro to prepend a string to each element of a list.
+macro(PREPEND var prefix)
+  set(NEW_LIST "")
+
+  foreach(file ${ARGN})
+    list(APPEND NEW_LIST "${prefix}/${file}")
+  endforeach()
+
+  set(${var} "${NEW_LIST}")
+
+endmacro()
+
+# List of project subdirectories to be added.
+# When modifying this file with new subdirectories, edit this variable.
+# The order of the subdirectories is the order the directories will be added.
+set(PROJECT_DIRECTORIES
+  models
+)
+
+# Prepend the project source directory.
+prepend(ABS_PROJECT_DIRECTORIES ${PROJECT_DIRECTORIES} ${PROJECT_SOURCE_DIR})
+
+include_directories("${ABS_PROJECT_DIRECTORIES}")
+
+# Add all subdirectories.
+foreach(dir ${PROJECT_DIRECTORIES})
+  add_subdirectory(models)
+endforeach()
+
+
+# if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+#   add_library(${name} MODULE ${ARGN})
+#
+#   set_target_properties(${name} PROPERTIES
+#     LINK_FLAGS "-flat_namespace -undefined suppress")
+#
+# else()
+#   add_library(${name} SHARED ${ARGN})
+#
+# endif()
+add_library(ctrl SHARED ${PROJECT_SRC})
+# target_link_libraries(ctrl ${LIBS})
+
+install(TARGETS ctrl DESTINATION lib)
 
 # Matlab Support
-option(WITH_MATLAB "Build Matlab MEX files." OFF)
+option(BUILD_MATLAB "Build Matlab MEX files." OFF)
 
 # Python Support
-option(WITH_PYTHON "Build Python wrapper library." OFF)
+option(BUILD_PYTHON "Build Python wrapper library." OFF)
 
-if(WITH_MATLAB)
+if(BUILD_MATLAB)
   add_subdirectory(matlab)
   # ExternalProject_Add(ctrltbx_matlab
   #   SOURCE_DIR "${PROJECT_SOURCE_DIR}/matlab"
@@ -37,7 +86,7 @@ if(WITH_MATLAB)
   # )
 endif()
 
-if(WITH_PYTHON)
+if(BUILD_PYTHON)
   add_subdirectory(python)
   # ExternalProject_Add(ctrltbx_matlab
   #   SOURCE_DIR "${PROJECT_SOURCE_DIR}/python"

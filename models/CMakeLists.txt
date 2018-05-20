@@ -10,8 +10,6 @@ set(SRC
   transfer_function.cc
 )
 
-# SET_SOURCE_FILES_PROPERTIES(${SRC} PROPERTIES LANGUAGE CXX)
-
 # A list of all header files with C header definitions.
 set(HEADERS
   c_wrapper.hpp
@@ -21,17 +19,13 @@ set(HEADERS
   transfer_function.hpp
 )
 
-add_library(ctrl SHARED ${SRC})
-
-install(TARGETS ctrl DESTINATION lib)
-
-target_link_libraries(ctrl ${LIBS})
-
-macro(INSTALL_HEADERS_WITH_DIRECTORY HEADER_LIST)
-    foreach(HEADER ${${HEADER_LIST}})
-        string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-        install(FILES ${HEADER} DESTINATION include/libctrl/models/${DIR})
-    endforeach(HEADER HEADER_LIST)
-endmacro(INSTALL_HEADERS_WITH_DIRECTORY)
-
 INSTALL_HEADERS_WITH_DIRECTORY(HEADERS)
+
+# set(PROJECT_SRC ${SRC} PARENT_SCOPE)
+# set(PROJECT_HEADERS ${HEADERS} PARENT_SCOPE)
+
+prepend(PROJECT_SRC ${CMAKE_CURRENT_SOURCE_DIR} ${SRC})
+prepend(PROJECT_HEADERS ${CMAKE_CURRENT_SOURCE_DIR} ${HEADERS})
+
+set(PROJECT_SRC ${PROJECT_SRC} PARENT_SCOPE)
+set(PROJECT_HEADERS ${PROJECT_HEADERS} PARENT_SCOPE)

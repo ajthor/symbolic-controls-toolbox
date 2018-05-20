@@ -3,7 +3,7 @@ from libcpp.vector cimport vector
 cimport symengine
 from symengine cimport RCP, map_basic_basic, rcp_const_basic
 
-cdef extern from "libctrl/models/state_space.hpp" namespace "Controls":
+cdef extern from "libctrl/state_space.hpp" namespace "Controls":
     cdef cppclass StateSpace "Controls::StateSpace":
         StateSpace() except +
 

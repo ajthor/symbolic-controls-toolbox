@@ -9,18 +9,26 @@ making it inter-operable with [SymPy](http://www.sympy.org/en/index.html).
 
 ## Getting Started
 
+Install the dependencies.
+
+```shell
+> pip install cython 
+> git clone https://github.com/symengine/symengine.py .
+> python setup.py install
+```
+
 Build the Symbolic Controls Library.
 
 ```shell
-cmake .
-make
-make install
+> cmake -DWITH_PYTHON .
+> make
+> make install
 ```
 
-Install the python library from the `python` directory.
+It is also possible to install the python library from the `python` directory.
 
 ```shell
-python setup.py install
+> python setup.py install
 ```
 
 ## Your First System
@@ -42,3 +50,5 @@ Use the Python/C API interface for specialized functions that are performance-or
 Otherwise, use the Cython interface for C++ class member functions.
 
 - `py_wrapper.pyx`
+
+CMake is the preferred method for compiling Cython files into C++ and creating a library.
