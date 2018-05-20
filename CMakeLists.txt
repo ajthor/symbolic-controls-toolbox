@@ -18,15 +18,16 @@ include(ExternalProject)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
 
+include_directories("${PROJECT_SOURCE_DIR}/models")
 add_subdirectory(models)
 
 # Matlab Support
-option(BUILD_MATLAB "Build Matlab MEX files." OFF)
+option(WITH_MATLAB "Build Matlab MEX files." OFF)
 
 # Python Support
-option(BUILD_PYTHON "Build Python wrapper library." OFF)
+option(WITH_PYTHON "Build Python wrapper library." OFF)
 
-if(BUILD_MATLAB)
+if(WITH_MATLAB)
   add_subdirectory(matlab)
   # ExternalProject_Add(ctrltbx_matlab
   #   SOURCE_DIR "${PROJECT_SOURCE_DIR}/matlab"
@@ -36,7 +37,7 @@ if(BUILD_MATLAB)
   # )
 endif()
 
-if(BUILD_PYTHON)
+if(WITH_PYTHON)
   add_subdirectory(python)
   # ExternalProject_Add(ctrltbx_matlab
   #   SOURCE_DIR "${PROJECT_SOURCE_DIR}/python"

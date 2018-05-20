@@ -23,7 +23,7 @@ public:
   StateSpace();
   ~StateSpace();
 
-  void set_states(const std::vector<RCP<const Symbol>> &arg);
+  void set_states(const std::vector<RCP<const Basic>> &arg);
   // void set_inputs(const std::vector<RCP<const Symbol>> &arg);
   // void set_f(const std::vector<RCP<const Basic>> &arg);
   // void set_g(const std::vector<RCP<const Basic>> &arg);
@@ -33,7 +33,7 @@ public:
   // void add_f(const RCP<const Basic> &arg);
   // void add_g(const RCP<const Basic> &arg);
 
-  std::vector<RCP<const Symbol>> get_states();
+  std::vector<RCP<const Basic>> get_states();
   // std::vector<RCP<const Symbol>> get_inputs();
   // std::vector<RCP<const Basic>> get_f();
   // std::vector<RCP<const Basic>> get_g();
@@ -45,10 +45,10 @@ public:
 
 private:
   // Vector of symbolic state variables.
-  std::vector<RCP<const Symbol>> states_;
+  std::vector<RCP<const Basic>> states_;
 
   // Vector of symbolic inputs.
-  std::vector<RCP<const Symbol>> inputs_;
+  std::vector<RCP<const Basic>> inputs_;
 
   // Vector of state equations.
   std::vector<RCP<const Basic>> f_;

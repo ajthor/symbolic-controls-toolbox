@@ -18,4 +18,6 @@ RUN apk add --no-cache \
  && git clone https://github.com/symengine/symengine /tmp/symengine \
  && (cd /tmp/symengine && cmake .) \
  && (cd /tmp/symengine && make && make install) \
- && pip install cython
+ && pip install cython \
+ && git clone https://github.com/symengine/symengine.py /tmp/symenginepy \
+ && (cd /tmp/symenginepy && python setup.py install)

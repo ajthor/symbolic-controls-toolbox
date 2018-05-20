@@ -8,11 +8,11 @@ StateSpace::StateSpace() {}
 
 StateSpace::~StateSpace() {}
 
-void StateSpace::set_states(const std::vector<RCP<const Symbol>> &arg) {
+void StateSpace::set_states(const std::vector<RCP<const Basic>> &arg) {
   states_ = arg;
 }
 
-std::vector<RCP<const Symbol>> StateSpace::get_states() {
+std::vector<RCP<const Basic>> StateSpace::get_states() {
   return states_;
 }
 

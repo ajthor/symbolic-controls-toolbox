@@ -34,4 +34,11 @@ sys = pyctrl.symss()
 
 ## For Developers
 
-Use the Python/C API interface for specialized functions that are performance-oriented. Otherwise, use the Cython interface to create the C++ class interface functions.
+Use the Python/C API interface for specialized functions that are performance-oriented.
+
+- `py_wrapper.hpp`
+- `py_wrapper.cc`
+
+Otherwise, use the Cython interface for C++ class member functions.
+
+- `py_wrapper.pyx`
