@@ -12,7 +12,7 @@ making it inter-operable with [SymPy](http://www.sympy.org/en/index.html).
 Install the dependencies.
 
 ```shell
-> pip install cython 
+> pip install cython
 > git clone https://github.com/symengine/symengine.py .
 > python setup.py install
 ```
@@ -20,7 +20,7 @@ Install the dependencies.
 Build the Symbolic Controls Library.
 
 ```shell
-> cmake -DWITH_PYTHON .
+> cmake -DBUILD_PYTHON .
 > make
 > make install
 ```
@@ -35,6 +35,7 @@ It is also possible to install the python library from the `python` directory.
 
 ```python
 import pyctrl
+import sympy
 
 sys = pyctrl.symss()
 
@@ -51,4 +52,4 @@ Otherwise, use the Cython interface for C++ class member functions.
 
 - `py_wrapper.pyx`
 
-CMake is the preferred method for compiling Cython files into C++ and creating a library.
+CMake is the preferred method for compiling Cython files into C++ and creating a shared library.

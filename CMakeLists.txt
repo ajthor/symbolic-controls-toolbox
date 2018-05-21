@@ -18,22 +18,28 @@ include(ExternalProject)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
 
+# Macro to install header files to the include directory.
 macro(INSTALL_HEADERS_WITH_DIRECTORY HEADER_LIST)
     foreach(HEADER ${${HEADER_LIST}})
         string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
-        install(FILES ${HEADER} DESTINATION include/libctrl/${DIR})
+
+        install(FILES 
+          ${HEADER}
+          DESTINATION include/libctrl/${DIR}
+        )
+
     endforeach()
 endmacro()
 
 # Macro to prepend a string to each element of a list.
-macro(PREPEND var prefix)
+macro(PREPEND NEW_VAR PREFIX)
   set(NEW_LIST "")
 
-  foreach(file ${ARGN})
-    list(APPEND NEW_LIST "${prefix}/${file}")
+  foreach(FILE_NAME ${ARGN})
+    list(APPEND NEW_LIST "${PREFIX}/${FILE_NAME}")
   endforeach()
 
-  set(${var} "${NEW_LIST}")
+  set(${NEW_VAR} "${NEW_LIST}")
 
 endmacro()
 

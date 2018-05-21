@@ -11,15 +11,29 @@ find_package(PythonInterp REQUIRED)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/")
 find_package(Cython REQUIRED)
 
+# ----------------------------------------------------------------------
+# Configure Python
+#
 include_directories(${PYTHON_INCLUDE_PATH})
 include_directories(${PYTHON_INCLUDE_DIRS})
 
-execute_process(
-  COMMAND python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
-  OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+if(NOT DEFINED PYTHON_SITE_PACKAGES)
+  execute_process(
+    COMMAND python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
+    OUTPUT_VARIABLE PYTHON_SITE_PACKAGES
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+endif()
 
-set(PYCTRL_LIB_PATH ${PYTHON_SITE_PACKAGES}/pyctrl/lib)
+if(NOT DEFINED PYTHON_INCLUDE_DIR)
+	execute_process(
+		COMMAND python -c "from distutils.sysconfig import get_python_inc; print(get_python_inc(plat_specific=1))"
+		OUTPUT_VARIABLE PYTHON_INCLUDE_DIR
+		OUTPUT_STRIP_TRAILING_WHITESPACE
+	)
+endif()
+
+set(PYCTRL_PATH ${PYTHON_SITE_PACKAGES}/pyctrl)
 
 set(SYMENGINE_PATH ${PYTHON_SITE_PACKAGES}/symengine)
 set(SYMENGINE_LIB_PATH ${SYMENGINE_PATH}/lib)
@@ -52,6 +66,9 @@ set(SRC
 
 add_library(pyctrl SHARED ${SRC})
 
+set_target_properties(pyctrl PROPERTIES PREFIX "")
+
+target_include_directories(pyctrl PUBLIC ${PROJECT_SOURCE_DIR})
 target_include_directories(pyctrl PUBLIC ${SYMENGINE_LIB_PATH})
 
 target_link_libraries(pyctrl ${PYTHON_LIBRARIES})
@@ -60,11 +77,19 @@ target_link_libraries(pyctrl ctrl)
 # target_link_libraries(pyctrl pyctrl_wrapper)
 
 install(TARGETS pyctrl
-  RUNTIME DESTINATION ${PYCTRL_LIB_PATH}
-  ARCHIVE DESTINATION ${PYCTRL_LIB_PATH}
-  LIBRARY DESTINATION ${PYCTRL_LIB_PATH}
+  RUNTIME DESTINATION ${PYCTRL_PATH}
+  ARCHIVE DESTINATION ${PYCTRL_PATH}
+  LIBRARY DESTINATION ${PYCTRL_PATH}
 )
 
-install(FILES __init__.py
-  DESTINATION ${PYCTRL_LIB_PATH}
+install(FILES
+  __init__.py
+  pyctrl.pxd
+  DESTINATION ${PYCTRL_PATH}
 )
+
+# add_custom_command(
+#   TARGET pyctrl
+#   COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/setup.py install
+#   COMMENT "Installing pyctrl."
+# )

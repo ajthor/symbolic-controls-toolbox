@@ -41,15 +41,4 @@ PyInit_pyctrl(void) {
     return NULL;
 
   return m;
-
-  // static void *PySpam_API[1];
-  //
-  //
-  //
-  // PySpam_API[PySpam_System_NUM] = (void *)PySpam_System;
-  // c_api_object = PyCapsule_New((void *)PySpam_API, "spam._C_API", NULL);
-  //
-  // if (c_api_object != NULL)
-  //   PyModule_AddObject(m, "_C_API", c_api_object);
-  // return m;
 }
