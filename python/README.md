@@ -25,6 +25,12 @@ Build the Symbolic Controls Library.
 > make install
 ```
 
+Fro developers, it may be a good idea to use an out of source build.
+
+```shell
+> (cd build && cmake -DBUILD_PYTHON=on .. && make && make install)
+```
+
 It is also possible to install the python library from the `python` directory.
 
 ```shell
@@ -53,3 +59,5 @@ Otherwise, use the Cython interface for C++ class member functions.
 - `py_wrapper.pyx`
 
 CMake is the preferred method for compiling Cython files into C++ and creating a shared library.
+
+For this installation method, CMake compiles a shared C library and places the library in `site-packages` so that it can be imported as a python module. The
