@@ -1,8 +1,12 @@
-#include "matlab_wrapper.h"
+#include "matlab_wrapper.hpp"
+
+extern "C" {
 
 int say_hello() {
   return 3;
 }
+
+} // C
 
 // // void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 // //

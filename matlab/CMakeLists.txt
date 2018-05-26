@@ -84,13 +84,13 @@ endif()
 set(MATCTRL_PATH "${MATLAB_USER_PATH}/matctrl")
 
 set(SRC
-  matlab_wrapper.c
+  matlab_wrapper.cc
 )
 
 # matlab_add_mex(NAME matlab_wrapper SHARED SRC ${SRC})
 
 set(HEADERS
-  matlab_wrapper.h
+  matlab_wrapper.hpp
 )
 
 add_library(matctrl SHARED ${SRC})
