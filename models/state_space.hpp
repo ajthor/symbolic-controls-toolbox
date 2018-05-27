@@ -9,52 +9,45 @@
 
 #include "system.hpp"
 
-using Controls::System;
-
-using SymEngine::Basic;
-using SymEngine::DenseMatrix;
-using SymEngine::Symbol;
-using SymEngine::RCP;
-
 namespace Controls {
 
-class StateSpace : public System {
+class StateSpace : public Controls::System {
 public:
   StateSpace();
   ~StateSpace();
 
-  void set_states(const std::vector<RCP<const Basic>> &arg);
-  // void set_inputs(const std::vector<RCP<const Symbol>> &arg);
-  // void set_f(const std::vector<RCP<const Basic>> &arg);
-  // void set_g(const std::vector<RCP<const Basic>> &arg);
-  //
-  // void add_state(const RCP<const Symbol> &arg);
-  // void add_input(const RCP<const Symbol> &arg);
-  // void add_f(const RCP<const Basic> &arg);
-  // void add_g(const RCP<const Basic> &arg);
+  void set_states(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg);
+  void set_inputs(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg);
+  void set_f(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg);
+  void set_g(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg);
 
-  std::vector<RCP<const Basic>> get_states();
-  // std::vector<RCP<const Symbol>> get_inputs();
-  // std::vector<RCP<const Basic>> get_f();
-  // std::vector<RCP<const Basic>> get_g();
-  //
-  // DenseMatrix get_A_matrix();
-  // DenseMatrix get_B_matrix();
-  // DenseMatrix get_C_matrix();
-  // DenseMatrix get_D_matrix();
+  // void add_state(const SymEngine::RCP<const SymEngine::Basic> &arg);
+  // void add_input(const SymEngine::RCP<const SymEngine::Basic> &arg);
+  // void add_f(const SymEngine::RCP<const SymEngine::Basic> &arg);
+  // void add_g(const SymEngine::RCP<const SymEngine::Basic> &arg);
+
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> get_states();
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> get_inputs();
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> get_f();
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> get_g();
+
+  // SymEngine::DenseMatrix get_A_matrix();
+  // SymEngine::DenseMatrix get_B_matrix();
+  // SymEngine::DenseMatrix get_C_matrix();
+  // SymEngine::DenseMatrix get_D_matrix();
 
 private:
   // Vector of symbolic state variables.
-  std::vector<RCP<const Basic>> states_;
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> states_;
 
-  // Vector of symbolic inputs.
-  std::vector<RCP<const Basic>> inputs_;
+  // Vector of symbolic input variables.
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> inputs_;
 
   // Vector of state equations.
-  std::vector<RCP<const Basic>> f_;
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> f_;
 
   // Vector of output equations.
-  std::vector<RCP<const Basic>> g_;
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> g_;
 };
 
 } // Controls

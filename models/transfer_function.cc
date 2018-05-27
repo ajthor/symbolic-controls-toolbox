@@ -8,19 +8,19 @@ TransferFunction::TransferFunction() {}
 
 TransferFunction::~TransferFunction() {}
 
-void TransferFunction::set_num(const std::vector<RCP<const Basic>> &arg) {
+void TransferFunction::set_num(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
   num_ = arg;
 }
 
-void TransferFunction::set_den(const std::vector<RCP<const Basic>> &arg) {
+void TransferFunction::set_den(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
   den_ = arg;
 }
 
-std::vector<RCP<const Basic>> TransferFunction::get_num() {
+std::vector<SymEngine::RCP<const SymEngine::Basic>> TransferFunction::get_num() {
   return num_;
 }
 
-std::vector<RCP<const Basic>> TransferFunction::get_den() {
+std::vector<SymEngine::RCP<const SymEngine::Basic>> TransferFunction::get_den() {
   return den_;
 }
 

@@ -8,23 +8,48 @@ StateSpace::StateSpace() {}
 
 StateSpace::~StateSpace() {}
 
-void StateSpace::set_states(const std::vector<RCP<const Basic>> &arg) {
+void StateSpace::set_states(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
   states_ = arg;
 }
 
-std::vector<RCP<const Basic>> StateSpace::get_states() {
+void StateSpace::set_inputs(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
+  inputs_ = arg;
+}
+
+void StateSpace::set_f(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
+  f_ = arg;
+}
+
+void StateSpace::set_g(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
+  g_ = arg;
+}
+
+std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_states() {
   return states_;
 }
 
-// void StateSpace::set_inputs(const std::vector<RCP<const Basic>> &arg) {
+std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_inputs() {
+  return inputs_;
+}
+
+std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_f() {
+  return f_;
+}
+
+std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_g() {
+  return g_;
+}
+
+
+// void StateSpace::set_inputs(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
 //   inputs_ = arg;
 // }
 //
-// void StateSpace::add_state(const RCP<const Basic> &arg) {
+// void StateSpace::add_state(const SymEngine::RCP<const SymEngine::Basic> &arg) {
 //   states_.insert(states_.end(), arg.begin(), arg.end());
 // }
 //
-// void StateSpace::add_input(const RCP<const Basic> &arg) {
+// void StateSpace::add_input(const SymEngine::RCP<const SymEngine::Basic> &arg) {
 //   inputs_.insert(inputs_.end(), arg.begin(), arg.end());
 // }
 

@@ -5,7 +5,7 @@
 
 namespace Controls {
 
-class System : public ControlModel {
+class System : public Controls::ControlModel {
 public:
   System();
   ~System();

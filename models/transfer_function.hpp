@@ -9,30 +9,25 @@
 
 #include "system.hpp"
 
-using SymEngine::Basic;
-using SymEngine::DenseMatrix;
-using SymEngine::Symbol;
-using SymEngine::RCP;
-
 namespace Controls {
 
-class TransferFunction : public System {
+class TransferFunction : public Controls::System {
 public:
   TransferFunction();
   ~TransferFunction();
 
-  void set_num(const std::vector<RCP<const Basic>> &arg);
-  void set_den(const std::vector<RCP<const Basic>> &arg);
+  void set_num(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg);
+  void set_den(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg);
 
-  // void add_num(RCP<const Basic> arg);
-  // void add_den(RCP<const Basic> arg);
+  // void add_num(SymEngine::RCP<const SymEngine::Basic> arg);
+  // void add_den(SymEngine::RCP<const SymEngine::Basic> arg);
 
-  std::vector<RCP<const Basic>> get_num();
-  std::vector<RCP<const Basic>> get_den();
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> get_num();
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> get_den();
 
 private:
-  std::vector<RCP<const Basic>> num_;
-  std::vector<RCP<const Basic>> den_;
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> num_;
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> den_;
 };
 
 } // Controls

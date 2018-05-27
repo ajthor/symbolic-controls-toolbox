@@ -5,6 +5,8 @@
 #ifndef MODELS_C_WRAPPER_HPP
 #define MODELS_C_WRAPPER_HPP
 
+#include "ctrl_export.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -14,19 +16,16 @@ extern "C" {
 //
 typedef struct StateSpace_C StateSpace_C;
 
-StateSpace_C* symss_new();
-void symss_free(StateSpace_C* obj);
-
-// void symss_set_states(StateSpace_C* obj);
+CTRL_EXPORT StateSpace_C* symss_new();
+CTRL_EXPORT void symss_free(StateSpace_C* obj);
 
 // ---------------------------------------------------------------------------
 // C Wrapper for TransferFunction Interface
 //
 typedef struct TransferFunction_C TransferFunction_C;
 
-TransferFunction_C* symtf_new();
-void symtf_free(TransferFunction_C* obj);
-
+CTRL_EXPORT TransferFunction_C* symtf_new();
+CTRL_EXPORT void symtf_free(TransferFunction_C* obj);
 
 #ifdef __cplusplus
 }

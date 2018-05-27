@@ -49,6 +49,9 @@ StateSpace_C* symss_new() {
 }
 
 void symss_free(StateSpace_C* obj) {
+  if(!obj) {
+    return;
+  }
   delete obj;
 }
 
@@ -64,6 +67,9 @@ TransferFunction_C* symtf_new() {
 }
 
 void symtf_free(TransferFunction_C* obj) {
+  if(!obj) {
+    return;
+  }
   delete obj;
 }
 
