@@ -2,6 +2,8 @@
 // Matlab Wrapper API Function Definitions
 //
 
+#include <mex.h>
+
 #include "matlab_wrapper.hpp"
 
 #include "libctrl/state_space.hpp"

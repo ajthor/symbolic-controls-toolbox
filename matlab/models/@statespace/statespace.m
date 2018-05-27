@@ -5,7 +5,7 @@ classdef (SupportExtensionMethods = true) statespace < handle
     end
 
     methods
-        function obj = statespace()
+        function obj = statespace(varargin)
             obj.cobj_ = calllib('matctrl', 'statespace_new');
         end
 

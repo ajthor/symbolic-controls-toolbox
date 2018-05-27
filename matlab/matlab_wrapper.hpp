@@ -9,9 +9,6 @@
 extern "C" {
 #endif
 
-int say_hello();
-
-
 typedef struct StateSpace_C StateSpace_C;
 
 StateSpace_C* statespace_new();

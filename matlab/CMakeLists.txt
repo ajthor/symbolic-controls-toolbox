@@ -85,14 +85,12 @@ set(MATCTRL_PATH "${MATLAB_USER_PATH}/matctrl")
 
 set(SRC
   matlab_wrapper.cc
-  ${PROJECT_SRC}
 )
 
 # matlab_add_mex(NAME matlab_wrapper SHARED SRC ${SRC})
 
 set(HEADERS
   matlab_wrapper.hpp
-  ${PROJECT_HEADERS}
 )
 
 add_library(matctrl SHARED ${SRC})
@@ -101,15 +99,17 @@ set_target_properties(matctrl PROPERTIES PREFIX "")
 set_target_properties(matctrl PROPERTIES LINKER_LANGUAGE C)
 
 target_include_directories(matctrl PUBLIC
-  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<INSTALL_INTERFACE:include>
 )
 
 target_include_directories(matctrl PUBLIC ${SYMENGINE_LIB_PATH})
+target_include_directories(matctrl PUBLIC ${Matlab_INCLUDE_DIRS})
+target_include_directories(matctrl PUBLIC include/libctrl)
 
+target_link_libraries(matctrl ${Matlab_MEX_LIBRARY})
+target_link_libraries(matctrl ${Matlab_MX_LIBRARY})
 target_link_libraries(matctrl ctrl)
 
 install(TARGETS matctrl
@@ -121,7 +121,9 @@ install(TARGETS matctrl
 )
 
 install(FILES
+  finish.m
   loadmatctrl.m
+  startup.m
   unloadmatctrl.m
   DESTINATION ${MATCTRL_PATH}
 )
