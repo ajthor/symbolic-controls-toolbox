@@ -13,6 +13,8 @@ set(CTRLLIB_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
 
 find_package(SymEngine CONFIG REQUIRED)
 
+include(GenerateExportHeader)
+include(GNUInstallDirs)
 include(ExternalProject)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
@@ -23,7 +25,7 @@ macro(INSTALL_HEADERS_WITH_DIRECTORY HEADER_LIST)
     foreach(HEADER ${${HEADER_LIST}})
         string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
 
-        install(FILES 
+        install(FILES
           ${HEADER}
           DESTINATION include/libctrl/${DIR}
         )
@@ -43,44 +45,61 @@ macro(PREPEND NEW_VAR PREFIX)
 
 endmacro()
 
+# Project Directories
+#
 # List of project subdirectories to be added.
-# When modifying this file with new subdirectories, edit this variable.
-# The order of the subdirectories is the order the directories will be added.
-set(PROJECT_DIRECTORIES
+#
+# When modifying this file with new subdirectories, edit this variable. The
+# order of the project directories is the order the subdirectories will be
+# added.
+set(ctrl_INCLUDE_DIRECTORIES
   models
 )
 
 # Prepend the project source directory.
-prepend(ABS_PROJECT_DIRECTORIES ${PROJECT_DIRECTORIES} ${PROJECT_SOURCE_DIR})
+prepend(ABS_PROJECT_DIRECTORIES ${ctrl_INCLUDE_DIRECTORIES} ${PROJECT_SOURCE_DIR})
 
 include_directories("${ABS_PROJECT_DIRECTORIES}")
 
 # Add all subdirectories.
-foreach(dir ${PROJECT_DIRECTORIES})
-  add_subdirectory(models)
+foreach(dir ${ctrl_INCLUDE_DIRECTORIES})
+  add_subdirectory(${dir})
 endforeach()
 
-
-# if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-#   add_library(${name} MODULE ${ARGN})
-#
-#   set_target_properties(${name} PROPERTIES
-#     LINK_FLAGS "-flat_namespace -undefined suppress")
-#
-# else()
-#   add_library(${name} SHARED ${ARGN})
-#
-# endif()
+# Each CMakeLists file in the subdirectories will configure and add its own
+# source files to the PROJECT_SRC list. Once all source files have been added,
+# they are compiled into the shared object library.
 add_library(ctrl SHARED ${PROJECT_SRC})
-# target_link_libraries(ctrl ${LIBS})
 
-install(TARGETS ctrl DESTINATION lib)
+generate_export_header(ctrl)
+
+target_include_directories(ctrl PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:include>
+)
+
+install(TARGETS ctrl
+  EXPORT ctrl
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+install(EXPORT ctrl
+  FILE CtrlTargets.cmake
+  NAMESPACE Control::
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libctrl
+)
+
+install(FILES
+  ${CMAKE_BINARY_DIR}/ctrl_export.h
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libctrl
+)
 
 # Matlab Support
 option(BUILD_MATLAB "Build Matlab MEX files." OFF)
-
-# Python Support
-option(BUILD_PYTHON "Build Python wrapper library." OFF)
 
 if(BUILD_MATLAB)
   add_subdirectory(matlab)
@@ -91,6 +110,9 @@ if(BUILD_MATLAB)
   #   BUILD_ALWAYS 1
   # )
 endif()
+
+# Python Support
+option(BUILD_PYTHON "Build Python wrapper library." OFF)
 
 if(BUILD_PYTHON)
   add_subdirectory(python)

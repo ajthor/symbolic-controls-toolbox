@@ -5,12 +5,12 @@ classdef (SupportExtensionMethods = true) statespace < handle
     end
 
     methods
-        function obj = statespace(varargin)
-            obj.cobjHandle = statespace_new(varargin);
+        function obj = statespace()
+            obj.cobjHandle = calllib('matctrl', 'statespace_new');
         end
 
         function delete(obj)
-            statespace_free(obj.cobjHandle);
+            calllib('matctrl', 'statespace_free', obj.cobjHandle);
         end
     end
 

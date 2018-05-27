@@ -1,3 +1,7 @@
+// ----------------------------------------------------------------------
+// Matlab Wrapper API Function Definitions
+//
+// Matlab-specific functions go here.
 #ifndef CONTROL_MATLAB_MATLAB_WRAPPER_HPP
 #define CONTROL_MATLAB_MATLAB_WRAPPER_HPP
 
@@ -7,35 +11,25 @@ extern "C" {
 
 int say_hello();
 
-// #include "mex.hpp"
-// #include "mexAdapter.hpp"
-//
-// using namespace matlab::data;
-// using matlab::mex::ArgumentList;
-// using matlab::engine::convertUTF8StringToUTF16String;
-//
-// template<class T>
-// class MexFunction : public matlab::mex::Function {
-// public:
-//   MexFunction() {
-//
-//     mexLock();
-//   }
-//
-//   ~MexFunction() {
-//     delete cppObject;
-//     mexUnlock();
-//   }
-//
-//   void operator()(ArgumentList outputs, ArgumentList inputs);
-//
-//   void checkArguments(ArgumentList outputs, ArgumentList inputs);
-//
-// private:
-//   std::shared_ptr<matlab::engine::MATLABEngine> matlabPtr = getEngine();
-//
-//   ArrayFactory factory;
-// };
+
+typedef struct StateSpace_C StateSpace_C;
+
+StateSpace_C* statespace_new();
+void statespace_free(StateSpace_C* obj);
+
+
+typedef struct MDP_C MDP_C;
+
+MDP_C* mdp_new();
+void mdp_free(MDP_C* obj);
+
+void mdp_set_num_states(MDP_C* obj, unsigned int arg);
+void mdp_set_num_inputs(MDP_C* obj, unsigned int arg);
+void mdp_set_gamma(MDP_C* obj, double arg);
+
+unsigned int mdp_get_num_states(MDP_C* obj);
+unsigned int mdp_get_num_inputs(MDP_C* obj);
+double mdp_get_gamma(MDP_C* obj);
 
 #ifdef __cplusplus
 }

@@ -13,6 +13,14 @@ Matlab and SymEngine on the backend.
 1. Install the toolbox.
 1. Enjoy!
 
+### Build From Source
+
+```shell
+> cmake -DBUILD_MATLAB .
+> make
+> make install
+```
+
 ## Your First System
 
 ```matlab
@@ -35,4 +43,4 @@ nlsim2(sys, 0, [0 10], {[1 1]});
 
 ## For Developers
 
-The generated toolbox should be a stand-alone distribution. 
+The generated toolbox should be a stand-alone distribution.

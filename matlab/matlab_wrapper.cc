@@ -1,10 +1,68 @@
+// ----------------------------------------------------------------------
+// Matlab Wrapper API Function Definitions
+//
+
 #include "matlab_wrapper.hpp"
+
+#include "libctrl/state_space.hpp"
+#include "libctrl/mdp.hpp"
 
 extern "C" {
 
-int say_hello() {
-  return 3;
+struct StateSpace_C {
+  Controls::StateSpace m;
+};
+
+StateSpace_C* statespace_new() {
+  return new StateSpace_C;
 }
+
+void statespace_free(StateSpace_C* obj) {
+  if(!obj) {
+    return;
+  }
+  delete obj;
+}
+
+struct MDP_C {
+  Controls::MDP m;
+};
+
+MDP_C* mdp_new() {
+  return new MDP_C;
+}
+
+void mdp_free(MDP_C* obj) {
+  if(!obj) {
+    return;
+  }
+  delete obj;
+}
+
+void mdp_set_num_states(MDP_C* obj, unsigned int arg) {
+  obj->m.set_num_states(arg);
+}
+
+void mdp_set_num_inputs(MDP_C* obj, unsigned int arg) {
+  obj->m.set_num_inputs(arg);
+}
+
+void mdp_set_gamma(MDP_C* obj, double arg) {
+  obj->m.set_gamma(arg);
+}
+
+unsigned int mdp_get_num_states(MDP_C* obj) {
+  return obj->m.get_num_states();
+}
+
+unsigned int mdp_get_num_inputs(MDP_C* obj) {
+  return obj->m.get_num_inputs();
+}
+
+double mdp_get_gamma(MDP_C* obj) {
+  return obj->m.get_gamma();
+}
+
 
 } // C
 
