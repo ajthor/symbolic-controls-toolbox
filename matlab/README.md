@@ -16,7 +16,7 @@ Matlab and SymEngine on the backend.
 ### Build From Source
 
 ```shell
-> cmake -DBUILD_MATLAB .
+> cmake -DBUILD_MATLAB=ON .
 > make
 > make install
 ```

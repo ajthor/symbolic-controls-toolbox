@@ -18,9 +18,6 @@ StateSpace_C* statespace_new() {
 }
 
 void statespace_free(StateSpace_C* obj) {
-  if(!obj) {
-    return;
-  }
   delete obj;
 }
 
@@ -33,17 +30,14 @@ MDP_C* mdp_new() {
 }
 
 void mdp_free(MDP_C* obj) {
-  if(!obj) {
-    return;
-  }
   delete obj;
 }
 
-void mdp_set_num_states(MDP_C* obj, unsigned int arg) {
+void mdp_set_num_states(MDP_C* obj, int arg) {
   obj->m.set_num_states(arg);
 }
 
-void mdp_set_num_inputs(MDP_C* obj, unsigned int arg) {
+void mdp_set_num_inputs(MDP_C* obj, int arg) {
   obj->m.set_num_inputs(arg);
 }
 
@@ -51,11 +45,11 @@ void mdp_set_gamma(MDP_C* obj, double arg) {
   obj->m.set_gamma(arg);
 }
 
-unsigned int mdp_get_num_states(MDP_C* obj) {
+int mdp_get_num_states(MDP_C* obj) {
   return obj->m.get_num_states();
 }
 
-unsigned int mdp_get_num_inputs(MDP_C* obj) {
+int mdp_get_num_inputs(MDP_C* obj) {
   return obj->m.get_num_inputs();
 }
 

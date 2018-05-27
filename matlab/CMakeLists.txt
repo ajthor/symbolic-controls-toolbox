@@ -127,7 +127,7 @@ install(FILES
 )
 
 install(DIRECTORY
-  ctrlmodels
+  models
   DESTINATION ${MATCTRL_PATH}
 )
 

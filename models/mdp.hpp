@@ -13,17 +13,17 @@ public:
   MDP();
   ~MDP();
 
-  void set_num_states(unsigned int arg);
-  void set_num_inputs(unsigned int arg);
+  void set_num_states(int arg);
+  void set_num_inputs(int arg);
   void set_gamma(double arg);
 
-  unsigned int get_num_states();
-  unsigned int get_num_inputs();
+  int get_num_states();
+  int get_num_inputs();
   double get_gamma();
 
 private:
-  unsigned int num_states_;
-  unsigned int num_inputs_;
+  int num_states_;
+  int num_inputs_;
 
   // SparseMatrix<double> probabilities_;
   // SparseMatrix<double> rewards_;

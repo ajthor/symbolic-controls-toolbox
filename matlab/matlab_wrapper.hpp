@@ -23,12 +23,12 @@ typedef struct MDP_C MDP_C;
 MDP_C* mdp_new();
 void mdp_free(MDP_C* obj);
 
-void mdp_set_num_states(MDP_C* obj, unsigned int arg);
-void mdp_set_num_inputs(MDP_C* obj, unsigned int arg);
+void mdp_set_num_states(MDP_C* obj, int arg);
+void mdp_set_num_inputs(MDP_C* obj, int arg);
 void mdp_set_gamma(MDP_C* obj, double arg);
 
-unsigned int mdp_get_num_states(MDP_C* obj);
-unsigned int mdp_get_num_inputs(MDP_C* obj);
+int mdp_get_num_states(MDP_C* obj);
+int mdp_get_num_inputs(MDP_C* obj);
 double mdp_get_gamma(MDP_C* obj);
 
 #ifdef __cplusplus
