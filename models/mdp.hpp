@@ -1,32 +1,33 @@
 #ifndef MODELS_MDP_HPP
 #define MODELS_MDP_HPP
 
-#include "control_model.hpp"
-#include "../utils/sparse_matrix.hpp"
+#include <stddef.h>
 
-using Controls::SparseMatrix;
+#include "control_model.hpp"
+#include "utils/sparse_matrix.hpp"
 
 namespace Controls {
 
-class MDP : public ControlModel {
+class MDP : public Controls::ControlModel {
 public:
   MDP();
+  MDP(const std::size_t x, const std::size_t u, const double g);
   ~MDP();
 
-  void set_num_states(int arg);
-  void set_num_inputs(int arg);
-  void set_gamma(double arg);
+  void set_num_states(const std::size_t arg);
+  void set_num_inputs(const std::size_t arg);
+  void set_gamma(const double arg);
 
-  int get_num_states();
-  int get_num_inputs();
+  std::size_t get_num_states();
+  std::size_t get_num_inputs();
   double get_gamma();
 
 private:
-  int num_states_;
-  int num_inputs_;
+  std::size_t num_states_;
+  std::size_t num_inputs_;
 
-  // SparseMatrix<double> probabilities_;
-  // SparseMatrix<double> rewards_;
+  SparseMatrix<double> probabilities_ = SparseMatrix<double>();
+  SparseMatrix<double> rewards_ = SparseMatrix<double>();
 
   double gamma_;
 };

@@ -6,8 +6,8 @@ set(SRC
   # c_wrapper.cc
   control_model.cc
   mdp.cc
-  system.cc
   state_space.cc
+  system.cc
   transfer_function.cc
 )
 
@@ -16,9 +16,10 @@ set(HEADERS
   # c_wrapper.hpp
   control_model.hpp
   mdp.hpp
-  system.hpp
   state_space.hpp
+  system.hpp
   transfer_function.hpp
+  utils/sparse_matrix.hpp
 )
 
 INSTALL_HEADERS_WITH_DIRECTORY(HEADERS)
