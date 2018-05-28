@@ -12,16 +12,16 @@
 
 namespace Controls {
 
-typedef std::tuple<std::size_t, std::size_t, std::size_t> key_t;
+typedef std::tuple<std::size_t, std::size_t, std::size_t> sparse_key_t;
 
-struct key_hash : public std::unary_function<key_t, std::size_t> {
-  std::size_t operator()(const key_t& k) const {
+struct sparse_key_hash : public std::unary_function<sparse_key_t, std::size_t> {
+  std::size_t operator()(const sparse_key_t& k) const {
     return std::get<0>(k) ^ std::get<1>(k) ^ std::get<2>(k);
   }
 };
 
-struct key_equal : public std::binary_function<key_t, key_t, bool> {
-  bool operator()(const key_t& v0, const key_t& v1) const {
+struct sparse_key_equal : public std::binary_function<sparse_key_t, sparse_key_t, bool> {
+  bool operator()(const sparse_key_t& v0, const sparse_key_t& v1) const {
     return (
       std::get<0>(v0) == std::get<0>(v1) &&
       std::get<1>(v0) == std::get<1>(v1) &&
@@ -45,7 +45,7 @@ public:
   T& operator()(std::size_t x, std::size_t y, std::size_t z);
 
 private:
-  std::unordered_map<const key_t, T, key_hash, key_equal> data;
+  std::unordered_map<const sparse_key_t, T, sparse_key_hash, sparse_key_equal> data;
 
   std::size_t x_dim;
   std::size_t y_dim;
@@ -85,15 +85,15 @@ T& SparseMatrix<T>::operator[](std::size_t N) {
   std::size_t x = 0;
   std::size_t y = 0;
   std::size_t z = 0;
-  // Convert N to index.
-  key_t key = std::make_tuple(x, y, z);
+  // TODO: Convert N to index.
+  sparse_key_t key = std::make_tuple(x, y, z);
   return data[key];
 }
 
 // Get by index.
 template<typename T>
 T& SparseMatrix<T>::operator()(std::size_t x, std::size_t y, std::size_t z) {
-  key_t key = std::make_tuple(x, y, z);
+  sparse_key_t key = std::make_tuple(x, y, z);
   return data[key];
 }
 

@@ -5,16 +5,23 @@
 #ifndef CONTROL_MATLAB_MATLAB_WRAPPER_HPP
 #define CONTROL_MATLAB_MATLAB_WRAPPER_HPP
 
+#include <mex.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+// ----------------------------------------------------------------------
+// State Space wrapper functions.
+//
 typedef struct StateSpace_C StateSpace_C;
 
 StateSpace_C* statespace_new();
 void statespace_free(StateSpace_C* obj);
 
-
+// ----------------------------------------------------------------------
+// MDP wrapper functions.
+//
 typedef struct MDP_C MDP_C;
 
 MDP_C* mdp_new();

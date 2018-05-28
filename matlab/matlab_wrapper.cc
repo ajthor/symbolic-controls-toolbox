@@ -2,15 +2,33 @@
 // Matlab Wrapper API Function Definitions
 //
 
-#include <mex.h>
+#include <symengine/basic.h>
 
 #include "matlab_wrapper.hpp"
 
 #include "libctrl/state_space.hpp"
 #include "libctrl/mdp.hpp"
 
+// ----------------------------------------------------------------------
+// Convert SymEngine to Matlab Symbolic and vice-versa.
+//
+mxArray* se2sym(SymEngine::RCP<const SymEngine::Basic> arg) {
+  mxArray* matlab_sym;
+
+  return matlab_sym;
+}
+
+SymEngine::RCP<const SymEngine::Basic> sym2se(mxArray* arg) {
+  SymEngine::RCP<const SymEngine::Basic> symengine_sym;
+
+  return symengine_sym;
+}
+
 extern "C" {
 
+// ----------------------------------------------------------------------
+// State Space wrapper functions.
+//
 struct StateSpace_C {
   Controls::StateSpace m;
 };
@@ -23,6 +41,9 @@ void statespace_free(StateSpace_C* obj) {
   delete obj;
 }
 
+// ----------------------------------------------------------------------
+// MDP wrapper functions.
+//
 struct MDP_C {
   Controls::MDP m;
 };
@@ -61,22 +82,3 @@ double mdp_get_gamma(MDP_C* obj) {
 
 
 } // C
-
-// // void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
-// //
-// // }
-//
-// void operator()(ArgumentList outputs, ArgumentList inputs) {
-//  checkArguments(outputs, inputs);
-//
-//  // outputs[0] =
-// }
-//
-// void checkArguments(ArgumentList outputs, ArgumentList inputs) {
-//
-//   if (outputs.size() > 1) {
-//     matlabPtr->feval(convertUTF8StringToUTF16String("error"),
-//       0,
-//       std::vector<Array>({factory.createScalar("Too many outputs.")}));
-//   }
-// }

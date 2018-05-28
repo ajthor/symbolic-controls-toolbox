@@ -30,14 +30,17 @@ classdef (SupportExtensionMethods = true) mdp < handle
 
     methods
         function set.X(obj, n)
+            validateattributes(n, {'numeric'}, {'scalar'});
             calllib('matctrl', 'mdp_set_num_states', obj.cobj_, n);
         end
 
         function set.U(obj, n)
+            validateattributes(n, {'numeric'}, {'scalar'});
             calllib('matctrl', 'mdp_set_num_inputs', obj.cobj_, n);
         end
 
         function set.gamma(obj, gamma)
+            validateattributes(gamma, {'numeric'}, {'scalar'});
             calllib('matctrl', 'mdp_set_gamma', obj.cobj_, gamma);
         end
 

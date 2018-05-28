@@ -21,6 +21,10 @@ Matlab and SymEngine on the backend.
 > make install
 ```
 
+Note that you may need to build and install the main library first, without the `-DBUILD_MATLAB=ON` flag set in order for this to work. If you get errors while building from source with the flag set, try building without it first.
+
+The toolbox is automatically installed to the user path when you run this command. Check your user path in Matlab by running the `userpath` command before you install the files. 
+
 ## Your First System
 
 ```matlab
@@ -40,6 +44,10 @@ sys.g(1) = x1;
 % Simulate the system.
 nlsim2(sys, 0, [0 10], {[1 1]});
 ```
+
+## Using the Toolbox
+
+The toolbox includes a `startup.m` and `finish.m` script which are automatically run when you open and close Matlab. The scripts load and unload the library each time you run Matlab. This is done to clear variables in the workspace that require memory to be freed, and to ensure that the library is loaded properly. However, if you need to load the library manually, use the `loadmatctrl.m` script located in the toolbox folder.
 
 ## For Developers
 

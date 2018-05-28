@@ -56,11 +56,6 @@ set(ctrl_INCLUDE_DIRECTORIES
   models
 )
 
-# Prepend the project source directory.
-prepend(ABS_PROJECT_DIRECTORIES ${ctrl_INCLUDE_DIRECTORIES} ${PROJECT_SOURCE_DIR})
-
-include_directories("${ABS_PROJECT_DIRECTORIES}")
-
 # Add all subdirectories.
 foreach(dir ${ctrl_INCLUDE_DIRECTORIES})
   add_subdirectory(${dir})
@@ -74,10 +69,14 @@ add_library(ctrl SHARED ${PROJECT_SRC})
 generate_export_header(ctrl)
 
 target_include_directories(ctrl PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${ctrl_BINARY_DIR}>
+  $<BUILD_INTERFACE:${ctrl_SOURCE_DIR}>
   $<INSTALL_INTERFACE:include>
 )
+
+target_include_directories(ctrl PUBLIC ${SYMENGINE_INCLUDE_DIRS})
+
+target_link_libraries(ctrl ${SYMENGINE_LIBRARIES})
 
 install(TARGETS ctrl
   EXPORT ctrl

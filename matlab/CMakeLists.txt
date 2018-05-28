@@ -104,12 +104,13 @@ target_include_directories(matctrl PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
-target_include_directories(matctrl PUBLIC ${SYMENGINE_LIB_PATH})
 target_include_directories(matctrl PUBLIC ${Matlab_INCLUDE_DIRS})
-target_include_directories(matctrl PUBLIC include/libctrl)
+target_include_directories(matctrl PUBLIC ${SYMENGINE_INCLUDE_DIRS})
+target_include_directories(matctrl PUBLIC ${ctrl_INCLUDE_DIRECTORIES})
 
 target_link_libraries(matctrl ${Matlab_MEX_LIBRARY})
 target_link_libraries(matctrl ${Matlab_MX_LIBRARY})
+target_link_libraries(matctrl ${SYMENGINE_LIBRARIES})
 target_link_libraries(matctrl ctrl)
 
 install(TARGETS matctrl
