@@ -1,6 +1,6 @@
 classdef (SupportExtensionMethods = true) mdp < handle
 
-    properties (Access = private, Hidden = true)
+    properties (Access = protected, Hidden = true)
         % C Pointer Handle
         cobj_;
     end

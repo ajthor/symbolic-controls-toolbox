@@ -5,8 +5,6 @@
 #ifndef CONTROL_MATLAB_MATLAB_WRAPPER_HPP
 #define CONTROL_MATLAB_MATLAB_WRAPPER_HPP
 
-#include <mex.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -18,6 +16,11 @@ typedef struct StateSpace_C StateSpace_C;
 
 StateSpace_C* statespace_new();
 void statespace_free(StateSpace_C* obj);
+
+void statespace_set_state(StateSpace_C* obj, const int idx, const char* arg);
+// void statespace_set_states(StateSpace_C* obj, const mxArray* arg);
+char** statespace_get_states(StateSpace_C* obj);
+char* statespace_get_state(StateSpace_C* obj, const int idx);
 
 // ----------------------------------------------------------------------
 // MDP wrapper functions.

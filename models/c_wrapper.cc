@@ -56,6 +56,19 @@ void symss_free(StateSpace_C* obj) {
 }
 
 // ----------------------------------------------------------------------
+// MDP Function Definitions
+//
+struct SparseMatrix_key {
+  sparse_key_t k
+};
+typedef struct SparseMatrix_key SparseMatrix_key;
+
+struct SparseMatrix_C {
+  SparseMatrix<double> m;
+};
+typedef struct SparseMatrix_C SparseMatrix_C;
+
+// ----------------------------------------------------------------------
 // TransferFunction Function Definitions
 //
 struct TransferFunction_C {

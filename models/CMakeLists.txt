@@ -3,7 +3,7 @@
 # A list of all source files to be included in the shared library. This should
 # point to files with extern "C" function definitions.
 set(SRC
-  # c_wrapper.cc
+  c_wrapper.cc
   control_model.cc
   mdp.cc
   state_space.cc
@@ -13,7 +13,7 @@ set(SRC
 
 # A list of all header files with C header definitions.
 set(HEADERS
-  # c_wrapper.hpp
+  c_wrapper.hpp
   control_model.hpp
   mdp.hpp
   state_space.hpp
