@@ -1,13 +1,18 @@
 // ----------------------------------------------------------------------
 // Matlab Wrapper API Function Definitions
 //
+// Most of the function wrappers in the Matlab wrappers are designed to implement Matlab's matrix syntax. All variables in Matlab are defined as vectors and matrices, meaning we need to implement a lot of for loops and ** pointers in order to make the C wrappers work with Matlab.
 
 #include <cstdlib>
 #include <cstring>
+#include <vector>
+
 #include <symengine/basic.h>
 #include <symengine/cwrapper.h>
-#include <vector>
+#include <symengine/symbol.h>
+
 // For C. C Matrix API.
+#include <mex.h>
 #include <matrix.h>
 // For C++. MATLAB Data API.
 // #include <MatlabDataArray.hpp>
@@ -19,33 +24,96 @@
 // ----------------------------------------------------------------------
 // Convert SymEngine to Matlab Symbolic and vice-versa.
 //
-mxArray* se2sym(SymEngine::RCP<const SymEngine::Basic> arg) {
-  mxArray* matlab_sym;
-
-  return matlab_sym;
-}
-
-SymEngine::RCP<const SymEngine::Basic> sym2se(mxArray* arg) {
-  SymEngine::RCP<const SymEngine::Basic> symengine_sym;
-
-  return symengine_sym;
-}
+// mxArray* se2sym(SymEngine::RCP<const SymEngine::Basic> arg) {
+//   mxArray* matlab_sym;
+//
+//   return matlab_sym;
+// }
+//
+// SymEngine::RCP<const SymEngine::Basic> sym2se(mxArray* arg) {
+//   SymEngine::RCP<const SymEngine::Basic> symengine_sym;
+//
+//   return symengine_sym;
+// }
 
 extern "C" {
+
+struct RCPBasic_C {
+  SymEngine::RCP<const SymEngine::Basic> m;
+};
 
 // ----------------------------------------------------------------------
 // State Space wrapper functions.
 //
-struct StateSpace_C {
-  Controls::StateSpace m;
-};
-
-StateSpace_C* statespace_new() {
-  return new StateSpace_C;
+StateSpace_C* ml_statespace_new() {
+  return statespace_new();
 }
 
-void statespace_free(StateSpace_C* obj) {
-  delete obj;
+void ml_statespace_free(StateSpace_C* obj) {
+  statespace_free(obj);
+}
+
+void ml_statespace_states_push_back(StateSpace_C* obj, const char* arg) {
+  RCPBasic_C* s = new RCPBasic_C;
+  s->m = SymEngine::symbol(std::string(arg));
+
+  statespace_states_push_back(obj, s);
+}
+
+char** ml_statespace_states_get(StateSpace_C* obj) {
+  size_t sz = statespace_states_size(obj);
+  int i = 0;
+
+  char *result[2] = {"Hello", "there."};
+
+  for(i = 0; i < sz; i++) {
+    // RCPBasic_C* s;
+    // statespace_states_get(obj, i, s);
+    //
+    // mexPrintf("s %d: %s\n", i, s);
+    //
+    // std::string str = s->m->__str__();
+    //
+    // mexPrintf("str.c_str %d: %s\n", i, str.c_str());
+    //
+    // // const char *cc = str.c_str();
+    // auto cc = new char[str.length() + 1];
+    // std::strcpy(cc, str.c_str());
+    //
+    // mexPrintf("cc %d: %s\n", i, cc);
+
+    // result[i] = "something";
+
+    // delete s;
+
+    // std::strcpy(result[i], cc);
+    // std::strcpy(result[i], str.c_str());
+    // result[i] = cc;
+    // result[i] = str.c_str();
+  }
+
+  return result;
+}
+
+void ml_statespace_states_set(StateSpace_C* obj, int len, const char** arg) {
+  size_t sz = statespace_states_size(obj);
+  int i = 0;
+  for(i = 0; i < len; i++) {
+    RCPBasic_C* s = new RCPBasic_C;
+    s->m = SymEngine::symbol(std::string(arg[i]));
+
+    if(i >= sz) {
+      statespace_states_push_back(obj, s);
+    } else {
+      statespace_states_set(obj, i, s);
+    }
+
+    i++;
+  }
+}
+
+int ml_statespace_states_size(StateSpace_C* obj) {
+  return statespace_states_size(obj);
 }
 
 // void statespace_set_states(StateSpace_C* obj, matlab::data::Array arg) {
@@ -73,76 +141,76 @@ void statespace_free(StateSpace_C* obj) {
 //   return ret;
 // }
 
-void statespace_set_state(StateSpace_C* obj, const int idx, const char* arg) {
-  obj->m.set_state(idx - 1, SymEngine::symbol(std::string(arg)));
-}
-
-// TODO: If vector is empty, return empty string.
-char** statespace_get_states(StateSpace_C* obj) {
-  using namespace SymEngine;
-  std::vector<RCP<const Basic>> states = obj->m.get_states();
-
-  char* ret[states.size()];
-  int i = 0;
-  for(auto e : states) {
-    std::string str = e->__str__();
-    auto cc = new char[str.length() + 1];
-    std::strcpy(ret[i++], str.c_str());
-  }
-
-  return ret;
-
-}
-
-char* statespace_get_state(StateSpace_C* obj, const int idx) {
-  using namespace SymEngine;
-  std::vector<RCP<const Basic>> states = obj->m.get_states();
-
-  std::string str = states.at(idx)->__str__();
-  auto cc = new char[str.length() + 1];
-  std::strcpy(cc, str.c_str());
-
-  return cc;
-}
+// void statespace_set_state(StateSpace_C* obj, const int idx, const char* arg) {
+//   obj->m.set_state(idx - 1, SymEngine::symbol(std::string(arg)));
+// }
+//
+// // TODO: If vector is empty, return empty string.
+// char** statespace_get_states(StateSpace_C* obj) {
+//   using namespace SymEngine;
+//   std::vector<RCP<const Basic>> states = obj->m.get_states();
+//
+//   char* ret[states.size()];
+//   int i = 0;
+//   for(auto e : states) {
+//     std::string str = e->__str__();
+//     auto cc = new char[str.length() + 1];
+//     std::strcpy(ret[i++], str.c_str());
+//   }
+//
+//   return ret;
+//
+// }
+//
+// char* statespace_get_state(StateSpace_C* obj, const int idx) {
+//   using namespace SymEngine;
+//   std::vector<RCP<const Basic>> states = obj->m.get_states();
+//
+//   std::string str = states.at(idx)->__str__();
+//   auto cc = new char[str.length() + 1];
+//   std::strcpy(cc, str.c_str());
+//
+//   return cc;
+// }
 
 // ----------------------------------------------------------------------
 // MDP wrapper functions.
 //
-struct MDP_C {
-  Controls::MDP m;
-};
-
-MDP_C* mdp_new() {
-  return new MDP_C;
-}
-
-void mdp_free(MDP_C* obj) {
-  delete obj;
-}
-
-void mdp_set_num_states(MDP_C* obj, int arg) {
-  obj->m.set_num_states(arg);
-}
-
-void mdp_set_num_inputs(MDP_C* obj, int arg) {
-  obj->m.set_num_inputs(arg);
-}
-
-void mdp_set_gamma(MDP_C* obj, double arg) {
-  obj->m.set_gamma(arg);
-}
-
-int mdp_get_num_states(MDP_C* obj) {
-  return obj->m.get_num_states();
-}
-
-int mdp_get_num_inputs(MDP_C* obj) {
-  return obj->m.get_num_inputs();
-}
-
-double mdp_get_gamma(MDP_C* obj) {
-  return obj->m.get_gamma();
-}
+// struct MDP_C {
+//   Controls::MDP m;
+// };
+//
+// MDP_C* mdp_new() {
+//   return new MDP_C;
+// }
+//
+// void mdp_free(MDP_C* obj) {
+//   delete obj;
+// }
+//
+// void mdp_set_num_states(MDP_C* obj, int arg) {
+//   obj->m.set_num_states(arg);
+// }
+//
+// void mdp_set_num_inputs(MDP_C* obj, int arg) {
+//   obj->m.set_num_inputs(arg);
+// }
+//
+// void mdp_set_gamma(MDP_C* obj, double arg) {
+//   obj->m.set_gamma(arg);
+// }
+//
+// int mdp_get_num_states(MDP_C* obj) {
+//   return obj->m.get_num_states();
+// }
+//
+// int mdp_get_num_inputs(MDP_C* obj) {
+//   return obj->m.get_num_inputs();
+// }
+//
+// double mdp_get_gamma(MDP_C* obj) {
+//   return obj->m.get_gamma();
+// }
 
 
 } // C

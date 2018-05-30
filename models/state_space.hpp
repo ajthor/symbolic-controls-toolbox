@@ -16,8 +16,13 @@ public:
   StateSpace();
   ~StateSpace();
 
-  void set_states(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg);
+  void add_state(const SymEngine::RCP<const SymEngine::Basic> &arg);
+  void set_state(size_t n, const SymEngine::RCP<const SymEngine::Basic> &arg);
+  SymEngine::RCP<const SymEngine::Basic> get_state(size_t n);
+  size_t get_num_states();
+
   void set_inputs(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg);
+
   void set_f(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg);
   void set_g(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg);
 
@@ -26,7 +31,6 @@ public:
   // void add_f(const SymEngine::RCP<const SymEngine::Basic> &arg);
   // void add_g(const SymEngine::RCP<const SymEngine::Basic> &arg);
 
-  std::vector<SymEngine::RCP<const SymEngine::Basic>> get_states();
   std::vector<SymEngine::RCP<const SymEngine::Basic>> get_inputs();
   std::vector<SymEngine::RCP<const SymEngine::Basic>> get_f();
   std::vector<SymEngine::RCP<const SymEngine::Basic>> get_g();

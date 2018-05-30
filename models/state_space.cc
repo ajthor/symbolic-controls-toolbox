@@ -1,16 +1,31 @@
 #include "state_space.hpp"
 
-using Controls::StateSpace;
-
 namespace Controls {
 
 StateSpace::StateSpace() {}
 
 StateSpace::~StateSpace() {}
 
-void StateSpace::set_states(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
-  states_ = arg;
+// void StateSpace::set_state(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg) {
+//   states_.at(idx) = arg;
+// }
+
+void StateSpace::add_state(const SymEngine::RCP<const SymEngine::Basic> &arg) {
+  states_.push_back(arg);
 }
+
+void StateSpace::set_state(size_t n, const SymEngine::RCP<const SymEngine::Basic> &arg) {
+  states_.at(n) = arg;
+}
+
+SymEngine::RCP<const SymEngine::Basic> StateSpace::get_state(size_t n) {
+  return states_.at(n);
+}
+
+size_t StateSpace::get_num_states() {
+  return states_.size();
+}
+
 
 void StateSpace::set_inputs(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
   inputs_ = arg;
@@ -22,10 +37,6 @@ void StateSpace::set_f(const std::vector<SymEngine::RCP<const SymEngine::Basic>>
 
 void StateSpace::set_g(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
   g_ = arg;
-}
-
-std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_states() {
-  return states_;
 }
 
 std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_inputs() {

@@ -2,13 +2,14 @@
 // C Wrapper API Function Definitions
 //
 
+#include <symengine/basic.h>
+#include <symengine/cwrapper.h>
+
 #include "c_wrapper.hpp"
 
+#include "mdp.hpp"
 #include "state_space.hpp"
 #include "transfer_function.hpp"
-
-using Controls::StateSpace;
-using Controls::TransferFunction;
 
 extern "C" {
 
@@ -30,12 +31,16 @@ extern "C" {
 
 #ifndef C_WRAPPER_END
 #define C_WRAPPER_END \
-    return C_WRAPPER_NO_EXCEPTION; \
-    catch (...) { \
-      return C_WRAPPER_RUNTIME_EXCEPTION; \
-    } \
+    return; \
+  } \
+  catch (...) { \
+    return; \
   }
 #endif
+
+struct RCPBasic_C {
+  SymEngine::RCP<const SymEngine::Basic> m;
+};
 
 // ----------------------------------------------------------------------
 // StateSpace Function Definitions
@@ -44,29 +49,70 @@ struct StateSpace_C {
   Controls::StateSpace m;
 };
 
-StateSpace_C* symss_new() {
+StateSpace_C* statespace_new() {
   return new StateSpace_C;
 }
 
-void symss_free(StateSpace_C* obj) {
+void statespace_free(StateSpace_C* obj) {
   if(!obj) {
     return;
   }
   delete obj;
 }
 
+void statespace_states_push_back(StateSpace_C* obj, const RCPBasic_C* arg) {
+  C_WRAPPER_BEGIN
+
+  obj->m.add_state(arg->m);
+
+  C_WRAPPER_END
+}
+
+void statespace_states_get(StateSpace_C* obj, size_t n, RCPBasic_C* result) {
+  C_WRAPPER_BEGIN
+
+  // TODO: n < obj->m.size()
+  result->m = obj->m.get_state(n);
+
+  C_WRAPPER_END
+}
+
+void statespace_states_set(StateSpace_C* obj, size_t n, const RCPBasic_C* arg) {
+  C_WRAPPER_BEGIN
+
+  // TODO: n < obj->m.size()
+  obj->m.set_state(n, arg->m);
+
+  C_WRAPPER_END
+}
+
+// void statespace_states_erase(StateSpace_C* obj, size_t n) {
+//   C_WRAPPER_BEGIN
+//
+//   C_WRAPPER_END
+// }
+
+size_t statespace_states_size(StateSpace_C* obj) {
+  return obj->m.get_num_states();
+}
+
+
 // ----------------------------------------------------------------------
 // MDP Function Definitions
 //
-struct SparseMatrix_key {
-  sparse_key_t k
+struct MDP_C {
+  Controls::MDP m;
 };
-typedef struct SparseMatrix_key SparseMatrix_key;
 
-struct SparseMatrix_C {
-  SparseMatrix<double> m;
-};
-typedef struct SparseMatrix_C SparseMatrix_C;
+// struct SparseMatrix_key {
+//   sparse_key_t k
+// };
+// typedef struct SparseMatrix_key SparseMatrix_key;
+//
+// struct SparseMatrix_C {
+//   SparseMatrix<double> m;
+// };
+// typedef struct SparseMatrix_C SparseMatrix_C;
 
 // ----------------------------------------------------------------------
 // TransferFunction Function Definitions
@@ -75,15 +121,15 @@ struct TransferFunction_C {
   Controls::TransferFunction m;
 };
 
-TransferFunction_C* symtf_new() {
-  return new TransferFunction_C;
-}
-
-void symtf_free(TransferFunction_C* obj) {
-  if(!obj) {
-    return;
-  }
-  delete obj;
-}
+// TransferFunction_C* transferfunction_new() {
+//   return new TransferFunction_C;
+// }
+//
+// void transferfunction_free(TransferFunction_C* obj) {
+//   if(!obj) {
+//     return;
+//   }
+//   delete obj;
+// }
 
 } // C

@@ -10,22 +10,46 @@ classdef (SupportExtensionMethods = true) statespace < handle
 
     methods
         function obj = statespace(varargin)
-            obj.cobj_ = calllib('matctrl', 'statespace_new');
+            obj.cobj_ = calllib('matctrl', 'ml_statespace_new');
         end
 
         function delete(obj)
-            calllib('matctrl', 'statespace_free', obj.cobj_);
+            calllib('matctrl', 'ml_statespace_free', obj.cobj_);
         end
     end
 
     methods
         function set.states(obj, s)
-            validateattributes(s, {'char', 'sym'}, {'scalar'});
-            calllib('matctrl', 'statespace_set_state', obj.cobj_, 0, s);
+            validateattributes(s, {'cell', 'char', 'sym'}, {'vector'});
+            calllib('matctrl', ...
+                    'ml_statespace_states_set', ...
+                    obj.cobj_, ...
+                    numel(s), ...
+                    {s});
         end
 
         function states = get.states(obj)
-            states = calllib('matctrl', 'statespace_get_states', obj.cobj_);
+            % sz = calllib('matctrl', 'ml_statespace_states_size', obj.cobj_);
+            % c = cell(sz, 1);
+            % c(:) = {''};
+
+            cptr = libpointer('stringPtrPtr');
+            % calllib('matctrl', 'ml_statespace_states_get', obj.cobj_, cptr);
+            res = calllib('matctrl', 'ml_statespace_states_get', obj.cobj_);
+            disp(res.DataType);
+            disp(res.Value);
+            states = res.Value;
+            clear('res');
+
+            % disp('c value: ')
+            % celldisp(c);
+            % disp('cptr value: ')
+            disp(cptr.Value)
+
+            % states = c;
+
+            states = cptr.Value;
+            clear('cptr');
         end
     end
 

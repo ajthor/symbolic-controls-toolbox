@@ -1,2 +1,7 @@
-% Load the MatCtrl library. 
+% Load the MatCtrl library.
+s = warning;
+warning('off');
+
 loadmatctrl();
+
+warning(s);
