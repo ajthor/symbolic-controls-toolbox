@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-typedef struct RCPBasic_C RCPBasic_C;
+// typedef struct RCPBasic_C RCPBasic_C;
 
 // ----------------------------------------------------------------------
 // State Space wrapper functions.
@@ -17,15 +17,18 @@ typedef struct RCPBasic_C RCPBasic_C;
 typedef struct StateSpace_C StateSpace_C;
 
 StateSpace_C* ml_statespace_new();
-void ml_statespace_free(StateSpace_C* obj);
+void ml_statespace_free(StateSpace_C *obj);
 
-void ml_statespace_states_push_back(StateSpace_C* obj, const char* arg);
-char** ml_statespace_states_get(StateSpace_C* obj);
-void ml_statespace_states_set(StateSpace_C* obj, int len, const char** arg);
-int ml_statespace_states_size(StateSpace_C* obj);
-// void statespace_set_states(StateSpace_C* obj, const mxArray* arg);
-// char** statespace_get_states(StateSpace_C* obj);
-// char* statespace_get_state(StateSpace_C* obj, const int idx);
+// void ml_statespace_states_push_back(StateSpace_C *obj, const char* arg);
+
+void ml_statespace_states_get(StateSpace_C *obj, char **result);
+// char** ml_statespace_states_get(StateSpace_C *obj);
+
+void ml_statespace_states_set(StateSpace_C *obj, int len, const char** arg);
+int ml_statespace_states_size(StateSpace_C *obj);
+// void statespace_set_states(StateSpace_C *obj, const mxArray* arg);
+// char** statespace_get_states(StateSpace_C *obj);
+// char* statespace_get_state(StateSpace_C *obj, const int idx);
 
 // ----------------------------------------------------------------------
 // MDP wrapper functions.

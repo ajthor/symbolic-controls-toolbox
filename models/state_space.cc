@@ -6,15 +6,11 @@ StateSpace::StateSpace() {}
 
 StateSpace::~StateSpace() {}
 
-// void StateSpace::set_state(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg) {
-//   states_.at(idx) = arg;
-// }
-
-void StateSpace::add_state(const SymEngine::RCP<const SymEngine::Basic> &arg) {
+void StateSpace::add_state(const SymEngine::RCP<const SymEngine::Basic> arg) {
   states_.push_back(arg);
 }
 
-void StateSpace::set_state(size_t n, const SymEngine::RCP<const SymEngine::Basic> &arg) {
+void StateSpace::set_state(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg) {
   states_.at(n) = arg;
 }
 
@@ -27,29 +23,29 @@ size_t StateSpace::get_num_states() {
 }
 
 
-void StateSpace::set_inputs(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
-  inputs_ = arg;
-}
-
-void StateSpace::set_f(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
-  f_ = arg;
-}
-
-void StateSpace::set_g(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
-  g_ = arg;
-}
-
-std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_inputs() {
-  return inputs_;
-}
-
-std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_f() {
-  return f_;
-}
-
-std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_g() {
-  return g_;
-}
+// void StateSpace::set_inputs(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
+//   inputs_ = arg;
+// }
+//
+// void StateSpace::set_f(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
+//   f_ = arg;
+// }
+//
+// void StateSpace::set_g(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
+//   g_ = arg;
+// }
+//
+// std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_inputs() {
+//   return inputs_;
+// }
+//
+// std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_f() {
+//   return f_;
+// }
+//
+// std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_g() {
+//   return g_;
+// }
 
 
 // void StateSpace::set_inputs(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {

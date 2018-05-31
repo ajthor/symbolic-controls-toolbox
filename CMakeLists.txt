@@ -71,6 +71,8 @@ generate_export_header(ctrl)
 target_include_directories(ctrl PUBLIC
   $<BUILD_INTERFACE:${ctrl_BINARY_DIR}>
   $<BUILD_INTERFACE:${ctrl_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
   $<INSTALL_INTERFACE:include>
 )
 

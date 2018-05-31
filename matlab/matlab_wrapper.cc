@@ -38,7 +38,10 @@
 
 extern "C" {
 
-struct RCPBasic_C {
+// struct RCPBasic_C {
+//   SymEngine::RCP<const SymEngine::Basic> m;
+// };
+struct CRCPBasic {
   SymEngine::RCP<const SymEngine::Basic> m;
 };
 
@@ -49,58 +52,75 @@ StateSpace_C* ml_statespace_new() {
   return statespace_new();
 }
 
-void ml_statespace_free(StateSpace_C* obj) {
+void ml_statespace_free(StateSpace_C *obj) {
   statespace_free(obj);
 }
 
-void ml_statespace_states_push_back(StateSpace_C* obj, const char* arg) {
-  RCPBasic_C* s = new RCPBasic_C;
-  s->m = SymEngine::symbol(std::string(arg));
+void ml_statespace_states_push_back(StateSpace_C *obj, const char* arg) {
+  auto s = basic_new_heap();
+  basic_const_set(s, arg);
 
   statespace_states_push_back(obj, s);
+
+  basic_free_heap(s);
 }
 
-char** ml_statespace_states_get(StateSpace_C* obj) {
+void ml_statespace_states_get(StateSpace_C *obj, char **result) {
   size_t sz = statespace_states_size(obj);
   int i = 0;
-
-  char *result[2] = {"Hello", "there."};
-
   for(i = 0; i < sz; i++) {
-    // RCPBasic_C* s;
-    // statespace_states_get(obj, i, s);
-    //
-    // mexPrintf("s %d: %s\n", i, s);
-    //
-    // std::string str = s->m->__str__();
-    //
-    // mexPrintf("str.c_str %d: %s\n", i, str.c_str());
-    //
-    // // const char *cc = str.c_str();
-    // auto cc = new char[str.length() + 1];
-    // std::strcpy(cc, str.c_str());
-    //
-    // mexPrintf("cc %d: %s\n", i, cc);
+    auto s = basic_new_heap();
+    statespace_states_get(obj, i, s);
 
-    // result[i] = "something";
+    std::string str = s->m->__str__();
 
-    // delete s;
+    result[i] = new char[str.length() + 1];
+    std::strcpy(result[i], str.c_str());
 
-    // std::strcpy(result[i], cc);
-    // std::strcpy(result[i], str.c_str());
-    // result[i] = cc;
-    // result[i] = str.c_str();
+    basic_free_heap(s);
   }
-
-  return result;
 }
 
-void ml_statespace_states_set(StateSpace_C* obj, int len, const char** arg) {
+// void ml_statespace_states_get(StateSpace_C *obj, char** result) {
+//   size_t sz = statespace_states_size(obj);
+//   int i = 0;
+//   for(i = 0; i < sz; i++) {
+//     RCPBasic_C *s;
+//     statespace_states_get(obj, i, s);
+//
+//     std::string str = s->m->__str__();
+//
+//     // mexPrintf("str.c_str: %s\n", str.c_str());
+//
+//     // auto res = result[i];
+//     // std::strcpy(res, str.c_str());
+//     // result[i] = &str[0u];
+//
+//     result[i] = new char[str.length() + 1];
+//     // result[i] = alloca(str.size() + 1);
+//     std::strcpy(result[i], str.c_str());
+//
+//     // mexPrintf("cstr %d: %s\n", i, cstr);
+//     // mexPrintf("cstr %d: %d\n", i, cstr);
+//
+//     // std::strcpy(result[i], cc);
+//     // std::strcpy(result[i], str.c_str());
+//     // result[i] = cc;
+//
+//     // result[i] = str.c_str();
+//     // result[i] = "else";
+//     // mexPrintf("result %d: %s\n", i, result[i]);
+//   }
+//
+//   // return result;
+// }
+
+void ml_statespace_states_set(StateSpace_C *obj, int len, const char** arg) {
   size_t sz = statespace_states_size(obj);
   int i = 0;
   for(i = 0; i < len; i++) {
-    RCPBasic_C* s = new RCPBasic_C;
-    s->m = SymEngine::symbol(std::string(arg[i]));
+    auto s = basic_new_heap();
+    basic_const_set(s, arg[i]);
 
     if(i >= sz) {
       statespace_states_push_back(obj, s);
@@ -108,22 +128,22 @@ void ml_statespace_states_set(StateSpace_C* obj, int len, const char** arg) {
       statespace_states_set(obj, i, s);
     }
 
-    i++;
+    basic_free_heap(s);
   }
 }
 
-int ml_statespace_states_size(StateSpace_C* obj) {
+int ml_statespace_states_size(StateSpace_C *obj) {
   return statespace_states_size(obj);
 }
 
-// void statespace_set_states(StateSpace_C* obj, matlab::data::Array arg) {
+// void statespace_set_states(StateSpace_C *obj, matlab::data::Array arg) {
 //   int i = 0;
 //   for (auto e : arg) {
 //     obj->m.set_state(i++, SymEngine::symbol(std::string(e)));
 //   }
 // }
 //
-// matlab::data::Array statespace_get_states(StateSpace_C* obj) {
+// matlab::data::Array statespace_get_states(StateSpace_C *obj) {
 //   using namespace matlab::data;
 //
 //   std::vector<SymEngine::RCP<const SymEngine::Basic>> states = obj->m.get_states();
@@ -141,12 +161,12 @@ int ml_statespace_states_size(StateSpace_C* obj) {
 //   return ret;
 // }
 
-// void statespace_set_state(StateSpace_C* obj, const int idx, const char* arg) {
+// void statespace_set_state(StateSpace_C *obj, const int idx, const char* arg) {
 //   obj->m.set_state(idx - 1, SymEngine::symbol(std::string(arg)));
 // }
 //
 // // TODO: If vector is empty, return empty string.
-// char** statespace_get_states(StateSpace_C* obj) {
+// char** statespace_get_states(StateSpace_C *obj) {
 //   using namespace SymEngine;
 //   std::vector<RCP<const Basic>> states = obj->m.get_states();
 //
@@ -162,7 +182,7 @@ int ml_statespace_states_size(StateSpace_C* obj) {
 //
 // }
 //
-// char* statespace_get_state(StateSpace_C* obj, const int idx) {
+// char* statespace_get_state(StateSpace_C *obj, const int idx) {
 //   using namespace SymEngine;
 //   std::vector<RCP<const Basic>> states = obj->m.get_states();
 //

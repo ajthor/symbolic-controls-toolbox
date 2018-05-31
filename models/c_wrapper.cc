@@ -38,7 +38,11 @@ extern "C" {
   }
 #endif
 
-struct RCPBasic_C {
+// struct RCPBasic_C {
+//   SymEngine::RCP<const SymEngine::Basic> m;
+// };
+
+struct CRCPBasic {
   SymEngine::RCP<const SymEngine::Basic> m;
 };
 
@@ -49,18 +53,18 @@ struct StateSpace_C {
   Controls::StateSpace m;
 };
 
-StateSpace_C* statespace_new() {
+StateSpace_C *statespace_new() {
   return new StateSpace_C;
 }
 
-void statespace_free(StateSpace_C* obj) {
+void statespace_free(StateSpace_C *obj) {
   if(!obj) {
     return;
   }
   delete obj;
 }
 
-void statespace_states_push_back(StateSpace_C* obj, const RCPBasic_C* arg) {
+void statespace_states_push_back(StateSpace_C *obj, const basic arg) {
   C_WRAPPER_BEGIN
 
   obj->m.add_state(arg->m);
@@ -68,7 +72,7 @@ void statespace_states_push_back(StateSpace_C* obj, const RCPBasic_C* arg) {
   C_WRAPPER_END
 }
 
-void statespace_states_get(StateSpace_C* obj, size_t n, RCPBasic_C* result) {
+void statespace_states_get(StateSpace_C *obj, size_t n, basic result) {
   C_WRAPPER_BEGIN
 
   // TODO: n < obj->m.size()
@@ -77,7 +81,7 @@ void statespace_states_get(StateSpace_C* obj, size_t n, RCPBasic_C* result) {
   C_WRAPPER_END
 }
 
-void statespace_states_set(StateSpace_C* obj, size_t n, const RCPBasic_C* arg) {
+void statespace_states_set(StateSpace_C *obj, size_t n, const basic arg) {
   C_WRAPPER_BEGIN
 
   // TODO: n < obj->m.size()
@@ -86,13 +90,13 @@ void statespace_states_set(StateSpace_C* obj, size_t n, const RCPBasic_C* arg) {
   C_WRAPPER_END
 }
 
-// void statespace_states_erase(StateSpace_C* obj, size_t n) {
+// void statespace_states_erase(StateSpace_C *obj, size_t n) {
 //   C_WRAPPER_BEGIN
 //
 //   C_WRAPPER_END
 // }
 
-size_t statespace_states_size(StateSpace_C* obj) {
+size_t statespace_states_size(StateSpace_C *obj) {
   return obj->m.get_num_states();
 }
 
