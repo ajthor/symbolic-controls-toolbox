@@ -1,20 +1,61 @@
 classdef (SupportExtensionMethods = true) statespace < handle
+    %STATESPACE Construct symbolic state-space model or convert model to
+    %symbolic state-space.
+    %
+    %   sys = STATESPACE creates an empty state-space representation.
+    %
+    %   A state-space model is defined by state equations and output equations,
+    %   given by:
+    %
+    %       dx/dt = f(t, x, u)
+    %           y = g(t, x, u)
+    %
+    %   In order to define a state-space model, begin with an empty state space
+    %   model, define states and inputs, and then define state equations and
+    %   output equations.
+    %
+    %   sys = STATESPACE(A, B, C, D) Creates a state space model using the
+    %   matrices A, B, C, D.
+    %
+    %       dx/dt = Ax(t) + Bx(t)
+    %        y(t) = Cx(t) + Du(t)
+    %
+    %   A must be an nxn matrix, B must be an nxm matrix, and C must be a pxn
+    %   matrix. If D is specified, it must be a pxm matrix.
+    %
+    %   sys = STATESPACE(states, inputs) creates a state space model using the
+    %   state variables and input variables provided.
+    %
+    %   sys = STATESPACE(Ts) creates a discrete state space model with sampling
+    %   time Ts.
+
+    %   References:
+    %   Antsaklis, Panos J., and Anthony N. Michel. A linear systems
+    %   primer. Vol. 1. Boston: Birkhauser, 2007.
 
     properties (Access = protected, Hidden = true)
         cobj_;
     end
 
     properties (Dependent)
+        % State Variables
         states
+        % Input Variables
         inputs
+        % State Equations
         f
+        % Ouput Equations
         g
     end
 
     properties (SetAccess = immutable, Dependent)
+        % State matrix A
         A
+        % Input matrix B
         B
+        % Output matrix C
         C
+        % Feed-forward matrix D
         D
     end
 

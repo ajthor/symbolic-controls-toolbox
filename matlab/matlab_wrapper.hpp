@@ -2,6 +2,14 @@
 // Matlab Wrapper API Function Definitions
 //
 
+// API Rules
+// - Only use C standard types that convert to Matlab basic types. Convert to
+//   more advanced types in Matlab or C++.
+// - Do not return pointers. Modify pointers in the parameters. Only return
+//   simple types if the values are scalar. This is because Matlab
+//   automatically adds a return variable to interpreted function calls to a
+//   shared library.
+
 #ifndef CONTROL_MATLAB_MATLAB_WRAPPER_HPP
 #define CONTROL_MATLAB_MATLAB_WRAPPER_HPP
 
