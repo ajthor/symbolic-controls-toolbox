@@ -75,7 +75,6 @@ void statespace_states_push_back(StateSpace_C *obj, const basic arg) {
 
   C_WRAPPER_END
 }
-
 void statespace_states_get(StateSpace_C *obj, size_t n, basic result) {
   C_WRAPPER_BEGIN
 
@@ -84,7 +83,6 @@ void statespace_states_get(StateSpace_C *obj, size_t n, basic result) {
 
   C_WRAPPER_END
 }
-
 void statespace_states_set(StateSpace_C *obj, size_t n, const basic arg) {
   C_WRAPPER_BEGIN
 
@@ -93,13 +91,11 @@ void statespace_states_set(StateSpace_C *obj, size_t n, const basic arg) {
 
   C_WRAPPER_END
 }
-
 // void statespace_states_erase(StateSpace_C *obj, size_t n) {
 //   C_WRAPPER_BEGIN
 //
 //   C_WRAPPER_END
 // }
-
 size_t statespace_states_size(StateSpace_C *obj) {
   return obj->m.get_num_states();
 }
@@ -111,7 +107,6 @@ void statespace_inputs_push_back(StateSpace_C *obj, const basic arg) {
 
   C_WRAPPER_END
 }
-
 void statespace_inputs_get(StateSpace_C *obj, size_t n, basic result) {
   C_WRAPPER_BEGIN
 
@@ -120,7 +115,6 @@ void statespace_inputs_get(StateSpace_C *obj, size_t n, basic result) {
 
   C_WRAPPER_END
 }
-
 void statespace_inputs_set(StateSpace_C *obj, size_t n, const basic arg) {
   C_WRAPPER_BEGIN
 
@@ -129,13 +123,11 @@ void statespace_inputs_set(StateSpace_C *obj, size_t n, const basic arg) {
 
   C_WRAPPER_END
 }
-
 // void statespace_inputs_erase(StateSpace_C *obj, size_t n) {
 //   C_WRAPPER_BEGIN
 //
 //   C_WRAPPER_END
 // }
-
 size_t statespace_inputs_size(StateSpace_C *obj) {
   return obj->m.get_num_inputs();
 }
@@ -147,7 +139,6 @@ void statespace_f_push_back(StateSpace_C *obj, const basic arg) {
 
   C_WRAPPER_END
 }
-
 void statespace_f_get(StateSpace_C *obj, size_t n, basic result) {
   C_WRAPPER_BEGIN
 
@@ -156,7 +147,6 @@ void statespace_f_get(StateSpace_C *obj, size_t n, basic result) {
 
   C_WRAPPER_END
 }
-
 void statespace_f_set(StateSpace_C *obj, size_t n, const basic arg) {
   C_WRAPPER_BEGIN
 
@@ -165,13 +155,11 @@ void statespace_f_set(StateSpace_C *obj, size_t n, const basic arg) {
 
   C_WRAPPER_END
 }
-
 // void statespace_f_erase(StateSpace_C *obj, size_t n) {
 //   C_WRAPPER_BEGIN
 //
 //   C_WRAPPER_END
 // }
-
 size_t statespace_f_size(StateSpace_C *obj) {
   return obj->m.get_num_f();
 }
@@ -183,7 +171,6 @@ void statespace_g_push_back(StateSpace_C *obj, const basic arg) {
 
   C_WRAPPER_END
 }
-
 void statespace_g_get(StateSpace_C *obj, size_t n, basic result) {
   C_WRAPPER_BEGIN
 
@@ -192,7 +179,6 @@ void statespace_g_get(StateSpace_C *obj, size_t n, basic result) {
 
   C_WRAPPER_END
 }
-
 void statespace_g_set(StateSpace_C *obj, size_t n, const basic arg) {
   C_WRAPPER_BEGIN
 
@@ -201,13 +187,11 @@ void statespace_g_set(StateSpace_C *obj, size_t n, const basic arg) {
 
   C_WRAPPER_END
 }
-
 // void statespace_g_erase(StateSpace_C *obj, size_t n) {
 //   C_WRAPPER_BEGIN
 //
 //   C_WRAPPER_END
 // }
-
 size_t statespace_g_size(StateSpace_C *obj) {
   return obj->m.get_num_g();
 }
@@ -215,7 +199,7 @@ size_t statespace_g_size(StateSpace_C *obj) {
 void statespace_A_get(StateSpace_C *obj, CDenseMatrix *result) {
   C_WRAPPER_BEGIN
 
-  result->m = obj->m.get_A_matrix();
+  obj->m.get_A_matrix(result->m);
 
   C_WRAPPER_END
 }
@@ -223,7 +207,7 @@ void statespace_A_get(StateSpace_C *obj, CDenseMatrix *result) {
 void statespace_B_get(StateSpace_C *obj, CDenseMatrix *result) {
   C_WRAPPER_BEGIN
 
-  result->m = obj->m.get_B_matrix();
+  obj->m.get_B_matrix(result->m);
 
   C_WRAPPER_END
 }
@@ -231,7 +215,7 @@ void statespace_B_get(StateSpace_C *obj, CDenseMatrix *result) {
 void statespace_C_get(StateSpace_C *obj, CDenseMatrix *result) {
   C_WRAPPER_BEGIN
 
-  result->m = obj->m.get_C_matrix();
+  obj->m.get_C_matrix(result->m);
 
   C_WRAPPER_END
 }
@@ -239,11 +223,26 @@ void statespace_C_get(StateSpace_C *obj, CDenseMatrix *result) {
 void statespace_D_get(StateSpace_C *obj, CDenseMatrix *result) {
   C_WRAPPER_BEGIN
 
-  result->m = obj->m.get_D_matrix();
+  obj->m.get_D_matrix(result->m);
 
   C_WRAPPER_END
 }
 
+CTRL_EXPORT void statespace_ctrb(StateSpace_C *obj, CDenseMatrix *result) {
+  C_WRAPPER_BEGIN
+
+  Controls::ctrb(obj->m, result->m);
+
+  C_WRAPPER_END
+}
+
+CTRL_EXPORT void statespace_obsv(StateSpace_C *obj, CDenseMatrix *result) {
+  C_WRAPPER_BEGIN
+
+  Controls::obsv(obj->m, result->m);
+
+  C_WRAPPER_END
+}
 
 // ----------------------------------------------------------------------
 // MDP Function Definitions
@@ -261,6 +260,50 @@ struct MDP_C {
 //   SparseMatrix<double> m;
 // };
 // typedef struct SparseMatrix_C SparseMatrix_C;
+
+MDP_C *mdp_new() {
+  return new MDP_C;
+}
+
+void mdp_free(MDP_C *obj) {
+  if(!obj) {
+    return;
+  }
+  delete obj;
+}
+
+size_t mdp_num_states_get(MDP_C *obj) {
+  return obj->m.get_num_states();
+}
+void mdp_num_states_set(MDP_C *obj, size_t n) {
+  C_WRAPPER_BEGIN
+
+  obj->m.set_num_states(n);
+
+  C_WRAPPER_END
+}
+
+size_t mdp_num_inputs_get(MDP_C *obj) {
+  return obj->m.get_num_inputs();
+}
+void mdp_num_inputs_set(MDP_C *obj, size_t n) {
+  C_WRAPPER_BEGIN
+
+  obj->m.set_num_inputs(n);
+
+  C_WRAPPER_END
+}
+
+double mdp_gamma_get(MDP_C *obj) {
+  return obj->m.get_gamma();
+}
+void mdp_gamma_set(MDP_C *obj, const double n) {
+  C_WRAPPER_BEGIN
+
+  obj->m.set_gamma(n);
+
+  C_WRAPPER_END
+}
 
 // ----------------------------------------------------------------------
 // TransferFunction Function Definitions

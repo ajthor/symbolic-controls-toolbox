@@ -8,7 +8,9 @@
 // - Do not return pointers. Modify pointers in the parameters. Only return
 //   simple types if the values are scalar. This is because Matlab
 //   automatically adds a return variable to interpreted function calls to a
-//   shared library.
+//   shared library if the parameter is changed.
+// - Implement Matlab array-handling only. Do not re-invent functionality or
+//   create new functionality, unless it is unique and specific to Matlab.
 
 #ifndef CONTROL_MATLAB_MATLAB_WRAPPER_HPP
 #define CONTROL_MATLAB_MATLAB_WRAPPER_HPP
@@ -23,24 +25,21 @@ extern "C" {
 typedef struct StateSpace_C StateSpace_C;
 
 StateSpace_C* ml_statespace_new();
+
 void ml_statespace_free(StateSpace_C *obj);
 
-void ml_statespace_states_push_back(StateSpace_C *obj, const char* arg);
 void ml_statespace_states_get(StateSpace_C *obj, char **result);
 void ml_statespace_states_set(StateSpace_C *obj, int len, const char** arg);
 int ml_statespace_states_size(StateSpace_C *obj);
 
-void ml_statespace_inputs_push_back(StateSpace_C *obj, const char* arg);
 void ml_statespace_inputs_get(StateSpace_C *obj, char **result);
 void ml_statespace_inputs_set(StateSpace_C *obj, int len, const char** arg);
 int ml_statespace_inputs_size(StateSpace_C *obj);
 
-void ml_statespace_f_push_back(StateSpace_C *obj, const char* arg);
 void ml_statespace_f_get(StateSpace_C *obj, char **result);
 void ml_statespace_f_set(StateSpace_C *obj, int len, const char** arg);
 int ml_statespace_f_size(StateSpace_C *obj);
 
-void ml_statespace_g_push_back(StateSpace_C *obj, const char* arg);
 void ml_statespace_g_get(StateSpace_C *obj, char **result);
 void ml_statespace_g_set(StateSpace_C *obj, int len, const char** arg);
 int ml_statespace_g_size(StateSpace_C *obj);
@@ -50,21 +49,25 @@ void ml_statespace_B_get(StateSpace_C *obj, char **result);
 void ml_statespace_C_get(StateSpace_C *obj, char **result);
 void ml_statespace_D_get(StateSpace_C *obj, char **result);
 
+void ml_statespace_ctrb(StateSpace_C *obj, char **result);
+void ml_statespace_obsv(StateSpace_C *obj, char **result);
+
 // ----------------------------------------------------------------------
 // MDP wrapper functions.
 //
-// typedef struct MDP_C MDP_C;
-//
-// MDP_C* mdp_new();
-// void mdp_free(MDP_C* obj);
-//
-// void mdp_set_num_states(MDP_C* obj, int arg);
-// void mdp_set_num_inputs(MDP_C* obj, int arg);
-// void mdp_set_gamma(MDP_C* obj, double arg);
-//
-// int mdp_get_num_states(MDP_C* obj);
-// int mdp_get_num_inputs(MDP_C* obj);
-// double mdp_get_gamma(MDP_C* obj);
+typedef struct MDP_C MDP_C;
+
+MDP_C* ml_mdp_new();
+void ml_mdp_free(MDP_C* obj);
+
+int ml_mdp_get_num_states(MDP_C* obj);
+void ml_mdp_set_num_states(MDP_C* obj, int arg);
+
+int ml_mdp_get_num_inputs(MDP_C* obj);
+void ml_mdp_set_num_inputs(MDP_C* obj, int arg);
+
+double ml_mdp_get_gamma(MDP_C* obj);
+void ml_mdp_set_gamma(MDP_C* obj, double arg);
 
 #ifdef __cplusplus
 }

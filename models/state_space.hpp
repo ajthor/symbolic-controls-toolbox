@@ -13,6 +13,7 @@
 
 namespace Controls {
 
+// StateSpace Class
 class StateSpace : public Controls::System {
 public:
   StateSpace();
@@ -52,10 +53,10 @@ public:
   // std::vector<SymEngine::RCP<const SymEngine::Basic>> get_f();
   // std::vector<SymEngine::RCP<const SymEngine::Basic>> get_g();
 
-  SymEngine::DenseMatrix get_A_matrix();
-  SymEngine::DenseMatrix get_B_matrix();
-  SymEngine::DenseMatrix get_C_matrix();
-  SymEngine::DenseMatrix get_D_matrix();
+  void get_A_matrix(SymEngine::DenseMatrix &result);
+  void get_B_matrix(SymEngine::DenseMatrix &result);
+  void get_C_matrix(SymEngine::DenseMatrix &result);
+  void get_D_matrix(SymEngine::DenseMatrix &result);
 
 private:
   // Vector of symbolic state variables.
@@ -70,6 +71,13 @@ private:
   // Vector of output equations.
   std::vector<SymEngine::RCP<const SymEngine::Basic>> g_;
 };
+
+// StateSpace Functions
+void ctrb(StateSpace &obj, SymEngine::DenseMatrix &result);
+int ctrb_rank(StateSpace *obj);
+
+void obsv(StateSpace &obj, SymEngine::DenseMatrix &result);
+int obsv_rank(StateSpace *obj);
 
 } // Controls
 

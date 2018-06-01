@@ -262,4 +262,40 @@ classdef (SupportExtensionMethods = true) statespace < handle
         end
     end
 
+    % To be moved to new files.
+    methods
+        function co = ctrb(obj)
+            n = calllib('matctrl', 'ml_statespace_states_size', obj.cobj_);
+            m = calllib('matctrl', 'ml_statespace_inputs_size', obj.cobj_);
+
+            c = cell(1, n*n*m);
+            cptr = libpointer('stringPtrPtr', c);
+
+            calllib('matctrl', ...
+                    'ml_statespace_ctrb', ...
+                    obj.cobj_, ...
+                    cptr);
+
+            % co = cptr.Value;
+            co = reshape(cptr.Value, n, n*m);
+        end
+
+        function ob = obsv(obj)
+            n = calllib('matctrl', 'ml_statespace_states_size', obj.cobj_);
+            p = calllib('matctrl', 'ml_statespace_g_size', obj.cobj_);
+
+            c = cell(1, n*p*n);
+            cptr = libpointer('stringPtrPtr', c);
+
+            calllib('matctrl', ...
+                    'ml_statespace_obsv', ...
+                    obj.cobj_, ...
+                    cptr);
+
+            % ob = cptr.Value;
+            ob = reshape(cptr.Value, n*p, n);
+        end
+
+    end
+
 end
