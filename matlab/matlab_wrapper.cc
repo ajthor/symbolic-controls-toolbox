@@ -297,7 +297,7 @@ void ml_statespace_B_get(StateSpace_C *obj, char **result) {
   for(i = 0; i < n; i++) { // rows
     for (j = 0; j < m; j++) { // cols
       auto s = basic_new_heap();
-      dense_matrix_get_basic(s, mat, j, i);
+      dense_matrix_get_basic(s, mat, i, j);
 
       std::string str = s->m->__str__();
       // TODO: Convert str here to Matlab Symbolic format.
@@ -332,7 +332,7 @@ void ml_statespace_C_get(StateSpace_C *obj, char **result) {
   for(i = 0; i < p; i++) { // rows
     for (j = 0; j < n; j++) { // cols
       auto s = basic_new_heap();
-      dense_matrix_get_basic(s, mat, j, i);
+      dense_matrix_get_basic(s, mat, i, j);
 
       std::string str = s->m->__str__();
       // TODO: Convert str here to Matlab Symbolic format.
@@ -367,7 +367,7 @@ void ml_statespace_D_get(StateSpace_C *obj, char **result) {
   for(i = 0; i < p; i++) { // rows
     for (j = 0; j < m; j++) { // cols
       auto s = basic_new_heap();
-      dense_matrix_get_basic(s, mat, j, i);
+      dense_matrix_get_basic(s, mat, i, j);
 
       std::string str = s->m->__str__();
       // TODO: Convert str here to Matlab Symbolic format.
