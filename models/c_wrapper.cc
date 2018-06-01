@@ -7,6 +7,7 @@
 
 #include "c_wrapper.hpp"
 
+#include "analysis.hpp"
 #include "mdp.hpp"
 #include "state_space.hpp"
 #include "transfer_function.hpp"
@@ -203,7 +204,6 @@ void statespace_A_get(StateSpace_C *obj, CDenseMatrix *result) {
 
   C_WRAPPER_END
 }
-
 void statespace_B_get(StateSpace_C *obj, CDenseMatrix *result) {
   C_WRAPPER_BEGIN
 
@@ -211,7 +211,6 @@ void statespace_B_get(StateSpace_C *obj, CDenseMatrix *result) {
 
   C_WRAPPER_END
 }
-
 void statespace_C_get(StateSpace_C *obj, CDenseMatrix *result) {
   C_WRAPPER_BEGIN
 
@@ -219,7 +218,6 @@ void statespace_C_get(StateSpace_C *obj, CDenseMatrix *result) {
 
   C_WRAPPER_END
 }
-
 void statespace_D_get(StateSpace_C *obj, CDenseMatrix *result) {
   C_WRAPPER_BEGIN
 

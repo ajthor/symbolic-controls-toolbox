@@ -72,13 +72,6 @@ private:
   std::vector<SymEngine::RCP<const SymEngine::Basic>> g_;
 };
 
-// StateSpace Functions
-void ctrb(StateSpace &obj, SymEngine::DenseMatrix &result);
-int ctrb_rank(StateSpace *obj);
-
-void obsv(StateSpace &obj, SymEngine::DenseMatrix &result);
-int obsv_rank(StateSpace *obj);
-
 } // Controls
 
 #endif /* end of include guard: MODELS_STATE_SPACE_HPP */

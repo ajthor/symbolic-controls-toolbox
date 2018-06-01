@@ -72,6 +72,7 @@ CTRL_EXPORT void statespace_obsv(StateSpace_C *obj, CDenseMatrix *result);
 CTRL_EXPORT int statespace_obsv_rank(StateSpace_C *obj);
 
 CTRL_EXPORT int statespace_is_controllable(StateSpace_C *obj);
+CTRL_EXPORT int statespace_is_observable(StateSpace_C *obj);
 
 // ---------------------------------------------------------------------------
 // C Wrapper for MDP Interface
