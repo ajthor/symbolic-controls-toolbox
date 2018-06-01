@@ -46,6 +46,10 @@ struct CRCPBasic {
   SymEngine::RCP<const SymEngine::Basic> m;
 };
 
+struct CDenseMatrix {
+    SymEngine::DenseMatrix m;
+};
+
 // ----------------------------------------------------------------------
 // StateSpace Function Definitions
 //
@@ -98,6 +102,146 @@ void statespace_states_set(StateSpace_C *obj, size_t n, const basic arg) {
 
 size_t statespace_states_size(StateSpace_C *obj) {
   return obj->m.get_num_states();
+}
+
+void statespace_inputs_push_back(StateSpace_C *obj, const basic arg) {
+  C_WRAPPER_BEGIN
+
+  obj->m.add_input(arg->m);
+
+  C_WRAPPER_END
+}
+
+void statespace_inputs_get(StateSpace_C *obj, size_t n, basic result) {
+  C_WRAPPER_BEGIN
+
+  // TODO: n < obj->m.size()
+  result->m = obj->m.get_input(n);
+
+  C_WRAPPER_END
+}
+
+void statespace_inputs_set(StateSpace_C *obj, size_t n, const basic arg) {
+  C_WRAPPER_BEGIN
+
+  // TODO: n < obj->m.size()
+  obj->m.set_input(n, arg->m);
+
+  C_WRAPPER_END
+}
+
+// void statespace_inputs_erase(StateSpace_C *obj, size_t n) {
+//   C_WRAPPER_BEGIN
+//
+//   C_WRAPPER_END
+// }
+
+size_t statespace_inputs_size(StateSpace_C *obj) {
+  return obj->m.get_num_inputs();
+}
+
+void statespace_f_push_back(StateSpace_C *obj, const basic arg) {
+  C_WRAPPER_BEGIN
+
+  obj->m.add_f(arg->m);
+
+  C_WRAPPER_END
+}
+
+void statespace_f_get(StateSpace_C *obj, size_t n, basic result) {
+  C_WRAPPER_BEGIN
+
+  // TODO: n < obj->m.size()
+  result->m = obj->m.get_f(n);
+
+  C_WRAPPER_END
+}
+
+void statespace_f_set(StateSpace_C *obj, size_t n, const basic arg) {
+  C_WRAPPER_BEGIN
+
+  // TODO: n < obj->m.size()
+  obj->m.set_f(n, arg->m);
+
+  C_WRAPPER_END
+}
+
+// void statespace_f_erase(StateSpace_C *obj, size_t n) {
+//   C_WRAPPER_BEGIN
+//
+//   C_WRAPPER_END
+// }
+
+size_t statespace_f_size(StateSpace_C *obj) {
+  return obj->m.get_num_f();
+}
+
+void statespace_g_push_back(StateSpace_C *obj, const basic arg) {
+  C_WRAPPER_BEGIN
+
+  obj->m.add_g(arg->m);
+
+  C_WRAPPER_END
+}
+
+void statespace_g_get(StateSpace_C *obj, size_t n, basic result) {
+  C_WRAPPER_BEGIN
+
+  // TODO: n < obj->m.size()
+  result->m = obj->m.get_g(n);
+
+  C_WRAPPER_END
+}
+
+void statespace_g_set(StateSpace_C *obj, size_t n, const basic arg) {
+  C_WRAPPER_BEGIN
+
+  // TODO: n < obj->m.size()
+  obj->m.set_g(n, arg->m);
+
+  C_WRAPPER_END
+}
+
+// void statespace_g_erase(StateSpace_C *obj, size_t n) {
+//   C_WRAPPER_BEGIN
+//
+//   C_WRAPPER_END
+// }
+
+size_t statespace_g_size(StateSpace_C *obj) {
+  return obj->m.get_num_g();
+}
+
+void statespace_A_get(StateSpace_C *obj, CDenseMatrix *result) {
+  C_WRAPPER_BEGIN
+
+  result->m = obj->m.get_A_matrix();
+
+  C_WRAPPER_END
+}
+
+void statespace_B_get(StateSpace_C *obj, CDenseMatrix *result) {
+  C_WRAPPER_BEGIN
+
+  result->m = obj->m.get_B_matrix();
+
+  C_WRAPPER_END
+}
+
+void statespace_C_get(StateSpace_C *obj, CDenseMatrix *result) {
+  C_WRAPPER_BEGIN
+
+  result->m = obj->m.get_C_matrix();
+
+  C_WRAPPER_END
+}
+
+void statespace_D_get(StateSpace_C *obj, CDenseMatrix *result) {
+  C_WRAPPER_BEGIN
+
+  result->m = obj->m.get_D_matrix();
+
+  C_WRAPPER_END
 }
 
 

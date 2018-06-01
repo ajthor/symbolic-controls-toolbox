@@ -8,8 +8,8 @@
 #include <vector>
 
 #include <symengine/basic.h>
+#include <symengine/matrix.h>
 #include <symengine/cwrapper.h>
-#include <symengine/symbol.h>
 
 // For C. C Matrix API.
 #include <mex.h>
@@ -20,6 +20,15 @@
 #include "matlab_wrapper.hpp"
 
 #include "libctrl/c_wrapper.hpp"
+
+// Re-define here from SymEngine API.
+struct CRCPBasic {
+  SymEngine::RCP<const SymEngine::Basic> m;
+};
+
+struct CDenseMatrix {
+    SymEngine::DenseMatrix m;
+};
 
 // ----------------------------------------------------------------------
 // Convert SymEngine to Matlab Symbolic and vice-versa.
@@ -38,13 +47,6 @@
 
 extern "C" {
 
-// struct RCPBasic_C {
-//   SymEngine::RCP<const SymEngine::Basic> m;
-// };
-struct CRCPBasic {
-  SymEngine::RCP<const SymEngine::Basic> m;
-};
-
 // ----------------------------------------------------------------------
 // State Space wrapper functions.
 //
@@ -58,10 +60,8 @@ void ml_statespace_free(StateSpace_C *obj) {
 
 void ml_statespace_states_push_back(StateSpace_C *obj, const char* arg) {
   auto s = basic_new_heap();
-  basic_const_set(s, arg);
-
+  basic_parse(s, arg);
   statespace_states_push_back(obj, s);
-
   basic_free_heap(s);
 }
 
@@ -73,6 +73,7 @@ void ml_statespace_states_get(StateSpace_C *obj, char **result) {
     statespace_states_get(obj, i, s);
 
     std::string str = s->m->__str__();
+    // TODO: Convert str here to Matlab Symbolic format.
 
     result[i] = new char[str.length() + 1];
     std::strcpy(result[i], str.c_str());
@@ -81,46 +82,13 @@ void ml_statespace_states_get(StateSpace_C *obj, char **result) {
   }
 }
 
-// void ml_statespace_states_get(StateSpace_C *obj, char** result) {
-//   size_t sz = statespace_states_size(obj);
-//   int i = 0;
-//   for(i = 0; i < sz; i++) {
-//     RCPBasic_C *s;
-//     statespace_states_get(obj, i, s);
-//
-//     std::string str = s->m->__str__();
-//
-//     // mexPrintf("str.c_str: %s\n", str.c_str());
-//
-//     // auto res = result[i];
-//     // std::strcpy(res, str.c_str());
-//     // result[i] = &str[0u];
-//
-//     result[i] = new char[str.length() + 1];
-//     // result[i] = alloca(str.size() + 1);
-//     std::strcpy(result[i], str.c_str());
-//
-//     // mexPrintf("cstr %d: %s\n", i, cstr);
-//     // mexPrintf("cstr %d: %d\n", i, cstr);
-//
-//     // std::strcpy(result[i], cc);
-//     // std::strcpy(result[i], str.c_str());
-//     // result[i] = cc;
-//
-//     // result[i] = str.c_str();
-//     // result[i] = "else";
-//     // mexPrintf("result %d: %s\n", i, result[i]);
-//   }
-//
-//   // return result;
-// }
-
 void ml_statespace_states_set(StateSpace_C *obj, int len, const char** arg) {
   size_t sz = statespace_states_size(obj);
   int i = 0;
   for(i = 0; i < len; i++) {
     auto s = basic_new_heap();
-    basic_const_set(s, arg[i]);
+    // TODO: Convert arg[i] here to SymEngine format. Pass the formatted string.
+    basic_parse(s, arg[i]);
 
     if(i >= sz) {
       statespace_states_push_back(obj, s);
@@ -136,62 +104,284 @@ int ml_statespace_states_size(StateSpace_C *obj) {
   return statespace_states_size(obj);
 }
 
-// void statespace_set_states(StateSpace_C *obj, matlab::data::Array arg) {
-//   int i = 0;
-//   for (auto e : arg) {
-//     obj->m.set_state(i++, SymEngine::symbol(std::string(e)));
-//   }
-// }
-//
-// matlab::data::Array statespace_get_states(StateSpace_C *obj) {
-//   using namespace matlab::data;
-//
-//   std::vector<SymEngine::RCP<const SymEngine::Basic>> states = obj->m.get_states();
-//
-//   size_t sz = states.size();
-//
-//   ArrayFactory factory;
-//   TypedArray<String> ret = factory.createArray({1, sz});
-//
-//   int i = 0;
-//   for (auto elem : states) {
-//     ret[i++] = elem;
-//   }
-//
-//   return ret;
-// }
+void ml_statespace_inputs_push_back(StateSpace_C *obj, const char* arg) {
+  auto s = basic_new_heap();
+  basic_parse(s, arg);
+  statespace_inputs_push_back(obj, s);
+  basic_free_heap(s);
+}
 
-// void statespace_set_state(StateSpace_C *obj, const int idx, const char* arg) {
-//   obj->m.set_state(idx - 1, SymEngine::symbol(std::string(arg)));
-// }
-//
-// // TODO: If vector is empty, return empty string.
-// char** statespace_get_states(StateSpace_C *obj) {
-//   using namespace SymEngine;
-//   std::vector<RCP<const Basic>> states = obj->m.get_states();
-//
-//   char* ret[states.size()];
-//   int i = 0;
-//   for(auto e : states) {
-//     std::string str = e->__str__();
-//     auto cc = new char[str.length() + 1];
-//     std::strcpy(ret[i++], str.c_str());
-//   }
-//
-//   return ret;
-//
-// }
-//
-// char* statespace_get_state(StateSpace_C *obj, const int idx) {
-//   using namespace SymEngine;
-//   std::vector<RCP<const Basic>> states = obj->m.get_states();
-//
-//   std::string str = states.at(idx)->__str__();
-//   auto cc = new char[str.length() + 1];
-//   std::strcpy(cc, str.c_str());
-//
-//   return cc;
-// }
+void ml_statespace_inputs_get(StateSpace_C *obj, char **result) {
+  size_t sz = statespace_inputs_size(obj);
+  int i = 0;
+  for(i = 0; i < sz; i++) {
+    auto s = basic_new_heap();
+    statespace_inputs_get(obj, i, s);
+
+    std::string str = s->m->__str__();
+    // TODO: Convert str here to Matlab Symbolic format.
+
+    result[i] = new char[str.length() + 1];
+    std::strcpy(result[i], str.c_str());
+
+    basic_free_heap(s);
+  }
+}
+
+void ml_statespace_inputs_set(StateSpace_C *obj, int len, const char** arg) {
+  size_t sz = statespace_inputs_size(obj);
+  int i = 0;
+  for(i = 0; i < len; i++) {
+    auto s = basic_new_heap();
+    // TODO: Convert arg[i] here to SymEngine format. Pass the formatted string.
+    basic_parse(s, arg[i]);
+
+    if(i >= sz) {
+      statespace_inputs_push_back(obj, s);
+    } else {
+      statespace_inputs_set(obj, i, s);
+    }
+
+    basic_free_heap(s);
+  }
+}
+
+int ml_statespace_inputs_size(StateSpace_C *obj) {
+  return statespace_inputs_size(obj);
+}
+
+void ml_statespace_f_push_back(StateSpace_C *obj, const char* arg) {
+  auto s = basic_new_heap();
+  basic_parse(s, arg);
+  statespace_f_push_back(obj, s);
+  basic_free_heap(s);
+}
+
+void ml_statespace_f_get(StateSpace_C *obj, char **result) {
+  size_t sz = statespace_f_size(obj);
+  int i = 0;
+  for(i = 0; i < sz; i++) {
+    auto s = basic_new_heap();
+    statespace_f_get(obj, i, s);
+
+    std::string str = s->m->__str__();
+    // TODO: Convert str here to Matlab Symbolic format.
+
+    result[i] = new char[str.length() + 1];
+    std::strcpy(result[i], str.c_str());
+
+    basic_free_heap(s);
+  }
+}
+
+void ml_statespace_f_set(StateSpace_C *obj, int len, const char** arg) {
+  size_t sz = statespace_f_size(obj);
+  int i = 0;
+  for(i = 0; i < len; i++) {
+    auto s = basic_new_heap();
+    // TODO: Convert arg[i] here to SymEngine format. Pass the formatted string.
+    basic_parse(s, arg[i]);
+
+    if(i >= sz) {
+      statespace_f_push_back(obj, s);
+    } else {
+      statespace_f_set(obj, i, s);
+    }
+
+    basic_free_heap(s);
+  }
+}
+
+int ml_statespace_f_size(StateSpace_C *obj) {
+  return statespace_f_size(obj);
+}
+
+void ml_statespace_g_push_back(StateSpace_C *obj, const char* arg) {
+  auto s = basic_new_heap();
+  basic_parse(s, arg);
+  statespace_g_push_back(obj, s);
+  basic_free_heap(s);
+}
+
+void ml_statespace_g_get(StateSpace_C *obj, char **result) {
+  size_t sz = statespace_g_size(obj);
+  int i = 0;
+  for(i = 0; i < sz; i++) {
+    auto s = basic_new_heap();
+    statespace_g_get(obj, i, s);
+
+    std::string str = s->m->__str__();
+    // TODO: Convert str here to Matlab Symbolic format.
+
+    result[i] = new char[str.length() + 1];
+    std::strcpy(result[i], str.c_str());
+
+    basic_free_heap(s);
+  }
+}
+
+void ml_statespace_g_set(StateSpace_C *obj, int len, const char** arg) {
+  size_t sz = statespace_g_size(obj);
+  int i = 0;
+  for(i = 0; i < len; i++) {
+    auto s = basic_new_heap();
+    // TODO: Convert arg[i] here to SymEngine format. Pass the formatted string.
+    basic_parse(s, arg[i]);
+
+    if(i >= sz) {
+      statespace_g_push_back(obj, s);
+    } else {
+      statespace_g_set(obj, i, s);
+    }
+
+    basic_free_heap(s);
+  }
+}
+
+int ml_statespace_g_size(StateSpace_C *obj) {
+  return statespace_g_size(obj);
+}
+
+// Get state matrix.
+void ml_statespace_A_get(StateSpace_C *obj, char **result) {
+  size_t n = statespace_states_size(obj);
+  size_t fn = statespace_f_size(obj);
+
+  // Matrix dimensions must be square.
+  if(n == 0 || n != fn) {
+    return;
+  }
+
+  auto mat = dense_matrix_new_rows_cols(n, n);
+  statespace_A_get(obj, mat);
+
+  int i = 0;
+  int j = 0;
+  int idx = 0;
+  for(i = 0; i < n; i++) { // rows
+    for (j = 0; j < n; j++) { // cols
+      auto s = basic_new_heap();
+      dense_matrix_get_basic(s, mat, j, i);
+
+      std::string str = s->m->__str__();
+      // TODO: Convert str here to Matlab Symbolic format.
+
+      result[idx] = new char[str.length() + 1];
+      std::strcpy(result[idx], str.c_str());
+      idx++;
+
+      basic_free_heap(s);
+    }
+  }
+
+  dense_matrix_free(mat);
+}
+
+// Get input matrix.
+void ml_statespace_B_get(StateSpace_C *obj, char **result) {
+  size_t n = statespace_states_size(obj);
+  size_t m = statespace_inputs_size(obj);
+  size_t fn = statespace_f_size(obj);
+
+  // Number of inputs must be greater than 0.
+  if(n == 0 || m == 0 || n != fn) {
+    return;
+  }
+
+  auto mat = dense_matrix_new_rows_cols(n, m);
+  statespace_B_get(obj, mat);
+
+  int i = 0;
+  int j = 0;
+  int idx = 0;
+  for(i = 0; i < n; i++) { // rows
+    for (j = 0; j < m; j++) { // cols
+      auto s = basic_new_heap();
+      dense_matrix_get_basic(s, mat, j, i);
+
+      std::string str = s->m->__str__();
+      // TODO: Convert str here to Matlab Symbolic format.
+
+      result[idx] = new char[str.length() + 1];
+      std::strcpy(result[idx], str.c_str());
+      idx++;
+
+      basic_free_heap(s);
+    }
+  }
+
+  dense_matrix_free(mat);
+}
+
+// Get output matrix.
+void ml_statespace_C_get(StateSpace_C *obj, char **result) {
+  size_t n = statespace_states_size(obj);
+  size_t p = statespace_g_size(obj);
+
+  // Number of output equations must be greater than 0.
+  if(n == 0 || p == 0) {
+    return;
+  }
+
+  auto mat = dense_matrix_new_rows_cols(p, n);
+  statespace_C_get(obj, mat);
+
+  int i = 0;
+  int j = 0;
+  int idx = 0;
+  for(i = 0; i < p; i++) { // rows
+    for (j = 0; j < n; j++) { // cols
+      auto s = basic_new_heap();
+      dense_matrix_get_basic(s, mat, j, i);
+
+      std::string str = s->m->__str__();
+      // TODO: Convert str here to Matlab Symbolic format.
+
+      result[idx] = new char[str.length() + 1];
+      std::strcpy(result[idx], str.c_str());
+      idx++;
+
+      basic_free_heap(s);
+    }
+  }
+
+  dense_matrix_free(mat);
+}
+
+// Get feed-through matrix.
+void ml_statespace_D_get(StateSpace_C *obj, char **result) {
+  size_t m = statespace_inputs_size(obj);
+  size_t p = statespace_g_size(obj);
+
+  // Number of inputs & output equations must be greater than 0.
+  if(m == 0 || p == 0) {
+    return;
+  }
+
+  auto mat = dense_matrix_new_rows_cols(p, m);
+  statespace_D_get(obj, mat);
+
+  int i = 0;
+  int j = 0;
+  int idx = 0;
+  for(i = 0; i < p; i++) { // rows
+    for (j = 0; j < m; j++) { // cols
+      auto s = basic_new_heap();
+      dense_matrix_get_basic(s, mat, j, i);
+
+      std::string str = s->m->__str__();
+      // TODO: Convert str here to Matlab Symbolic format.
+
+      result[idx] = new char[str.length() + 1];
+      std::strcpy(result[idx], str.c_str());
+      idx++;
+
+      basic_free_heap(s);
+    }
+  }
+
+  dense_matrix_free(mat);
+}
 
 // ----------------------------------------------------------------------
 // MDP wrapper functions.

@@ -9,8 +9,6 @@
 extern "C" {
 #endif
 
-// typedef struct RCPBasic_C RCPBasic_C;
-
 // ----------------------------------------------------------------------
 // State Space wrapper functions.
 //
@@ -19,16 +17,30 @@ typedef struct StateSpace_C StateSpace_C;
 StateSpace_C* ml_statespace_new();
 void ml_statespace_free(StateSpace_C *obj);
 
-// void ml_statespace_states_push_back(StateSpace_C *obj, const char* arg);
-
+void ml_statespace_states_push_back(StateSpace_C *obj, const char* arg);
 void ml_statespace_states_get(StateSpace_C *obj, char **result);
-// char** ml_statespace_states_get(StateSpace_C *obj);
-
 void ml_statespace_states_set(StateSpace_C *obj, int len, const char** arg);
 int ml_statespace_states_size(StateSpace_C *obj);
-// void statespace_set_states(StateSpace_C *obj, const mxArray* arg);
-// char** statespace_get_states(StateSpace_C *obj);
-// char* statespace_get_state(StateSpace_C *obj, const int idx);
+
+void ml_statespace_inputs_push_back(StateSpace_C *obj, const char* arg);
+void ml_statespace_inputs_get(StateSpace_C *obj, char **result);
+void ml_statespace_inputs_set(StateSpace_C *obj, int len, const char** arg);
+int ml_statespace_inputs_size(StateSpace_C *obj);
+
+void ml_statespace_f_push_back(StateSpace_C *obj, const char* arg);
+void ml_statespace_f_get(StateSpace_C *obj, char **result);
+void ml_statespace_f_set(StateSpace_C *obj, int len, const char** arg);
+int ml_statespace_f_size(StateSpace_C *obj);
+
+void ml_statespace_g_push_back(StateSpace_C *obj, const char* arg);
+void ml_statespace_g_get(StateSpace_C *obj, char **result);
+void ml_statespace_g_set(StateSpace_C *obj, int len, const char** arg);
+int ml_statespace_g_size(StateSpace_C *obj);
+
+void ml_statespace_A_get(StateSpace_C *obj, char **result);
+void ml_statespace_B_get(StateSpace_C *obj, char **result);
+void ml_statespace_C_get(StateSpace_C *obj, char **result);
+void ml_statespace_D_get(StateSpace_C *obj, char **result);
 
 // ----------------------------------------------------------------------
 // MDP wrapper functions.

@@ -6,6 +6,8 @@
 #include <symengine/dict.h>
 #include <symengine/symbol.h>
 #include <symengine/matrix.h>
+#include <symengine/add.h>
+#include <symengine/pow.h>
 
 #include "system.hpp"
 
@@ -21,6 +23,21 @@ public:
   SymEngine::RCP<const SymEngine::Basic> get_state(size_t n);
   size_t get_num_states();
 
+  void add_input(const SymEngine::RCP<const SymEngine::Basic> arg);
+  void set_input(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg);
+  SymEngine::RCP<const SymEngine::Basic> get_input(size_t n);
+  size_t get_num_inputs();
+
+  void add_f(const SymEngine::RCP<const SymEngine::Basic> arg);
+  void set_f(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg);
+  SymEngine::RCP<const SymEngine::Basic> get_f(size_t n);
+  size_t get_num_f();
+
+  void add_g(const SymEngine::RCP<const SymEngine::Basic> arg);
+  void set_g(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg);
+  SymEngine::RCP<const SymEngine::Basic> get_g(size_t n);
+  size_t get_num_g();
+
   // void set_inputs(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg);
 
   // void set_f(const std::vector<SymEngine::RCP<const SymEngine::Basic>> arg);
@@ -35,10 +52,10 @@ public:
   // std::vector<SymEngine::RCP<const SymEngine::Basic>> get_f();
   // std::vector<SymEngine::RCP<const SymEngine::Basic>> get_g();
 
-  // SymEngine::DenseMatrix get_A_matrix();
-  // SymEngine::DenseMatrix get_B_matrix();
-  // SymEngine::DenseMatrix get_C_matrix();
-  // SymEngine::DenseMatrix get_D_matrix();
+  SymEngine::DenseMatrix get_A_matrix();
+  SymEngine::DenseMatrix get_B_matrix();
+  SymEngine::DenseMatrix get_C_matrix();
+  SymEngine::DenseMatrix get_D_matrix();
 
 private:
   // Vector of symbolic state variables.

@@ -26,7 +26,7 @@ extern "C" {
 // #endif
 //
 // typedef struct basic_struct basic[1];
-typedef struct RCPBasic_C RCPBasic_C;
+// typedef struct RCPBasic_C RCPBasic_C;
 
 // ---------------------------------------------------------------------------
 // C Wrapper for StateSpace Interface
@@ -59,6 +59,11 @@ CTRL_EXPORT void statespace_g_get(StateSpace_C *obj, size_t n, basic result);
 CTRL_EXPORT void statespace_g_set(StateSpace_C *obj, size_t n, const basic arg);
 CTRL_EXPORT void statespace_g_erase(StateSpace_C *obj, size_t n);
 CTRL_EXPORT size_t statespace_g_size(StateSpace_C *obj);
+
+CTRL_EXPORT void statespace_A_get(StateSpace_C *obj, CDenseMatrix *result);
+CTRL_EXPORT void statespace_B_get(StateSpace_C *obj, CDenseMatrix *result);
+CTRL_EXPORT void statespace_C_get(StateSpace_C *obj, CDenseMatrix *result);
+CTRL_EXPORT void statespace_D_get(StateSpace_C *obj, CDenseMatrix *result);
 
 // ---------------------------------------------------------------------------
 // C Wrapper for MDP Interface

@@ -22,89 +22,137 @@ size_t StateSpace::get_num_states() {
   return states_.size();
 }
 
+void StateSpace::add_input(const SymEngine::RCP<const SymEngine::Basic> arg) {
+  inputs_.push_back(arg);
+}
 
-// void StateSpace::set_inputs(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
-//   inputs_ = arg;
-// }
-//
-// void StateSpace::set_f(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
-//   f_ = arg;
-// }
-//
-// void StateSpace::set_g(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
-//   g_ = arg;
-// }
-//
-// std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_inputs() {
-//   return inputs_;
-// }
-//
-// std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_f() {
-//   return f_;
-// }
-//
-// std::vector<SymEngine::RCP<const SymEngine::Basic>> StateSpace::get_g() {
-//   return g_;
-// }
+void StateSpace::set_input(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg) {
+  inputs_.at(n) = arg;
+}
 
+SymEngine::RCP<const SymEngine::Basic> StateSpace::get_input(size_t n) {
+  return inputs_.at(n);
+}
 
-// void StateSpace::set_inputs(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg) {
-//   inputs_ = arg;
-// }
-//
-// void StateSpace::add_state(const SymEngine::RCP<const SymEngine::Basic> &arg) {
-//   states_.insert(states_.end(), arg.begin(), arg.end());
-// }
-//
-// void StateSpace::add_input(const SymEngine::RCP<const SymEngine::Basic> &arg) {
-//   inputs_.insert(inputs_.end(), arg.begin(), arg.end());
-// }
+size_t StateSpace::get_num_inputs() {
+  return inputs_.size();
+}
 
-// DenseMatrix StateSpace::get_A_matrix() {
-//   unsigned n = states_.size();
-//
-//   DenseMatrix X = DenseMatrix(n, 1, {states_});
-//
-//   DenseMatrix J = DenseMatrix(n, n);
-//   jacobian(f_, X, J);
-//
-//   return J;
-// }
+void StateSpace::add_f(const SymEngine::RCP<const SymEngine::Basic> arg) {
+  f_.push_back(arg);
+}
 
-// DenseMatrix StateSpace::get_B_matrix() {
-//   unsigned n = states_.size();
-//   unsigned m = inputs_.size();
-//
-//   DenseMatrix X = DenseMatrix(m, 1, {inputs_});
-//
-//   DenseMatrix J = DenseMatrix(n, m);
-//   jacobian(f_, X, J);
-//
-//   return J;
-// }
+void StateSpace::set_f(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg) {
+  f_.at(n) = arg;
+}
 
-// DenseMatrix StateSpace::get_C_matrix() {
-//   unsigned n = states_.size();
-//   unsigned p = inputs_.size();
-//
-//   DenseMatrix X = DenseMatrix(n, 1, {states_});
-//
-//   DenseMatrix J = DenseMatrix(p, n);
-//   jacobian(g_, X, J);
-//
-//   return J;
-// }
+SymEngine::RCP<const SymEngine::Basic> StateSpace::get_f(size_t n) {
+  return f_.at(n);
+}
 
-// DenseMatrix StateSpace::get_D_matrix() {
-//   unsigned m = inputs_.size();
-//   unsigned p = g_.size();
-//
-//   DenseMatrix X = DenseMatrix(n, 1, {inputs_});
-//
-//   DenseMatrix J = DenseMatrix(p, m);
-//   jacobian(g_, X, J);
-//
-//   return J;
-// }
+size_t StateSpace::get_num_f() {
+  return f_.size();
+}
+
+void StateSpace::add_g(const SymEngine::RCP<const SymEngine::Basic> arg) {
+  g_.push_back(arg);
+}
+
+void StateSpace::set_g(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg) {
+  g_.at(n) = arg;
+}
+
+SymEngine::RCP<const SymEngine::Basic> StateSpace::get_g(size_t n) {
+  return g_.at(n);
+}
+
+size_t StateSpace::get_num_g() {
+  return g_.size();
+}
+
+SymEngine::DenseMatrix StateSpace::get_A_matrix() {
+  // using namespace SymEngine;
+  // DenseMatrix A, X, J;
+  // RCP<const Symbol> x = symbol("x"), y = symbol("y"), z = symbol("z"),
+  // t = symbol("t");
+  // A = DenseMatrix(
+  //   4, 1, {add(x, z), mul(y, z), add(mul(z, x), add(y, t)), add(x, y)});
+  //   X = DenseMatrix(4, 1, {x, y, z, t});
+  //   J = DenseMatrix(4, 4);
+  //   jacobian(A, X, J);
+
+  unsigned n = states_.size();
+  SymEngine::DenseMatrix f;
+  SymEngine::DenseMatrix x;
+  SymEngine::DenseMatrix J;
+
+  J = SymEngine::DenseMatrix(n, n);
+
+  if(n > 0 && f_.size() == n) {
+    f = SymEngine::DenseMatrix(n, 1, {f_});
+    x = SymEngine::DenseMatrix(n, 1, {states_});
+
+    jacobian(f, x, J);
+  }
+
+  return J;
+}
+
+SymEngine::DenseMatrix StateSpace::get_B_matrix() {
+  unsigned n = states_.size();
+  unsigned m = inputs_.size();
+  SymEngine::DenseMatrix f;
+  SymEngine::DenseMatrix u;
+  SymEngine::DenseMatrix J;
+
+  J = SymEngine::DenseMatrix(n, m);
+
+  if(n > 0 && f_.size() == n && m > 0) {
+    f = SymEngine::DenseMatrix(n, 1, {f_});
+    u = SymEngine::DenseMatrix(m, 1, {inputs_});
+
+    jacobian(f, u, J);
+  }
+
+  return J;
+}
+
+SymEngine::DenseMatrix StateSpace::get_C_matrix() {
+  unsigned n = states_.size();
+  unsigned p = g_.size();
+  SymEngine::DenseMatrix g;
+  SymEngine::DenseMatrix x;
+  SymEngine::DenseMatrix J;
+
+  J = SymEngine::DenseMatrix(p, n);
+
+  if(n > 0 && p > 0) {
+    g = SymEngine::DenseMatrix(p, 1, {g_});
+    x = SymEngine::DenseMatrix(n, 1, {states_});
+
+    jacobian(g, x, J);
+  }
+
+  return J;
+}
+
+SymEngine::DenseMatrix StateSpace::get_D_matrix() {
+  unsigned m = inputs_.size();
+  unsigned p = g_.size();
+  SymEngine::DenseMatrix g;
+  SymEngine::DenseMatrix u;
+  SymEngine::DenseMatrix J;
+
+  J = SymEngine::DenseMatrix(p, m);
+
+  if(m > 0 && p > 0) {
+    g = SymEngine::DenseMatrix(p, 1, {g_});
+    u = SymEngine::DenseMatrix(m, 1, {inputs_});
+
+    jacobian(g, u, J);
+  }
+
+  return J;
+}
 
 } // Controls
