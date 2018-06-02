@@ -3,7 +3,9 @@
 //
 
 #include <symengine/basic.h>
+#include <symengine/dict.h>
 #include <symengine/cwrapper.h>
+#include <symengine/subs.h>
 
 #include "c_wrapper.hpp"
 
@@ -39,17 +41,39 @@ extern "C" {
   }
 #endif
 
-// struct RCPBasic_C {
-//   SymEngine::RCP<const SymEngine::Basic> m;
-// };
-
+// ----------------------------------------------------------------------
+// SymEngine Struct Definitions
+//
 struct CRCPBasic {
   SymEngine::RCP<const SymEngine::Basic> m;
 };
-
+struct CVecBasic {
+    SymEngine::vec_basic m;
+};
 struct CDenseMatrix {
     SymEngine::DenseMatrix m;
 };
+struct CMapBasicBasic {
+    SymEngine::map_basic_basic m;
+};
+
+// ----------------------------------------------------------------------
+// Controls Function Definitions
+//
+CTRL_EXPORT void ctrb(CDenseMatrix *A, CDenseMatrix *B, CDenseMatrix *result) {
+  C_WRAPPER_BEGIN
+
+  Controls::ctrb(A->m, B->m, result->m);
+
+  C_WRAPPER_END
+}
+CTRL_EXPORT void obsv(CDenseMatrix *A, CDenseMatrix *C, CDenseMatrix *result) {
+  C_WRAPPER_BEGIN
+
+  Controls::obsv(A->m, C->m, result->m);
+
+  C_WRAPPER_END
+}
 
 // ----------------------------------------------------------------------
 // StateSpace Function Definitions
@@ -222,6 +246,22 @@ void statespace_D_get(StateSpace_C *obj, CDenseMatrix *result) {
   C_WRAPPER_BEGIN
 
   obj->m.get_D_matrix(result->m);
+
+  C_WRAPPER_END
+}
+
+void statespace_subs(StateSpace_C *obj, const basic k, const basic m) {
+  C_WRAPPER_BEGIN
+
+  obj->m.subs(k->m, m->m);
+
+  C_WRAPPER_END
+}
+
+void statespace_linearize(StateSpace_C *obj) {
+  C_WRAPPER_BEGIN
+
+  obj->m.linearize();
 
   C_WRAPPER_END
 }

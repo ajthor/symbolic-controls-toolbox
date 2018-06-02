@@ -33,7 +33,8 @@ classdef (SupportExtensionMethods = true) statespace < handle
     %   Antsaklis, Panos J., and Anthony N. Michel. A linear systems
     %   primer. Vol. 1. Boston: Birkhauser, 2007.
 
-    properties (Access = protected, Hidden = true)
+    properties (Access = protected, Hidden)
+        % C Pointer Handle
         cobj_;
     end
 
@@ -214,6 +215,8 @@ classdef (SupportExtensionMethods = true) statespace < handle
                     cptr);
 
             A = reshape(cptr.Value, n, n);
+
+            clear('cptr');
         end
 
         function B = get.B(obj)
@@ -229,6 +232,8 @@ classdef (SupportExtensionMethods = true) statespace < handle
                     cptr);
 
             B = reshape(cptr.Value, n, m);
+
+            clear('cptr');
         end
 
         function C = get.C(obj)
@@ -244,6 +249,8 @@ classdef (SupportExtensionMethods = true) statespace < handle
                     cptr);
 
             C = reshape(cptr.Value, p, n);
+
+            clear('cptr');
         end
 
         function D = get.D(obj)
@@ -259,6 +266,8 @@ classdef (SupportExtensionMethods = true) statespace < handle
                     cptr);
 
             D = reshape(cptr.Value, p, m);
+
+            clear('cptr');
         end
     end
 
@@ -278,6 +287,8 @@ classdef (SupportExtensionMethods = true) statespace < handle
 
             % co = cptr.Value;
             co = reshape(cptr.Value, n, n*m);
+
+            clear('cptr');
         end
 
         function ob = obsv(obj)
@@ -294,6 +305,8 @@ classdef (SupportExtensionMethods = true) statespace < handle
 
             % ob = cptr.Value;
             ob = reshape(cptr.Value, n*p, n);
+
+            clear('cptr');
         end
 
     end

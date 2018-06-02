@@ -1,14 +1,6 @@
 #ifndef MODELS_STATE_SPACE_HPP
 #define MODELS_STATE_SPACE_HPP
 
-#include <vector>
-#include <symengine/basic.h>
-#include <symengine/dict.h>
-#include <symengine/symbol.h>
-#include <symengine/matrix.h>
-#include <symengine/add.h>
-#include <symengine/pow.h>
-
 #include "system.hpp"
 
 namespace Controls {
@@ -57,6 +49,12 @@ public:
   void get_B_matrix(SymEngine::DenseMatrix &result);
   void get_C_matrix(SymEngine::DenseMatrix &result);
   void get_D_matrix(SymEngine::DenseMatrix &result);
+
+  void subs(const SymEngine::RCP<const SymEngine::Basic> key,
+            const SymEngine::RCP<const SymEngine::Basic> map);
+
+  void linearize();
+  // void linearize(const SymEngine::vec_basic &eq);
 
 private:
   // Vector of symbolic state variables.

@@ -49,6 +49,13 @@ void ml_statespace_B_get(StateSpace_C *obj, char **result);
 void ml_statespace_C_get(StateSpace_C *obj, char **result);
 void ml_statespace_D_get(StateSpace_C *obj, char **result);
 
+void ml_statespace_subs(StateSpace_C *obj,
+                        int len,
+                        const char **a,
+                        const char **b);
+
+void ml_statespace_linearize(StateSpace_C *obj);
+
 void ml_statespace_ctrb(StateSpace_C *obj, char **result);
 void ml_statespace_obsv(StateSpace_C *obj, char **result);
 

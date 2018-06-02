@@ -28,7 +28,9 @@
 struct CRCPBasic {
   SymEngine::RCP<const SymEngine::Basic> m;
 };
-
+struct CVecBasic {
+    SymEngine::vec_basic m;
+};
 struct CDenseMatrix {
     SymEngine::DenseMatrix m;
 };
@@ -79,9 +81,9 @@ void ml_statespace_states_get(StateSpace_C *obj, char **result) {
 }
 void ml_statespace_states_set(StateSpace_C *obj, int len, const char** arg) {
   size_t sz = statespace_states_size(obj);
+  auto s = basic_new_heap();
   int i = 0;
   for(i = 0; i < len; i++) {
-    auto s = basic_new_heap();
     // TODO: Convert arg[i] here to SymEngine format. Pass the formatted string.
     basic_parse(s, arg[i]);
 
@@ -90,9 +92,8 @@ void ml_statespace_states_set(StateSpace_C *obj, int len, const char** arg) {
     } else {
       statespace_states_set(obj, i, s);
     }
-
-    basic_free_heap(s);
   }
+  basic_free_heap(s);
 }
 int ml_statespace_states_size(StateSpace_C *obj) {
   return statespace_states_size(obj);
@@ -116,9 +117,9 @@ void ml_statespace_inputs_get(StateSpace_C *obj, char **result) {
 }
 void ml_statespace_inputs_set(StateSpace_C *obj, int len, const char** arg) {
   size_t sz = statespace_inputs_size(obj);
+  auto s = basic_new_heap();
   int i = 0;
   for(i = 0; i < len; i++) {
-    auto s = basic_new_heap();
     // TODO: Convert arg[i] here to SymEngine format. Pass the formatted string.
     basic_parse(s, arg[i]);
 
@@ -127,9 +128,8 @@ void ml_statespace_inputs_set(StateSpace_C *obj, int len, const char** arg) {
     } else {
       statespace_inputs_set(obj, i, s);
     }
-
-    basic_free_heap(s);
   }
+  basic_free_heap(s);
 }
 int ml_statespace_inputs_size(StateSpace_C *obj) {
   return statespace_inputs_size(obj);
@@ -153,9 +153,9 @@ void ml_statespace_f_get(StateSpace_C *obj, char **result) {
 }
 void ml_statespace_f_set(StateSpace_C *obj, int len, const char** arg) {
   size_t sz = statespace_f_size(obj);
+  auto s = basic_new_heap();
   int i = 0;
   for(i = 0; i < len; i++) {
-    auto s = basic_new_heap();
     // TODO: Convert arg[i] here to SymEngine format. Pass the formatted string.
     basic_parse(s, arg[i]);
 
@@ -164,9 +164,8 @@ void ml_statespace_f_set(StateSpace_C *obj, int len, const char** arg) {
     } else {
       statespace_f_set(obj, i, s);
     }
-
-    basic_free_heap(s);
   }
+  basic_free_heap(s);
 }
 int ml_statespace_f_size(StateSpace_C *obj) {
   return statespace_f_size(obj);
@@ -190,9 +189,9 @@ void ml_statespace_g_get(StateSpace_C *obj, char **result) {
 }
 void ml_statespace_g_set(StateSpace_C *obj, int len, const char** arg) {
   size_t sz = statespace_g_size(obj);
+  auto s = basic_new_heap();
   int i = 0;
   for(i = 0; i < len; i++) {
-    auto s = basic_new_heap();
     // TODO: Convert arg[i] here to SymEngine format. Pass the formatted string.
     basic_parse(s, arg[i]);
 
@@ -201,9 +200,8 @@ void ml_statespace_g_set(StateSpace_C *obj, int len, const char** arg) {
     } else {
       statespace_g_set(obj, i, s);
     }
-
-    basic_free_heap(s);
   }
+  basic_free_heap(s);
 }
 int ml_statespace_g_size(StateSpace_C *obj) {
   return statespace_g_size(obj);
@@ -222,12 +220,13 @@ void ml_statespace_A_get(StateSpace_C *obj, char **result) {
   auto mat = dense_matrix_new_rows_cols(n, n);
   statespace_A_get(obj, mat);
 
+  auto s = basic_new_heap();
+
   int i = 0;
   int j = 0;
   int idx = 0;
   for(i = 0; i < n; i++) { // rows
     for (j = 0; j < n; j++) { // cols
-      auto s = basic_new_heap();
       dense_matrix_get_basic(s, mat, j, i);
 
       std::string str = s->m->__str__();
@@ -237,10 +236,10 @@ void ml_statespace_A_get(StateSpace_C *obj, char **result) {
       std::strcpy(result[idx], str.c_str());
       idx++;
 
-      basic_free_heap(s);
     }
   }
 
+  basic_free_heap(s);
   dense_matrix_free(mat);
 }
 
@@ -258,12 +257,13 @@ void ml_statespace_B_get(StateSpace_C *obj, char **result) {
   auto mat = dense_matrix_new_rows_cols(n, m);
   statespace_B_get(obj, mat);
 
+  auto s = basic_new_heap();
+
   int i = 0;
   int j = 0;
   int idx = 0;
   for(i = 0; i < n; i++) { // rows
     for (j = 0; j < m; j++) { // cols
-      auto s = basic_new_heap();
       dense_matrix_get_basic(s, mat, i, j);
 
       std::string str = s->m->__str__();
@@ -272,11 +272,10 @@ void ml_statespace_B_get(StateSpace_C *obj, char **result) {
       result[idx] = new char[str.length() + 1];
       std::strcpy(result[idx], str.c_str());
       idx++;
-
-      basic_free_heap(s);
     }
   }
 
+  basic_free_heap(s);
   dense_matrix_free(mat);
 }
 
@@ -293,12 +292,13 @@ void ml_statespace_C_get(StateSpace_C *obj, char **result) {
   auto mat = dense_matrix_new_rows_cols(p, n);
   statespace_C_get(obj, mat);
 
+  auto s = basic_new_heap();
+
   int i = 0;
   int j = 0;
   int idx = 0;
   for(i = 0; i < p; i++) { // rows
     for (j = 0; j < n; j++) { // cols
-      auto s = basic_new_heap();
       dense_matrix_get_basic(s, mat, i, j);
 
       std::string str = s->m->__str__();
@@ -307,11 +307,10 @@ void ml_statespace_C_get(StateSpace_C *obj, char **result) {
       result[idx] = new char[str.length() + 1];
       std::strcpy(result[idx], str.c_str());
       idx++;
-
-      basic_free_heap(s);
     }
   }
 
+  basic_free_heap(s);
   dense_matrix_free(mat);
 }
 
@@ -328,12 +327,13 @@ void ml_statespace_D_get(StateSpace_C *obj, char **result) {
   auto mat = dense_matrix_new_rows_cols(p, m);
   statespace_D_get(obj, mat);
 
+  auto s = basic_new_heap();
+
   int i = 0;
   int j = 0;
   int idx = 0;
   for(i = 0; i < p; i++) { // rows
     for (j = 0; j < m; j++) { // cols
-      auto s = basic_new_heap();
       dense_matrix_get_basic(s, mat, i, j);
 
       std::string str = s->m->__str__();
@@ -342,12 +342,37 @@ void ml_statespace_D_get(StateSpace_C *obj, char **result) {
       result[idx] = new char[str.length() + 1];
       std::strcpy(result[idx], str.c_str());
       idx++;
-
-      basic_free_heap(s);
     }
   }
 
+  basic_free_heap(s);
   dense_matrix_free(mat);
+}
+
+void ml_statespace_subs(StateSpace_C *obj,
+                        int len,
+                        const char **a,
+                        const char **b) {
+
+  // TODO: Exception handling.
+  auto s_key = basic_new_heap();
+  auto s_map = basic_new_heap();
+
+  int i = 0;
+  for(i = 0; i < len; i++) {
+    // TODO: Convert argument to SymEngine format.
+    basic_parse(s_key, a[i]);
+    basic_parse(s_map, b[i]);
+
+    statespace_subs(obj, s_key, s_map);
+  }
+
+  basic_free_heap(s_key);
+  basic_free_heap(s_map);
+}
+
+void ml_statespace_linearize(StateSpace_C *obj) {
+  statespace_linearize(obj);
 }
 
 // Get controllability matrix.

@@ -16,17 +16,8 @@
 extern "C" {
 #endif
 
-// #ifdef __cplusplus
-// typedef struct RCPBasic basic_struct;
-// #else
-// struct RCPBasic_C {
-//   void *data;
-// }
-// typedef struct RCPBasic_C basic_struct;
-// #endif
-//
-// typedef struct basic_struct basic[1];
-// typedef struct RCPBasic_C RCPBasic_C;
+CTRL_EXPORT void ctrb(CDenseMatrix *A, CDenseMatrix *B, CDenseMatrix *result);
+CTRL_EXPORT void obsv(CDenseMatrix *A, CDenseMatrix *C, CDenseMatrix *result);
 
 // ---------------------------------------------------------------------------
 // C Wrapper for StateSpace Interface
@@ -36,15 +27,25 @@ typedef struct StateSpace_C StateSpace_C;
 CTRL_EXPORT StateSpace_C *statespace_new();
 CTRL_EXPORT void statespace_free(StateSpace_C *obj);
 
-CTRL_EXPORT void statespace_states_push_back(StateSpace_C *obj, const basic arg);
-CTRL_EXPORT void statespace_states_get(StateSpace_C *obj, size_t n, basic result);
-CTRL_EXPORT void statespace_states_set(StateSpace_C *obj, size_t n, const basic arg);
+CTRL_EXPORT void statespace_states_push_back(StateSpace_C *obj,
+                                             const basic arg);
+CTRL_EXPORT void statespace_states_get(StateSpace_C *obj,
+                                       size_t n,
+                                       basic result);
+CTRL_EXPORT void statespace_states_set(StateSpace_C *obj,
+                                       size_t n,
+                                       const basic arg);
 CTRL_EXPORT void statespace_states_erase(StateSpace_C *obj, size_t n);
 CTRL_EXPORT size_t statespace_states_size(StateSpace_C *obj);
 
-CTRL_EXPORT void statespace_inputs_push_back(StateSpace_C *obj, const basic arg);
-CTRL_EXPORT void statespace_inputs_get(StateSpace_C *obj, size_t n, basic result);
-CTRL_EXPORT void statespace_inputs_set(StateSpace_C *obj, size_t n, const basic arg);
+CTRL_EXPORT void statespace_inputs_push_back(StateSpace_C *obj,
+                                             const basic arg);
+CTRL_EXPORT void statespace_inputs_get(StateSpace_C *obj,
+                                       size_t n,
+                                       basic result);
+CTRL_EXPORT void statespace_inputs_set(StateSpace_C *obj,
+                                       size_t n,
+                                       const basic arg);
 CTRL_EXPORT void statespace_inputs_erase(StateSpace_C *obj, size_t n);
 CTRL_EXPORT size_t statespace_inputs_size(StateSpace_C *obj);
 
@@ -64,6 +65,12 @@ CTRL_EXPORT void statespace_A_get(StateSpace_C *obj, CDenseMatrix *result);
 CTRL_EXPORT void statespace_B_get(StateSpace_C *obj, CDenseMatrix *result);
 CTRL_EXPORT void statespace_C_get(StateSpace_C *obj, CDenseMatrix *result);
 CTRL_EXPORT void statespace_D_get(StateSpace_C *obj, CDenseMatrix *result);
+
+CTRL_EXPORT void statespace_subs(StateSpace_C *obj,
+                                 const basic k,
+                                 const basic m);
+
+CTRL_EXPORT void statespace_linearize(StateSpace_C *obj);
 
 CTRL_EXPORT void statespace_ctrb(StateSpace_C *obj, CDenseMatrix *result);
 CTRL_EXPORT int statespace_ctrb_rank(StateSpace_C *obj);
