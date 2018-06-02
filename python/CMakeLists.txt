@@ -59,7 +59,7 @@ set(SYMENGINE_LIB_PATH ${SYMENGINE_PATH}/lib)
 set(CYTHON_INCLUDE_DIRECTORIES ${SYMENGINE_LIB_PATH})
 
 cython_compile_pyx(pyctrl ${SYMENGINE_LIB_PATH})
-# cython_build_module(pyctrl)
+
 set(SRC
   pyctrl.cc
 )
@@ -68,7 +68,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES GNU|Clang)
   set_source_files_properties(
     ${SRC}
     PROPERTIES COMPILE_FLAGS "-fno-strict-aliasing -Wno-unused-function"
-    )
+  )
 endif()
 
 add_library(pyctrl SHARED ${SRC})
@@ -76,18 +76,24 @@ add_library(pyctrl SHARED ${SRC})
 set_target_properties(pyctrl PROPERTIES PREFIX "")
 set_target_properties(pyctrl PROPERTIES LINKER_LANGUAGE C)
 
-target_include_directories(pyctrl PUBLIC ${PROJECT_SOURCE_DIR})
+target_include_directories(pyctrl PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:include>
+)
+
 target_include_directories(pyctrl PUBLIC ${SYMENGINE_LIB_PATH})
+target_include_directories(pyctrl PUBLIC ${ctrl_INCLUDE_DIRECTORIES})
 
 target_link_libraries(pyctrl ${PYTHON_LIBRARIES})
+target_link_libraries(pyctrl ${SYMENGINE_LIBRARIES})
 target_link_libraries(pyctrl ctrl)
-
-# target_link_libraries(pyctrl pyctrl_wrapper)
 
 install(TARGETS pyctrl
   RUNTIME DESTINATION ${PYCTRL_PATH}
   ARCHIVE DESTINATION ${PYCTRL_PATH}
   LIBRARY DESTINATION ${PYCTRL_PATH}
+  INCLUDES DESTINATION ${PYCTRL_PATH}/include
 )
 
 install(FILES

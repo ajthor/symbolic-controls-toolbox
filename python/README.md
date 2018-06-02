@@ -20,7 +20,7 @@ Install the dependencies.
 Build the Symbolic Controls Library.
 
 ```shell
-> cmake -DBUILD_PYTHON .
+> cmake -DBUILD_PYTHON=ON .
 > make
 > make install
 ```

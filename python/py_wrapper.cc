@@ -3,6 +3,8 @@
 //
 #include "py_wrapper.hpp"
 
+#include "libctrl/c_wrapper.hpp"
+
 // Function definitions.
 PY_WRAPPER_FUNC(symss) {
   const char* name;

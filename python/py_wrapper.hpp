@@ -6,8 +6,6 @@
 
 #include "Python.h"
 
-#include "libctrl/models/c_wrapper.hpp"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
