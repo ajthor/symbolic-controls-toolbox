@@ -7,8 +7,10 @@ namespace Controls {
 
 class System : public Controls::ControlModel {
 public:
-  System();
-  ~System();
+  virtual ~System() {};
+
+  virtual void subs(const SymEngine::RCP<const SymEngine::Basic> key,
+                    const SymEngine::RCP<const SymEngine::Basic> map) = 0;
 };
 
 } // Controls

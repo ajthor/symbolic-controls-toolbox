@@ -36,7 +36,9 @@ extern "C" {
 #define C_WRAPPER_END \
     return; \
   } \
-  catch (...) { \
+  catch(const std::exception &e) { \
+    std::cerr << "An error occurred." << '\n'; \
+    std::cerr << e.what() << '\n'; \
     return; \
   }
 #endif
@@ -60,14 +62,14 @@ struct CMapBasicBasic {
 // ----------------------------------------------------------------------
 // Controls Function Definitions
 //
-CTRL_EXPORT void ctrb(CDenseMatrix *A, CDenseMatrix *B, CDenseMatrix *result) {
+void ctrb(CDenseMatrix *A, CDenseMatrix *B, CDenseMatrix *result) {
   C_WRAPPER_BEGIN
 
   Controls::ctrb(A->m, B->m, result->m);
 
   C_WRAPPER_END
 }
-CTRL_EXPORT void obsv(CDenseMatrix *A, CDenseMatrix *C, CDenseMatrix *result) {
+void obsv(CDenseMatrix *A, CDenseMatrix *C, CDenseMatrix *result) {
   C_WRAPPER_BEGIN
 
   Controls::obsv(A->m, C->m, result->m);
@@ -261,7 +263,7 @@ void statespace_subs(StateSpace_C *obj, const basic k, const basic m) {
 void statespace_linearize(StateSpace_C *obj) {
   C_WRAPPER_BEGIN
 
-  obj->m.linearize();
+  Controls::linearize(obj->m);
 
   C_WRAPPER_END
 }

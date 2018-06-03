@@ -1,3 +1,10 @@
+
+#include <vector>
+#include <symengine/basic.h>
+#include <symengine/dict.h>
+#include <symengine/symbol.h>
+#include <symengine/matrix.h>
+
 #include "transfer_function.hpp"
 
 using Controls::TransferFunction;
@@ -22,6 +29,11 @@ std::vector<SymEngine::RCP<const SymEngine::Basic>> TransferFunction::get_num() 
 
 std::vector<SymEngine::RCP<const SymEngine::Basic>> TransferFunction::get_den() {
   return den_;
+}
+
+void TransferFunction::subs(const SymEngine::RCP<const SymEngine::Basic> key,
+                            const SymEngine::RCP<const SymEngine::Basic> map) {
+
 }
 
 } // Controls

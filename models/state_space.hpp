@@ -14,36 +14,26 @@ public:
   void add_state(const SymEngine::RCP<const SymEngine::Basic> arg);
   void set_state(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg);
   SymEngine::RCP<const SymEngine::Basic> get_state(size_t n);
+  // void remove_state(size_t n);
   size_t get_num_states();
 
   void add_input(const SymEngine::RCP<const SymEngine::Basic> arg);
   void set_input(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg);
   SymEngine::RCP<const SymEngine::Basic> get_input(size_t n);
+  // void remove_input(size_t n);
   size_t get_num_inputs();
 
   void add_f(const SymEngine::RCP<const SymEngine::Basic> arg);
   void set_f(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg);
   SymEngine::RCP<const SymEngine::Basic> get_f(size_t n);
+  // void remove_f(size_t n);
   size_t get_num_f();
 
   void add_g(const SymEngine::RCP<const SymEngine::Basic> arg);
   void set_g(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg);
   SymEngine::RCP<const SymEngine::Basic> get_g(size_t n);
+  // void remove_g(size_t n);
   size_t get_num_g();
-
-  // void set_inputs(const std::vector<SymEngine::RCP<const SymEngine::Basic>> &arg);
-
-  // void set_f(const std::vector<SymEngine::RCP<const SymEngine::Basic>> arg);
-  // void set_g(const std::vector<SymEngine::RCP<const SymEngine::Basic>> arg);
-
-  // void add_state(const SymEngine::RCP<const SymEngine::Basic> &arg);
-  // void add_input(const SymEngine::RCP<const SymEngine::Basic> &arg);
-  // void add_f(const SymEngine::RCP<const SymEngine::Basic> &arg);
-  // void add_g(const SymEngine::RCP<const SymEngine::Basic> &arg);
-
-  // std::vector<SymEngine::RCP<const SymEngine::Basic>> get_inputs();
-  // std::vector<SymEngine::RCP<const SymEngine::Basic>> get_f();
-  // std::vector<SymEngine::RCP<const SymEngine::Basic>> get_g();
 
   void get_A_matrix(SymEngine::DenseMatrix &result);
   void get_B_matrix(SymEngine::DenseMatrix &result);
@@ -52,9 +42,6 @@ public:
 
   void subs(const SymEngine::RCP<const SymEngine::Basic> key,
             const SymEngine::RCP<const SymEngine::Basic> map);
-
-  void linearize();
-  // void linearize(const SymEngine::vec_basic &eq);
 
 private:
   // Vector of symbolic state variables.

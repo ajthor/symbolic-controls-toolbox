@@ -5,8 +5,7 @@ namespace Controls {
 
 class ControlModel {
 public:
-  ControlModel();
-  ~ControlModel();
+  virtual ~ControlModel() {};
 };
 
 } // Controls

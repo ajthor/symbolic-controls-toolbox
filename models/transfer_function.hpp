@@ -1,12 +1,6 @@
 #ifndef MODELS_TRANSFER_FUNCTION_HPP
 #define MODELS_TRANSFER_FUNCTION_HPP
 
-#include <vector>
-#include <symengine/basic.h>
-#include <symengine/dict.h>
-#include <symengine/symbol.h>
-#include <symengine/matrix.h>
-
 #include "system.hpp"
 
 namespace Controls {
@@ -24,6 +18,9 @@ public:
 
   std::vector<SymEngine::RCP<const SymEngine::Basic>> get_num();
   std::vector<SymEngine::RCP<const SymEngine::Basic>> get_den();
+
+  void subs(const SymEngine::RCP<const SymEngine::Basic> key,
+            const SymEngine::RCP<const SymEngine::Basic> map);
 
 private:
   std::vector<SymEngine::RCP<const SymEngine::Basic>> num_;

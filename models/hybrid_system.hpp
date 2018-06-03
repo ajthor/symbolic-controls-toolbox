@@ -11,7 +11,10 @@ public:
   ~HybridSystem();
 
 private:
-
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> states_;
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> inputs_;
+  std::vector<std::vector<SymEngine::RCP<const SymEngine::Basic>>> f_;
+  std::vector<SymEngine::RCP<const SymEngine::Basic>> g_;
 };
 
 } // Controls
