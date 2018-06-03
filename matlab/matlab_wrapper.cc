@@ -73,7 +73,19 @@ void ml_la_compute_hessenberg(int len, char **arg, char **result) {
 
   la_compute_hessenberg(mat, res);
 
+  idx = 0;
+  for(i = 0; i < len; i++) { // rows
+    for (j = 0; j < len; j++) { // cols
+      dense_matrix_get_basic(s, res, j, i);
+      // TODO: Convert string here to Matlab Symbolic format.
+      result[idx] = se_parse(basic_str(s));
+      idx++;
+    }
+  }
+
   basic_free_heap(s);
+  dense_matrix_free(mat);
+  dense_matrix_free(res);
 }
 
 // ----------------------------------------------------------------------

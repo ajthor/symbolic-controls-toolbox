@@ -35,9 +35,9 @@ SymEngine::RCP<const SymEngine::Basic> norm2(SymEngine::vec_basic &v) {
   SymEngine::RCP<const SymEngine::Basic> t = SymEngine::zero;
   int i = 0;
   for(i = 0; i < v.size(); i++) {
+    // printf("%s\n", v[i]->__str__().c_str());
     t = SymEngine::add(t, SymEngine::pow(v[i], SymEngine::integer(2)));
   }
-
   t = SymEngine::pow(t, SymEngine::div(SymEngine::one, SymEngine::integer(2)));
 
   return t;
@@ -70,6 +70,10 @@ void compute_hessenberg(SymEngine::DenseMatrix &A,
   SymEngine::vec_basic reflector;
   SymEngine::vec_basic tmp, uu;
 
+  SymEngine::DenseMatrix M, R;
+
+  SymEngine::DenseMatrix d;
+
   int i, j, k, c, idx, len;
 
   for(k = 0; k < row - 2; k++) {
@@ -77,12 +81,18 @@ void compute_hessenberg(SymEngine::DenseMatrix &A,
     len = col - (k + 1);
     reflector = SymEngine::vec_basic(len);
 
-    for(i = k; i <= row - 2; i++) {
-      reflector[i] = Av[(i + 1)*row + k + 1];
+    idx = 0;
+    for(i = k + 1; i < row; i++) {
+      reflector[idx++] = Av[i*col + k];
     }
+    // for(i = k; i <= row - 2; i++) {
+    //   reflector[i] = Av[(i + 1)*row + k + 1];
+    // }
 
     // Compute the norm.
     t = norm2(reflector);
+
+    // printf("here%d\n", k);
 
     // u[1] = u[1] + sign(u[1]) * |u|
     reflector[0] = SymEngine::add(reflector[0],
@@ -93,7 +103,7 @@ void compute_hessenberg(SymEngine::DenseMatrix &A,
     normalize(reflector);
 
     // Form u*u'
-    uu = SymEngine::vec_basic(pow(reflector.size(), 2));
+    uu = SymEngine::vec_basic(len*len);
     for(i = 0; i < len; i++) { // row
       for(j = 0; j < len; j++) { // col
         uu[i*len + j] = SymEngine::mul(reflector[i], reflector[j]);
@@ -101,51 +111,68 @@ void compute_hessenberg(SymEngine::DenseMatrix &A,
     }
 
     // A_b = A_b - 2*u*u'*A_b
-    tmp = SymEngine::vec_basic((row - (k + 1))*(col));
+    M = SymEngine::DenseMatrix(len, len, {uu});
+
+    // Get the submatrix from A.
+    tmp = SymEngine::vec_basic((row - (k + 1))*(col - k));
     idx = 0;
     for(i = k + 1; i < row; i++) { // row
-      for(j = 0; j < col; j++) { // col
-
-        tmp[idx] = SymEngine::zero;
-
-        // Matrix multiplication.
-        for(c = 0; c < len; c++) {
-          tmp[idx] = SymEngine::add(tmp[idx],
-                                    SymEngine::mul(uu[(i - (k + 1))*len + c],
-                                                   Av[c*col + j]));
-        }
-
-
-        Av[i*col + j] = SymEngine::sub(Av[i*col + j],
-                                       SymEngine::mul(SymEngine::integer(2),
-                                                      tmp[idx]));
-
-        idx++;
+      for(j = k; j < col; j++) { //col
+        tmp[idx++] = Av[i*col + j];
       }
     }
 
-    auto d = SymEngine::DenseMatrix(row, col, {Av});
-    printf("Av'\n%s\n", d.__str__().c_str());
+    // Assign the submatrix of A to R.
+    R = SymEngine::DenseMatrix(row - (k + 1), col - k, {tmp});
+    // Perform matrix operations.
+    M.mul_matrix(R, M);
+    M.mul_scalar(SymEngine::integer(-2), M);
+    R.add_matrix(M, R);
+    tmp = R.as_vec_basic();
 
-    // t = norm2(reflector);
-    //
-    // printf("reflector norm %s\n", t->__str__().c_str());
-    //
-    // for(j = 0; j < reflector.size(); j++) {
-    //   reflector[j] = SymEngine::div(reflector[i], t);
-    //
-    //   printf("reflector %d %s\n", j, reflector[j]->__str__().c_str());
-    // }
+    // Substitute the new values back into A.
+    idx = 0;
+    for(i = k + 1; i < row; i++) { // row
+      for(j = k; j < col; j++) { //col
+        Av[i*col + j] = tmp[idx++];
+      }
+    }
 
-    // printf("dims: [r: %d, c: %d]\n", col - (i + 2), i);
+    // A_c = A_c - 2*A_c*u*u'
+    M = SymEngine::DenseMatrix(len, len, {uu});
 
-    // reflector = SymEngine::DenseMatrix(n - i - 2, 1);
-    // result.submatrix(reflector, i + 1, i, n, i, 1, 1);
-    //
-    // printf("reflector\n%s\n", reflector.__str__().c_str());
+    // Get the submatrix from A.
+    tmp = SymEngine::vec_basic(row*(col - (k + 1)));
+    idx = 0;
+    for(i = 0; i < row; i++) { // row
+      for(j = k + 1; j < col; j++) { //col
+        tmp[idx++] = Av[i*col + j];
+      }
+    }
+
+    // Assign the submatrix of A to R.
+    R = SymEngine::DenseMatrix(row, col - (k + 1), {tmp});
+    // Perform matrix operations.
+    R.mul_matrix(M, M);
+    M.mul_scalar(SymEngine::integer(-2), M);
+    R.add_matrix(M, R);
+    tmp = R.as_vec_basic();
+
+    // Substitute the new values back into A.
+    idx = 0;
+    for(i = 0; i < row; i++) { // row
+      for(j = k + 1; j < col; j++) { //col
+        Av[i*col + j] = tmp[idx++];
+      }
+    }
+
+    // Set remainders of operations to zero. This is the approximation.
+    for(i = k + 2; i < row; i++) {
+      Av[i*col + k] = SymEngine::zero;
+    }
   }
 
-  // result = SymEngine::DenseMatrix(row, cols, {tmp});
+  result = SymEngine::DenseMatrix(row, col, {Av});
 }
 
 } // Controls
