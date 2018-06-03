@@ -5,9 +5,6 @@
 #include <symengine/matrix.h>
 #include <symengine/subs.h>
 
-#include "system.hpp"
-#include "visitor.hpp"
-
 #include "state_space.hpp"
 
 namespace Controls {

@@ -10,6 +10,7 @@ set(SRC
   state_space.cc
   system.cc
   transfer_function.cc
+  visitor.cc
   utils/eig.cc
 )
 

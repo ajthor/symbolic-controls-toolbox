@@ -4,7 +4,6 @@
 #include <vector>
 #include <symengine/basic.h>
 
-#include "visitor.hpp"
 #include "system.hpp"
 
 namespace Controls {
@@ -26,9 +25,7 @@ public:
   void subs(const SymEngine::RCP<const SymEngine::Basic> key,
             const SymEngine::RCP<const SymEngine::Basic> map);
 
-  virtual void accept(SystemVisitor &visitor) {
-    // visitor.visit(*this);
-  }
+  void accept(SystemVisitor &visitor);
 
 private:
   std::vector<SymEngine::RCP<const SymEngine::Basic>> num_;

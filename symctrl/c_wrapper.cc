@@ -12,9 +12,7 @@
 #include "c_wrapper.hpp"
 
 #include "analysis.hpp"
-#include "mdp.hpp"
-#include "state_space.hpp"
-#include "transfer_function.hpp"
+#include "visitor.hpp"
 #include "utils/eig.hpp"
 
 extern "C" {

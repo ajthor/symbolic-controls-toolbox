@@ -6,7 +6,6 @@
 #include <symengine/matrix.h>
 
 #include "system.hpp"
-#include "visitor.hpp"
 
 namespace Controls {
 
@@ -48,10 +47,7 @@ public:
   void subs(const SymEngine::RCP<const SymEngine::Basic> key,
             const SymEngine::RCP<const SymEngine::Basic> map);
 
-  // void accept(SystemVisitor &visitor);
-  void accept(SystemVisitor &visitor) {
-    // visitor.visit(*this);
-  }
+  void accept(SystemVisitor &visitor);
 
 private:
   // Vector of symbolic state variables.

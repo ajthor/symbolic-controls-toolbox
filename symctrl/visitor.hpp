@@ -1,8 +1,9 @@
 #ifndef SYMCTRL_VISITOR_HPP
 #define SYMCTRL_VISITOR_HPP
 
-// #include "state_space.hpp"
-// #include "transfer_function.hpp"
+#include "mdp.hpp"
+#include "state_space.hpp"
+#include "transfer_function.hpp"
 
 namespace Controls {
 
@@ -13,13 +14,13 @@ public:
 
 class SystemVisitor : public Visitor {
 public:
-  // virtual void visit(StateSpace &s) = 0;
-  // virtual void visit(TransferFunction &s) = 0;
+  virtual void visit(StateSpace &s) = 0;
+  virtual void visit(TransferFunction &s) = 0;
 };
 
-class RelizationVisitor : public SystemVisitor {
+class StateSpaceVisitor : public Visitor {
 public:
-  // virtual void visit(StateSpace &s) = 0;
+  virtual void visit(StateSpace &s) = 0;
 };
 
 } // Controls
