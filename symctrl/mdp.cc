@@ -6,11 +6,11 @@ namespace Controls {
 
 MDP::MDP() {};
 
-MDP::MDP(const std::size_t x, const std::size_t u, const double gamma) {
-  set_num_states(x);
-  set_num_inputs(u);
-  set_gamma(gamma);
-}
+// MDP::MDP(const std::size_t x, const std::size_t u, const double gamma) {
+//   set_num_states(x);
+//   set_num_inputs(u);
+//   set_gamma(gamma);
+// }
 
 MDP::~MDP() {}
 

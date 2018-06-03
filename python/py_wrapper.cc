@@ -3,7 +3,7 @@
 //
 #include "py_wrapper.hpp"
 
-#include "libctrl/c_wrapper.hpp"
+#include "libsymctrl/c_wrapper.hpp"
 
 // Function definitions.
 PY_WRAPPER_FUNC(symss) {

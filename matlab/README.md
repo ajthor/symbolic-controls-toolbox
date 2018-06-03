@@ -10,6 +10,7 @@ Matlab and SymEngine on the backend.
 
 ## Getting Started
 1. [Download](https://github.com/ajthor/symbolic-controls-toolbox/releases) the toolbox from the GitHub repository.
+1. Build the symbolic controls library.
 1. Install the toolbox.
 1. Enjoy!
 
@@ -23,7 +24,7 @@ Matlab and SymEngine on the backend.
 
 Note that you may need to build and install the main library first, without the `-DBUILD_MATLAB=ON` flag set in order for this to work. If you get errors while building from source with the flag set, try building without it first.
 
-The toolbox is automatically installed to the user path when you run this command. Check your user path in Matlab by running the `userpath` command before you install the files. 
+The toolbox is automatically installed to the user path when you run this command. Check your user path in Matlab by running the `userpath` command before you install the files.
 
 ## Your First System
 
@@ -52,3 +53,7 @@ The toolbox includes a `startup.m` and `finish.m` script which are automatically
 ## For Developers
 
 The generated toolbox should be a stand-alone distribution.
+
+```shell
+> matlab -nosplash -nojvm -nodesktop -nodisplay -r 'dummy, pause(1), quit'
+```

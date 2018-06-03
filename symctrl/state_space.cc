@@ -3,8 +3,10 @@
 #include <symengine/basic.h>
 #include <symengine/dict.h>
 #include <symengine/matrix.h>
-#include <symengine/symbol.h>
 #include <symengine/subs.h>
+
+#include "system.hpp"
+#include "visitor.hpp"
 
 #include "state_space.hpp"
 

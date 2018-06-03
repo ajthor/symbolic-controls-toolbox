@@ -1,5 +1,7 @@
-#ifndef MODELS_ANALYSIS_HPP
-#define MODELS_ANALYSIS_HPP
+#ifndef SYMCTRL_ANALYSIS_HPP
+#define SYMCTRL_ANALYSIS_HPP
+
+#include <symengine/matrix.h>
 
 #include "state_space.hpp"
 
@@ -37,4 +39,4 @@ void linearize(StateSpace &obj);
 
 } // Controls
 
-#endif /* end of include guard: MODELS_ANALYSIS_HPP */
+#endif /* end of include guard: SYMCTRL_ANALYSIS_HPP */

@@ -1,17 +1,15 @@
-#ifndef MODELS_MDP_HPP
-#define MODELS_MDP_HPP
-
-#include <stddef.h>
+#ifndef SYMCTRL_MDP_HPP
+#define SYMCTRL_MDP_HPP
 
 #include "control_model.hpp"
 #include "utils/sparse_matrix.hpp"
 
 namespace Controls {
 
-class MDP : public Controls::ControlModel {
+class MDP : public ControlModel {
 public:
   MDP();
-  MDP(const std::size_t x, const std::size_t u, const double g);
+  // MDP(const std::size_t x, const std::size_t u, const double g);
   ~MDP();
 
   void set_num_states(const std::size_t arg);
@@ -34,4 +32,4 @@ private:
 
 } // Controls
 
-#endif /* end of include guard: MODELS_MDP_HPP */
+#endif /* end of include guard: SYMCTRL_MDP_HPP */

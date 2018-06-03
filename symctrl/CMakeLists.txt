@@ -22,6 +22,7 @@ set(HEADERS
   state_space.hpp
   system.hpp
   transfer_function.hpp
+  visitor.hpp
   utils/eig.hpp
   utils/sparse_matrix.hpp
 )

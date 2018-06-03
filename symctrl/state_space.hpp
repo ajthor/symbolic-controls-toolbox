@@ -1,12 +1,17 @@
-#ifndef MODELS_STATE_SPACE_HPP
-#define MODELS_STATE_SPACE_HPP
+#ifndef SYMCTRL_STATE_SPACE_HPP
+#define SYMCTRL_STATE_SPACE_HPP
+
+#include <vector>
+#include <symengine/basic.h>
+#include <symengine/matrix.h>
 
 #include "system.hpp"
+#include "visitor.hpp"
 
 namespace Controls {
 
 // StateSpace Class
-class StateSpace : public Controls::System {
+class StateSpace : public System {
 public:
   StateSpace();
   ~StateSpace();
@@ -43,6 +48,11 @@ public:
   void subs(const SymEngine::RCP<const SymEngine::Basic> key,
             const SymEngine::RCP<const SymEngine::Basic> map);
 
+  // void accept(SystemVisitor &visitor);
+  void accept(SystemVisitor &visitor) {
+    // visitor.visit(*this);
+  }
+
 private:
   // Vector of symbolic state variables.
   std::vector<SymEngine::RCP<const SymEngine::Basic>> states_;
@@ -59,4 +69,4 @@ private:
 
 } // Controls
 
-#endif /* end of include guard: MODELS_STATE_SPACE_HPP */
+#endif /* end of include guard: SYMCTRL_STATE_SPACE_HPP */

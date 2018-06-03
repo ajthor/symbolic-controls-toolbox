@@ -1,6 +1,6 @@
 classdef (SupportExtensionMethods = true) mdp < handle
 
-    properties (Access = protected, Hidden = true)
+    properties (Access = protected, Hidden)
         % C Pointer Handle
         cobj_;
     end
@@ -20,40 +20,40 @@ classdef (SupportExtensionMethods = true) mdp < handle
 
     methods
         function obj = mdp(varargin)
-            obj.cobj_ = calllib('matctrl', 'mdp_new');
+            obj.cobj_ = calllib('matctrl', 'ml_mdp_new');
         end
 
         function delete(obj)
-            calllib('matctrl', 'mdp_free', obj.cobj_);
+            calllib('matctrl', 'ml_mdp_free', obj.cobj_);
         end
     end
 
     methods
         function set.X(obj, n)
             validateattributes(n, {'numeric'}, {'scalar'});
-            calllib('matctrl', 'mdp_set_num_states', obj.cobj_, n);
+            calllib('matctrl', 'ml_mdp_set_num_states', obj.cobj_, n);
         end
 
         function set.U(obj, n)
             validateattributes(n, {'numeric'}, {'scalar'});
-            calllib('matctrl', 'mdp_set_num_inputs', obj.cobj_, n);
+            calllib('matctrl', 'ml_mdp_set_num_inputs', obj.cobj_, n);
         end
 
         function set.gamma(obj, gamma)
             validateattributes(gamma, {'numeric'}, {'scalar'});
-            calllib('matctrl', 'mdp_set_gamma', obj.cobj_, gamma);
+            calllib('matctrl', 'ml_mdp_set_gamma', obj.cobj_, gamma);
         end
 
         function X = get.X(obj)
-            X = calllib('matctrl', 'mdp_get_num_states', obj.cobj_);
+            X = calllib('matctrl', 'ml_mdp_get_num_states', obj.cobj_);
         end
 
         function U = get.U(obj)
-            U = calllib('matctrl', 'mdp_get_num_inputs', obj.cobj_);
+            U = calllib('matctrl', 'ml_mdp_get_num_inputs', obj.cobj_);
         end
 
         function gamma = get.gamma(obj)
-            gamma = calllib('matctrl', 'mdp_get_gamma', obj.cobj_);
+            gamma = calllib('matctrl', 'ml_mdp_get_gamma', obj.cobj_);
         end
 
     end

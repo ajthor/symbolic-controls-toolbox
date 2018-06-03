@@ -2,7 +2,7 @@
 
 cmake_minimum_required(VERSION 3.3.2)
 
-project(ctrllib)
+project(symctrl)
 
 set(MAJOR_VERSION 0)
 set(MINOR_VERSION 1)
@@ -27,7 +27,7 @@ macro(INSTALL_HEADERS_WITH_DIRECTORY HEADER_LIST)
 
         install(FILES
           ${HEADER}
-          DESTINATION include/libctrl/${DIR}
+          DESTINATION include/libsymctrl/${DIR}
         )
 
     endforeach()
@@ -52,55 +52,55 @@ endmacro()
 # When modifying this file with new subdirectories, edit this variable. The
 # order of the project directories is the order the subdirectories will be
 # added.
-set(ctrl_INCLUDE_DIRECTORIES
-  models
+set(symctrl_INCLUDE_DIRECTORIES
+  symctrl
 )
 
 # Add all subdirectories.
-foreach(dir ${ctrl_INCLUDE_DIRECTORIES})
+foreach(dir ${symctrl_INCLUDE_DIRECTORIES})
   add_subdirectory(${dir})
 endforeach()
 
 # Each CMakeLists file in the subdirectories will configure and add its own
 # source files to the PROJECT_SRC list. Once all source files have been added,
 # they are compiled into the shared object library.
-add_library(ctrl SHARED ${PROJECT_SRC})
+add_library(symctrl SHARED ${PROJECT_SRC})
 
-generate_export_header(ctrl)
+generate_export_header(symctrl)
 
-target_include_directories(ctrl PUBLIC
-  $<BUILD_INTERFACE:${ctrl_BINARY_DIR}>
-  $<BUILD_INTERFACE:${ctrl_SOURCE_DIR}>
+target_include_directories(symctrl PUBLIC
+  $<BUILD_INTERFACE:${symctrl_BINARY_DIR}>
+  $<BUILD_INTERFACE:${symctrl_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
   $<INSTALL_INTERFACE:include>
 )
 
-target_include_directories(ctrl PUBLIC ${SYMENGINE_INCLUDE_DIRS})
+target_include_directories(symctrl PUBLIC ${SYMENGINE_INCLUDE_DIRS})
 
-target_link_libraries(ctrl ${SYMENGINE_LIBRARIES})
+target_link_libraries(symctrl ${SYMENGINE_LIBRARIES})
 
-install(TARGETS ctrl
-  EXPORT ctrl
+install(TARGETS symctrl
+  EXPORT symctrl
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-install(EXPORT ctrl
+install(EXPORT symctrl
   FILE CtrlTargets.cmake
   NAMESPACE Control::
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libctrl
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libsymctrl
 )
 
 install(FILES
   ${CMAKE_BINARY_DIR}/ctrl_export.h
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libctrl
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libsymctrl
 )
 
 # Matlab Support
-option(BUILD_MATLAB "Build Matlab MEX files." OFF)
+option(BUILD_MATLAB "Build Matlab wrapper library." OFF)
 
 if(BUILD_MATLAB)
   add_subdirectory(matlab)

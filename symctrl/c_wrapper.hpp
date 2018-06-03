@@ -5,15 +5,14 @@
 // bindings to the library. Other language bindings should import this header
 // or provide function declarations which implement the same functionality.
 
-#ifndef MODELS_C_WRAPPER_HPP
-#define MODELS_C_WRAPPER_HPP
+#ifndef SYMCTRL_C_WRAPPER_HPP
+#define SYMCTRL_C_WRAPPER_HPP
 
 #include "ctrl_export.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 // ---------------------------------------------------------------------------
 // C Wrapper for Linear Algebra Functions
@@ -162,4 +161,4 @@ CTRL_EXPORT void transferfunction_free(TransferFunction_C* obj);
 }
 #endif
 
-#endif /* end of include guard: MODELS_C_WRAPPER_HPP */
+#endif /* end of include guard: SYMCTRL_C_WRAPPER_HPP */

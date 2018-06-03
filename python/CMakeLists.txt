@@ -83,11 +83,11 @@ target_include_directories(pyctrl PUBLIC
 )
 
 target_include_directories(pyctrl PUBLIC ${SYMENGINE_LIB_PATH})
-target_include_directories(pyctrl PUBLIC ${ctrl_INCLUDE_DIRECTORIES})
+target_include_directories(pyctrl PUBLIC ${symctrl_INCLUDE_DIRECTORIES})
 
 target_link_libraries(pyctrl ${PYTHON_LIBRARIES})
 target_link_libraries(pyctrl ${SYMENGINE_LIBRARIES})
-target_link_libraries(pyctrl ctrl)
+target_link_libraries(pyctrl symctrl)
 
 install(TARGETS pyctrl
   RUNTIME DESTINATION ${PYCTRL_PATH}

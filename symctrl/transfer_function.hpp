@@ -1,11 +1,15 @@
-#ifndef MODELS_TRANSFER_FUNCTION_HPP
-#define MODELS_TRANSFER_FUNCTION_HPP
+#ifndef SYMCTRL_TRANSFER_FUNCTION_HPP
+#define SYMCTRL_TRANSFER_FUNCTION_HPP
 
+#include <vector>
+#include <symengine/basic.h>
+
+#include "visitor.hpp"
 #include "system.hpp"
 
 namespace Controls {
 
-class TransferFunction : public Controls::System {
+class TransferFunction : public System {
 public:
   TransferFunction();
   ~TransferFunction();
@@ -22,6 +26,10 @@ public:
   void subs(const SymEngine::RCP<const SymEngine::Basic> key,
             const SymEngine::RCP<const SymEngine::Basic> map);
 
+  virtual void accept(SystemVisitor &visitor) {
+    // visitor.visit(*this);
+  }
+
 private:
   std::vector<SymEngine::RCP<const SymEngine::Basic>> num_;
   std::vector<SymEngine::RCP<const SymEngine::Basic>> den_;
@@ -29,4 +37,4 @@ private:
 
 } // Controls
 
-#endif /* end of include guard: MODELS_TRANSFER_FUNCTION_HPP */
+#endif /* end of include guard: SYMCTRL_TRANSFER_FUNCTION_HPP */

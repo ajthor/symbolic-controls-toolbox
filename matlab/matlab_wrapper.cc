@@ -24,7 +24,7 @@
 
 #include "matlab_wrapper.hpp"
 
-#include "libctrl/c_wrapper.hpp"
+#include "libsymctrl/c_wrapper.hpp"
 
 // Re-define here from SymEngine API.
 

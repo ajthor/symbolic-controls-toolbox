@@ -9,7 +9,7 @@
 
 ## Design Decisions
 
-In order to make the controls library cross-platform and language agnostic`*`, the library is written in C++, and a C interface is provided which allows us to create a shared library.
+In order to make the controls library cross-platform and language agnostic`*`, the library is written in C++, and a C interface is provided which allows for low-level language bindings.
 
 `*` Meaning the library is compiled as a C shared library.
 
@@ -64,9 +64,11 @@ CMake is used in order to build the library. The versatility of CMake allows us 
 
 ## Directory Structure
 
-The library is organized by module. Each module contains code relevant to a specific functionality available in the library. On a basic level, the core C++ classes are contained in the [`models`](https://github.com/ajthor/symbolic-controls-toolbox/tree/master/models) directory, while the functionality which works with these models resides in the appropriate directories at the top level.
+The library is organized by module. Each module contains code relevant to a specific functionality available in the library. Each module can be thought of as a separate library.
 
-An example of the modular directory structure is given by the following directory structure.
+On a basic level, the core C++ classes are contained in the [`models`](https://github.com/ajthor/symbolic-controls-toolbox/tree/master/models) directory, while the functionality which works with these models resides in the appropriate directories at the top level.
+
+An example of the modular structure is given by the following directory structure.
 
 ```shell
 top
@@ -91,4 +93,30 @@ The two primary language bindings which are included in the toolbox are for Matl
 
 The bindings are located in the `matlab` and `python` directories, and include instructions for building the appropriate toolboxes and libraries to use with the Symbolic Controls Toolbox.
 
-In order to use the library with other languages, a C wrapper should be created which encapsulates the desired functionality. See the `c_wrapper.cc` and `c_wrapper.hpp` files in the module directories for information on how to interface with the C language bindings. 
+In order to use the library with other languages, a wrapper should be created which encapsulates the desired functionality. See the `c_wrapper.cc` and `c_wrapper.hpp` files in the module directories for information on how to interface with the C language bindings.
+
+```shell
+top
+├─ matlab
+│  ├─ CMakeLists.txt
+│  ├─ matlab_wrapper.hpp    # Matlab interface.
+│  └─ matlab_wrapper.cc     # Wraps C bindings.
+├─ python
+│  ├─ CMakeLists.txt
+│  ├─ python_wrapper.hpp    # Python interface.
+│  └─ python_wrapper.cc     # Wraps C bindings.
+├─ mainlib
+│  ├─ CMakeLists.txt
+│  ├─ c_wrapper.hpp         # C interface.
+│  ├─ c_wrapper.cc          # Wraps C++ code.
+│  └─ other code...
+└─ CMakeLists.txt
+```
+
+Each language has its own bindings which encapsulate the C bindings. This means that each language should implement the same (or very similar) API.
+
+```txt
+    ┌─────┐    ┌─────────────┐    ┌────────────────────┐    ┌────────────┐
+    │ C++ │ -> │  c_wrapper  │ -> │ <language>_wrapper │ -> │ <language> │
+    └─────┘    └─────────────┘    └────────────────────┘    └────────────┘
+```

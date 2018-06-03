@@ -106,12 +106,12 @@ target_include_directories(matctrl PUBLIC
 
 target_include_directories(matctrl PUBLIC ${Matlab_INCLUDE_DIRS})
 target_include_directories(matctrl PUBLIC ${SYMENGINE_INCLUDE_DIRS})
-target_include_directories(matctrl PUBLIC ${ctrl_INCLUDE_DIRECTORIES})
+target_include_directories(matctrl PUBLIC ${symctrl_INCLUDE_DIRECTORIES})
 
 target_link_libraries(matctrl ${Matlab_MEX_LIBRARY})
 target_link_libraries(matctrl ${Matlab_MX_LIBRARY})
 target_link_libraries(matctrl ${SYMENGINE_LIBRARIES})
-target_link_libraries(matctrl ctrl)
+target_link_libraries(matctrl symctrl)
 
 install(TARGETS matctrl
   EXPORT matctrl
@@ -130,7 +130,7 @@ install(FILES
 )
 
 install(DIRECTORY
-  models
+  symctrl
   DESTINATION ${MATCTRL_PATH}
 )
 

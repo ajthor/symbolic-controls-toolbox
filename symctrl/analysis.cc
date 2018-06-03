@@ -1,7 +1,5 @@
-
 #include <symengine/basic.h>
 #include <symengine/dict.h>
-#include <symengine/matrix.h>
 #include <symengine/subs.h>
 
 #include "analysis.hpp"

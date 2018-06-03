@@ -1,11 +1,14 @@
-#ifndef MODELS_HYBRID_SYSTEM_HPP
-#define MODELS_HYBRID_SYSTEM_HPP
+#ifndef SYMCTRL_HYBRID_SYSTEM_HPP
+#define SYMCTRL_HYBRID_SYSTEM_HPP
+
+#include <vector>
+#include <symengine/basic.h>
 
 #include "state_space.hpp"
 
 namespace Controls {
 
-class HybridSystem : public Controls::StateSpace {
+class HybridSystem : public StateSpace {
 public:
   HybridSystem();
   ~HybridSystem();
@@ -19,4 +22,4 @@ private:
 
 } // Controls
 
-#endif /* end of include guard: MODELS_HYBRID_SYSTEM_HPP */
+#endif /* end of include guard: SYMCTRL_HYBRID_SYSTEM_HPP */

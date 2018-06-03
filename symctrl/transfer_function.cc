@@ -1,9 +1,8 @@
-
 #include <vector>
 #include <symengine/basic.h>
 #include <symengine/dict.h>
-#include <symengine/symbol.h>
 #include <symengine/matrix.h>
+#include <symengine/subs.h>
 
 #include "transfer_function.hpp"
 
