@@ -54,6 +54,29 @@
 extern "C" {
 
 // ----------------------------------------------------------------------
+// Linear algebra wrapper functions.
+//
+void ml_la_compute_hessenberg(int len, char **arg, char **result) {
+  auto mat = dense_matrix_new_rows_cols(len, len);
+  auto res = dense_matrix_new_rows_cols(len, len);
+  auto s = basic_new_heap();
+
+  int i = 0;
+  int j = 0;
+  int idx = 0;
+  for (i = 0; i < len; i++) {
+    for (j = 0; j < len; j++) {
+      basic_parse(s, arg[idx++]);
+      dense_matrix_set_basic(mat, i, j, s);
+    }
+  }
+
+  la_compute_hessenberg(mat, res);
+
+  basic_free_heap(s);
+}
+
+// ----------------------------------------------------------------------
 // State Space wrapper functions.
 //
 StateSpace_C* ml_statespace_new() {

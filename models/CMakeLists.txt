@@ -10,6 +10,7 @@ set(SRC
   state_space.cc
   system.cc
   transfer_function.cc
+  utils/eig.cc
 )
 
 # A list of all header files with C header definitions.
@@ -21,6 +22,7 @@ set(HEADERS
   state_space.hpp
   system.hpp
   transfer_function.hpp
+  utils/eig.hpp
   utils/sparse_matrix.hpp
 )
 

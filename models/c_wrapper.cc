@@ -2,6 +2,8 @@
 // C Wrapper API Function Definitions
 //
 
+#include <iostream>
+
 #include <symengine/basic.h>
 #include <symengine/dict.h>
 #include <symengine/cwrapper.h>
@@ -13,6 +15,7 @@
 #include "mdp.hpp"
 #include "state_space.hpp"
 #include "transfer_function.hpp"
+#include "utils/eig.hpp"
 
 extern "C" {
 
@@ -60,7 +63,18 @@ struct CMapBasicBasic {
 };
 
 // ----------------------------------------------------------------------
-// Controls Function Definitions
+// Linear Algebra Function Definitions
+//
+void la_compute_hessenberg(CDenseMatrix *A, CDenseMatrix *result) {
+  C_WRAPPER_BEGIN
+
+  Controls::compute_hessenberg(A->m, result->m);
+
+  C_WRAPPER_END
+}
+
+// ----------------------------------------------------------------------
+// Analysis Function Definitions
 //
 void ctrb(CDenseMatrix *A, CDenseMatrix *B, CDenseMatrix *result) {
   C_WRAPPER_BEGIN

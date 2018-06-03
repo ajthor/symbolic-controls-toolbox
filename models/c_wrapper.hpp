@@ -10,12 +10,19 @@
 
 #include "ctrl_export.h"
 
-#include <stddef.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+
+// ---------------------------------------------------------------------------
+// C Wrapper for Linear Algebra Functions
+//
+CTRL_EXPORT void la_compute_hessenberg(CDenseMatrix *A, CDenseMatrix *result);
+
+// ---------------------------------------------------------------------------
+// C Wrapper for Analysis Functions
+//
 CTRL_EXPORT void ctrb(CDenseMatrix *A, CDenseMatrix *B, CDenseMatrix *result);
 CTRL_EXPORT void obsv(CDenseMatrix *A, CDenseMatrix *C, CDenseMatrix *result);
 

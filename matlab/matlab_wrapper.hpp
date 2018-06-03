@@ -20,6 +20,11 @@ extern "C" {
 #endif
 
 // ----------------------------------------------------------------------
+// Linear algebra wrapper functions.
+//
+void ml_la_compute_hessenberg(int len, char **A, char **result);
+
+// ----------------------------------------------------------------------
 // State Space wrapper functions.
 //
 typedef struct StateSpace_C StateSpace_C;
