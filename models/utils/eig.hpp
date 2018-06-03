@@ -5,10 +5,15 @@ namespace Controls {
 
 void compute_eigenvalues(SymEngine::DenseMatrix &A,
                          SymEngine::vec_basic &l,
-                         SymEngine::vec_basic &v);
+                         SymEngine::DenseMatrix &v);
 
 void compute_hessenberg(SymEngine::DenseMatrix &A,
                         SymEngine::DenseMatrix &result);
+
+void compute_schur(SymEngine::DenseMatrix &A,
+                   SymEngine::DenseMatrix &U,
+                   SymEngine::DenseMatrix &T,
+                   size_t n_iter = 10);
 
 } // Controls
 

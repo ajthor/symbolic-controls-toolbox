@@ -6,8 +6,10 @@
 // vectors and matrices, meaning we need to implement a lot of for loops and **
 // pointers in order to make the C wrappers work with Matlab.
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <string>
 #include <vector>
 
 #include <symengine/basic.h>
@@ -50,6 +52,21 @@
 //
 //   return symengine_sym;
 // }
+char* se_parse(char *c) {
+  std::string str = c;
+  std::string fnd = "**";
+  std::string rep = "^";
+  // Replace common tokens.
+  // std::replace(str.begin(), str.end(), "**", "^");
+  for(std::string::size_type i = 0;
+      (i = str.find(fnd, i)) != std::string::npos;) {
+    str.replace(i, fnd.length(), rep);
+    i += rep.length();
+  }
+  auto cc = new char[str.length() + 1];
+  std::strcpy(cc, str.c_str());
+  return cc;
+}
 
 extern "C" {
 
@@ -86,6 +103,79 @@ void ml_la_compute_hessenberg(int len, char **arg, char **result) {
   basic_free_heap(s);
   dense_matrix_free(mat);
   dense_matrix_free(res);
+}
+
+void ml_la_compute_schur(int len, char **A, char **U, char **T) {
+  auto mat = dense_matrix_new_rows_cols(len, len);
+  auto res_U = dense_matrix_new_rows_cols(len, len);
+  auto res_T = dense_matrix_new_rows_cols(len, len);
+  auto s = basic_new_heap();
+
+  int i = 0;
+  int j = 0;
+  int idx = 0;
+  for (i = 0; i < len; i++) {
+    for (j = 0; j < len; j++) {
+      basic_parse(s, A[idx++]);
+      dense_matrix_set_basic(mat, i, j, s);
+    }
+  }
+
+  la_compute_schur(mat, res_U, res_T);
+
+  idx = 0;
+  for(i = 0; i < len; i++) { // rows
+    for (j = 0; j < len; j++) { // cols
+      dense_matrix_get_basic(s, res_U, j, i);
+      U[idx] = se_parse(basic_str(s));
+
+      dense_matrix_get_basic(s, res_T, j, i);
+      T[idx] = se_parse(basic_str(s));
+
+      idx++;
+    }
+  }
+
+  basic_free_heap(s);
+  dense_matrix_free(mat);
+  dense_matrix_free(res_U);
+  dense_matrix_free(res_T);
+}
+
+void ml_la_compute_eigenvalues(int len, char **A, char **l, char **v) {
+  auto mat = dense_matrix_new_rows_cols(len, len);
+  auto res_l = vecbasic_new();
+  auto res_v = dense_matrix_new_rows_cols(len, len);
+  auto s = basic_new_heap();
+
+  int i = 0;
+  int j = 0;
+  int idx = 0;
+  for (i = 0; i < len; i++) {
+    for (j = 0; j < len; j++) {
+      basic_parse(s, A[idx++]);
+      dense_matrix_set_basic(mat, i, j, s);
+    }
+  }
+
+  la_compute_eigenvalues(mat, res_l, res_v);
+
+  idx = 0;
+  for(i = 0; i < len; i++) { // rows
+    vecbasic_get(res_l, i, s);
+    l[i] = se_parse(basic_str(s));
+
+    for (j = 0; j < len; j++) { // cols
+      dense_matrix_get_basic(s, res_v, j, i);
+      v[idx] = se_parse(basic_str(s));
+
+      idx++;
+    }
+  }
+
+  basic_free_heap(s);
+  vecbasic_free(res_l);
+  dense_matrix_free(res_v);
 }
 
 // ----------------------------------------------------------------------

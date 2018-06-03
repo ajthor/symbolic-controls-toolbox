@@ -3,30 +3,34 @@
 #include <symengine/basic.h>
 #include <symengine/dict.h>
 #include <symengine/matrix.h>
+#include <symengine/visitor.h>
 
 #include "eig.hpp"
 
 namespace Controls {
 
-// void compute_eigenvalues(SymEngine::DenseMatrix &A,
-//                          SymEngine::vec_basic &l,
-//                          SymEngine::vec_basic &v) {
-//   //
+// ----------------------------------------------------------------------
+// Eigenvalues
 //
-//   size_t n = A.ncols();
-//
-//   SymEngine::DenseMatrix Q, R;
-//
-//   Q = SymEngine::DenseMatrix(n, n);
-//   R = SymEngine::DenseMatrix(n, n);
-//   // Compute the QR decomposition.
-//   SymEngine::QR(A, Q, R);
-//
-//   int i = 0;
-//   for(i = 0; i < n; i++) {
-//     v.push_back()
-//   }
-// }
+void compute_eigenvalues(SymEngine::DenseMatrix &A,
+                         SymEngine::vec_basic &l,
+                         SymEngine::DenseMatrix &v) {
+  // TODO: Perform squareness checking.
+  size_t n = A.ncols();
+
+  SymEngine::DenseMatrix U, T;
+
+  U = SymEngine::DenseMatrix(n, n);
+  T = SymEngine::DenseMatrix(n, n);
+
+  // Compute the Schur decomposition.
+  compute_schur(A, v, T);
+
+  int i = 0;
+  for(i = 0; i < n; i++) {
+    l.push_back(T.get(i, i));
+  }
+}
 
 // ----------------------------------------------------------------------
 // 2-Norm
@@ -72,8 +76,6 @@ void compute_hessenberg(SymEngine::DenseMatrix &A,
 
   SymEngine::DenseMatrix M, R;
 
-  SymEngine::DenseMatrix d;
-
   int i, j, k, c, idx, len;
 
   for(k = 0; k < row - 2; k++) {
@@ -85,14 +87,9 @@ void compute_hessenberg(SymEngine::DenseMatrix &A,
     for(i = k + 1; i < row; i++) {
       reflector[idx++] = Av[i*col + k];
     }
-    // for(i = k; i <= row - 2; i++) {
-    //   reflector[i] = Av[(i + 1)*row + k + 1];
-    // }
 
     // Compute the norm.
     t = norm2(reflector);
-
-    // printf("here%d\n", k);
 
     // u[1] = u[1] + sign(u[1]) * |u|
     reflector[0] = SymEngine::add(reflector[0],
@@ -173,6 +170,36 @@ void compute_hessenberg(SymEngine::DenseMatrix &A,
   }
 
   result = SymEngine::DenseMatrix(row, col, {Av});
+}
+
+// ----------------------------------------------------------------------
+// Schur
+//
+void compute_schur(SymEngine::DenseMatrix &A,
+                   SymEngine::DenseMatrix &U,
+                   SymEngine::DenseMatrix &T,
+                   size_t n_iter) {
+  // TODO: Perform squareness checking.
+  unsigned row = A.nrows();
+  unsigned col = A.ncols();
+
+  SymEngine::DenseMatrix Q, R, W, V;
+  Q = SymEngine::DenseMatrix(row, col);
+  R = SymEngine::DenseMatrix(row, col);
+
+  W = SymEngine::DenseMatrix(A);
+  V = SymEngine::DenseMatrix(row, col);
+  SymEngine::eye(V);
+
+  int i = 0;
+  for(i = 0; i < n_iter; i++) {
+    QR(W, Q, R);
+    R.mul_matrix(Q, W);
+    V.mul_matrix(Q, V);
+  }
+
+  U = V;
+  T = W;
 }
 
 } // Controls

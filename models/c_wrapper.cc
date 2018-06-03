@@ -73,6 +73,26 @@ void la_compute_hessenberg(CDenseMatrix *A, CDenseMatrix *result) {
   C_WRAPPER_END
 }
 
+void la_compute_schur(CDenseMatrix *A,
+                      CDenseMatrix *U,
+                      CDenseMatrix *T) {
+  C_WRAPPER_BEGIN
+
+  Controls::compute_schur(A->m, U->m, T->m);
+
+  C_WRAPPER_END
+}
+
+void la_compute_eigenvalues(CDenseMatrix *A,
+                            CVecBasic *l,
+                            CDenseMatrix *v) {
+  C_WRAPPER_BEGIN
+
+  Controls::compute_eigenvalues(A->m, l->m, v->m);
+
+  C_WRAPPER_END
+}
+
 // ----------------------------------------------------------------------
 // Analysis Function Definitions
 //

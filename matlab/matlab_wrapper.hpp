@@ -23,6 +23,8 @@ extern "C" {
 // Linear algebra wrapper functions.
 //
 void ml_la_compute_hessenberg(int len, char **A, char **result);
+void ml_la_compute_schur(int len, char **A, char **U, char **T);
+void ml_la_compute_eigenvalues(int len, char **A, char **l, char **v);
 
 // ----------------------------------------------------------------------
 // State Space wrapper functions.

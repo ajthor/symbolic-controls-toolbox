@@ -19,6 +19,13 @@ extern "C" {
 // C Wrapper for Linear Algebra Functions
 //
 CTRL_EXPORT void la_compute_hessenberg(CDenseMatrix *A, CDenseMatrix *result);
+CTRL_EXPORT void la_compute_schur(CDenseMatrix *A,
+                                  CDenseMatrix *U,
+                                  CDenseMatrix *T);
+
+CTRL_EXPORT void la_compute_eigenvalues(CDenseMatrix *A,
+                                        CVecBasic *l,
+                                        CDenseMatrix *v);
 
 // ---------------------------------------------------------------------------
 // C Wrapper for Analysis Functions
