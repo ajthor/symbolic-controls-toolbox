@@ -125,20 +125,4 @@ void StateSpace::get_D_matrix(SymEngine::DenseMatrix &result) {
   }
 }
 
-void StateSpace::subs(const SymEngine::RCP<const SymEngine::Basic> key,
-                      const SymEngine::RCP<const SymEngine::Basic> map) {
-
-  SymEngine::map_basic_basic d;
-  d[key] = map;
-
-  int i = 0;
-  for(i = 0; i < f_.size(); i++) {
-    f_[i] = SymEngine::ssubs(f_[i], d);
-  }
-
-  for(i = 0; i < g_.size(); i++) {
-    g_[i] = SymEngine::ssubs(g_[i], d);
-  }
-}
-
 } // Controls

@@ -12,7 +12,7 @@
 #include "c_wrapper.hpp"
 
 #include "analysis.hpp"
-#include "visitor.hpp"
+#include "subs.hpp"
 #include "utils/eig.hpp"
 
 extern "C" {
@@ -287,7 +287,7 @@ void statespace_D_get(StateSpace_C *obj, CDenseMatrix *result) {
 void statespace_subs(StateSpace_C *obj, const basic k, const basic m) {
   C_WRAPPER_BEGIN
 
-  obj->m.subs(k->m, m->m);
+  Controls::subs(obj->m, k->m, m->m);
 
   C_WRAPPER_END
 }

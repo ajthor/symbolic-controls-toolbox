@@ -44,9 +44,6 @@ public:
   void get_C_matrix(SymEngine::DenseMatrix &result);
   void get_D_matrix(SymEngine::DenseMatrix &result);
 
-  void subs(const SymEngine::RCP<const SymEngine::Basic> key,
-            const SymEngine::RCP<const SymEngine::Basic> map);
-
   void accept(SystemVisitor &visitor);
 
 private:

@@ -30,9 +30,9 @@ std::vector<SymEngine::RCP<const SymEngine::Basic>> TransferFunction::get_den() 
   return den_;
 }
 
-void TransferFunction::subs(const SymEngine::RCP<const SymEngine::Basic> key,
-                            const SymEngine::RCP<const SymEngine::Basic> map) {
-
-}
+// void TransferFunction::subs(const SymEngine::RCP<const SymEngine::Basic> key,
+//                             const SymEngine::RCP<const SymEngine::Basic> map) {
+//
+// }
 
 } // Controls

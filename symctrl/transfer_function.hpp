@@ -22,9 +22,6 @@ public:
   std::vector<SymEngine::RCP<const SymEngine::Basic>> get_num();
   std::vector<SymEngine::RCP<const SymEngine::Basic>> get_den();
 
-  void subs(const SymEngine::RCP<const SymEngine::Basic> key,
-            const SymEngine::RCP<const SymEngine::Basic> map);
-
   void accept(SystemVisitor &visitor);
 
 private:
