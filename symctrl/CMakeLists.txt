@@ -21,9 +21,11 @@ set(HEADERS
   control_model.hpp
   mdp.hpp
   state_space.hpp
+  subs.hpp
   system.hpp
   transfer_function.hpp
   visitor.hpp
+  sim/ode_simulator.hpp
   utils/eig.hpp
   utils/sparse_matrix.hpp
 )

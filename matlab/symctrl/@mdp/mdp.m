@@ -11,8 +11,10 @@ classdef (SupportExtensionMethods = true) mdp < handle
         % Number of inputs.
         U
 
-        % P
-        % R
+        % Transition probability matrix.
+        P
+        % Reward matrix.
+        R
 
         % Discount factor.
         gamma

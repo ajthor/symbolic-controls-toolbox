@@ -46,7 +46,7 @@ public:
 
   void accept(SystemVisitor &visitor);
 
-private:
+protected:
   // Vector of symbolic state variables.
   std::vector<SymEngine::RCP<const SymEngine::Basic>> states_;
 

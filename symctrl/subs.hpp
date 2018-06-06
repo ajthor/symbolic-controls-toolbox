@@ -14,15 +14,13 @@ void subs(System &m,
 
 class SubsVisitor : public SystemVisitor {
 private:
-  SymEngine::RCP<const SymEngine::Basic> key_, map_;
+  const SymEngine::RCP<const SymEngine::Basic> key_, map_;
 
 public:
   SubsVisitor(const SymEngine::RCP<const SymEngine::Basic> key,
-              const SymEngine::RCP<const SymEngine::Basic> map) : key_(key), map_(map) {
+              const SymEngine::RCP<const SymEngine::Basic> map) : key_(key), map_(map) {}
 
-  }
-
-  void visit(StateSpace &m) {
+  virtual void visit(StateSpace &m) {
     size_t n = m.get_num_f();
     size_t p = m.get_num_g();
 
@@ -39,7 +37,7 @@ public:
     }
   }
 
-  void visit(TransferFunction &m) {}
+  virtual void visit(TransferFunction &m) {}
 };
 
 void subs(System &m,

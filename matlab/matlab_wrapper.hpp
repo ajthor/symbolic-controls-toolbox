@@ -80,6 +80,25 @@ void ml_mdp_set_num_states(MDP_C* obj, int arg);
 int ml_mdp_get_num_inputs(MDP_C* obj);
 void ml_mdp_set_num_inputs(MDP_C* obj, int arg);
 
+void ml_mdp_probabilities_set(MDP_C *obj,
+                              size_t u,
+                              size_t x,
+                              size_t xp,
+                              const double arg);
+double ml_mdp_probabilities_get(MDP_C *obj,
+                                size_t u,
+                                size_t x,
+                                size_t xp);
+void ml_mdp_rewards_set(MDP_C *obj,
+                        size_t u,
+                        size_t x,
+                        size_t xp,
+                        const double arg);
+double ml_mdp_rewards_get(MDP_C *obj,
+                          size_t u,
+                          size_t x,
+                          size_t xp);
+
 double ml_mdp_get_gamma(MDP_C* obj);
 void ml_mdp_set_gamma(MDP_C* obj, double arg);
 

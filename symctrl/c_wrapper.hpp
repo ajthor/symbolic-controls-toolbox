@@ -108,18 +108,16 @@ CTRL_EXPORT void mdp_num_states_set(MDP_C *obj, size_t n);
 CTRL_EXPORT size_t mdp_num_inputs_get(MDP_C *obj);
 CTRL_EXPORT void mdp_num_inputs_set(MDP_C *obj, size_t n);
 
-CTRL_EXPORT void mdp_probabilities_get(MDP_C *obj,
-                                       size_t x,
-                                       size_t xp,
-                                       size_t u,
-                                       double result);
 
 CTRL_EXPORT void mdp_probabilities_set(MDP_C *obj,
+                                       size_t u,
                                        size_t x,
                                        size_t xp,
-                                       size_t u,
                                        const double arg);
-
+CTRL_EXPORT double mdp_probabilities_get(MDP_C *obj,
+                                         size_t u,
+                                         size_t x,
+                                         size_t xp);
 CTRL_EXPORT void mdp_probabilities_erase(MDP_C *obj, size_t n);
 
 CTRL_EXPORT size_t mdp_probabilities_cols(MDP_C *obj);
@@ -131,18 +129,15 @@ CTRL_EXPORT size_t mdp_probabilities_rows(MDP_C *obj);
 CTRL_EXPORT void mdp_probabilities_add_scalar(MDP_C *obj, double a);
 CTRL_EXPORT void mdp_probabilities_mul_scalar(MDP_C *obj, double a);
 
-CTRL_EXPORT void mdp_rewards_get(MDP_C *obj,
-                                 size_t x,
-                                 size_t xp,
-                                 size_t u,
-                                 double result);
-
 CTRL_EXPORT void mdp_rewards_set(MDP_C *obj,
+                                 size_t u,
                                  size_t x,
                                  size_t xp,
-                                 size_t u,
                                  const double arg);
-
+CTRL_EXPORT double mdp_rewards_get(MDP_C *obj,
+                                   size_t u,
+                                   size_t x,
+                                   size_t xp);
 CTRL_EXPORT void mdp_rewards_erase(MDP_C *obj, size_t n);
 
 CTRL_EXPORT double mdp_gamma_get(MDP_C *obj);
