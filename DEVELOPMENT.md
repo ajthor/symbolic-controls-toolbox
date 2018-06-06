@@ -6,6 +6,7 @@
 * [CMake](#cmake)
 * [Directory Structure](#directory-structure)
 * [Language Bindings](#language-bindings)
+* [Visitor Pattern](#visitor-pattern)
 
 ## Design Decisions
 
@@ -120,3 +121,7 @@ Each language has its own bindings which encapsulate the C bindings. This means 
     │ C++ │ -> │  c_wrapper  │ -> │ <language>_wrapper │ -> │ <language> │
     └─────┘    └─────────────┘    └────────────────────┘    └────────────┘
 ```
+
+## Visitor Pattern
+
+Control models use the visitor pattern to define new behavior. 

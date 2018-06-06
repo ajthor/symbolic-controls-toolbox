@@ -1,12 +1,10 @@
 # Matlab Bindings
 
-## What is this?
+The Matlab bindings provide an interface to the Symbolic Controls Library in a
+convenient Matlab toolbox that is designed to leverage the functionality and
+performance of the underlying C++ code.
 
-The Matlab bindings provide a Matlab toolbox that is designed to implement the
-functionality of the Symbolic Controls Library. It uses
-[SymEngine](https://github.com/symengine/symengine) as a symbolic backend, and
-uses an inter-operability layer to convert between the Symbolic Toolbox in
-Matlab and SymEngine on the backend.
+It uses [SymEngine](https://github.com/symengine/symengine) as a symbolic backend, and uses an inter-operability layer to convert between the Symbolic Toolbox in Matlab and [SymEngine](https://github.com/symengine/symengine) on the backend.
 
 ## Getting Started
 1. [Download](https://github.com/ajthor/symbolic-controls-toolbox/releases) the toolbox from the GitHub repository.
@@ -15,6 +13,8 @@ Matlab and SymEngine on the backend.
 1. Enjoy!
 
 ### Build From Source
+
+Once the Symbolic Controls Library is installed, run CMake with the following flag set in order to install the Matlab wrappers.
 
 ```shell
 > cmake -DBUILD_MATLAB=ON .
@@ -50,10 +50,23 @@ nlsim2(sys, 0, [0 10], {[1 1]});
 
 The toolbox includes a `startup.m` and `finish.m` script which are automatically run when you open and close Matlab. The scripts load and unload the library each time you run Matlab. This is done to clear variables in the workspace that require memory to be freed, and to ensure that the library is loaded properly. However, if you need to load the library manually, use the `loadmatctrl.m` script located in the toolbox folder.
 
+## Demo Systems
+
+The complete list of working demos can be found using:
+```matlab
+help ctrldemo
+```
+
+Load a demo system using the following command.
+Be sure to replace `<system>` with the name of a demo system.
+```matlab
+sys = ctrldemo('<system>');
+```
+
 ## For Developers
 
 The generated toolbox should be a stand-alone distribution.
 
 ```shell
-> matlab -nosplash -nojvm -nodesktop -nodisplay -r 'dummy, pause(1), quit'
+> matlab -nosplash -nojvm -nodesktop -nodisplay -r '<script>, pause(1), quit'
 ```
