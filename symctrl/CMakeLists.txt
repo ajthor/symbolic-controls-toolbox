@@ -11,7 +11,9 @@ set(SRC
   system.cc
   transfer_function.cc
   visitor.cc
-  utils/eig.cc
+  matrix/eig.cc
+  matrix/hessenberg.cc
+  matrix/schur.cc
 )
 
 # A list of all header files with C header definitions.
@@ -25,9 +27,8 @@ set(HEADERS
   system.hpp
   transfer_function.hpp
   visitor.hpp
+  matrix/eig.hpp
   sim/ode_simulator.hpp
-  utils/eig.hpp
-  utils/sparse_matrix.hpp
 )
 
 INSTALL_HEADERS_WITH_DIRECTORY(HEADERS)

@@ -1,8 +1,5 @@
 #include <symengine/add.h>
 #include <symengine/pow.h>
-#include <symengine/basic.h>
-#include <symengine/dict.h>
-#include <symengine/matrix.h>
 #include <symengine/visitor.h>
 
 #include "eig.hpp"
@@ -10,65 +7,19 @@
 namespace Controls {
 
 // ----------------------------------------------------------------------
-// Eigenvalues
-//
-void compute_eigenvalues(SymEngine::DenseMatrix &A,
-                         SymEngine::vec_basic &l,
-                         SymEngine::DenseMatrix &v) {
-  // TODO: Perform squareness checking.
-  size_t n = A.ncols();
-
-  SymEngine::DenseMatrix U, T;
-
-  U = SymEngine::DenseMatrix(n, n);
-  T = SymEngine::DenseMatrix(n, n);
-
-  // Compute the Schur decomposition.
-  compute_schur(A, v, T);
-
-  int i = 0;
-  for(i = 0; i < n; i++) {
-    l.push_back(T.get(i, i));
-  }
-}
-
-// ----------------------------------------------------------------------
-// 2-Norm
-//
-SymEngine::RCP<const SymEngine::Basic> norm2(SymEngine::vec_basic &v) {
-  SymEngine::RCP<const SymEngine::Basic> t = SymEngine::zero;
-  int i = 0;
-  for(i = 0; i < v.size(); i++) {
-    // printf("%s\n", v[i]->__str__().c_str());
-    t = SymEngine::add(t, SymEngine::pow(v[i], SymEngine::integer(2)));
-  }
-  t = SymEngine::pow(t, SymEngine::div(SymEngine::one, SymEngine::integer(2)));
-
-  return t;
-}
-
-// ----------------------------------------------------------------------
-// Vector Normalization
-//
-// v = v/|v|
-void normalize(SymEngine::vec_basic &v) {
-  SymEngine::RCP<const SymEngine::Basic> t = norm2(v);
-  int i = 0;
-  for(i = 0; i < v.size(); i++) {
-    v[i] = SymEngine::div(v[i], t);
-  }
-}
-
-// ----------------------------------------------------------------------
 // Hessenberg
 //
-void compute_hessenberg(SymEngine::DenseMatrix &A,
-                        SymEngine::DenseMatrix &result) {
+void hessenberg(SymEngine::DenseMatrix &A,
+                SymEngine::DenseMatrix &result) {
   //
   unsigned row = A.nrows();
   unsigned col = A.ncols();
 
   // TODO: Perform squareness checking.
+  if(!is_square(A)) {
+    // error
+  }
+
   SymEngine::RCP<const SymEngine::Basic> t;
   SymEngine::vec_basic Av = A.as_vec_basic();
   SymEngine::vec_basic reflector;
@@ -170,36 +121,6 @@ void compute_hessenberg(SymEngine::DenseMatrix &A,
   }
 
   result = SymEngine::DenseMatrix(row, col, {Av});
-}
-
-// ----------------------------------------------------------------------
-// Schur
-//
-void compute_schur(SymEngine::DenseMatrix &A,
-                   SymEngine::DenseMatrix &U,
-                   SymEngine::DenseMatrix &T,
-                   size_t n_iter) {
-  // TODO: Perform squareness checking.
-  unsigned row = A.nrows();
-  unsigned col = A.ncols();
-
-  SymEngine::DenseMatrix Q, R, W, V;
-  Q = SymEngine::DenseMatrix(row, col);
-  R = SymEngine::DenseMatrix(row, col);
-
-  W = SymEngine::DenseMatrix(A);
-  V = SymEngine::DenseMatrix(row, col);
-  SymEngine::eye(V);
-
-  int i = 0;
-  for(i = 0; i < n_iter; i++) {
-    QR(W, Q, R);
-    R.mul_matrix(Q, W);
-    V.mul_matrix(Q, V);
-  }
-
-  U = V;
-  T = W;
 }
 
 } // Controls

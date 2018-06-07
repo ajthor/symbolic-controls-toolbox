@@ -13,7 +13,7 @@
 
 #include "analysis.hpp"
 #include "subs.hpp"
-#include "utils/eig.hpp"
+#include "matrix/eig.hpp"
 
 extern "C" {
 
@@ -62,30 +62,28 @@ struct CMapBasicBasic {
 // ----------------------------------------------------------------------
 // Linear Algebra Function Definitions
 //
-void la_compute_hessenberg(CDenseMatrix *A, CDenseMatrix *result) {
+void la_hessenberg(CDenseMatrix *A, CDenseMatrix *result) {
   C_WRAPPER_BEGIN
 
-  Controls::compute_hessenberg(A->m, result->m);
+  Controls::hessenberg(A->m, result->m);
 
   C_WRAPPER_END()
 }
 
-void la_compute_schur(CDenseMatrix *A,
-                      CDenseMatrix *U,
-                      CDenseMatrix *T) {
+void la_schur(CDenseMatrix *A, CDenseMatrix *U, CDenseMatrix *T) {
   C_WRAPPER_BEGIN
 
-  Controls::compute_schur(A->m, U->m, T->m);
+  Controls::schur(A->m, U->m, T->m);
 
   C_WRAPPER_END()
 }
 
-void la_compute_eigenvalues(CDenseMatrix *A,
-                            CVecBasic *l,
-                            CDenseMatrix *v) {
+void la_eigenvalues(CDenseMatrix *A,
+                    CVecBasic *l,
+                    CDenseMatrix *v) {
   C_WRAPPER_BEGIN
 
-  Controls::compute_eigenvalues(A->m, l->m, v->m);
+  Controls::eigenvalues(A->m, l->m, v->m);
 
   C_WRAPPER_END()
 }

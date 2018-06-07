@@ -73,7 +73,7 @@ extern "C" {
 // ----------------------------------------------------------------------
 // Linear algebra wrapper functions.
 //
-void ml_la_compute_hessenberg(int len, char **arg, char **result) {
+void ml_la_hessenberg(int len, char **arg, char **result) {
   auto mat = dense_matrix_new_rows_cols(len, len);
   auto res = dense_matrix_new_rows_cols(len, len);
   auto s = basic_new_heap();
@@ -88,7 +88,7 @@ void ml_la_compute_hessenberg(int len, char **arg, char **result) {
     }
   }
 
-  la_compute_hessenberg(mat, res);
+  la_hessenberg(mat, res);
 
   idx = 0;
   for(i = 0; i < len; i++) { // rows
@@ -105,7 +105,7 @@ void ml_la_compute_hessenberg(int len, char **arg, char **result) {
   dense_matrix_free(res);
 }
 
-void ml_la_compute_schur(int len, char **A, char **U, char **T) {
+void ml_la_schur(int len, char **A, char **U, char **T) {
   auto mat = dense_matrix_new_rows_cols(len, len);
   auto res_U = dense_matrix_new_rows_cols(len, len);
   auto res_T = dense_matrix_new_rows_cols(len, len);
@@ -121,7 +121,7 @@ void ml_la_compute_schur(int len, char **A, char **U, char **T) {
     }
   }
 
-  la_compute_schur(mat, res_U, res_T);
+  la_schur(mat, res_U, res_T);
 
   idx = 0;
   for(i = 0; i < len; i++) { // rows
@@ -142,7 +142,7 @@ void ml_la_compute_schur(int len, char **A, char **U, char **T) {
   dense_matrix_free(res_T);
 }
 
-void ml_la_compute_eigenvalues(int len, char **A, char **l, char **v) {
+void ml_la_eigenvalues(int len, char **A, char **l, char **v) {
   auto mat = dense_matrix_new_rows_cols(len, len);
   auto res_l = vecbasic_new();
   auto res_v = dense_matrix_new_rows_cols(len, len);
@@ -158,7 +158,7 @@ void ml_la_compute_eigenvalues(int len, char **A, char **l, char **v) {
     }
   }
 
-  la_compute_eigenvalues(mat, res_l, res_v);
+  la_eigenvalues(mat, res_l, res_v);
 
   idx = 0;
   for(i = 0; i < len; i++) { // rows
