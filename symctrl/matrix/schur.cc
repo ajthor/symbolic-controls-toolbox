@@ -1,7 +1,7 @@
 // #include <symengine/add.h>
 // #include <symengine/pow.h>
 
-#include "eig.hpp"
+#include "linalg.hpp"
 
 namespace Controls {
 

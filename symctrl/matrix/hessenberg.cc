@@ -2,7 +2,7 @@
 #include <symengine/pow.h>
 #include <symengine/visitor.h>
 
-#include "eig.hpp"
+#include "linalg.hpp"
 
 namespace Controls {
 
