@@ -13,6 +13,9 @@ set(SRC
   visitor.cc
   matrix/eig.cc
   matrix/hessenberg.cc
+  matrix/house.cc
+  matrix/linalg.cc
+  matrix/qr.cc
   matrix/schur.cc
 )
 
@@ -28,6 +31,7 @@ set(HEADERS
   transfer_function.hpp
   visitor.hpp
   matrix/eig.hpp
+  matrix/linalg.hpp
   sim/ode_simulator.hpp
 )
 

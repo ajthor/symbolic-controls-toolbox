@@ -95,7 +95,7 @@ install(EXPORT symctrl
 )
 
 install(FILES
-  ${CMAKE_BINARY_DIR}/ctrl_export.h
+  ${CMAKE_BINARY_DIR}/symctrl_export.h
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libsymctrl
 )
 

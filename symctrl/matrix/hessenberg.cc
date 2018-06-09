@@ -39,16 +39,7 @@ void hessenberg(SymEngine::DenseMatrix &A,
       reflector[idx++] = Av[i*col + k];
     }
 
-    // Compute the norm.
-    t = norm2(reflector);
-
-    // u[1] = u[1] + sign(u[1]) * |u|
-    reflector[0] = SymEngine::add(reflector[0],
-                                  SymEngine::mul(SymEngine::sign(reflector[0]),
-                                                 t));
-
-    // u = u/|u|
-    normalize(reflector);
+    householder_reflector(reflector);
 
     // Form u*u'
     uu = SymEngine::vec_basic(len*len);
@@ -63,61 +54,37 @@ void hessenberg(SymEngine::DenseMatrix &A,
 
     // Get the submatrix from A.
     tmp = SymEngine::vec_basic((row - (k + 1))*(col - k));
-    idx = 0;
-    for(i = k + 1; i < row; i++) { // row
-      for(j = k; j < col; j++) { //col
-        tmp[idx++] = Av[i*col + j];
-      }
-    }
+    submatrix_from_vec(Av, k + 1, row, k, col, tmp);
 
     // Assign the submatrix of A to R.
     R = SymEngine::DenseMatrix(row - (k + 1), col - k, {tmp});
-    // Perform matrix operations.
-    M.mul_matrix(R, M);
-    M.mul_scalar(SymEngine::integer(-2), M);
-    R.add_matrix(M, R);
+
+    householder_transform_l(R, M);
     tmp = R.as_vec_basic();
 
     // Substitute the new values back into A.
-    idx = 0;
-    for(i = k + 1; i < row; i++) { // row
-      for(j = k; j < col; j++) { //col
-        Av[i*col + j] = tmp[idx++];
-      }
-    }
+    vec_to_submatrix(tmp, k + 1, row, k, col, Av);
 
     // A_c = A_c - 2*A_c*u*u'
     M = SymEngine::DenseMatrix(len, len, {uu});
 
     // Get the submatrix from A.
     tmp = SymEngine::vec_basic(row*(col - (k + 1)));
-    idx = 0;
-    for(i = 0; i < row; i++) { // row
-      for(j = k + 1; j < col; j++) { //col
-        tmp[idx++] = Av[i*col + j];
-      }
-    }
+    submatrix_from_vec(Av, 0, row, k + 1, col, tmp);
 
     // Assign the submatrix of A to R.
     R = SymEngine::DenseMatrix(row, col - (k + 1), {tmp});
-    // Perform matrix operations.
-    R.mul_matrix(M, M);
-    M.mul_scalar(SymEngine::integer(-2), M);
-    R.add_matrix(M, R);
+
+    householder_transform_r(R, M);
     tmp = R.as_vec_basic();
 
     // Substitute the new values back into A.
-    idx = 0;
-    for(i = 0; i < row; i++) { // row
-      for(j = k + 1; j < col; j++) { //col
-        Av[i*col + j] = tmp[idx++];
-      }
-    }
+    vec_to_submatrix(tmp, 0, row, k + 1, col, Av);
 
     // Set remainders of operations to zero. This is the approximation.
-    for(i = k + 2; i < row; i++) {
-      Av[i*col + k] = SymEngine::zero;
-    }
+    // for(i = k + 2; i < row; i++) {
+    //   Av[i*col + k] = SymEngine::zero;
+    // }
   }
 
   result = SymEngine::DenseMatrix(row, col, {Av});

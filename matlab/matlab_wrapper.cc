@@ -84,7 +84,7 @@ void ml_la_hessenberg(int len, char **arg, char **result) {
   for (i = 0; i < len; i++) {
     for (j = 0; j < len; j++) {
       basic_parse(s, arg[idx++]);
-      dense_matrix_set_basic(mat, i, j, s);
+      dense_matrix_set_basic(mat, j, i, s);
     }
   }
 
@@ -117,7 +117,7 @@ void ml_la_schur(int len, char **A, char **U, char **T) {
   for (i = 0; i < len; i++) {
     for (j = 0; j < len; j++) {
       basic_parse(s, A[idx++]);
-      dense_matrix_set_basic(mat, i, j, s);
+      dense_matrix_set_basic(mat, j, i, s);
     }
   }
 

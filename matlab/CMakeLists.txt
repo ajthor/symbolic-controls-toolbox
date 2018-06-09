@@ -130,7 +130,7 @@ install(FILES
 )
 
 install(DIRECTORY
-  symctrl
+  matctrl
   DESTINATION ${MATCTRL_PATH}
 )
 

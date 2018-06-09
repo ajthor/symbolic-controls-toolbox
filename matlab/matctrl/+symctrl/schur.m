@@ -1,7 +1,7 @@
 function [U, T] = schur(A)
     n = size(A, 1);
 
-    A = cellfun(@(x) {num2str(x)}, num2cell(A));
+    A = symctrl.mat2se(A);
 
     cptr = libpointer('stringPtrPtr', A);
 
@@ -17,6 +17,9 @@ function [U, T] = schur(A)
 
     U = reshape(resptr_U.Value, n, n);
     T = reshape(resptr_T.Value, n, n);
+
+    U = symctrl.se2mat(U);
+    T = symctrl.se2mat(T);
 
     clear('cptr');
     clear('resptr_U');

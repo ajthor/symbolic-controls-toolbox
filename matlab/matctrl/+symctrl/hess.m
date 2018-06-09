@@ -1,7 +1,7 @@
 function H = hess(A)
     n = size(A, 1);
 
-    A = cellfun(@(x) {num2str(x)}, num2cell(A));
+    A = symctrl.mat2se(A);
 
     cptr = libpointer('stringPtrPtr', A);
     resptr_H = libpointer('stringPtrPtr', A);
@@ -13,6 +13,8 @@ function H = hess(A)
             resptr_H);
 
     H = reshape(resptr_H.Value, n, n);
+
+    H = symctrl.se2mat(H);
 
     clear('cptr');
     clear('resptr_H');
