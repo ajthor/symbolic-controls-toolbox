@@ -33,11 +33,10 @@ private:
   std::size_t num_states_;
   std::size_t num_inputs_;
 
+  // P & R are X x X' x U.
+  // This is stored as a vector (U) of sparse adjacency matrices (X x X'). 
   std::vector<std::map<std::tuple<unsigned, unsigned>, double>> probabilities_;
   std::vector<std::map<std::tuple<unsigned, unsigned>, double>> rewards_;
-
-  // SparseMatrix<double> probabilities_ = SparseMatrix<double>();
-  // SparseMatrix<double> rewards_ = SparseMatrix<double>();
 
   double gamma_;
 };

@@ -8,6 +8,11 @@
 namespace Controls {
 
 // ----------------------------------------------------------------------
+// Matrix Exponential
+//
+void expm(StateSpace &obj);
+
+// ----------------------------------------------------------------------
 // Controllability
 //
 void ctrb(StateSpace &obj, SymEngine::DenseMatrix &result);

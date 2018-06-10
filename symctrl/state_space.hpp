@@ -58,6 +58,12 @@ protected:
 
   // Vector of output equations.
   std::vector<SymEngine::RCP<const SymEngine::Basic>> g_;
+
+  // TODO: Add sparse matrix backend to state space class.
+  // SymEngine::CSRMatrix A;
+  // SymEngine::CSRMatrix B;
+  // SymEngine::CSRMatrix C;
+  // SymEngine::CSRMatrix D;
 };
 
 } // Controls

@@ -76,7 +76,7 @@ void StateSpace::get_A_matrix(SymEngine::DenseMatrix &result) {
     f = SymEngine::DenseMatrix(n, 1, {f_});
     x = SymEngine::DenseMatrix(n, 1, {states_});
 
-    jacobian(f, x, result);
+    SymEngine::jacobian(f, x, result);
   }
 }
 void StateSpace::get_B_matrix(SymEngine::DenseMatrix &result) {
@@ -91,7 +91,7 @@ void StateSpace::get_B_matrix(SymEngine::DenseMatrix &result) {
     f = SymEngine::DenseMatrix(n, 1, {f_});
     u = SymEngine::DenseMatrix(m, 1, {inputs_});
 
-    jacobian(f, u, result);
+    SymEngine::jacobian(f, u, result);
   }
 }
 void StateSpace::get_C_matrix(SymEngine::DenseMatrix &result) {
@@ -106,7 +106,7 @@ void StateSpace::get_C_matrix(SymEngine::DenseMatrix &result) {
     g = SymEngine::DenseMatrix(p, 1, {g_});
     x = SymEngine::DenseMatrix(n, 1, {states_});
 
-    jacobian(g, x, result);
+    SymEngine::jacobian(g, x, result);
   }
 }
 void StateSpace::get_D_matrix(SymEngine::DenseMatrix &result) {
@@ -121,7 +121,7 @@ void StateSpace::get_D_matrix(SymEngine::DenseMatrix &result) {
     g = SymEngine::DenseMatrix(p, 1, {g_});
     u = SymEngine::DenseMatrix(m, 1, {inputs_});
 
-    jacobian(g, u, result);
+    SymEngine::jacobian(g, u, result);
   }
 }
 

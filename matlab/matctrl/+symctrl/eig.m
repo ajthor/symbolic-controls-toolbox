@@ -1,26 +1,33 @@
 function [l, V] = eig(A)
-    n = size(A, 1);
 
-    A = cellfun(@(x) {num2str(x)}, num2cell(A));
+A = symctrl.hess(A);
 
-    l = cell(1, n);
+n = size(A, 1);
 
-    cptr = libpointer('stringPtrPtr', A);
+A = symctrl.mat2se(A);
 
-    resptr_l = libpointer('stringPtrPtr', l);
-    resptr_V = libpointer('stringPtrPtr', A);
+l = cell(1, n);
 
-    calllib('matctrl', ...
-            'ml_la_eigenvalues', ...
-            n, ...
-            cptr, ...
-            resptr_l, ...
-            resptr_V);
+cptr = libpointer('stringPtrPtr', A);
 
-    l = reshape(resptr_l.Value, 1, n);
-    V = reshape(resptr_V.Value, n, n);
+resptr_l = libpointer('stringPtrPtr', l);
+resptr_V = libpointer('stringPtrPtr', A);
 
-    clear('cptr');
-    clear('resptr_l');
-    clear('resptr_V');
+calllib('matctrl', ...
+        'ml_linalg_eigenvalues', ...
+        n, ...
+        cptr, ...
+        resptr_l, ...
+        resptr_V);
+
+l = reshape(resptr_l.Value, 1, n);
+V = reshape(resptr_V.Value, n, n);
+
+l = symctrl.se2mat(l);
+V = symctrl.se2mat(V);
+
+clear('cptr');
+clear('resptr_l');
+clear('resptr_V');
+
 end

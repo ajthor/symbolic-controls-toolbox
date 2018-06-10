@@ -20,12 +20,18 @@ size_t MDP::get_num_inputs() {
 }
 
 void MDP::set_probability(size_t u, size_t x, size_t xp, const double value) {
+  // TODO: Ensure u is not greater than num_inputs.
+  // TODO: Ensure x is not greater than num_states.
+  // TODO: Ensure xp is not greater than num_states.
+
   // TODO: Ensure probability is not greater than 1.
   // TODO: Ensure probability of any one row is not greater than 1.
-
   probabilities_.at(u).at(std::make_tuple(x, xp)) = value;
 }
 double MDP::get_probability(size_t u, size_t x, size_t xp) {
+  // TODO: Ensure u is not greater than num_inputs.
+  // TODO: Ensure x is not greater than num_states.
+  // TODO: Ensure xp is not greater than num_states.
   double ret;
 
   try {
@@ -36,9 +42,15 @@ double MDP::get_probability(size_t u, size_t x, size_t xp) {
   }
 }
 void MDP::set_reward(size_t u, size_t x, size_t xp, const double value) {
+  // TODO: Ensure u is not greater than num_inputs.
+  // TODO: Ensure x is not greater than num_states.
+  // TODO: Ensure xp is not greater than num_states.
   rewards_.at(u).at(std::make_tuple(x, xp)) = value;
 }
 double MDP::get_reward(size_t u, size_t x, size_t xp) {
+  // TODO: Ensure u is not greater than num_inputs.
+  // TODO: Ensure x is not greater than num_states.
+  // TODO: Ensure xp is not greater than num_states.
   double ret;
 
   try {
