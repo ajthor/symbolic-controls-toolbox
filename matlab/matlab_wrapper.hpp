@@ -74,36 +74,39 @@ void ml_statespace_obsv(StateSpace_C *obj, char **result);
 //
 typedef struct MDP_C MDP_C;
 
-MDP_C* ml_mdp_new();
+MDP_C* ml_mdp_new(unsigned long x, unsigned long u);
 void ml_mdp_free(MDP_C* obj);
 
-int ml_mdp_get_num_states(MDP_C* obj);
-void ml_mdp_set_num_states(MDP_C* obj, int arg);
+int ml_mdp_num_states_get(MDP_C* obj);
+void ml_mdp_num_states_set(MDP_C* obj, int arg);
 
-int ml_mdp_get_num_inputs(MDP_C* obj);
-void ml_mdp_set_num_inputs(MDP_C* obj, int arg);
+int ml_mdp_num_inputs_get(MDP_C* obj);
+void ml_mdp_num_inputs_set(MDP_C* obj, int arg);
 
-void ml_mdp_probabilities_set(MDP_C *obj,
-                              size_t u,
-                              size_t x,
-                              size_t xp,
-                              const double arg);
-double ml_mdp_probabilities_get(MDP_C *obj,
-                                size_t u,
-                                size_t x,
-                                size_t xp);
-void ml_mdp_rewards_set(MDP_C *obj,
-                        size_t u,
-                        size_t x,
-                        size_t xp,
-                        const double arg);
-double ml_mdp_rewards_get(MDP_C *obj,
-                          size_t u,
-                          size_t x,
-                          size_t xp);
+void ml_mdp_probabilities_set(MDP_C *obj, const int *arg);
+void ml_mdp_probabilities_get(MDP_C *obj, int *result);
+void ml_mdp_probabilities_set_sparse(MDP_C *obj, unsigned long u,
+                                     unsigned long len,
+                                     unsigned long *i, unsigned long *j,
+                                     double *v);
+void ml_mdp_probabilities_get_sparse(MDP_C *obj, unsigned long u,
+                                     unsigned long *i, unsigned long *j,
+                                     double *v);
+unsigned long ml_mdp_probabilities_nnz(MDP_C *obj, unsigned long u);
 
-double ml_mdp_get_gamma(MDP_C* obj);
-void ml_mdp_set_gamma(MDP_C* obj, double arg);
+void ml_mdp_rewards_set(MDP_C *obj, const int *arg);
+void ml_mdp_rewards_get(MDP_C *obj, int *result);
+void ml_mdp_rewards_set_sparse(MDP_C *obj, unsigned long u,
+                               unsigned long len,
+                               unsigned long *i, unsigned long *j,
+                               double *v);
+void ml_mdp_rewards_get_sparse(MDP_C *obj, unsigned long u,
+                               unsigned long *i, unsigned long *j,
+                               double *v);
+unsigned long ml_mdp_rewards_nnz(MDP_C *obj, unsigned long u);
+
+double ml_mdp_gamma_get(MDP_C* obj);
+void ml_mdp_gamma_set(MDP_C* obj, double arg);
 
 #ifdef __cplusplus
 }

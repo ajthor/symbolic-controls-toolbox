@@ -337,8 +337,8 @@ struct MDP_C {
 // };
 // typedef struct SparseMatrix_C SparseMatrix_C;
 
-MDP_C *mdp_new() {
-  return new MDP_C;
+MDP_C *mdp_new(const size_t x, const size_t u) {
+  return new MDP_C({{x, u}});
 }
 
 void mdp_free(MDP_C *obj) {
@@ -370,11 +370,8 @@ void mdp_num_inputs_set(MDP_C *obj, size_t n) {
   C_WRAPPER_END()
 }
 
-void mdp_probabilities_set(MDP_C *obj,
-                           size_t u,
-                           size_t x,
-                           size_t xp,
-                           const double arg) {
+void mdp_probabilities_set(MDP_C *obj, size_t u,
+                           size_t x, size_t xp, const double arg) {
   //
   C_WRAPPER_BEGIN
 
@@ -389,13 +386,47 @@ double mdp_probabilities_get(MDP_C *obj, size_t u, size_t x, size_t xp) {
 
   C_WRAPPER_END(0)
 }
-// void mdp_probabilities_erase(MDP_C *obj, size_t n)
+void mdp_probabilities_set_sparse(MDP_C *obj, size_t u, size_t len,
+                                  size_t *i, size_t *j, double *v) {
+  C_WRAPPER_BEGIN
 
-void mdp_rewards_set(MDP_C *obj,
-                     size_t u,
-                     size_t x,
-                     size_t xp,
-                     const double arg) {
+  size_t k;
+  for(k = 0; k < len; k++) {
+    obj->m.set_probability(u, *i++, *j++, *v++);
+  }
+
+  C_WRAPPER_END()
+}
+void mdp_probabilities_get_sparse(MDP_C *obj, size_t u,
+                                  size_t **i, size_t **j, double **v) {
+  C_WRAPPER_BEGIN
+
+  if(obj->m.probabilities_.at(u).empty()) {
+    return;
+  }
+
+  size_t k = 0;
+  for(const auto &it : obj->m.probabilities_.at(u)) {
+    (*i)[k] = std::get<0>(it.first);
+    (*j)[k] = std::get<1>(it.first);
+    (*v)[k] = it.second;
+
+    k++;
+  }
+
+  C_WRAPPER_END()
+}
+// void mdp_probabilities_erase(MDP_C *obj, size_t n)
+size_t mdp_probabilities_nnz(MDP_C *obj, size_t u) {
+  C_WRAPPER_BEGIN
+
+  return obj->m.probabilities_.at(u).size();
+
+  C_WRAPPER_END(0)
+}
+
+void mdp_rewards_set(MDP_C *obj, size_t u,
+                     size_t x, size_t xp, const double arg) {
   //
   C_WRAPPER_BEGIN
 
@@ -410,7 +441,41 @@ double mdp_rewards_get(MDP_C *obj, size_t u, size_t x, size_t xp) {
 
   C_WRAPPER_END(0)
 }
+void mdp_rewards_set_sparse(MDP_C *obj, size_t u, size_t len,
+                            size_t *i, size_t *j, double *v) {
+  C_WRAPPER_BEGIN
+
+  size_t k;
+  for(k = 0; k < len; k++) {
+    obj->m.set_probability(u, *i++, *j++, *v++);
+  }
+
+  C_WRAPPER_END()
+}
+void mdp_rewards_get_sparse(MDP_C *obj, size_t u,
+                            size_t *i, size_t *j, double *v) {
+  C_WRAPPER_BEGIN
+
+  if(obj->m.rewards_.at(u).empty()) {
+    return;
+  }
+
+  for(const auto &it : obj->m.probabilities_.at(u)) {
+    *i++ = std::get<0>(it.first);
+    *j++ = std::get<1>(it.first);
+    *v++ = it.second;
+  }
+
+  C_WRAPPER_END()
+}
 // void mdp_rewards_erase(MDP_C *obj, size_t n)
+size_t mdp_rewards_nnz(MDP_C *obj, size_t u) {
+  C_WRAPPER_BEGIN
+
+  return obj->m.rewards_.at(u).size();
+
+  C_WRAPPER_END(0)
+}
 
 double mdp_gamma_get(MDP_C *obj) {
   return obj->m.get_gamma();

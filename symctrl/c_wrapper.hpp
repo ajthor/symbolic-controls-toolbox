@@ -103,7 +103,7 @@ SYMCTRL_EXPORT int statespace_is_observable(StateSpace_C *obj);
 //
 typedef struct MDP_C MDP_C;
 
-SYMCTRL_EXPORT MDP_C *mdp_new();
+SYMCTRL_EXPORT MDP_C *mdp_new(const size_t x, const size_t u);
 SYMCTRL_EXPORT void mdp_free(MDP_C *obj);
 
 SYMCTRL_EXPORT size_t mdp_num_states_get(MDP_C *obj);
@@ -112,16 +112,20 @@ SYMCTRL_EXPORT void mdp_num_states_set(MDP_C *obj, size_t n);
 SYMCTRL_EXPORT size_t mdp_num_inputs_get(MDP_C *obj);
 SYMCTRL_EXPORT void mdp_num_inputs_set(MDP_C *obj, size_t n);
 
+SYMCTRL_EXPORT void
+mdp_probabilities_set(MDP_C *obj, size_t u,
+                      size_t x, size_t xp, const double arg);
+SYMCTRL_EXPORT double
+mdp_probabilities_get(MDP_C *obj, size_t u,
+                      size_t x, size_t xp);
+SYMCTRL_EXPORT void
+mdp_probabilities_set_sparse(MDP_C *obj, size_t u, size_t len,
+                             size_t *i, size_t *j, double *v);
+SYMCTRL_EXPORT void
+mdp_probabilities_get_sparse(MDP_C *obj, size_t u,
+                             size_t **i, size_t **j, double **v);
+SYMCTRL_EXPORT size_t mdp_probabilities_nnz(MDP_C *obj, size_t u);
 
-SYMCTRL_EXPORT void mdp_probabilities_set(MDP_C *obj,
-                                       size_t u,
-                                       size_t x,
-                                       size_t xp,
-                                       const double arg);
-SYMCTRL_EXPORT double mdp_probabilities_get(MDP_C *obj,
-                                         size_t u,
-                                         size_t x,
-                                         size_t xp);
 SYMCTRL_EXPORT void mdp_probabilities_erase(MDP_C *obj, size_t n);
 
 SYMCTRL_EXPORT size_t mdp_probabilities_cols(MDP_C *obj);
@@ -133,15 +137,20 @@ SYMCTRL_EXPORT size_t mdp_probabilities_rows(MDP_C *obj);
 SYMCTRL_EXPORT void mdp_probabilities_add_scalar(MDP_C *obj, double a);
 SYMCTRL_EXPORT void mdp_probabilities_mul_scalar(MDP_C *obj, double a);
 
-SYMCTRL_EXPORT void mdp_rewards_set(MDP_C *obj,
-                                 size_t u,
-                                 size_t x,
-                                 size_t xp,
-                                 const double arg);
-SYMCTRL_EXPORT double mdp_rewards_get(MDP_C *obj,
-                                   size_t u,
-                                   size_t x,
-                                   size_t xp);
+SYMCTRL_EXPORT void
+mdp_rewards_set(MDP_C *obj, size_t u,
+                size_t x, size_t xp, const double arg);
+SYMCTRL_EXPORT double
+mdp_rewards_get(MDP_C *obj, size_t u,
+                size_t x, size_t xp);
+SYMCTRL_EXPORT void
+mdp_rewards_set_sparse(MDP_C *obj, size_t u, size_t len,
+                       size_t *i, size_t *j, double *v);
+SYMCTRL_EXPORT void
+mdp_rewards_get_sparse(MDP_C *obj, size_t u,
+                       size_t *i, size_t *j, double *v);
+SYMCTRL_EXPORT size_t mdp_rewards_nnz(MDP_C *obj, size_t u);
+
 SYMCTRL_EXPORT void mdp_rewards_erase(MDP_C *obj, size_t n);
 
 SYMCTRL_EXPORT double mdp_gamma_get(MDP_C *obj);
