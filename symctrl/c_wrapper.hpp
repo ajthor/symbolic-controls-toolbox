@@ -17,14 +17,18 @@ extern "C" {
 // ---------------------------------------------------------------------------
 // C Wrapper for Linear Algebra Functions
 //
-SYMCTRL_EXPORT void la_hessenberg(CDenseMatrix *A, CDenseMatrix *result);
-SYMCTRL_EXPORT void la_schur(CDenseMatrix *A,
-                             CDenseMatrix *U,
-                             CDenseMatrix *T);
+SYMCTRL_EXPORT void linalg_hessenberg(CDenseMatrix *A, CDenseMatrix *result);
+SYMCTRL_EXPORT void linalg_schur(CDenseMatrix *A,
+                                 CDenseMatrix *U,
+                                 CDenseMatrix *T);
 
-SYMCTRL_EXPORT void la_eigenvalues(CDenseMatrix *A,
-                                   CVecBasic *l,
-                                   CDenseMatrix *v);
+SYMCTRL_EXPORT void linalg_eigenvalues(CDenseMatrix *A,
+                                       CVecBasic *l,
+                                       CDenseMatrix *v);
+
+SYMCTRL_EXPORT void linalg_first_eigenvalue(CDenseMatrix *A,
+                                            CRCPBasic *l,
+                                            double tol);
 
 // ---------------------------------------------------------------------------
 // C Wrapper for Analysis Functions

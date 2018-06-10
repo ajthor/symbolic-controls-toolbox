@@ -14,6 +14,7 @@
 #include "analysis.hpp"
 #include "subs.hpp"
 #include "matrix/eig.hpp"
+#include "matrix/linalg.hpp"
 
 extern "C" {
 
@@ -62,7 +63,7 @@ struct CMapBasicBasic {
 // ----------------------------------------------------------------------
 // Linear Algebra Function Definitions
 //
-void la_hessenberg(CDenseMatrix *A, CDenseMatrix *result) {
+void linalg_hessenberg(CDenseMatrix *A, CDenseMatrix *result) {
   C_WRAPPER_BEGIN
 
   Controls::hessenberg(A->m, result->m);
@@ -70,7 +71,7 @@ void la_hessenberg(CDenseMatrix *A, CDenseMatrix *result) {
   C_WRAPPER_END()
 }
 
-void la_schur(CDenseMatrix *A, CDenseMatrix *U, CDenseMatrix *T) {
+void linalg_schur(CDenseMatrix *A, CDenseMatrix *U, CDenseMatrix *T) {
   C_WRAPPER_BEGIN
 
   Controls::schur(A->m, U->m, T->m);
@@ -78,12 +79,18 @@ void la_schur(CDenseMatrix *A, CDenseMatrix *U, CDenseMatrix *T) {
   C_WRAPPER_END()
 }
 
-void la_eigenvalues(CDenseMatrix *A,
-                    CVecBasic *l,
-                    CDenseMatrix *v) {
+void linalg_eigenvalues(CDenseMatrix *A, CVecBasic *l, CDenseMatrix *v) {
   C_WRAPPER_BEGIN
 
   Controls::eigenvalues(A->m, l->m, v->m);
+
+  C_WRAPPER_END()
+}
+
+void linalg_first_eigenvalue(CDenseMatrix *A, CRCPBasic *l, double tol) {
+  C_WRAPPER_BEGIN
+
+  l->m = Controls::get_first_eigenvalue(A->m, tol);
 
   C_WRAPPER_END()
 }

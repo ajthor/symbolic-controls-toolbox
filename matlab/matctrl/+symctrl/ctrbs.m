@@ -1,25 +1,27 @@
 function M = ctrbs(A, B)
-    validateattributes(A, {'cell', 'char'}, {'nonempty'});
-    validateattributes(B, {'cell', 'char'}, {'nonempty'});
 
-    if ~iscell(A), A = {A}; end
-    if ~iscell(B), B = {B}; end
+validateattributes(A, {'cell', 'char'}, {'nonempty'});
+validateattributes(B, {'cell', 'char'}, {'nonempty'});
 
-    A = cellfun(@(x) {num2str(x)}, num2cell(A));
-    B = cellfun(@(x) {num2str(x)}, num2cell(B));
+if ~iscell(A), A = {A}; end
+if ~iscell(B), B = {B}; end
 
-    n = size(A, 2);
-    m = size(B, 2);
+A = cellfun(@(x) {num2str(x)}, num2cell(A));
+B = cellfun(@(x) {num2str(x)}, num2cell(B));
 
-    M = cell(1, n*n*m);
+n = size(A, 2);
+m = size(B, 2);
 
-    Aptr = libpointer('stringPtrPtr', A);
-    Bptr = libpointer('stringPtrPtr', B);
-    Mptr = libpointer('stringPtrPtr', M);
+M = cell(1, n*n*m);
 
-    calllib('matctrl', 'ml_ctrbs', Aptr, Bptr, Mptr);
+Aptr = libpointer('stringPtrPtr', A);
+Bptr = libpointer('stringPtrPtr', B);
+Mptr = libpointer('stringPtrPtr', M);
 
-    M = reshape(Mptr.Value, n, n*m);
+calllib('matctrl', 'ml_ctrbs', Aptr, Bptr, Mptr);
 
-    clear('Mptr');
+M = reshape(Mptr.Value, n, n*m);
+
+clear('Mptr');
+
 end

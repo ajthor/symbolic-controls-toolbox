@@ -9,8 +9,11 @@ namespace Controls {
 
 // Should this use the Schur decomposition, or the polynomial solve method?
 void eigenvalues(SymEngine::DenseMatrix &A,
-                         SymEngine::vec_basic &l,
-                         SymEngine::DenseMatrix &v);
+                 SymEngine::vec_basic &l,
+                 SymEngine::DenseMatrix &v);
+
+SymEngine::RCP<const SymEngine::Basic>
+get_first_eigenvalue(SymEngine::DenseMatrix &A, double tol);
 
 // Use eigenvalues or the Schur decomposition to compute eigenvectors.
 void eigenvectors();

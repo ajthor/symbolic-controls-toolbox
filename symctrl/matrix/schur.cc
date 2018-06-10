@@ -1,5 +1,5 @@
-// #include <symengine/add.h>
-// #include <symengine/pow.h>
+#include <symengine/add.h>
+#include <symengine/pow.h>
 
 #include "linalg.hpp"
 
@@ -12,6 +12,7 @@ void schur(SymEngine::DenseMatrix &A,
            SymEngine::DenseMatrix &U,
            SymEngine::DenseMatrix &T,
            size_t n_iter) {
+  size_t i;
   unsigned row = A.nrows();
   unsigned col = A.ncols();
 
@@ -21,24 +22,23 @@ void schur(SymEngine::DenseMatrix &A,
   }
 
   // TODO: Perform numerical checking.
-  size_t i, j;
-  for(i = 0; i < row; i++) {
-    for(j = 0; j < col; j++) {
-      if(!SymEngine::is_a_Number(*A.get(i, j))) {
-        // error
-      }
-    }
+  if(!is_numeric(A)) {
+    // error
   }
 
-  SymEngine::DenseMatrix Q, R, W, V;
+  SymEngine::DenseMatrix H, Q, R, W, V;
+  H = SymEngine::DenseMatrix(A);
   Q = SymEngine::DenseMatrix(row, col);
   R = SymEngine::DenseMatrix(row, col);
 
-  W = SymEngine::DenseMatrix(A);
+  // Compute the upper-Hessenberg form of A.
+  // hessenberg(A, H);
+
+  W = SymEngine::DenseMatrix(H);
   V = SymEngine::DenseMatrix(row, col);
   SymEngine::eye(V);
 
-  for(i = 0; i < n_iter; i++) {
+  for(i = 0; i < 200; i++) {
     QR(W, Q, R);
     R.mul_matrix(Q, W);
     V.mul_matrix(Q, V);
@@ -47,8 +47,10 @@ void schur(SymEngine::DenseMatrix &A,
     // Absolute difference is less than some parameter.
   }
 
-  U = V;
-  T = W;
+  U = SymEngine::DenseMatrix(V);
+  T = SymEngine::DenseMatrix(W);
+
 }
+
 
 } // Controls

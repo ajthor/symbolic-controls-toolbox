@@ -30,18 +30,6 @@ void householder_reflector(SymEngine::vec_basic &u) {
 void householder_transform_l(SymEngine::DenseMatrix &A,
                              SymEngine::vec_basic &u) {
   // // Form u*u'
-  // size_t i, j;
-  // size_t len = u.size();
-  // SymEngine::vec_basic uu = SymEngine::vec_basic(len*len);
-  // SymEngine::DenseMatrix M;
-  //
-  // for(i = 0; i < len; i++) { // row
-  //   for(j = 0; j < len; j++) { // col
-  //     uu[i*len + j] = SymEngine::mul(u[i], u[j]);
-  //   }
-  // }
-  //
-  // M = SymEngine::DenseMatrix(len, len, {uu});
   SymEngine::DenseMatrix M;
   mul_vec(u, M);
 

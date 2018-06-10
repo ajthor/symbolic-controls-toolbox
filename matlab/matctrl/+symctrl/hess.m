@@ -1,21 +1,23 @@
 function H = hess(A)
-    n = size(A, 1);
 
-    A = symctrl.mat2se(A);
+n = size(A, 1);
 
-    cptr = libpointer('stringPtrPtr', A);
-    resptr_H = libpointer('stringPtrPtr', A);
+A = symctrl.mat2se(A);
 
-    calllib('matctrl', ...
-            'ml_la_hessenberg', ...
-            n, ...
-            cptr, ...
-            resptr_H);
+cptr = libpointer('stringPtrPtr', A);
+resptr_H = libpointer('stringPtrPtr', A);
 
-    H = reshape(resptr_H.Value, n, n);
+calllib('matctrl', ...
+        'ml_linalg_hessenberg', ...
+        n, ...
+        cptr, ...
+        resptr_H);
 
-    H = symctrl.se2mat(H);
+H = reshape(resptr_H.Value, n, n);
 
-    clear('cptr');
-    clear('resptr_H');
+H = symctrl.se2mat(H);
+
+clear('cptr');
+clear('resptr_H');
+
 end

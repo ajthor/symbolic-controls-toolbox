@@ -73,7 +73,7 @@ extern "C" {
 // ----------------------------------------------------------------------
 // Linear algebra wrapper functions.
 //
-void ml_la_hessenberg(int len, char **arg, char **result) {
+void ml_linalg_hessenberg(int len, char **arg, char **result) {
   auto mat = dense_matrix_new_rows_cols(len, len);
   auto res = dense_matrix_new_rows_cols(len, len);
   auto s = basic_new_heap();
@@ -88,7 +88,7 @@ void ml_la_hessenberg(int len, char **arg, char **result) {
     }
   }
 
-  la_hessenberg(mat, res);
+  linalg_hessenberg(mat, res);
 
   idx = 0;
   for(i = 0; i < len; i++) { // rows
@@ -105,7 +105,7 @@ void ml_la_hessenberg(int len, char **arg, char **result) {
   dense_matrix_free(res);
 }
 
-void ml_la_schur(int len, char **A, char **U, char **T) {
+void ml_linalg_schur(int len, char **A, char **U, char **T) {
   auto mat = dense_matrix_new_rows_cols(len, len);
   auto res_U = dense_matrix_new_rows_cols(len, len);
   auto res_T = dense_matrix_new_rows_cols(len, len);
@@ -121,7 +121,7 @@ void ml_la_schur(int len, char **A, char **U, char **T) {
     }
   }
 
-  la_schur(mat, res_U, res_T);
+  linalg_schur(mat, res_U, res_T);
 
   idx = 0;
   for(i = 0; i < len; i++) { // rows
@@ -142,7 +142,7 @@ void ml_la_schur(int len, char **A, char **U, char **T) {
   dense_matrix_free(res_T);
 }
 
-void ml_la_eigenvalues(int len, char **A, char **l, char **v) {
+void ml_linalg_eigenvalues(int len, char **A, char **l, char **v) {
   auto mat = dense_matrix_new_rows_cols(len, len);
   auto res_l = vecbasic_new();
   auto res_v = dense_matrix_new_rows_cols(len, len);
@@ -158,7 +158,7 @@ void ml_la_eigenvalues(int len, char **A, char **l, char **v) {
     }
   }
 
-  la_eigenvalues(mat, res_l, res_v);
+  linalg_eigenvalues(mat, res_l, res_v);
 
   idx = 0;
   for(i = 0; i < len; i++) { // rows
@@ -176,6 +176,30 @@ void ml_la_eigenvalues(int len, char **A, char **l, char **v) {
   basic_free_heap(s);
   vecbasic_free(res_l);
   dense_matrix_free(res_v);
+}
+
+void ml_linalg_first_eigenvalue(int len, char **A, char **l, double tol) {
+  auto mat = dense_matrix_new_rows_cols(len, len);
+  auto s = basic_new_heap();
+
+  int i = 0;
+  int j = 0;
+  int idx = 0;
+  for (i = 0; i < len; i++) {
+    for (j = 0; j < len; j++) {
+      basic_parse(s, A[idx++]);
+      dense_matrix_set_basic(mat, i, j, s);
+    }
+  }
+
+  linalg_first_eigenvalue(mat, s, tol);
+
+  l[0] = se_parse(basic_str(s));
+  // dense_matrix_set_basic(l, 0, 0, se_parse(basic_str(s)));
+
+  basic_free_heap(s);
+  dense_matrix_free(mat);
+  // dense_matrix_free(res);
 }
 
 // ----------------------------------------------------------------------

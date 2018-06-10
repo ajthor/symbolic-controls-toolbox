@@ -49,7 +49,7 @@ void hessenberg(SymEngine::DenseMatrix &A,
       }
     }
 
-    // A_b = A_b - 2*u*u'*A_b
+    // Assign u*u' to M.
     M = SymEngine::DenseMatrix(len, len, {uu});
 
     // Get the submatrix from A.
@@ -59,13 +59,14 @@ void hessenberg(SymEngine::DenseMatrix &A,
     // Assign the submatrix of A to R.
     R = SymEngine::DenseMatrix(row - (k + 1), col - k, {tmp});
 
+    // A_r = A_r - 2*u*u'*A_r
     householder_transform_l(R, M);
-    tmp = R.as_vec_basic();
 
     // Substitute the new values back into A.
+    tmp = R.as_vec_basic();
     vec_to_submatrix(tmp, k + 1, row, k, col, Av);
 
-    // A_c = A_c - 2*A_c*u*u'
+    // Assign u*u' to M.
     M = SymEngine::DenseMatrix(len, len, {uu});
 
     // Get the submatrix from A.
@@ -75,10 +76,11 @@ void hessenberg(SymEngine::DenseMatrix &A,
     // Assign the submatrix of A to R.
     R = SymEngine::DenseMatrix(row, col - (k + 1), {tmp});
 
+    // A_c = A_c - 2*A_c*u*u'
     householder_transform_r(R, M);
-    tmp = R.as_vec_basic();
 
     // Substitute the new values back into A.
+    tmp = R.as_vec_basic();
     vec_to_submatrix(tmp, 0, row, k + 1, col, Av);
 
     // Set remainders of operations to zero. This is the approximation.

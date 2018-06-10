@@ -74,15 +74,31 @@ void mat_printf(SymEngine::DenseMatrix &M) {
 }
 
 // ----------------------------------------------------------------------
-// Is Square
+// Matrix Properties
 //
+bool is_numeric(SymEngine::DenseMatrix &A) {
+  size_t row, col, i, j;
+  row = A.nrows();
+  col = A.ncols();
+  for(i = 0; i < row; i++) {
+    for(j = 0; j < col; j++) {
+      if(!SymEngine::is_a_Number(*A.get(i, j))) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
 bool is_square(SymEngine::MatrixBase &A) {
   return (A.nrows() == A.ncols());
 }
 
 // ----------------------------------------------------------------------
-// 2-Norm
+// Vector Manipulations
 //
+
+// Vector 2-norm.
 SymEngine::RCP<const SymEngine::Basic> norm2(SymEngine::vec_basic &v) {
   SymEngine::RCP<const SymEngine::Basic> t = SymEngine::zero;
   int i = 0;
@@ -94,10 +110,7 @@ SymEngine::RCP<const SymEngine::Basic> norm2(SymEngine::vec_basic &v) {
   return t;
 }
 
-// ----------------------------------------------------------------------
-// Vector Normalization
-//
-// v = v/|v|
+// Vector normalization. V/|V|
 void normalize(SymEngine::vec_basic &v) {
   SymEngine::RCP<const SymEngine::Basic> t = norm2(v);
   int i = 0;
@@ -106,9 +119,7 @@ void normalize(SymEngine::vec_basic &v) {
   }
 }
 
-// ----------------------------------------------------------------------
-// Vector Multiplication
-//
+// Vector multiplication. V*V'
 void mul_vec(SymEngine::vec_basic &v, SymEngine::DenseMatrix &M) {
   size_t i, j;
   size_t len = v.size();
@@ -124,8 +135,34 @@ void mul_vec(SymEngine::vec_basic &v, SymEngine::DenseMatrix &M) {
 }
 
 // ----------------------------------------------------------------------
-// Companion Matix
+// Matrix Manipulations
 //
+
+// Hermitian (Conjugate) transpose.
+void conjugate_transpose(SymEngine::DenseMatrix &A, SymEngine::DenseMatrix &B) {
+  //
+  size_t row, col, i, n;
+  row = A.nrows();
+  col = A.ncols();
+
+  A.transpose(B);
+
+  SymEngine::RCP<const SymEngine::Number> k;
+  SymEngine::vec_basic tmp = B.as_vec_basic();
+
+  n = tmp.size();
+  for(i = 0; i < n; i++) {
+    if(SymEngine::is_a_Number(*tmp[i])) {
+      k = SymEngine::rcp_static_cast<const SymEngine::Number>(tmp[i]);
+      if(k->is_complex()) {
+        tmp[i] = k->conjugate();
+      }
+    }
+  }
+
+  B = SymEngine::DenseMatrix(col, row, {tmp});
+}
+
 // The Frobenius companion matrix of a monic polynomial.
 void companion_matrix(SymEngine::vec_basic &c, SymEngine::DenseMatrix &result) {
   size_t n = c.size();

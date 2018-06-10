@@ -22,9 +22,12 @@ extern "C" {
 // ----------------------------------------------------------------------
 // Linear algebra wrapper functions.
 //
-void ml_la_hessenberg(int len, char **A, char **result);
-void ml_la_schur(int len, char **A, char **U, char **T);
-void ml_la_eigenvalues(int len, char **A, char **l, char **v);
+void ml_linalg_hessenberg(int len, char **A, char **result);
+void ml_linalg_schur(int len, char **A, char **U, char **T);
+
+void ml_linalg_eigenvalues(int len, char **A, char **l, char **v);
+
+void ml_linalg_first_eigenvalue(int len, char **A, char **l, double tol);
 
 // ----------------------------------------------------------------------
 // State Space wrapper functions.
