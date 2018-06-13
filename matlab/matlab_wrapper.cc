@@ -604,17 +604,20 @@ void ml_mdp_probabilities_get(MDP_C *obj, int *result) {
   }
 }
 void ml_mdp_probabilities_set_sparse(MDP_C *obj, unsigned long u,
-                                     unsigned long len,
-                                     unsigned long *i, unsigned long *j,
+                                     unsigned long rlen, unsigned long clen,
+                                     unsigned long *r, unsigned long *c,
                                      double *v) {
   //
-  mdp_probabilities_set_sparse(obj, u, len, i, j, v);
+  // for (size_t k = 0; k < len; k++) {
+  //   printf("[%lu, %lu] - %f\n", i[k], j[k], v[k]);
+  // }
+  mdp_probabilities_set_sparse(obj, u, rlen, clen, r, c, v);
 }
 void ml_mdp_probabilities_get_sparse(MDP_C *obj, unsigned long u,
-                                     unsigned long *i, unsigned long *j,
+                                     unsigned long *r, unsigned long *c,
                                      double *v) {
   //
-  mdp_probabilities_get_sparse(obj, u, &i, &j, &v);
+  mdp_probabilities_get_sparse(obj, u, &r, &c, &v);
 }
 unsigned long ml_mdp_probabilities_nnz(MDP_C *obj, unsigned long u) {
   return mdp_probabilities_nnz(obj, u);
@@ -649,17 +652,17 @@ void ml_mdp_rewards_get(MDP_C *obj, int *result) {
   // return mdp_rewards_get(obj, u, x, xp);
 }
 void ml_mdp_rewards_set_sparse(MDP_C *obj, unsigned long u,
-                               unsigned long len,
-                               unsigned long *i, unsigned long *j,
+                               unsigned long rlen, unsigned long clen,
+                               unsigned long *r, unsigned long *c,
                                double *v) {
   //
-  mdp_rewards_set_sparse(obj, u, len, i, j, v);
+  mdp_rewards_set_sparse(obj, u, rlen, clen, r, c, v);
 }
 void ml_mdp_rewards_get_sparse(MDP_C *obj, unsigned long u,
-                               unsigned long *i, unsigned long *j,
+                               unsigned long *r, unsigned long *c,
                                double *v) {
   //
-  mdp_rewards_get_sparse(obj, u, i, j, v);
+  mdp_rewards_get_sparse(obj, u, &r, &c, &v);
 }
 unsigned long ml_mdp_rewards_nnz(MDP_C *obj, unsigned long u) {
   return mdp_rewards_nnz(obj, u);

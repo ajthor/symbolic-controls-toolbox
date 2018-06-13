@@ -11,7 +11,7 @@ namespace Controls {
 
 class MDP : public ControlModel {
 protected:
-  typedef std::map<std::tuple<unsigned, unsigned>, double> mdp_sparse_t;
+  typedef std::map<std::tuple<size_t, size_t>, double> mdp_sparse_t;
 
 private:
   size_t num_states_;

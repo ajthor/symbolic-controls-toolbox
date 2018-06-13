@@ -119,11 +119,12 @@ SYMCTRL_EXPORT double
 mdp_probabilities_get(MDP_C *obj, size_t u,
                       size_t x, size_t xp);
 SYMCTRL_EXPORT void
-mdp_probabilities_set_sparse(MDP_C *obj, size_t u, size_t len,
-                             size_t *i, size_t *j, double *v);
+mdp_probabilities_set_sparse(MDP_C *obj, size_t u,
+                             size_t rlen, size_t clen,
+                             size_t *r, size_t *c, double *v);
 SYMCTRL_EXPORT void
 mdp_probabilities_get_sparse(MDP_C *obj, size_t u,
-                             size_t **i, size_t **j, double **v);
+                             size_t **r, size_t **c, double **v);
 SYMCTRL_EXPORT size_t mdp_probabilities_nnz(MDP_C *obj, size_t u);
 
 SYMCTRL_EXPORT void mdp_probabilities_erase(MDP_C *obj, size_t n);
@@ -144,11 +145,12 @@ SYMCTRL_EXPORT double
 mdp_rewards_get(MDP_C *obj, size_t u,
                 size_t x, size_t xp);
 SYMCTRL_EXPORT void
-mdp_rewards_set_sparse(MDP_C *obj, size_t u, size_t len,
-                       size_t *i, size_t *j, double *v);
+mdp_rewards_set_sparse(MDP_C *obj, size_t u,
+                       size_t rlen, size_t clen,
+                       size_t *r, size_t *c, double *v);
 SYMCTRL_EXPORT void
 mdp_rewards_get_sparse(MDP_C *obj, size_t u,
-                       size_t *i, size_t *j, double *v);
+                       size_t **r, size_t **c, double **v);
 SYMCTRL_EXPORT size_t mdp_rewards_nnz(MDP_C *obj, size_t u);
 
 SYMCTRL_EXPORT void mdp_rewards_erase(MDP_C *obj, size_t n);

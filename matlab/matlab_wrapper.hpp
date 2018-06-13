@@ -86,22 +86,22 @@ void ml_mdp_num_inputs_set(MDP_C* obj, int arg);
 void ml_mdp_probabilities_set(MDP_C *obj, const int *arg);
 void ml_mdp_probabilities_get(MDP_C *obj, int *result);
 void ml_mdp_probabilities_set_sparse(MDP_C *obj, unsigned long u,
-                                     unsigned long len,
-                                     unsigned long *i, unsigned long *j,
+                                     unsigned long rlen, unsigned long clen,
+                                     unsigned long *r, unsigned long *c,
                                      double *v);
 void ml_mdp_probabilities_get_sparse(MDP_C *obj, unsigned long u,
-                                     unsigned long *i, unsigned long *j,
+                                     unsigned long *r, unsigned long *c,
                                      double *v);
 unsigned long ml_mdp_probabilities_nnz(MDP_C *obj, unsigned long u);
 
 void ml_mdp_rewards_set(MDP_C *obj, const int *arg);
 void ml_mdp_rewards_get(MDP_C *obj, int *result);
 void ml_mdp_rewards_set_sparse(MDP_C *obj, unsigned long u,
-                               unsigned long len,
-                               unsigned long *i, unsigned long *j,
+                               unsigned long rlen, unsigned long clen,
+                               unsigned long *r, unsigned long *c,
                                double *v);
 void ml_mdp_rewards_get_sparse(MDP_C *obj, unsigned long u,
-                               unsigned long *i, unsigned long *j,
+                               unsigned long *r, unsigned long *c,
                                double *v);
 unsigned long ml_mdp_rewards_nnz(MDP_C *obj, unsigned long u);
 

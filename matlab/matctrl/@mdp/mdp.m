@@ -39,63 +39,13 @@ classdef (SupportExtensionMethods = true) mdp < handle
     end
 
     methods
-        % function set.X(obj, n)
-        %     validateattributes(n, {'numeric'}, {'scalar'});
-        %     calllib('matctrl', 'ml_mdp_num_states_set', obj.cobj_, n);
-        % end
-
         function X = get.X(obj)
             X = calllib('matctrl', 'ml_mdp_num_states_get', obj.cobj_);
         end
 
-        % function set.U(obj, n)
-        %     validateattributes(n, {'numeric'}, {'scalar'});
-        %     calllib('matctrl', 'ml_mdp_num_inputs_set', obj.cobj_, n);
-        % end
-
         function U = get.U(obj)
             U = calllib('matctrl', 'ml_mdp_num_inputs_get', obj.cobj_);
         end
-
-        % function set.P(obj, s)
-        %     x = obj.X;
-        %     u = obj.U;
-        %     validateattributes(n, {'numeric'}, {'size', [u, x, x]});
-        %     calllib('matctrl', 'ml_mdp_probabilities_set', ...
-        %             obj.cobj_, ...
-        %             s);
-        % end
-        %
-        % function P = get.P(obj)
-        %     x = obj.X;
-        %     u = obj.U;
-        %
-        %     P = zeros(u, x, x);
-        %
-        %     calllib('matctrl', 'ml_mdp_probabilities_get', ...
-        %             obj.cobj_, ...
-        %             P);
-        % end
-        %
-        % function set.R(obj, s)
-        %     x = obj.X;
-        %     u = obj.U;
-        %     validateattributes(n, {'numeric'}, {'size', [u, x, x]});
-        %     calllib('matctrl', 'ml_mdp_rewards_set', ...
-        %             obj.cobj_, ...
-        %             s);
-        % end
-        %
-        % function R = get.R(obj)
-        %     x = obj.X;
-        %     u = obj.U;
-        %
-        %     R = zeros(u, x, x);
-        %
-        %     calllib('matctrl', 'ml_mdp_rewards_get', ...
-        %             obj.cobj_, ...
-        %             R);
-        % end
 
         function set.gamma(obj, gamma)
             validateattributes(gamma, {'numeric'}, {'scalar'});
@@ -138,10 +88,14 @@ classdef (SupportExtensionMethods = true) mdp < handle
                         bptr, ...
                         vptr);
 
-                a = double(aptr.Value);
-                b = double(bptr.Value);
-                v = vptr.Value;
-                varargout = {sparse(a + 1, b + 1, v, x, x)};
+                if ~isNull(vptr)
+                    a = double(aptr.Value);
+                    b = double(bptr.Value);
+                    v = vptr.Value;
+                    varargout = {sparse(a + 1, b + 1, v, x, x)};
+                else
+                    varargout = {sparse(x, x)};
+                end
 
                 clear('aptr');
                 clear('bptr');
@@ -165,15 +119,29 @@ classdef (SupportExtensionMethods = true) mdp < handle
                 a = zeros(nz, 1);
                 b = zeros(nz, 1);
                 v = zeros(nz, 1);
+                aptr = libpointer('ulongPtr', a);
+                bptr = libpointer('ulongPtr', b);
+                vptr = libpointer('doublePtr', v);
 
                 calllib('matctrl', 'ml_mdp_rewards_get_sparse', ...
                         obj.cobj_, ...
-                        idx{1}, ...
-                        a, ...
-                        b, ...
-                        v);
+                        idx{1} - 1, ...
+                        aptr, ...
+                        bptr, ...
+                        vptr);
 
-                varargout = {sparse(a + 1, b + 1, v, x, x)};
+                if ~isNull(vptr)
+                    a = double(aptr.Value);
+                    b = double(bptr.Value);
+                    v = vptr.Value;
+                    varargout = {sparse(a + 1, b + 1, v, x, x)};
+                else
+                    varargout = {sparse(x, x)};
+                end
+
+                clear('aptr');
+                clear('bptr');
+                clear('vptr');
 
             else
                 [varargout{1:nargout}] = builtin('subsref', obj, S);
@@ -189,15 +157,53 @@ classdef (SupportExtensionMethods = true) mdp < handle
                     error('Not enough input arguments.');
                 end
 
-                values = varargin{:};
+                values = zeros(numel(idx{2}), numel(idx{3}));
+                values(:) = varargin{:};
+
+                a = idx{2} - 1;
+                b = idx{3} - 1;
+                aptr = libpointer('ulongPtr', a);
+                bptr = libpointer('ulongPtr', b);
 
                 calllib('matctrl', 'ml_mdp_probabilities_set_sparse', ...
                         obj.cobj_, ...
                         idx{1} - 1, ...
-                        numel(values), ...
-                        idx{2} - 1, ...
-                        idx{3} - 1, ...
+                        numel(a), ...
+                        numel(b), ...
+                        aptr, ...
+                        bptr, ...
                         values);
+
+                clear('aptr');
+                clear('bptr');
+
+            elseif strcmp(S(1).type, '.') && strcmp(S(1).subs, 'R')
+                if numel(S) > 1
+                    idx = S(2).subs;
+                else
+                    % Reject assignment to entire cell.
+                    error('Not enough input arguments.');
+                end
+
+                values = zeros(numel(idx{2}), numel(idx{3}));
+                values(:) = varargin{:};
+
+                a = idx{2} - 1;
+                b = idx{3} - 1;
+                aptr = libpointer('ulongPtr', a);
+                bptr = libpointer('ulongPtr', b);
+
+                calllib('matctrl', 'ml_mdp_rewards_set_sparse', ...
+                        obj.cobj_, ...
+                        idx{1} - 1, ...
+                        numel(a), ...
+                        numel(b), ...
+                        aptr, ...
+                        bptr, ...
+                        values);
+
+                clear('aptr');
+                clear('bptr');
 
             else
                 obj = builtin('subsasgn', obj, S, varargin{:});

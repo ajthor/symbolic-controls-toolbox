@@ -39,10 +39,21 @@ double MDP::get_probability(size_t u, size_t x, size_t xp) {
   // TODO: Ensure u is not greater than num_inputs.
   // TODO: Ensure x is not greater than num_states.
   // TODO: Ensure xp is not greater than num_states.
-  try {
-    return probabilities_.at(u).at(std::make_tuple(x, xp));
-  } catch(const std::out_of_range &e) {
-    return 0.0;
+
+  // try {
+  //   return probabilities_.at(u).at(std::make_tuple(x, xp));
+  // } catch(const std::out_of_range &e) {
+  //   return 0.0;
+  // }
+
+  auto n_map = probabilities_.at(u);
+  auto idx = std::make_tuple(x, xp);
+
+  auto res = n_map.find(idx);
+  if(res != n_map.end()) {
+    return res->second;
+  } else {
+    return 0;
   }
 }
 
@@ -56,10 +67,21 @@ double MDP::get_reward(size_t u, size_t x, size_t xp) {
   // TODO: Ensure u is not greater than num_inputs.
   // TODO: Ensure x is not greater than num_states.
   // TODO: Ensure xp is not greater than num_states.
-  try {
-    return rewards_.at(u).at(std::make_tuple(x, xp));
-  } catch(const std::out_of_range &e) {
-    return 0.0;
+
+  // try {
+  //   return rewards_.at(u).at(std::make_tuple(x, xp));
+  // } catch(const std::out_of_range &e) {
+  //   return 0.0;
+  // }
+
+  auto n_map = rewards_.at(u);
+  auto idx = std::make_tuple(x, xp);
+
+  auto res = n_map.find(idx);
+  if(res != n_map.end()) {
+    return res->second;
+  } else {
+    return 0;
   }
 }
 
