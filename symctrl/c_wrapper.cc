@@ -351,23 +351,9 @@ void mdp_free(MDP_C *obj) {
 size_t mdp_num_states_get(MDP_C *obj) {
   return obj->m.get_num_states();
 }
-void mdp_num_states_set(MDP_C *obj, size_t n) {
-  C_WRAPPER_BEGIN
-
-  obj->m.set_num_states(n);
-
-  C_WRAPPER_END()
-}
 
 size_t mdp_num_inputs_get(MDP_C *obj) {
   return obj->m.get_num_inputs();
-}
-void mdp_num_inputs_set(MDP_C *obj, size_t n) {
-  C_WRAPPER_BEGIN
-
-  obj->m.set_num_inputs(n);
-
-  C_WRAPPER_END()
 }
 
 void mdp_probabilities_set(MDP_C *obj, size_t u,

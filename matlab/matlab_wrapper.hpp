@@ -78,10 +78,8 @@ MDP_C* ml_mdp_new(unsigned long x, unsigned long u);
 void ml_mdp_free(MDP_C* obj);
 
 int ml_mdp_num_states_get(MDP_C* obj);
-void ml_mdp_num_states_set(MDP_C* obj, int arg);
 
 int ml_mdp_num_inputs_get(MDP_C* obj);
-void ml_mdp_num_inputs_set(MDP_C* obj, int arg);
 
 void ml_mdp_probabilities_set(MDP_C *obj, const int *arg);
 void ml_mdp_probabilities_get(MDP_C *obj, int *result);

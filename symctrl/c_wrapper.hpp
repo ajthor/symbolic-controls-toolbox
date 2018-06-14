@@ -107,10 +107,8 @@ SYMCTRL_EXPORT MDP_C *mdp_new(const size_t x, const size_t u);
 SYMCTRL_EXPORT void mdp_free(MDP_C *obj);
 
 SYMCTRL_EXPORT size_t mdp_num_states_get(MDP_C *obj);
-SYMCTRL_EXPORT void mdp_num_states_set(MDP_C *obj, size_t n);
 
 SYMCTRL_EXPORT size_t mdp_num_inputs_get(MDP_C *obj);
-SYMCTRL_EXPORT void mdp_num_inputs_set(MDP_C *obj, size_t n);
 
 SYMCTRL_EXPORT void
 mdp_probabilities_set(MDP_C *obj, size_t u,

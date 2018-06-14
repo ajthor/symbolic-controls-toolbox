@@ -9,8 +9,12 @@
 
 namespace Controls {
 
+class MDPVisitor;
+
 class MDP : public ControlModel {
 protected:
+  // TODO: Eventually, this should change to CSR format, though I haven't
+  // figured out how to do CSR with >2d matrices.
   typedef std::map<std::tuple<size_t, size_t>, double> mdp_sparse_t;
 
 private:
@@ -19,14 +23,14 @@ private:
 
   double gamma_;
 
+  void set_num_states(const size_t arg);
+  void set_num_inputs(const size_t arg);
+
 public:
   MDP(const size_t x, const size_t u);
   ~MDP();
 
-  void set_num_states(const size_t arg);
   size_t get_num_states();
-
-  void set_num_inputs(const size_t arg);
   size_t get_num_inputs();
 
   void set_gamma(const double arg);
@@ -43,6 +47,7 @@ public:
   void set_reward(size_t u, size_t x, size_t xp, const double value);
   double get_reward(size_t u, size_t x, size_t xp);
 
+  void accept(MDPVisitor &visitor);
 };
 
 } // Controls

@@ -7,6 +7,7 @@ set(SRC
   c_wrapper.cc
   control_model.cc
   mdp.cc
+  mdp_train.cc
   state_space.cc
   system.cc
   transfer_function.cc
@@ -25,6 +26,7 @@ set(HEADERS
   c_wrapper.hpp
   control_model.hpp
   mdp.hpp
+  mdp_train.hpp
   state_space.hpp
   subs.hpp
   system.hpp

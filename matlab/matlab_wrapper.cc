@@ -566,15 +566,9 @@ void ml_mdp_free(MDP_C* obj) {
 int ml_mdp_num_states_get(MDP_C* obj) {
   return mdp_num_states_get(obj);
 }
-void ml_mdp_num_states_set(MDP_C* obj, int arg) {
-  mdp_num_states_set(obj, arg);
-}
 
 int ml_mdp_num_inputs_get(MDP_C* obj) {
   return mdp_num_inputs_get(obj);
-}
-void ml_mdp_num_inputs_set(MDP_C* obj, int arg) {
-  mdp_num_inputs_set(obj, arg);
 }
 
 void ml_mdp_probabilities_set(MDP_C *obj, const int *arg) {
