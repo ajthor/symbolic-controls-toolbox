@@ -1,37 +1,18 @@
-classdef (SupportExtensionMethods = true) statespace < handle
-    %STATESPACE Construct symbolic state-space model or convert model to
-    %symbolic state-space.
+classdef (SupportExtensionMethods = true, InferiorClasses = {?sym}) transferfunction < handle
+    %SYMTF Construct symbolic transfer function or convert model to
+    %symbolic transfer function.
     %
-    %   sys = STATESPACE creates an empty state-space representation.
+    %   G = SYMTF(expr)
+    %   creates a transfer function using a symbolic expression. The
+    %   symbolic expression should be a polynomial function of one of the
+    %   variables {s, z, p, q}.
     %
-    %   A state-space model is defined by state equations and output equations,
-    %   given by:
+    %   G = SYMTF(num, den) creates a transfer function with numerator and
+    %   denominator 'num' and 'den'. 'num' and 'den' can be scalar arrays
+    %   or symbolic arrays representing the coefficients of a polynomial or
+    %   symbolic expressions.
     %
-    %       dx/dt = f(t, x, u)
-    %           y = g(t, x, u)
-    %
-    %   In order to define a state-space model, begin with an empty state space
-    %   model, define states and inputs, and then define state equations and
-    %   output equations.
-    %
-    %   sys = STATESPACE(A, B, C, D) Creates a state space model using the
-    %   matrices A, B, C, D.
-    %
-    %       dx/dt = Ax(t) + Bx(t)
-    %        y(t) = Cx(t) + Du(t)
-    %
-    %   A must be an nxn matrix, B must be an nxm matrix, and C must be a pxn
-    %   matrix. If D is specified, it must be a pxm matrix.
-    %
-    %   sys = STATESPACE(states, inputs) creates a state space model using the
-    %   state variables and input variables provided.
-    %
-    %   sys = STATESPACE(Ts) creates a discrete state space model with sampling
-    %   time Ts.
-
-    %   References:
-    %   Antsaklis, Panos J., and Anthony N. Michel. A linear systems
-    %   primer. Vol. 1. Boston: Birkhauser, 2007.
+    %   G = SYMTF creates the transfer function G(s) = 1.
 
     properties (Access = protected, Hidden)
         % C Pointer Handle
@@ -39,34 +20,34 @@ classdef (SupportExtensionMethods = true) statespace < handle
     end
 
     properties (Dependent)
-        % State Variables
-        states
-        % Input Variables
-        inputs
-        % State Equations
-        f
-        % Ouput Equations
-        g
+        % Numerator
+        Numerator
+        % Denominator
+        Denominator
+        % Variable
+        Variable
     end
 
-    properties (SetAccess = immutable, Dependent)
-        % State matrix A
-        A
-        % Input matrix B
-        B
-        % Output matrix C
-        C
-        % Feed-forward matrix D
-        D
+    properties (Hidden, SetAccess = immutable, Dependent)
+        tf
     end
 
     methods
-        function obj = statespace(varargin)
-            obj.cobj_ = calllib('matctrl', 'ml_statespace_new');
+        function obj = transferfunction(varargin)
+            obj.cobj_ = calllib('matctrl', 'ml_transferfunction_new');
         end
 
         function delete(obj)
-            calllib('matctrl', 'ml_statespace_free', obj.cobj_);
+            calllib('matctrl', 'ml_transferfunction_free', obj.cobj_);
+        end
+    end
+
+    % Utility methods.
+    methods (Hidden)
+        function S = sym(obj)
+            %SYM Helper function to allow functionality with sym class
+            %functions.
+            S = obj.tf;
         end
     end
 
@@ -241,46 +222,6 @@ classdef (SupportExtensionMethods = true) statespace < handle
 
             clear('cptr');
         end
-    end
-
-    % To be moved to new files.
-    methods
-        function co = ctrb(obj)
-            n = calllib('matctrl', 'ml_statespace_states_size', obj.cobj_);
-            m = calllib('matctrl', 'ml_statespace_inputs_size', obj.cobj_);
-
-            c = cell(1, n*n*m);
-            cptr = libpointer('stringPtrPtr', c);
-
-            calllib('matctrl', ...
-                    'ml_statespace_ctrb', ...
-                    obj.cobj_, ...
-                    cptr);
-
-            % co = cptr.Value;
-            co = reshape(cptr.Value, n, n*m);
-
-            clear('cptr');
-        end
-
-        function ob = obsv(obj)
-            n = calllib('matctrl', 'ml_statespace_states_size', obj.cobj_);
-            p = calllib('matctrl', 'ml_statespace_g_size', obj.cobj_);
-
-            c = cell(1, n*p*n);
-            cptr = libpointer('stringPtrPtr', c);
-
-            calllib('matctrl', ...
-                    'ml_statespace_obsv', ...
-                    obj.cobj_, ...
-                    cptr);
-
-            % ob = cptr.Value;
-            ob = reshape(cptr.Value, n*p, n);
-
-            clear('cptr');
-        end
-
     end
 
 end

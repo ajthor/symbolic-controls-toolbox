@@ -602,9 +602,6 @@ void ml_mdp_probabilities_set_sparse(MDP_C *obj, unsigned long u,
                                      unsigned long *r, unsigned long *c,
                                      double *v) {
   //
-  // for (size_t k = 0; k < len; k++) {
-  //   printf("[%lu, %lu] - %f\n", i[k], j[k], v[k]);
-  // }
   mdp_probabilities_set_sparse(obj, u, rlen, clen, r, c, v);
 }
 void ml_mdp_probabilities_get_sparse(MDP_C *obj, unsigned long u,

@@ -12,9 +12,6 @@ calllib('matctrl', ...
         old_ptr, ...
         new_ptr);
 
-% co = old_ptr.Value;
-% co = reshape(old_ptr.Value, n, n*m);
-
 clear('old_ptr');
 clear('new_ptr');
 
