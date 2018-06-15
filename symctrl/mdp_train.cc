@@ -46,7 +46,7 @@ void PolicyIterationVisitor::visit(MDP &m) {
 }
 
 void ValueIterationVisitor::visit(MDP &m) {
-  size_t i, j, k;
+  size_t i, j, k, n;
   size_t nu = m.get_num_inputs();
   size_t nx = m.get_num_states();
 
@@ -57,20 +57,27 @@ void ValueIterationVisitor::visit(MDP &m) {
   std::vector<double> tmp = std::vector<double>(nx);
   mdp_policy_t PR = mdp_policy_t(nx, std::vector<double>(nu));
 
-  // #pragma omp parallel for
-  // for(k = 0; k < nu; k++) {
-  //
-  //   for(i = 0; i < nx; i++) { // row
-  //     for(j = 0; j < nx; j++) { // col
-  //       // Zeroize
-  //       PR[i, j] = 0.0;
-  //
-  //       for(n = 0; n < nx; n++) {
-  //         PR[i, j] += m.probabilities_[k][i, n]*m.rewards_[k][n, j];
-  //       }
-  //     }
-  //   }
-  // }
+  #pragma omp parallel for
+  for(k = 0; k < nu; k++) {
+
+    // for(const auto &p : obj->m.probabilities_.at(u)) {
+    //   (*r)[k] = std::get<0>(p.first);
+    //   (*c)[k] = std::get<1>(p.first);
+    //   (*v)[k] = p.second;
+    // }
+
+    // for(i = 0; i < nx; i++) { // row
+    //   for(j = 0; j < nx; j++) { // col
+    //     // Zeroize
+    //     PR[i][j] = 0.0;
+    //
+    //     for(n = 0; n < nx; n++) {
+    //       PR[i][j] += m.probabilities_[k][std::make_tuple(i, n)]
+    //                 * m.rewards_[k][std::make_tuple(n, j)];
+    //     }
+    //   }
+    // }
+  }
 
 }
 

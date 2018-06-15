@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <symengine/basic.h>
+#include <symengine/dict.h>
 #include <symengine/matrix.h>
 
 #include "system.hpp"
@@ -48,16 +49,16 @@ public:
 
 protected:
   // Vector of symbolic state variables.
-  std::vector<SymEngine::RCP<const SymEngine::Basic>> states_;
+  SymEngine::vec_basic states_;
 
   // Vector of symbolic input variables.
-  std::vector<SymEngine::RCP<const SymEngine::Basic>> inputs_;
+  SymEngine::vec_basic inputs_;
 
   // Vector of state equations.
-  std::vector<SymEngine::RCP<const SymEngine::Basic>> f_;
+  SymEngine::vec_basic f_;
 
   // Vector of output equations.
-  std::vector<SymEngine::RCP<const SymEngine::Basic>> g_;
+  SymEngine::vec_basic g_;
 
   // TODO: Add sparse matrix backend to state space class.
   // SymEngine::CSRMatrix A;

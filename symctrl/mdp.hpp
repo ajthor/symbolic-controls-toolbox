@@ -11,6 +11,10 @@ namespace Controls {
 
 class MDPVisitor;
 
+// ----------------------------------------------------------------------
+// MDP
+//
+// Markov Decision Process
 class MDP : public ControlModel {
 protected:
   // TODO: Eventually, this should change to CSR format, though I haven't
@@ -46,6 +50,18 @@ public:
 
   void set_reward(size_t u, size_t x, size_t xp, const double value);
   double get_reward(size_t u, size_t x, size_t xp);
+
+  void accept(MDPVisitor &visitor);
+};
+
+// ----------------------------------------------------------------------
+// POMDP
+//
+// Partially-Observable Markov Decision Process
+class POMDP : public MDP {
+public:
+  POMDP(const size_t x, const size_t u) : MDP(x, u) {}
+  ~POMDP() {}
 
   void accept(MDPVisitor &visitor);
 };
