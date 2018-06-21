@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "control_model.hpp"
+#include "matrix/sparse.hpp"
 
 namespace Controls {
 
@@ -44,6 +45,8 @@ public:
   // This is stored as a vector (U) of sparse adjacency matrices (X x X').
   std::vector<mdp_sparse_t> probabilities_;
   std::vector<mdp_sparse_t> rewards_;
+  // std::vector<SparseMatrixBase<double>> probabilities_;
+  // std::vector<SparseMatrixBase<double>> rewards_;
 
   void set_probability(size_t u, size_t x, size_t xp, const double value);
   double get_probability(size_t u, size_t x, size_t xp);

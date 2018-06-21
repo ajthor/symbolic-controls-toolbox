@@ -6,6 +6,39 @@
 namespace Controls {
 
 // ----------------------------------------------------------------------
+// Sparse Matrix Base
+//
+template<typename T>
+class SparseMatrixBase {
+private:
+  size_t row_;
+  size_t col_;
+
+public:
+  virtual ~SparseMatrixBase();
+
+  size_t nrows() const;
+  size_t ncols() const;
+
+  virtual T get(size_t i, size_t j) const;
+  virtual T get(std::tuple<size_t, size_t> t) const;
+  virtual void set(size_t i, size_t j, T v) const;
+  virtual void set(std::tuple<size_t, size_t> t, T v) const;
+};
+
+// Forward declarations.
+template<typename T> class CSRMatrix;
+template<typename T> class DOKMatrix;
+template<typename T> class COOMatrix;
+
+// ----------------------------------------------------------------------
+// Sparse Matrix (COO)
+//
+// class COOMatrix : public SparseMatrixBase {
+//
+// };
+
+// ----------------------------------------------------------------------
 // Sparse Matrix (DOK)
 //
 // Sparse matrix implementation using DOK (dictionary of keys) format.
@@ -14,11 +47,8 @@ namespace Controls {
 // the CSR matrix for operations. Large sparse matrices should be converted to
 // CSR format before performing operations on them.
 template<typename T>
-class DOKMatrix {
+class DOKMatrix : public SparseMatrixBase<T> {
 private:
-  size_t row_;
-  size_t col_;
-
   std::map<std::tuple<size_t, size_t>, T> d_;
 
 public:
@@ -28,32 +58,41 @@ public:
             std::vector<size_t> i, std::vector<size_t> j,
             std::vector<T> v);
 
-  DOKMatrix(CSRMatrix &m);
+  DOKMatrix(CSRMatrix<T> &m);
 
   ~DOKMatrix() {}
 
-  size_t nrows() const;
-  size_t ncols() const;
+  virtual T get(size_t i, size_t j) const;
+  virtual T get(std::tuple<size_t, size_t> t) const;
+  virtual void set(size_t i, size_t j, T v) const;
+  virtual void set(std::tuple<size_t, size_t> t, T v) const;
 
-  T get(size_t i, size_t j) const;
-  void set(size_t i, size_t j, T v) const;
-
-  void add_scalar(T &c, DOKMatrix &result) const;
+  void add_scalar(T &c, DOKMatrix<T> &result) const;
   void add_matrix(DOKMatrix<T> &m, DOKMatrix<T> &result) const;
 
-  void mul_scalar(T &c, DOKMatrix &result) const;
+  void mul_scalar(T &c, DOKMatrix<T> &result) const;
   void mul_vector(std::vector<T> &v, DOKMatrix<T> &result) const;
   void mul_matrix(DOKMatrix<T> &m, DOKMatrix<T> &result) const;
 };
 
 template<typename T>
-T DOKMatrix::get(size_t i, size_t j) const {
-  return d_[std::make_tuple(i, j)];
+T DOKMatrix<T>::get(size_t i, size_t j) const {
+  DOKMatrix<T>::get(std::make_tuple(i, j));
 }
 
 template<typename T>
-void DOKMatrix::set(size_t i, size_t j, T v) const {
-  d_[std::make_tuple(i, j)] = v;
+T DOKMatrix<T>::get(std::tuple<size_t, size_t> t) const {
+  return d_[t];
+}
+
+template<typename T>
+void DOKMatrix<T>::set(size_t i, size_t j, T v) const {
+  DOKMatrix<T>::set(std::make_tuple(i, j), v);
+}
+
+template<typename T>
+void DOKMatrix<T>::set(std::tuple<size_t, size_t> t, T v) const {
+  d_[t] = v;
 }
 
 // ----------------------------------------------------------------------
@@ -65,11 +104,8 @@ void DOKMatrix::set(size_t i, size_t j, T v) const {
 // construct a CSR matrix incrementally, and more efficient to create a sparse
 // matrix using the DOK format and then convert to CSR once all values are set.
 template<typename T>
-class CSRMatrix {
+class CSRMatrix : public SparseMatrixBase<T> {
 private:
-  size_t row_;
-  size_t col_;
-
   std::vector<T> i_;
   std::vector<T> j_;
   std::vector<T> v_;
@@ -81,39 +117,38 @@ public:
             std::vector<size_t> i, std::vector<size_t> j,
             std::vector<T> v);
 
-  CSRMatrix(DOKMatrix &m);
+  CSRMatrix(DOKMatrix<T> &m);
 
   ~CSRMatrix() {}
 
-  size_t nrows() const;
-  size_t ncols() const;
-
-  void add_scalar(T &c, CSRMatrix &result) const;
+  void add_scalar(T &c, CSRMatrix<T> &result) const;
   void add_matrix(CSRMatrix<T> &m, CSRMatrix<T> &result) const;
 
-  void mul_scalar(T &c, CSRMatrix &result) const;
+  void mul_scalar(T &c, CSRMatrix<T> &result) const;
   void mul_vector(std::vector<T> &v, CSRMatrix<T> &result) const;
   void mul_matrix(CSRMatrix<T> &m, CSRMatrix<T> &result) const;
 };
 
-CSRMatrix::CSRMatrix() {
-  row_ = 0;
-  col_ = 0;
+template<typename T>
+CSRMatrix<T>::CSRMatrix() {
+  this->row_ = 0;
+  this->col_ = 0;
 }
 
-CSRMatrix::CSRMatrix(const size_t row, const size_t col) {
-  row_ = row;
-  col_ = col;
+template<typename T>
+CSRMatrix<T>::CSRMatrix(const size_t row, const size_t col) {
+  this->row_ = row;
+  this->col_ = col;
 }
 
 // Fill a sparse matrix using vectors of indices (i, j) and values.
 template<typename T>
-CSRMatrix::CSRMatrix(const size_t row, const size_t col,
+CSRMatrix<T>::CSRMatrix(const size_t row, const size_t col,
                      std::vector<size_t> i, std::vector<size_t> j,
                      std::vector<T> v) {
   //
-  row_ = row;
-  col_ = col;
+  this->row_ = row;
+  this->col_ = col;
 
   size_t k = 0;
   size_t n = i.size();
@@ -129,7 +164,7 @@ CSRMatrix::CSRMatrix(const size_t row, const size_t col,
 }
 
 template<typename T>
-void add_scalar(T &c, CSRMatrix &result) const {
+void CSRMatrix<T>::add_scalar(T &c, CSRMatrix<T> &result) const {
 
 };
 

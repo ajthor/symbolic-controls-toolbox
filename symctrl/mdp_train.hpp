@@ -16,6 +16,8 @@ void value_iteration(MDP &m,
                      const size_t horizon, const double tolerance,
                      mdp_policy_t policy);
 
+void value_approximation(MDP &m);
+
 class MDPTrainVisitor : public MDPVisitor {
 public:
   mdp_policy_t policy_;
