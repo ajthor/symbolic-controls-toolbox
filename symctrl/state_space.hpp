@@ -67,6 +67,12 @@ protected:
   // SymEngine::CSRMatrix D;
 };
 
+// ----------------------------------------------------------------------
+// Linearization
+//
+void linearize(StateSpace &obj);
+// void linearize(const SymEngine::vec_basic &eq);
+
 } // Controls
 
 #endif /* end of include guard: SYMCTRL_STATE_SPACE_HPP */

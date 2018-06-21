@@ -20,7 +20,9 @@ void ctrb(SymEngine::DenseMatrix &A,
           SymEngine::DenseMatrix &B,
           SymEngine::DenseMatrix &result);
 
-int ctrb_rank(StateSpace *obj);
+// TODO: Implement rank revealing function.
+size_t ctrb_rank(StateSpace *obj);
+size_t ctrb_rank(SymEngine::DenseMatrix &C);
 
 bool is_controllable(SymEngine::DenseMatrix &Co);
 
@@ -32,15 +34,11 @@ void obsv(SymEngine::DenseMatrix &A,
           SymEngine::DenseMatrix &C,
           SymEngine::DenseMatrix &result);
 
-int obsv_rank(StateSpace *obj);
+// TODO: Implement rank revealing function.
+size_t obsv_rank(StateSpace *obj);
+size_t obsv_rank(SymEngine::DenseMatrix &C);
 
 bool is_observable(SymEngine::DenseMatrix &Ob);
-
-// ----------------------------------------------------------------------
-// Linearization
-//
-void linearize(StateSpace &obj);
-// void linearize(const SymEngine::vec_basic &eq);
 
 } // Controls
 

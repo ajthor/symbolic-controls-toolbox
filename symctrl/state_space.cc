@@ -125,4 +125,54 @@ void StateSpace::get_D_matrix(SymEngine::DenseMatrix &result) {
   }
 }
 
+// ----------------------------------------------------------------------
+// Linearization
+//
+void linearize(StateSpace &obj) {
+  size_t n = obj.get_num_states();
+  size_t m = obj.get_num_inputs();
+  size_t p = obj.get_num_g();
+
+  // Substitute x and u for 0 in A, B, C, D.
+  SymEngine::map_basic_basic d;
+  SymEngine::DenseMatrix A, B, C, D;
+
+  size_t i, j;
+  for(i = 0; i < n; i++) {
+    d[obj.get_state(i)] = SymEngine::integer(0);
+  }
+
+  for(i = 0; i < m; i++) {
+    d[obj.get_input(i)] = SymEngine::integer(0);
+  }
+
+  obj.get_A_matrix(A);
+  obj.get_B_matrix(B);
+  obj.get_C_matrix(C);
+  obj.get_D_matrix(D);
+
+  for(i = 0; i < A.nrows(); i++) { // rows
+    for(j = 0; j < A.ncols(); j++) { // cols
+      A.set(i, j, SymEngine::ssubs(A.get(i, j), d));
+    }
+  }
+  for(i = 0; i < B.nrows(); i++) { // rows
+    for(j = 0; j < B.ncols(); j++) { // cols
+      B.set(i, j, SymEngine::ssubs(B.get(i, j), d));
+    }
+  }
+  for(i = 0; i < C.nrows(); i++) { // rows
+    for(j = 0; j < C.ncols(); j++) { // cols
+      C.set(i, j, SymEngine::ssubs(C.get(i, j), d));
+    }
+  }
+  for(i = 0; i < D.nrows(); i++) { // rows
+    for(j = 0; j < D.ncols(); j++) { // cols
+      D.set(i, j, SymEngine::ssubs(D.get(i, j), d));
+    }
+  }
+
+  set_abcd(obj, A, B, C, D);
+}
+
 } // Controls
