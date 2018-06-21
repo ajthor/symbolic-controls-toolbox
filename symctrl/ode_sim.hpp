@@ -1,5 +1,5 @@
-#ifndef SYMCTRL_SIM_ODE_SIMULATOR_HPP
-#define SYMCTRL_SIM_ODE_SIMULATOR_HPP
+#ifndef SYMCTRL_ODE_SIM_HPP
+#define SYMCTRL_ODE_SIM_HPP
 
 #include <tuple>
 #include <vector>
@@ -15,7 +15,7 @@ void odesim(StateSpace &m,
             std::vector<double> &t,
             std::vector<std::vector<double>> &x);
 
-class OdeSimulatorVisitor : public StateSpaceVisitor {
+class OdeSimVisitor : public StateSpaceVisitor {
 private:
   std::vector<double> &x0_;
   std::tuple<unsigned, unsigned> &t_span_;
@@ -24,13 +24,13 @@ private:
   std::vector<std::vector<double>> &result_;
 
 public:
-  OdeSimulatorVisitor(std::vector<double> &x0,
-                      std::tuple<unsigned, unsigned> &t_span,
-                      std::vector<double> &t,
-                      std::vector<std::vector<double>> &x) : x0_(x0), t_span_(t_span), time_(t), result_(x) {
+  OdeSimVisitor(std::vector<double> &x0,
+                std::tuple<unsigned, unsigned> &t_span,
+                std::vector<double> &t,
+                std::vector<std::vector<double>> &x) : x0_(x0), t_span_(t_span), time_(t), result_(x) {
     //
   }
-  ~OdeSimulatorVisitor() {}
+  ~OdeSimVisitor() {}
 
   // std::vector<double> get_time_vector() {
   //   return time_;
@@ -100,7 +100,7 @@ void odesim(StateSpace &m,
             std::vector<double> &t,
             std::vector<std::vector<double>> &x) {
   //
-  OdeSimulatorVisitor s(x0, t_span, t, x);
+  OdeSimVisitor s(x0, t_span, t, x);
   m.accept(s);
 
   // t = s.get_time_vector();
@@ -109,4 +109,4 @@ void odesim(StateSpace &m,
 
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_SIM_ODE_SIMULATOR_HPP */
+#endif /* end of include guard: SYMCTRL_ODE_SIM_HPP */

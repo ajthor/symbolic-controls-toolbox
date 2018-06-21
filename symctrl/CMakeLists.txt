@@ -27,6 +27,7 @@ set(HEADERS
   control_model.hpp
   mdp.hpp
   mdp_train.hpp
+  ode_sim.hpp
   state_space.hpp
   subs.hpp
   system.hpp
@@ -34,7 +35,6 @@ set(HEADERS
   visitor.hpp
   matrix/eig.hpp
   matrix/linalg.hpp
-  sim/ode_simulator.hpp
 )
 
 INSTALL_HEADERS_WITH_DIRECTORY(HEADERS)
