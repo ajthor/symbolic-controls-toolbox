@@ -125,6 +125,70 @@ void StateSpace::get_D_matrix(SymEngine::DenseMatrix &result) {
   }
 }
 
+bool check_abcd(SymEngine::MatrixBase &A,
+                SymEngine::MatrixBase &B,
+                SymEngine::MatrixBase &C,
+                SymEngine::MatrixBase &D) {
+  //
+  size_t n = A.ncols();
+  size_t m = B.ncols();
+  size_t p = C.nrows();
+
+  // A = [n, n]
+  // B = [n, m]
+  // C = [p, n]
+  // D = [p, m]
+}
+
+void set_abcd(StateSpace &obj,
+              SymEngine::DenseMatrix &A,
+              SymEngine::DenseMatrix &B,
+              SymEngine::DenseMatrix &C,
+              SymEngine::DenseMatrix &D) {
+  //
+  size_t n = obj.get_num_states();
+  size_t m = obj.get_num_inputs();
+  size_t p = obj.get_num_g();
+  size_t i, j;
+
+  SymEngine::DenseMatrix x, u, M, R;
+  SymEngine::vec_basic fv, gv, xv, xu;
+
+  for(i = 0; i < n; i++) {
+    xv.push_back(obj.get_state(i));
+    // x.set(i, 1, obj.get_state(i));
+  }
+  x = SymEngine::DenseMatrix(n, 1, {xv});
+
+  for(i = 0; i < m; i++) {
+    xu.push_back(obj.get_input(i));
+    // u.set(i, 1, obj.get_input(i));
+  }
+  u = SymEngine::DenseMatrix(m, 1, {xu});
+
+  // f = A*x + B*u
+  M = SymEngine::DenseMatrix(n, 1);
+  R = SymEngine::DenseMatrix(n, 1);
+  A.mul_matrix(x, M);
+  B.mul_matrix(u, R);
+  M.add_matrix(R, M);
+  fv = M.as_vec_basic();
+  for(i = 0; i < fv.size(); i++) {
+    obj.set_f(i, fv[i]);
+  }
+
+  // g = C*x + D*u
+  M = SymEngine::DenseMatrix(p, 1);
+  R = SymEngine::DenseMatrix(p, 1);
+  C.mul_matrix(x, M);
+  D.mul_matrix(u, R);
+  M.add_matrix(R, M);
+  gv = M.as_vec_basic();
+  for(i = 0; i < gv.size(); i++) {
+    obj.set_g(i, gv[i]);
+  }
+}
+
 // ----------------------------------------------------------------------
 // Linearization
 //

@@ -10,10 +10,16 @@
 
 namespace Controls {
 
-// StateSpace Class
+// ----------------------------------------------------------------------
+// StateSpace
+//
 class StateSpace : public System {
 public:
   StateSpace();
+  StateSpace(SymEngine::MatrixBase &A,
+             SymEngine::MatrixBase &B,
+             SymEngine::MatrixBase &C,
+             SymEngine::MatrixBase &D);
   ~StateSpace();
 
   void add_state(const SymEngine::RCP<const SymEngine::Basic> arg);
@@ -66,6 +72,26 @@ protected:
   // SymEngine::CSRMatrix C;
   // SymEngine::CSRMatrix D;
 };
+
+
+bool check_abcd(SymEngine::MatrixBase &A,
+                SymEngine::MatrixBase &B,
+                SymEngine::MatrixBase &C,
+                SymEngine::MatrixBase &D);
+
+void set_abcd(StateSpace &obj,
+              SymEngine::DenseMatrix &A,
+              SymEngine::DenseMatrix &B,
+              SymEngine::DenseMatrix &C,
+              SymEngine::DenseMatrix &D);
+
+// Separate dx/dt = f(.) + g(.)u into f(.) and g(.) terms.
+void nonlinear_sep();
+
+void c2d();
+void d2c();
+
+void similarity_transform(StateSpace &obj, SymEngine::DenseMatrix &P);
 
 // ----------------------------------------------------------------------
 // Linearization

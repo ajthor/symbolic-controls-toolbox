@@ -8,6 +8,11 @@
 
 namespace Controls {
 
+void transferfunction_poles();
+void transferfunction_zeros();
+
+void minimal_realization();
+
 class TransferFunction : public System {
 public:
   TransferFunction();
