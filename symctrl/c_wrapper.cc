@@ -348,12 +348,12 @@ void mdp_free(MDP_C *obj) {
   delete obj;
 }
 
-size_t mdp_num_states_get(MDP_C *obj) {
-  return obj->m.get_num_states();
+size_t mdp_nstates(MDP_C *obj) {
+  return obj->m.nstates();
 }
 
-size_t mdp_num_inputs_get(MDP_C *obj) {
-  return obj->m.get_num_inputs();
+size_t mdp_ninputs(MDP_C *obj) {
+  return obj->m.ninputs();
 }
 
 void mdp_probabilities_set(MDP_C *obj, size_t u,
@@ -409,7 +409,7 @@ void mdp_probabilities_get_sparse(MDP_C *obj, size_t u,
 size_t mdp_probabilities_nnz(MDP_C *obj, size_t u) {
   C_WRAPPER_BEGIN
 
-  return obj->m.probabilities_.at(u).size();
+  return obj->m.probabilities_.at(u).nnz();
 
   C_WRAPPER_END(0)
 }
@@ -467,7 +467,7 @@ void mdp_rewards_get_sparse(MDP_C *obj, size_t u,
 size_t mdp_rewards_nnz(MDP_C *obj, size_t u) {
   C_WRAPPER_BEGIN
 
-  return obj->m.rewards_.at(u).size();
+  return obj->m.rewards_.at(u).nnz();
 
   C_WRAPPER_END(0)
 }

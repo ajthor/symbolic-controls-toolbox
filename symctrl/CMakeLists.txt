@@ -35,6 +35,8 @@ set(HEADERS
   visitor.hpp
   matrix/eig.hpp
   matrix/linalg.hpp
+  matrix/dense.hpp
+  matrix/sparse.hpp
 )
 
 INSTALL_HEADERS_WITH_DIRECTORY(HEADERS)

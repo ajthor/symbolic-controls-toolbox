@@ -13,22 +13,6 @@ namespace Controls {
 
 class MDPVisitor;
 
-template<typename Derived>
-class MDPBase : public ControlModel {
-private:
-  double gamma_ = 0.0;
-
-public:
-  void set_gamma(const double arg) : gamma_(arg) {}
-  double get_gamma() {
-    return gamma_;
-  }
-
-  void accept(MDPVisitor &visitor) {
-    visitor.visit(static_cast<const Derived&>(*this));
-  }
-};
-
 // ----------------------------------------------------------------------
 // MDP
 //
@@ -65,29 +49,12 @@ public:
 // of transferring to state x' given the discrete state x and discrete action
 // u. The reward matrix has elements of the form E{x'|x, u}, which denotes the
 // expected reward for reaching state x' given x and u.
-template<ModelDataType T = Discrete>
-class MDP : public MDPBase<MDP> {
+class MDP {
 private:
-  typedef double (*p_func)(std::vector<T> x,
-                           std::vector<T> u,
-                           std::vector<T> xp) probability_fun_t;
-
-  typedef double (*r_func)(std::vector<T> x,
-                           std::vector<T> u,
-                           std::vector<T> xp) reward_fun_t;
-
   size_t states_;
   size_t inputs_;
 
-  // TODO: Eventually, this should change to CSR format, though I haven't
-  // figured out how to do CSR with >2d matrices.
-  // typedef std::map<std::tuple<size_t, size_t>, double> mdp_sparse_t;
-  typedef std::vector<CSRMatrix<double>> mdp_sparse_t;
-
-  // P & R are X x U x X'.
-  // This is stored as a vector (U) of sparse adjacency matrices (X x X').
-  mdp_sparse_t probabilities_;
-  mdp_sparse_t rewards_;
+  double gamma_;
 
 public:
   MDP(const size_t nx, const size_t nu);
@@ -96,38 +63,35 @@ public:
   size_t nstates() const { return states_; }
   size_t ninputs() const { return inputs_; }
 
+  // P & R are X x U x X'.
+  // This is stored as a vector (U) of sparse adjacency matrices (X x X').
+  std::vector<CSRMatrix<double>> probabilities_;
+  std::vector<CSRMatrix<double>> rewards_;
+
   void set_probability(size_t x, size_t u, size_t xp, const double value);
   double get_probability(size_t x, size_t u, size_t xp);
 
   void set_reward(size_t x, size_t u, size_t xp, const double value);
   double get_reward(size_t x, size_t u, size_t xp);
-};
 
-template<>
-class MDP<Continuous> : public MDPBase {
-private:
+  void set_gamma(const double arg) {
+    gamma_ = (arg > 0 ? (arg < 1 ? arg : 1) : 0);
+  }
+  double get_gamma() { return gamma_; }
 
-public:
-  MDP() {}
-  ~MDP() {}
+  void accept(MDPVisitor &visitor);
 };
 
 // ----------------------------------------------------------------------
 // POMDP
 //
 // Partially-Observable Markov Decision Process
-template<ModelDataType T = Discrete>
-class POMDP : public MDP<T> {
+class POMDP : public MDP {
 public:
-  POMDP(const size_t x, const size_t u) : MDP<T>(x, u) {}
+  POMDP(const size_t nx, const size_t nu) : MDP(nx, nu) {}
   ~POMDP() {}
 
   void accept(MDPVisitor &visitor);
-};
-
-template<>
-class POMDP<Continuous> : public MDP<Continuous> {
-
 };
 
 } // Controls
