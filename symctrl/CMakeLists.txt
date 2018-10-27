@@ -6,8 +6,8 @@ set(SRC
   analysis.cc
   c_wrapper.cc
   control_model.cc
-  mdp.cc
-  mdp_train.cc
+  # mdp.cc
+  # mdp_train.cc
   state_space.cc
   system.cc
   transfer_function.cc
@@ -25,8 +25,8 @@ set(HEADERS
   analysis.hpp
   c_wrapper.hpp
   control_model.hpp
-  mdp.hpp
-  mdp_train.hpp
+  # mdp.hpp
+  # mdp_train.hpp
   ode_sim.hpp
   state_space.hpp
   subs.hpp

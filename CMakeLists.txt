@@ -99,6 +99,14 @@ install(FILES
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libsymctrl
 )
 
+# Testing
+option(BUILD_TESTS "Build unit tests." ON)
+
+if(BUILD_TESTS)
+  enable_testing()
+  add_subdirectory(test)
+endif()
+
 # Matlab Support
 option(BUILD_MATLAB "Build Matlab wrapper library." OFF)
 
