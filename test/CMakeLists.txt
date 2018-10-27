@@ -12,10 +12,11 @@ find_package(Catch2 REQUIRED)
 
 include(CTest)
 
-add_executable(test_arit test_main.cc)
-target_link_libraries(test_arit symctrl ${SYMENGINE_LIBRARIES} Catch2::Catch2)
-add_test(test_arit ${PROJECT_BINARY_DIR}/test_arit)
+macro(ADD_TEST_FILE TEST_NAME FILE_NAME)
+  add_executable(${TEST_NAME} ${FILE_NAME})
+  target_link_libraries(${TEST_NAME} symctrl ${SYMENGINE_LIBRARIES})
+  target_link_libraries(${TEST_NAME} Catch2::Catch2)
+  add_test(${TEST_NAME} ${PROJECT_BINARY_DIR}/${TEST_NAME})
+endmacro()
 
-add_executable(test_ss test_statespace.cc)
-target_link_libraries(test_ss symctrl ${SYMENGINE_LIBRARIES} Catch2::Catch2)
-add_test(test_ss ${PROJECT_BINARY_DIR}/test_ss)
+ADD_TEST_FILE(test_state_space test_state_space.cc)
