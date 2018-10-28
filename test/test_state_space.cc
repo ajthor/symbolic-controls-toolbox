@@ -13,24 +13,20 @@ TEST_CASE("State space: states", "[statespace]") {
   SymEngine::RCP<const SymEngine::Symbol> x2 = SymEngine::symbol("x2");
   SymEngine::RCP<const SymEngine::Symbol> x3 = SymEngine::symbol("x3");
 
-  // Test adding states.
   ss->add_state(x1);
   REQUIRE(x1->__eq__(*(ss->get_state(0))));
   REQUIRE(SymEngine::has_symbol(*(ss->get_state(0)), *x1));
 
-  // States should maintain order when adding multiple states.
   ss->add_state(x2);
   REQUIRE(x1->__eq__(*(ss->get_state(0))));
   REQUIRE(x2->__eq__(*(ss->get_state(1))));
   REQUIRE(SymEngine::has_symbol(*(ss->get_state(1)), *x2));
   REQUIRE(not(SymEngine::has_symbol(*(ss->get_state(1)), *x1)));
 
-  // Test setting a particular state.
   ss->set_state(1, x3);
   REQUIRE(x3->__eq__(*(ss->get_state(1))));
   REQUIRE(SymEngine::has_symbol(*(ss->get_state(1)), *x3));
 
-  // Test number of states.
   size_t n = ss->get_num_states();
   REQUIRE(n == 2);
 }
@@ -42,24 +38,20 @@ TEST_CASE("State space: inputs", "[statespace]") {
   SymEngine::RCP<const SymEngine::Symbol> u2 = SymEngine::symbol("u2");
   SymEngine::RCP<const SymEngine::Symbol> u3 = SymEngine::symbol("u3");
 
-  // Test adding inputs.
   ss->add_input(u1);
   REQUIRE(u1->__eq__(*(ss->get_input(0))));
   REQUIRE(SymEngine::has_symbol(*(ss->get_input(0)), *u1));
 
-  // Test adding multiple inputs.
   ss->add_input(u2);
   REQUIRE(u1->__eq__(*(ss->get_input(0))));
   REQUIRE(u2->__eq__(*(ss->get_input(1))));
   REQUIRE(SymEngine::has_symbol(*(ss->get_input(1)), *u2));
   REQUIRE(not(SymEngine::has_symbol(*(ss->get_input(1)), *u1)));
 
-  // Test setting a particular input.
   ss->set_input(1, u3);
   REQUIRE(u3->__eq__(*(ss->get_input(1))));
   REQUIRE(SymEngine::has_symbol(*(ss->get_input(1)), *u3));
 
-  // Test number of inputs.
   size_t n = ss->get_num_inputs();
   REQUIRE(n == 2);
 }
@@ -260,4 +252,46 @@ TEST_CASE("State space: D matrix", "[statespace]") {
   ss->get_D_matrix(D);
   REQUIRE(D == SymEngine::DenseMatrix(1, 1,
                {SymEngine::integer(0)}));
+}
+
+TEST_CASE("State space: linearize", "[statespace]") {
+  Controls::StateSpace *ss = new Controls::StateSpace();
+
+  SymEngine::RCP<const SymEngine::Symbol> x1 = SymEngine::symbol("x1");
+  SymEngine::RCP<const SymEngine::Symbol> x2 = SymEngine::symbol("x2");
+
+  SymEngine::RCP<const SymEngine::Symbol> u1 = SymEngine::symbol("u1");
+
+  ss->add_state(x1);
+  ss->add_state(x2);
+  ss->add_input(u1);
+
+  std::string s;
+  SymEngine::RCP<const SymEngine::Basic> res;
+
+  s = "x2";
+  res = SymEngine::parse(s);
+  ss->add_f(res);
+
+  s = "-sin(x1) - x2 + u1";
+  res = SymEngine::parse(s);
+  ss->add_f(res);
+
+  SymEngine::DenseMatrix A = SymEngine::DenseMatrix(1, 1,
+                             {SymEngine::integer(1)});
+
+  s = "-cos(x1)";
+  res = SymEngine::parse(s);
+  ss->get_A_matrix(A);
+  REQUIRE(A == SymEngine::DenseMatrix(2, 2,
+               {SymEngine::integer(0), SymEngine::integer(1),
+                res,                   SymEngine::integer(-1)}));
+
+  Controls::linearize(*ss);
+
+  ss->get_A_matrix(A);
+  REQUIRE(A == SymEngine::DenseMatrix(2, 2,
+               {SymEngine::integer(0),  SymEngine::integer(1),
+                SymEngine::integer(-1), SymEngine::integer(-1)}));
+
 }
