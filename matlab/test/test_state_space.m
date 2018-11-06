@@ -14,57 +14,57 @@ classdef test_state_space < matlab.unittest.TestCase
 
     methods(Test)
         function testStateSpaceAddStates(testCase)
-            syms x y
+            syms x1 x2
             sys = testCase.sys;
-            sys.states = [x, y];
+            sys.states = [x1, x2];
 
             sys = testCase.sys;
-            sys.states = {x, y};
+            sys.states = {x1, x2};
 
             sys = testCase.sys;
-            sys.states = {'x', 'y'};
+            sys.states = {'x1', 'x2'};
         end
         function testStateSpaceGetStates(testCase)
-            syms x y u
+            syms x1 x2
             sys = testCase.sys;
-            sys.states = [x y];
+            sys.states = [x1, x2];
         end
         function testStateSpaceSetStates(testCase)
-            syms x y u
+            syms x1 x2
             sys = testCase.sys;
-            sys.states = [x y];
+            sys.states = [x1, x2];
         end
         function testStateSpaceNumStates(testCase)
-            syms x y u
+            syms x1 x2
             sys = testCase.sys;
-            sys.states = [x y];
+            sys.states = [x1, x2];
         end
 
         function testStateSpaceAddInputs(testCase)
-            syms u v
+            syms u1 u2
             sys = testCase.sys;
-            sys.inputs = [u, v];
+            sys.inputs = [u1, u2];
 
             sys = testCase.sys;
-            sys.inputs = {u, v};
+            sys.inputs = {u1, u2};
 
             sys = testCase.sys;
-            sys.inputs = {'x', 'y'};
+            sys.inputs = {'u1', 'u2'};
         end
         function testStateSpaceGetInputs(testCase)
-            syms u v
+            syms u1 u2
             sys = testCase.sys;
-            sys.inputs = [u, v];
+            sys.inputs = [u1, u2];
         end
         function testStateSpaceSetInputs(testCase)
-            syms u v
+            syms u1 u2
             sys = testCase.sys;
-            sys.inputs = [u, v];
+            sys.inputs = [u1, u2];
         end
         function testStateSpaceNumInputs(testCase)
-            syms u v
+            syms u1 u2
             sys = testCase.sys;
-            sys.inputs = [u, v];
+            sys.inputs = [u1, u2];
         end
 
         function testStateSpaceAddStateFunctions(testCase)
