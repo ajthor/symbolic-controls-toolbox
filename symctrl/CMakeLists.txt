@@ -10,7 +10,7 @@ set(SRC
   # mdp_train.cc
   state_space.cc
   system.cc
-  transfer_function.cc
+  # transfer_function.cc
   visitor.cc
   matrix/eig.cc
   matrix/hessenberg.cc
@@ -31,7 +31,7 @@ set(HEADERS
   state_space.hpp
   subs.hpp
   system.hpp
-  transfer_function.hpp
+  # transfer_function.hpp
   visitor.hpp
   matrix/eig.hpp
   matrix/linalg.hpp

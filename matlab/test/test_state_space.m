@@ -1,4 +1,4 @@
-classdef test_statespace < matlab.unittest.TestCase
+classdef test_state_space < matlab.unittest.TestCase
     %UNTITLED6 Summary of this class goes here
     %   Detailed explanation goes here
     properties
@@ -14,7 +14,7 @@ classdef test_statespace < matlab.unittest.TestCase
 
     methods(Test)
         function testStateSpaceAddStates(testCase)
-            syms x y u
+            syms x y
             sys = testCase.sys;
             sys.states = [x, y];
 
@@ -41,24 +41,30 @@ classdef test_statespace < matlab.unittest.TestCase
         end
 
         function testStateSpaceAddInputs(testCase)
-            syms x y u
+            syms u v
             sys = testCase.sys;
-            sys.states = [x y];
+            sys.inputs = [u, v];
+
+            sys = testCase.sys;
+            sys.inputs = {u, v};
+
+            sys = testCase.sys;
+            sys.inputs = {'x', 'y'};
         end
         function testStateSpaceGetInputs(testCase)
-            syms x y u
+            syms u v
             sys = testCase.sys;
-            sys.states = [x y];
+            sys.inputs = [u, v];
         end
         function testStateSpaceSetInputs(testCase)
-            syms x y u
+            syms u v
             sys = testCase.sys;
-            sys.states = [x y];
+            sys.inputs = [u, v];
         end
         function testStateSpaceNumInputs(testCase)
-            syms x y u
+            syms u v
             sys = testCase.sys;
-            sys.states = [x y];
+            sys.inputs = [u, v];
         end
 
         function testStateSpaceAddStateFunctions(testCase)

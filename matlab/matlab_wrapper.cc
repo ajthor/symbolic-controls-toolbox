@@ -24,7 +24,7 @@
 
 #include "matlab_wrapper.hpp"
 
-#include "libsymctrl/c_wrapper.hpp"
+#include "symctrl/c_wrapper.hpp"
 
 // Re-define here from SymEngine API.
 
@@ -552,119 +552,119 @@ void ml_statespace_obsv(StateSpace_C *obj, char **result) {
   dense_matrix_free(mat);
 }
 
-// ----------------------------------------------------------------------
-// MDP wrapper functions.
+// // ----------------------------------------------------------------------
+// // MDP wrapper functions.
+// //
+// MDP_C* ml_mdp_new(unsigned long x, unsigned long u) {
+//   return mdp_new(x, u);
+// }
 //
-MDP_C* ml_mdp_new(unsigned long x, unsigned long u) {
-  return mdp_new(x, u);
-}
-
-void ml_mdp_free(MDP_C* obj) {
-  mdp_free(obj);
-}
-
-int ml_mdp_num_states_get(MDP_C* obj) {
-  return mdp_num_states_get(obj);
-}
-
-int ml_mdp_num_inputs_get(MDP_C* obj) {
-  return mdp_num_inputs_get(obj);
-}
-
-void ml_mdp_probabilities_set(MDP_C *obj, const int *arg) {
-  size_t i, j, k, u, x;
-  u = mdp_num_inputs_get(obj);
-  x = mdp_num_states_get(obj);
-
-  for(i = 0; i < u; i++) {
-    for(j = 0; j < x; j++) {
-      for(k = 0; k < x; k++) {
-        mdp_probabilities_set(obj, i, j, k, *arg++);
-      }
-    }
-  }
-}
-void ml_mdp_probabilities_get(MDP_C *obj, int *result) {
-  size_t i, j, k, u, x;
-  u = mdp_num_inputs_get(obj);
-  x = mdp_num_states_get(obj);
-
-  for(i = 0; i < u; i++) {
-    for(j = 0; j < x; j++) {
-      for(k = 0; k < x; k++) {
-        *result++ = mdp_probabilities_get(obj, i, j, k);
-      }
-    }
-  }
-}
-void ml_mdp_probabilities_set_sparse(MDP_C *obj, unsigned long u,
-                                     unsigned long rlen, unsigned long clen,
-                                     unsigned long *r, unsigned long *c,
-                                     double *v) {
-  //
-  mdp_probabilities_set_sparse(obj, u, rlen, clen, r, c, v);
-}
-void ml_mdp_probabilities_get_sparse(MDP_C *obj, unsigned long u,
-                                     unsigned long *r, unsigned long *c,
-                                     double *v) {
-  //
-  mdp_probabilities_get_sparse(obj, u, &r, &c, &v);
-}
-unsigned long ml_mdp_probabilities_nnz(MDP_C *obj, unsigned long u) {
-  return mdp_probabilities_nnz(obj, u);
-}
-
-void ml_mdp_rewards_set(MDP_C *obj, const int *arg) {
-  size_t i, j, k, u, x;
-  u = mdp_num_inputs_get(obj);
-  x = mdp_num_states_get(obj);
-
-  for(i = 0; i < u; i++) {
-    for(j = 0; j < x; j++) {
-      for(k = 0; k < x; k++) {
-        mdp_rewards_set(obj, i, j, k, *arg++);
-      }
-    }
-  }
-  // mdp_rewards_set(obj, u, x, xp, arg);
-}
-void ml_mdp_rewards_get(MDP_C *obj, int *result) {
-  size_t i, j, k, u, x;
-  u = mdp_num_inputs_get(obj);
-  x = mdp_num_states_get(obj);
-
-  for(i = 0; i < u; i++) {
-    for(j = 0; j < x; j++) {
-      for(k = 0; k < x; k++) {
-        *result++ = mdp_rewards_get(obj, i, j, k);
-      }
-    }
-  }
-  // return mdp_rewards_get(obj, u, x, xp);
-}
-void ml_mdp_rewards_set_sparse(MDP_C *obj, unsigned long u,
-                               unsigned long rlen, unsigned long clen,
-                               unsigned long *r, unsigned long *c,
-                               double *v) {
-  //
-  mdp_rewards_set_sparse(obj, u, rlen, clen, r, c, v);
-}
-void ml_mdp_rewards_get_sparse(MDP_C *obj, unsigned long u,
-                               unsigned long *r, unsigned long *c,
-                               double *v) {
-  //
-  mdp_rewards_get_sparse(obj, u, &r, &c, &v);
-}
-unsigned long ml_mdp_rewards_nnz(MDP_C *obj, unsigned long u) {
-  return mdp_rewards_nnz(obj, u);
-}
-
-double ml_mdp_gamma_get(MDP_C* obj) {
-  return mdp_gamma_get(obj);
-}
-void ml_mdp_gamma_set(MDP_C* obj, double arg) {
-  mdp_gamma_set(obj, arg);
-}
+// void ml_mdp_free(MDP_C* obj) {
+//   mdp_free(obj);
+// }
+//
+// int ml_mdp_num_states_get(MDP_C* obj) {
+//   return mdp_num_states_get(obj);
+// }
+//
+// int ml_mdp_num_inputs_get(MDP_C* obj) {
+//   return mdp_num_inputs_get(obj);
+// }
+//
+// void ml_mdp_probabilities_set(MDP_C *obj, const int *arg) {
+//   size_t i, j, k, u, x;
+//   u = mdp_num_inputs_get(obj);
+//   x = mdp_num_states_get(obj);
+//
+//   for(i = 0; i < u; i++) {
+//     for(j = 0; j < x; j++) {
+//       for(k = 0; k < x; k++) {
+//         mdp_probabilities_set(obj, i, j, k, *arg++);
+//       }
+//     }
+//   }
+// }
+// void ml_mdp_probabilities_get(MDP_C *obj, int *result) {
+//   size_t i, j, k, u, x;
+//   u = mdp_num_inputs_get(obj);
+//   x = mdp_num_states_get(obj);
+//
+//   for(i = 0; i < u; i++) {
+//     for(j = 0; j < x; j++) {
+//       for(k = 0; k < x; k++) {
+//         *result++ = mdp_probabilities_get(obj, i, j, k);
+//       }
+//     }
+//   }
+// }
+// void ml_mdp_probabilities_set_sparse(MDP_C *obj, unsigned long u,
+//                                      unsigned long rlen, unsigned long clen,
+//                                      unsigned long *r, unsigned long *c,
+//                                      double *v) {
+//   //
+//   mdp_probabilities_set_sparse(obj, u, rlen, clen, r, c, v);
+// }
+// void ml_mdp_probabilities_get_sparse(MDP_C *obj, unsigned long u,
+//                                      unsigned long *r, unsigned long *c,
+//                                      double *v) {
+//   //
+//   mdp_probabilities_get_sparse(obj, u, &r, &c, &v);
+// }
+// unsigned long ml_mdp_probabilities_nnz(MDP_C *obj, unsigned long u) {
+//   return mdp_probabilities_nnz(obj, u);
+// }
+//
+// void ml_mdp_rewards_set(MDP_C *obj, const int *arg) {
+//   size_t i, j, k, u, x;
+//   u = mdp_num_inputs_get(obj);
+//   x = mdp_num_states_get(obj);
+//
+//   for(i = 0; i < u; i++) {
+//     for(j = 0; j < x; j++) {
+//       for(k = 0; k < x; k++) {
+//         mdp_rewards_set(obj, i, j, k, *arg++);
+//       }
+//     }
+//   }
+//   // mdp_rewards_set(obj, u, x, xp, arg);
+// }
+// void ml_mdp_rewards_get(MDP_C *obj, int *result) {
+//   size_t i, j, k, u, x;
+//   u = mdp_num_inputs_get(obj);
+//   x = mdp_num_states_get(obj);
+//
+//   for(i = 0; i < u; i++) {
+//     for(j = 0; j < x; j++) {
+//       for(k = 0; k < x; k++) {
+//         *result++ = mdp_rewards_get(obj, i, j, k);
+//       }
+//     }
+//   }
+//   // return mdp_rewards_get(obj, u, x, xp);
+// }
+// void ml_mdp_rewards_set_sparse(MDP_C *obj, unsigned long u,
+//                                unsigned long rlen, unsigned long clen,
+//                                unsigned long *r, unsigned long *c,
+//                                double *v) {
+//   //
+//   mdp_rewards_set_sparse(obj, u, rlen, clen, r, c, v);
+// }
+// void ml_mdp_rewards_get_sparse(MDP_C *obj, unsigned long u,
+//                                unsigned long *r, unsigned long *c,
+//                                double *v) {
+//   //
+//   mdp_rewards_get_sparse(obj, u, &r, &c, &v);
+// }
+// unsigned long ml_mdp_rewards_nnz(MDP_C *obj, unsigned long u) {
+//   return mdp_rewards_nnz(obj, u);
+// }
+//
+// double ml_mdp_gamma_get(MDP_C* obj) {
+//   return mdp_gamma_get(obj);
+// }
+// void ml_mdp_gamma_set(MDP_C* obj, double arg) {
+//   mdp_gamma_set(obj, arg);
+// }
 
 
 } // C

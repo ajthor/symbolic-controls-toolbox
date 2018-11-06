@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "control_model.hpp"
-#include "matrix/sparse.hpp"
+// #include "matrix/sparse.hpp"
 
 namespace Controls {
 
@@ -65,14 +65,14 @@ public:
 
   // P & R are X x U x X'.
   // This is stored as a vector (U) of sparse adjacency matrices (X x X').
-  std::vector<CSRMatrix<double>> probabilities_;
-  std::vector<CSRMatrix<double>> rewards_;
+  // std::vector<CSRMatrix<double>> probabilities_;
+  // std::vector<CSRMatrix<double>> rewards_;
 
-  void set_probability(size_t x, size_t u, size_t xp, const double value);
-  double get_probability(size_t x, size_t u, size_t xp);
-
-  void set_reward(size_t x, size_t u, size_t xp, const double value);
-  double get_reward(size_t x, size_t u, size_t xp);
+  // void set_probability(size_t x, size_t u, size_t xp, const double value);
+  // double get_probability(size_t x, size_t u, size_t xp);
+  //
+  // void set_reward(size_t x, size_t u, size_t xp, const double value);
+  // double get_reward(size_t x, size_t u, size_t xp);
 
   void set_gamma(const double arg) {
     gamma_ = (arg > 0 ? (arg < 1 ? arg : 1) : 0);
