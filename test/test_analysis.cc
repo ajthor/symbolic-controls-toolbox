@@ -51,7 +51,7 @@ TEST_CASE("Analysis: ctrb", "[analysis]") {
                 {SymEngine::integer(0), SymEngine::integer(1),
                  SymEngine::integer(1), SymEngine::integer(-1)}));
 
-  Controls::ctrb(ss, Co);
+  Controls::ctrb(*ss, Co);
   REQUIRE(Co == SymEngine::DenseMatrix(2, 2,
                 {SymEngine::integer(0), SymEngine::integer(1),
                  SymEngine::integer(1), SymEngine::integer(-1)}));
@@ -102,7 +102,7 @@ TEST_CASE("Analysis: obsv", "[analysis]") {
                 {SymEngine::integer(0),  SymEngine::integer(1),
                  SymEngine::integer(-1), SymEngine::integer(-1)}));
 
-  Controls::obsv(ss, Ob);
+  Controls::obsv(*ss, Ob);
   REQUIRE(Ob == SymEngine::DenseMatrix(2, 2,
                 {SymEngine::integer(0),  SymEngine::integer(1),
                  SymEngine::integer(-1), SymEngine::integer(-1)}));

@@ -21,4 +21,4 @@ endmacro()
 
 ADD_TEST_FILE(test_state_space test_state_space.cc)
 # ADD_TEST_FILE(test_transfer_function test_transfer_function.cc)
-# ADD_TEST_FILE(test_analysis test_analysis.cc)
+ADD_TEST_FILE(test_analysis test_analysis.cc)

@@ -21,19 +21,4 @@ switch (class(A))
         end
 end
 
-% if ~iscell(A)
-%     if isnumeric(A)
-%         X = num2cell(A);
-%         X = cellfun(@(x) {num2str(x)}, X);
-%     elseif isa(A, 'sym')
-%         X = sym2cell(A);
-%         X = cellfun(@(x) {char(x)}, X);
-%     elseif ischar(A)
-%         X = {A};
-%     end
-% else
-%     % Input is a cell. Convert the inputs to strings.
-%     X = cellfun(@(x) {char(x)}, A);
-% end
-
 end
