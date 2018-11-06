@@ -282,7 +282,7 @@ void ml_statespace_f_get(StateSpace_C *obj, char **result) {
   for(i = 0; i < sz; i++) {
     statespace_f_get(obj, i, s);
     // TODO: Convert string here to Matlab Symbolic format.
-    result[i] = basic_str(s);
+    result[i] = se_parse(basic_str(s));
   }
   basic_free_heap(s);
 }
@@ -313,7 +313,7 @@ void ml_statespace_g_get(StateSpace_C *obj, char **result) {
   for(i = 0; i < sz; i++) {
     statespace_g_get(obj, i, s);
     // TODO: Convert string here to Matlab Symbolic format.
-    result[i] = basic_str(s);
+    result[i] = se_parse(basic_str(s));
   }
   basic_free_heap(s);
 }
@@ -359,7 +359,7 @@ void ml_statespace_A_get(StateSpace_C *obj, char **result) {
     for (j = 0; j < n; j++) { // cols
       dense_matrix_get_basic(s, mat, j, i);
       // TODO: Convert string here to Matlab Symbolic format.
-      result[idx] = basic_str(s);
+      result[idx] = se_parse(basic_str(s));
       idx++;
     }
   }
@@ -387,11 +387,11 @@ void ml_statespace_B_get(StateSpace_C *obj, char **result) {
   int i = 0;
   int j = 0;
   int idx = 0;
-  for(i = 0; i < n; i++) { // rows
-    for (j = 0; j < m; j++) { // cols
-      dense_matrix_get_basic(s, mat, i, j);
+  for(i = 0; i < m; i++) { // rows
+    for (j = 0; j < n; j++) { // cols
+      dense_matrix_get_basic(s, mat, j, i);
       // TODO: Convert string here to Matlab Symbolic format.
-      result[idx] = basic_str(s);
+      result[idx] = se_parse(basic_str(s));
       idx++;
     }
   }
@@ -422,7 +422,7 @@ void ml_statespace_C_get(StateSpace_C *obj, char **result) {
     for (j = 0; j < n; j++) { // cols
       dense_matrix_get_basic(s, mat, i, j);
       // TODO: Convert string here to Matlab Symbolic format.
-      result[idx] = basic_str(s);
+      result[idx] = se_parse(basic_str(s));
       idx++;
     }
   }
@@ -451,9 +451,9 @@ void ml_statespace_D_get(StateSpace_C *obj, char **result) {
   int idx = 0;
   for(i = 0; i < p; i++) { // rows
     for (j = 0; j < m; j++) { // cols
-      dense_matrix_get_basic(s, mat, i, j);
+      dense_matrix_get_basic(s, mat, j, i);
       // TODO: Convert string here to Matlab Symbolic format.
-      result[idx] = basic_str(s);
+      result[idx] = se_parse(basic_str(s));
       idx++;
     }
   }
@@ -511,7 +511,7 @@ void ml_statespace_ctrb(StateSpace_C *obj, char **result) {
     for(j = 0; j < n; j++) { // cols
       dense_matrix_get_basic(s, mat, j, i);
       // TODO: Convert string here to Matlab Symbolic format.
-      result[idx] = basic_str(s);
+      result[idx] = se_parse(basic_str(s));
       idx++;
     }
   }
@@ -543,7 +543,7 @@ void ml_statespace_obsv(StateSpace_C *obj, char **result) {
     for(j = 0; j < n*p; j++) { // cols
       dense_matrix_get_basic(s, mat, j, i);
       // TODO: Convert string here to Matlab Symbolic format.
-      result[idx] = basic_str(s);
+      result[idx] = se_parse(basic_str(s));
       idx++;
     }
   }
