@@ -6,11 +6,11 @@ set(SRC
   analysis.cc
   c_wrapper.cc
   control_model.cc
-  mdp.cc
-  mdp_train.cc
+  # mdp.cc
+  # mdp_train.cc
   state_space.cc
   system.cc
-  transfer_function.cc
+  # transfer_function.cc
   visitor.cc
   matrix/eig.cc
   matrix/hessenberg.cc
@@ -25,13 +25,13 @@ set(HEADERS
   analysis.hpp
   c_wrapper.hpp
   control_model.hpp
-  mdp.hpp
-  mdp_train.hpp
+  # mdp.hpp
+  # mdp_train.hpp
   ode_sim.hpp
   state_space.hpp
   subs.hpp
   system.hpp
-  transfer_function.hpp
+  # transfer_function.hpp
   visitor.hpp
   matrix/eig.hpp
   matrix/linalg.hpp
