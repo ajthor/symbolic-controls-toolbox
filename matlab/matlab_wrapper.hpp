@@ -30,7 +30,7 @@ void ml_linalg_eigenvalues(int len, char **A, char **l, char **v);
 void ml_linalg_first_eigenvalue(int len, char **A, char **l, double tol);
 
 // ----------------------------------------------------------------------
-// State Space wrapper functions.
+// State space wrapper functions.
 //
 typedef struct StateSpace_C StateSpace_C;
 
@@ -68,6 +68,26 @@ void ml_statespace_linearize(StateSpace_C *obj);
 
 void ml_statespace_ctrb(StateSpace_C *obj, char **result);
 void ml_statespace_obsv(StateSpace_C *obj, char **result);
+
+// ----------------------------------------------------------------------
+// Transfer function wrapper functions.
+//
+typedef struct TransferFunction_C TransferFunction_C;
+
+TransferFunction_C* ml_transferfunction_new();
+
+void ml_transferfunction_free(TransferFunction_C *obj);
+
+void ml_transferfunction_var_get(TransferFunction_C *obj, char **result);
+void ml_transferfunction_var_set(TransferFunction_C *obj, const char** arg);
+
+void ml_transferfunction_num_get(TransferFunction_C *obj, char **result);
+void ml_transferfunction_num_set(TransferFunction_C *obj, int len, const char** arg);
+int ml_transferfunction_num_size(TransferFunction_C *obj);
+
+void ml_transferfunction_den_get(TransferFunction_C *obj, char **result);
+void ml_transferfunction_den_set(TransferFunction_C *obj, int len, const char** arg);
+int ml_transferfunction_den_size(TransferFunction_C *obj);
 
 // // ----------------------------------------------------------------------
 // // MDP wrapper functions.

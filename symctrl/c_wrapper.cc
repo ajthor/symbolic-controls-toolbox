@@ -320,6 +320,89 @@ void statespace_obsv(StateSpace_C *obj, CDenseMatrix *result) {
   C_WRAPPER_END()
 }
 
+// ----------------------------------------------------------------------
+// TransferFunction Function Definitions
+//
+struct TransferFunction_C {
+  Controls::TransferFunction m;
+};
+
+TransferFunction_C *transferfunction_new() {
+  return new TransferFunction_C;
+}
+
+void transferfunction_free(TransferFunction_C *obj) {
+  if(!obj) {
+    return;
+  }
+  delete obj;
+}
+
+void transferfunction_var_get(TransferFunction_C *obj, basic result) {
+  C_WRAPPER_BEGIN
+
+  result->m = obj->m.get_var();
+
+  C_WRAPPER_END()
+}
+void transferfunction_var_set(TransferFunction_C *obj, const basic arg) {
+  C_WRAPPER_BEGIN
+
+  obj->m.set_var(arg->m);
+
+  C_WRAPPER_END()
+}
+
+void transferfunction_num_push_back(TransferFunction_C *obj, const basic arg) {
+  C_WRAPPER_BEGIN
+
+  obj->m.add_num(arg->m);
+
+  C_WRAPPER_END()
+}
+void transferfunction_num_get(TransferFunction_C *obj, size_t n, basic result) {
+  C_WRAPPER_BEGIN
+
+  result->m = obj->m.get_num(n);
+
+  C_WRAPPER_END()
+}
+void transferfunction_num_set(TransferFunction_C *obj, size_t n, const basic arg) {
+  C_WRAPPER_BEGIN
+
+  obj->m.set_num(n, arg->m);
+
+  C_WRAPPER_END()
+}
+size_t transferfunction_num_size(TransferFunction_C *obj) {
+  return obj->m.get_num_nums();
+}
+
+void transferfunction_den_push_back(TransferFunction_C *obj, const basic arg) {
+  C_WRAPPER_BEGIN
+
+  obj->m.add_den(arg->m);
+
+  C_WRAPPER_END()
+}
+void transferfunction_den_get(TransferFunction_C *obj, size_t n, basic result) {
+  C_WRAPPER_BEGIN
+
+  result->m = obj->m.get_den(n);
+
+  C_WRAPPER_END()
+}
+void transferfunction_den_set(TransferFunction_C *obj, size_t n, const basic arg) {
+  C_WRAPPER_BEGIN
+
+  obj->m.set_den(n, arg->m);
+
+  C_WRAPPER_END()
+}
+size_t transferfunction_den_size(TransferFunction_C *obj) {
+  return obj->m.get_num_dens();
+}
+
 // // ----------------------------------------------------------------------
 // // MDP Function Definitions
 // //
@@ -340,7 +423,7 @@ void statespace_obsv(StateSpace_C *obj, CDenseMatrix *result) {
 // MDP_C *mdp_new(const size_t x, const size_t u) {
 //   return new MDP_C({{x, u}});
 // }
-// 
+//
 // void mdp_free(MDP_C *obj) {
 //   if(!obj) {
 //     return;
@@ -481,24 +564,6 @@ void statespace_obsv(StateSpace_C *obj, CDenseMatrix *result) {
 //   obj->m.set_gamma(n);
 //
 //   C_WRAPPER_END()
-// }
-
-// ----------------------------------------------------------------------
-// TransferFunction Function Definitions
-//
-struct TransferFunction_C {
-  Controls::TransferFunction m;
-};
-
-// TransferFunction_C* transferfunction_new() {
-//   return new TransferFunction_C;
-// }
-//
-// void transferfunction_free(TransferFunction_C* obj) {
-//   if(!obj) {
-//     return;
-//   }
-//   delete obj;
 // }
 
 } // C

@@ -98,6 +98,39 @@ SYMCTRL_EXPORT int statespace_obsv_rank(StateSpace_C *obj);
 SYMCTRL_EXPORT int statespace_is_controllable(StateSpace_C *obj);
 SYMCTRL_EXPORT int statespace_is_observable(StateSpace_C *obj);
 
+// ---------------------------------------------------------------------------
+// C Wrapper for TransferFunction Interface
+//
+typedef struct TransferFunction_C TransferFunction_C;
+
+SYMCTRL_EXPORT TransferFunction_C *transferfunction_new();
+SYMCTRL_EXPORT void transferfunction_free(TransferFunction_C *obj);
+
+SYMCTRL_EXPORT void transferfunction_var_get(TransferFunction_C *obj,
+                                             basic result);
+SYMCTRL_EXPORT void transferfunction_var_set(TransferFunction_C *obj,
+                                             const basic arg);
+
+SYMCTRL_EXPORT void transferfunction_num_push_back(TransferFunction_C *obj,
+                                                   const basic arg);
+SYMCTRL_EXPORT void transferfunction_num_get(TransferFunction_C *obj,
+                                             size_t n,
+                                             basic result);
+SYMCTRL_EXPORT void transferfunction_num_set(TransferFunction_C *obj,
+                                             size_t n,
+                                             const basic arg);
+SYMCTRL_EXPORT size_t transferfunction_num_size(TransferFunction_C *obj);
+
+SYMCTRL_EXPORT void transferfunction_den_push_back(TransferFunction_C *obj,
+                                                   const basic arg);
+SYMCTRL_EXPORT void transferfunction_den_get(TransferFunction_C *obj,
+                                             size_t n,
+                                             basic result);
+SYMCTRL_EXPORT void transferfunction_den_set(TransferFunction_C *obj,
+                                             size_t n,
+                                             const basic arg);
+SYMCTRL_EXPORT size_t transferfunction_den_size(TransferFunction_C *obj);
+
 // // ---------------------------------------------------------------------------
 // // C Wrapper for MDP Interface
 // //
@@ -155,15 +188,6 @@ SYMCTRL_EXPORT int statespace_is_observable(StateSpace_C *obj);
 //
 // SYMCTRL_EXPORT double mdp_gamma_get(MDP_C *obj);
 // SYMCTRL_EXPORT void mdp_gamma_set(MDP_C *obj, const double n);
-
-// ---------------------------------------------------------------------------
-// C Wrapper for TransferFunction Interface
-//
-typedef struct TransferFunction_C TransferFunction_C;
-
-SYMCTRL_EXPORT TransferFunction_C* transferfunction_new();
-SYMCTRL_EXPORT void transferfunction_free(TransferFunction_C* obj);
-
 
 #ifdef __cplusplus
 }

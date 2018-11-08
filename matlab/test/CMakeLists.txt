@@ -19,3 +19,4 @@ endmacro()
 
 ADD_MATLAB_TEST_FILE(test_symctrl_matlab test_symctrl.m)
 ADD_MATLAB_TEST_FILE(test_state_space_matlab test_state_space.m)
+ADD_MATLAB_TEST_FILE(test_transfer_function_matlab test_transfer_function.m)

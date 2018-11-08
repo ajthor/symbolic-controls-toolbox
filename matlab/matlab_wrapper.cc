@@ -203,7 +203,7 @@ void ml_linalg_first_eigenvalue(int len, char **A, char **l, double tol) {
 }
 
 // ----------------------------------------------------------------------
-// State Space wrapper functions.
+// State space wrapper functions.
 //
 StateSpace_C* ml_statespace_new() {
   return statespace_new();
@@ -550,6 +550,90 @@ void ml_statespace_obsv(StateSpace_C *obj, char **result) {
 
   basic_free_heap(s);
   dense_matrix_free(mat);
+}
+
+// ----------------------------------------------------------------------
+// Transfer function wrapper functions.
+//
+TransferFunction_C* ml_transferfunction_new() {
+  return transferfunction_new();
+}
+
+void ml_transferfunction_free(TransferFunction_C *obj) {
+  transferfunction_free(obj);
+}
+
+void ml_transferfunction_var_get(TransferFunction_C *obj, char **result) {
+  auto s = basic_new_heap();
+  transferfunction_var_get(obj, s);
+  result[0] = se_parse(basic_str(s));
+  basic_free_heap(s);
+}
+void ml_transferfunction_var_set(TransferFunction_C *obj, const char** arg) {
+  auto s = basic_new_heap();
+  basic_parse(s, arg[0]);
+  transferfunction_var_set(obj, s);
+  basic_free_heap(s);
+}
+
+void ml_transferfunction_num_get(TransferFunction_C *obj, char **result) {
+  size_t sz = transferfunction_num_size(obj);
+  auto s = basic_new_heap();
+  int i = 0;
+  for (i = 0; i < sz; i++) {
+    transferfunction_num_get(obj, i, s);
+    result[i] = se_parse(basic_str(s));
+  }
+  basic_free_heap(s);
+}
+void ml_transferfunction_num_set(TransferFunction_C *obj, int len, const char** arg) {
+  size_t sz = transferfunction_num_size(obj);
+  auto s = basic_new_heap();
+  int i = 0;
+  for(i = 0; i < len; i++) {
+    // TODO: Convert arg[i] here to SymEngine format. Pass the formatted string.
+    basic_parse(s, arg[i]);
+
+    if(i >= sz) {
+      transferfunction_num_push_back(obj, s);
+    } else {
+      transferfunction_num_set(obj, i, s);
+    }
+  }
+  basic_free_heap(s);
+}
+int ml_transferfunction_num_size(TransferFunction_C *obj) {
+  return transferfunction_num_size(obj);
+}
+
+void ml_transferfunction_den_get(TransferFunction_C *obj, char **result) {
+  size_t sz = transferfunction_den_size(obj);
+  auto s = basic_new_heap();
+  int i = 0;
+  for (i = 0; i < sz; i++) {
+    transferfunction_den_get(obj, i, s);
+    result[i] = se_parse(basic_str(s));
+  }
+  basic_free_heap(s);
+}
+void ml_transferfunction_den_set(TransferFunction_C *obj, int len, const char** arg) {
+  size_t sz = transferfunction_den_size(obj);
+  auto s = basic_new_heap();
+  int i = 0;
+  for(i = 0; i < len; i++) {
+    // TODO: Convert arg[i] here to SymEngine format. Pass the formatted string.
+    basic_parse(s, arg[i]);
+
+    if(i >= sz) {
+      transferfunction_den_push_back(obj, s);
+    } else {
+      transferfunction_den_set(obj, i, s);
+    }
+  }
+  basic_free_heap(s);
+}
+int ml_transferfunction_den_size(TransferFunction_C *obj) {
+  return transferfunction_den_size(obj);
 }
 
 // // ----------------------------------------------------------------------
