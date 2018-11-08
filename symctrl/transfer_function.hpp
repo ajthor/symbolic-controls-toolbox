@@ -34,8 +34,8 @@ public:
 private:
   SymEngine::RCP<const SymEngine::Basic> var_;
 
-  SymEngine::vec_basic num_;
-  SymEngine::vec_basic den_;
+  SymEngine::vec_basic nums_;
+  SymEngine::vec_basic dens_;
 };
 
 void transferfunction_poles();
