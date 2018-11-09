@@ -220,7 +220,7 @@ void ml_statespace_states_get(StateSpace_C *obj, char **result) {
   for(i = 0; i < sz; i++) {
     statespace_states_get(obj, i, s);
     // TODO: Convert string here to Matlab Symbolic format.
-    result[i] = basic_str(s);
+    result[i] = se_parse(basic_str(s));
   }
   basic_free_heap(s);
 }
@@ -251,7 +251,7 @@ void ml_statespace_inputs_get(StateSpace_C *obj, char **result) {
   for(i = 0; i < sz; i++) {
     statespace_inputs_get(obj, i, s);
     // TODO: Convert string here to Matlab Symbolic format.
-    result[i] = basic_str(s);
+    result[i] = se_parse(basic_str(s));
   }
   basic_free_heap(s);
 }

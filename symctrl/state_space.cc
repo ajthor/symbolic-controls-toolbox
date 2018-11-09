@@ -76,7 +76,7 @@ void StateSpace::get_A_matrix(SymEngine::DenseMatrix &result) {
     f = SymEngine::DenseMatrix(n, 1, {f_});
     x = SymEngine::DenseMatrix(n, 1, {states_});
 
-    SymEngine::jacobian(f, x, result);
+    SymEngine::sjacobian(f, x, result);
   }
 }
 void StateSpace::get_B_matrix(SymEngine::DenseMatrix &result) {
@@ -91,7 +91,7 @@ void StateSpace::get_B_matrix(SymEngine::DenseMatrix &result) {
     f = SymEngine::DenseMatrix(n, 1, {f_});
     u = SymEngine::DenseMatrix(m, 1, {inputs_});
 
-    SymEngine::jacobian(f, u, result);
+    SymEngine::sjacobian(f, u, result);
   }
 }
 void StateSpace::get_C_matrix(SymEngine::DenseMatrix &result) {
@@ -106,7 +106,7 @@ void StateSpace::get_C_matrix(SymEngine::DenseMatrix &result) {
     g = SymEngine::DenseMatrix(p, 1, {g_});
     x = SymEngine::DenseMatrix(n, 1, {states_});
 
-    SymEngine::jacobian(g, x, result);
+    SymEngine::sjacobian(g, x, result);
   }
 }
 void StateSpace::get_D_matrix(SymEngine::DenseMatrix &result) {
@@ -121,7 +121,7 @@ void StateSpace::get_D_matrix(SymEngine::DenseMatrix &result) {
     g = SymEngine::DenseMatrix(p, 1, {g_});
     u = SymEngine::DenseMatrix(m, 1, {inputs_});
 
-    SymEngine::jacobian(g, u, result);
+    SymEngine::sjacobian(g, u, result);
   }
 }
 
@@ -138,6 +138,8 @@ bool check_abcd(SymEngine::MatrixBase &A,
   // B = [n, m]
   // C = [p, n]
   // D = [p, m]
+
+  return true;
 }
 
 void set_abcd(StateSpace &obj,
