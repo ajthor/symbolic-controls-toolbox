@@ -22,7 +22,7 @@ calllib('matctrl', ...
         opts_);
 
 t = reshape(t_result.Value, [], 1);
-y = reshape(x_result.Value, [], sz);
+y = reshape(x_result.Value, sz, []).';
 
 clear('t_result');
 clear('x_result');

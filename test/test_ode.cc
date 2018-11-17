@@ -47,7 +47,7 @@ TEST_CASE("ODE: Euler Pendulum", "[ODE]") {
   ss->add_state(x1);
   ss->add_state(x2);
 
-  s = "-x2";
+  s = "x2";
   res = SymEngine::parse(s);
   ss->add_f(res);
 
@@ -56,17 +56,17 @@ TEST_CASE("ODE: Euler Pendulum", "[ODE]") {
   ss->add_f(res);
 
   std::vector<double> t_span = {0, 20};
-  std::vector<double> x0 = {2, 0};
+  std::vector<double> x0 = {4, 0};
   std::vector<double> t_result;
   std::vector<double> x_result;
   Controls::OdeOptions *options = new Controls::OdeOptions();
 
   Controls::ode_euler(*ss, t_span, x0, t_result, x_result, *options);
 
-  REQUIRE(::fabs(x_result.at(0) - 2.00) < 1e-3);
+  REQUIRE(::fabs(x_result.at(0) - 4.00) < 1e-3);
   REQUIRE(::fabs(x_result.at(1) - 0.00) < 1e-3);
-  REQUIRE(::fabs(x_result.at(40001) - 3.141) < 1e-3);
-  REQUIRE(::fabs(x_result.at(40002) - 0.000) < 1e-3);
+  REQUIRE(::fabs(x_result.at(40000) - 6.283) < 1e-3);
+  REQUIRE(::fabs(x_result.at(40001) - 0.000) < 1e-3);
 
   REQUIRE(x_result.size() == 40002);
   REQUIRE(t_result.size() == 20001);
