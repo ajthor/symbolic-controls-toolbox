@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <vector>
 
 #include <symengine/basic.h>
 #include <symengine/dict.h>
@@ -15,6 +16,7 @@
 #include "subs.hpp"
 #include "matrix/eig.hpp"
 #include "matrix/linalg.hpp"
+#include "ode/euler.hpp"
 
 extern "C" {
 
@@ -565,5 +567,77 @@ size_t transferfunction_den_size(TransferFunction_C *obj) {
 //
 //   C_WRAPPER_END()
 // }
+
+// ----------------------------------------------------------------------
+// ODE Solver Function Definitions
+//
+struct OdeOptions_C {
+  Controls::OdeOptions m;
+};
+
+OdeOptions_C *odeoptions_new() {
+  return new OdeOptions_C;
+}
+void odeoptions_free(OdeOptions_C *obj) {
+  if(!obj) {
+    return;
+  }
+  delete obj;
+}
+
+double odeoptions_step_size_get(OdeOptions_C *obj) {
+  C_WRAPPER_BEGIN
+
+  return obj->m.get_step_size();
+
+  C_WRAPPER_END(0.0)
+}
+void odeoptions_step_size_set(OdeOptions_C *obj,
+                              const double arg) {
+  C_WRAPPER_BEGIN
+
+  obj->m.set_step_size(arg);
+
+  C_WRAPPER_END()
+}
+
+void slv_ode_euler(StateSpace_C *obj,
+                   const double *t_span,
+                   const size_t t_span_len,
+                   const double *x0,
+                   const size_t x0_len,
+                   double *t_result,
+                   double *x_result,
+                   OdeOptions_C *options) {
+  //
+  C_WRAPPER_BEGIN
+
+  size_t i;
+
+  std::vector<double> t_span_vec(t_span_len);
+  for(i = 0; i < t_span_len; i++) {
+    t_span_vec[i] = t_span[i];
+  }
+
+  std::vector<double> x0_vec(x0_len);
+  for(i = 0; i < x0_len; i++) {
+    x0_vec[i] = x0[i];
+  }
+
+  std::vector<double> t_result_vec;
+  std::vector<double> x_result_vec;
+
+  ode_euler(obj->m, t_span_vec, x0_vec, t_result_vec, x_result_vec, options->m);
+
+  for(i = 0; i < t_result_vec.size(); i++) {
+    t_result[i] = t_result_vec.at(i);
+  }
+
+  for(i = 0; i < x_result_vec.size(); i++) {
+    x_result[i] = x_result_vec.at(i);
+  }
+
+  C_WRAPPER_END()
+}
 
 } // C

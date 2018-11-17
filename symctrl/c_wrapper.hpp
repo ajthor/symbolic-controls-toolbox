@@ -189,6 +189,27 @@ SYMCTRL_EXPORT size_t transferfunction_den_size(TransferFunction_C *obj);
 // SYMCTRL_EXPORT double mdp_gamma_get(MDP_C *obj);
 // SYMCTRL_EXPORT void mdp_gamma_set(MDP_C *obj, const double n);
 
+// ---------------------------------------------------------------------------
+// C Wrapper for ODE Solvers
+//
+typedef struct OdeOptions_C OdeOptions_C;
+
+SYMCTRL_EXPORT OdeOptions_C *odeoptions_new();
+SYMCTRL_EXPORT void odeoptions_free(OdeOptions_C *obj);
+
+SYMCTRL_EXPORT double odeoptions_step_size_get(OdeOptions_C *obj);
+SYMCTRL_EXPORT void odeoptions_step_size_set(OdeOptions_C *obj,
+                                             const double arg);
+
+SYMCTRL_EXPORT void slv_ode_euler(StateSpace_C *obj,
+                                  const double *t_span,
+                                  const size_t t_span_len,
+                                  const double *x0,
+                                  const size_t x0_len,
+                                  double *t_result,
+                                  double *x_result,
+                                  OdeOptions_C *options);
+
 #ifdef __cplusplus
 }
 #endif

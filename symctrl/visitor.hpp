@@ -31,13 +31,15 @@ public:
   virtual void visit(TransferFunction &m) = 0;
 };
 
-class StateSpaceVisitor : public Visitor {
+class StateSpaceVisitor : public SystemVisitor {
 public:
+  // virtual ~StateSpaceVisitor() {}
   virtual void visit(StateSpace &m) = 0;
 };
 
-class TransferFunctionVisitor : public Visitor {
+class TransferFunctionVisitor : public SystemVisitor {
 public:
+  // virtual ~TransferFunctionVisitor() {}
   virtual void visit(TransferFunction &m) = 0;
 };
 

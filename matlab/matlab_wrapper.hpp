@@ -126,6 +126,26 @@ int ml_transferfunction_den_size(TransferFunction_C *obj);
 // double ml_mdp_gamma_get(MDP_C* obj);
 // void ml_mdp_gamma_set(MDP_C* obj, double arg);
 
+// ----------------------------------------------------------------------
+// ODE solver wrapper functions.
+//
+typedef struct OdeOptions_C OdeOptions_C;
+
+OdeOptions_C* ml_odeoptions_new();
+void ml_odeoptions_free(OdeOptions_C *obj);
+
+double ml_odeoptions_step_size_get(OdeOptions_C *obj);
+void ml_odeoptions_step_size_set(OdeOptions_C *obj, const double arg);
+
+void ml_slv_ode_euler(StateSpace_C *obj,
+                      const double *t_span,
+                      const int t_span_len,
+                      const double *x0,
+                      const int x0_len,
+                      double *t_result,
+                      double *x_result,
+                      OdeOptions_C *options);
+
 #ifdef __cplusplus
 }
 #endif
