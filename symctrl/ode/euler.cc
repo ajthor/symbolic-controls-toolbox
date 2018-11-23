@@ -1,6 +1,3 @@
-#ifndef SYMCTRL_ODE_EULER_HPP
-#define SYMCTRL_ODE_EULER_HPP
-
 #include <tuple>
 #include <vector>
 
@@ -8,8 +5,7 @@
 #include <symengine/dict.h>
 #include <symengine/lambda_double.h>
 
-#include "ode_options.hpp"
-#include <symctrl/visitor.hpp>
+#include "ode.hpp"
 
 namespace Controls {
 
@@ -101,7 +97,7 @@ public:
       // Advance the time.
       t_current += dt;
       t_result_.push_back(t_current);
-      
+
     } while(t_current <= t_end);
   }
 
@@ -109,16 +105,14 @@ public:
 };
 
 void ode_euler(StateSpace &m,
-          std::vector<double> &t_span,
-          std::vector<double> &x0,
-          std::vector<double> &t_result,
-          std::vector<double> &x_result,
-          OdeOptions &options) {
+               std::vector<double> &t_span,
+               std::vector<double> &x0,
+               std::vector<double> &t_result,
+               std::vector<double> &x_result,
+               OdeOptions &options) {
   //
   EulerVisitor v(t_span, x0, t_result, x_result, options);
   m.accept(v);
 }
 
 } // Controls
-
-#endif /* end of include guard: SYMCTRL_ODE_EULER_HPP */

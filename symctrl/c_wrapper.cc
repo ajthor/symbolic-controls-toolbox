@@ -18,6 +18,7 @@
 #include "matrix/linalg.hpp"
 #include "ode/euler.hpp"
 
+#include "ode/ode.hpp"
 extern "C" {
 
 #ifndef C_WRAPPER_RETURN_TYPE

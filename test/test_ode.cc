@@ -4,7 +4,7 @@
 #include <symengine/visitor.h>
 #include <symengine/parser.h>
 
-#include <symctrl/ode/euler.hpp>
+#include <symctrl/ode/ode.hpp>
 
 TEST_CASE("ODE: Euler", "[ODE]") {
   Controls::StateSpace *ss = new Controls::StateSpace();

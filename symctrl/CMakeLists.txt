@@ -18,7 +18,7 @@ set(SRC
   matrix/linalg.cc
   matrix/qr.cc
   matrix/schur.cc
-  # ode/euler.cc
+  ode/euler.cc
 )
 
 # A list of all header files with C header definitions.
@@ -28,7 +28,6 @@ set(HEADERS
   control_model.hpp
   # mdp.hpp
   # mdp_train.hpp
-  # ode_sim.hpp
   state_space.hpp
   subs.hpp
   system.hpp
@@ -38,8 +37,7 @@ set(HEADERS
   matrix/linalg.hpp
   matrix/dense.hpp
   matrix/sparse.hpp
-  ode/euler.hpp
-  ode/ode_options.hpp
+  ode/ode.hpp
 )
 
 INSTALL_HEADERS_WITH_DIRECTORY(HEADERS)
