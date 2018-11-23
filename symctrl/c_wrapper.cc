@@ -16,7 +16,6 @@
 #include "subs.hpp"
 #include "matrix/eig.hpp"
 #include "matrix/linalg.hpp"
-#include "ode/euler.hpp"
 
 #include "ode/ode.hpp"
 extern "C" {

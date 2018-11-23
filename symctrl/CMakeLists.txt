@@ -26,7 +26,7 @@ set(HEADERS
   analysis.hpp
   c_wrapper.hpp
   control_model.hpp
-  # mdp.hpp
+  kernel.hpp
   # mdp_train.hpp
   state_space.hpp
   subs.hpp
