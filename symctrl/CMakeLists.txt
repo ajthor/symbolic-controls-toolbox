@@ -5,11 +5,9 @@
 set(SRC
   analysis.cc
   c_wrapper.cc
-  control_model.cc
   # mdp.cc
   # mdp_train.cc
   state_space.cc
-  system.cc
   transfer_function.cc
   visitor.cc
   matrix/eig.cc
