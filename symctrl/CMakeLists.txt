@@ -5,8 +5,7 @@
 set(SRC
   analysis.cc
   c_wrapper.cc
-  # mdp.cc
-  # mdp_train.cc
+  random_distribution.cc
   state_space.cc
   transfer_function.cc
   visitor.cc
@@ -25,7 +24,8 @@ set(HEADERS
   c_wrapper.hpp
   control_model.hpp
   kernel.hpp
-  # mdp_train.hpp
+  random_distribution.hpp
+  random_variable.hpp
   state_space.hpp
   subs.hpp
   system.hpp

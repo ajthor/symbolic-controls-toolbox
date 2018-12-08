@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <random>
 #include <vector>
 
 #include <symengine/basic.h>
@@ -18,6 +19,9 @@
 #include "matrix/linalg.hpp"
 
 #include "ode/ode.hpp"
+
+#include "random_variable.hpp"
+
 extern "C" {
 
 #ifndef C_WRAPPER_RETURN_TYPE
@@ -638,6 +642,108 @@ void slv_ode_euler(StateSpace_C *obj,
   }
 
   C_WRAPPER_END()
+}
+
+// ----------------------------------------------------------------------
+// RandomVariable Function Definitions
+//
+struct RandomDevice_C {
+  std::random_device *m;
+};
+RandomDevice_C *random_device_new() {
+  return new RandomDevice_C;
+}
+void random_device_free(rgen *obj) {
+  if(!obj) {
+    return;
+  }
+  delete obj;
+}
+
+struct RandomDistribution_C {
+  Controls::RandomNumberDistribution *m;
+};
+
+RandomDistribution_C *random_number_distribution_new() {
+  return new RandomDistribution_C;
+}
+void normal_distribution_set(dist *obj,
+                             const double mean,
+                             const double stddev) {
+  obj->m = new Controls::normal_distribution<>(mean, stddev);
+}
+// #define SYMCTRL_RANDOM_DISTRIBUTION_C_WRAPPER(type, Class) \
+// RandomDistribution_C *##Class_set() { \
+//   RandomDistribution_C *s = new RandomDistribution_C; \
+//   \
+// }
+// #undef SYMCTRL_RANDOM_DISTRIBUTION_C_WRAPPER
+void random_number_distribution_free(RandomDistribution_C *obj) {
+  if(!obj) {
+    return;
+  }
+  delete obj;
+}
+
+struct RandomVariable_C {
+  SymEngine::RCP<const Controls::RandomVariable> m;
+};
+
+RandomVariable_C *random_variable_new() {
+  return new RandomVariable_C();
+}
+void random_variable_free(RandomVariable_C *obj) {
+  if(!obj) {
+    return;
+  }
+  delete obj;
+}
+
+void random_variable_set(RandomVariable_C *obj,
+                         const char *arg,
+                         const RandomDistribution_C *d) {
+  C_WRAPPER_BEGIN
+
+  // Controls::normal_distribution<> d{0,1};
+  obj->m = Controls::random_variable(std::string(arg), d->m);
+
+  C_WRAPPER_END()
+}
+
+void random_variable_name_get(RandomVariable_C *obj, char *result) {
+  C_WRAPPER_BEGIN
+
+  std::string str = obj->m->__str__();
+  auto cc = new char[str.length() + 1];
+  std::strcpy(cc, str.c_str());
+  result = cc;
+
+  C_WRAPPER_END()
+}
+
+double random_variable_sample(RandomVariable_C *obj) {
+  C_WRAPPER_BEGIN
+
+  std::random_device gen;
+  // std::cout << basic_str(obj) << '\n';
+  // std::cout << Controls::is_a_random_variable(*(obj->m)) << '\n';
+  // SymEngine::RCP<const Controls::RandomVariable> s = obj->m;
+  // std::cout << (*(obj->m)).sample(gen) << '\n';
+  // double r = SymEngine::rcp_dynamic_cast<const Controls::RandomVariable>(s)->sample(gen);
+  // s = SymEngine::rcp_static_cast<const Controls::RandomVariable>((obj->m));
+  // std::cout << Controls::is_a_random_variable(*(s->m)) << '\n';
+  // double r = (s->m).sample(gen);
+  // double r = (SymEngine::rcp_static_cast<const Controls::RandomVariable>((obj->m)))->sample(gen);
+  // auto S = SymEngine::rcp_static_cast<const Controls::RandomVariable>((obj->m));
+  // double r = (*(obj->m)).sample(gen);
+  // std::cout << r << '\n';
+  // double r = obj->m->sample(gen);
+  // return r;
+  // return 0;
+
+  return (*(obj->m)).sample(gen);
+
+  C_WRAPPER_END(0)
 }
 
 } // C

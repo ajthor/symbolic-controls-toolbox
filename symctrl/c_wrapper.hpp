@@ -209,6 +209,38 @@ SYMCTRL_EXPORT void slv_ode_euler(StateSpace_C *obj,
                                   double *t_result,
                                   double *x_result,
                                   OdeOptions_C *options);
+//
+
+// ---------------------------------------------------------------------------
+// C Wrapper for RandomVariable Interface
+//
+typedef struct RandomDevice_C RandomDevice_C;
+typedef struct RandomDevice_C rgen;
+SYMCTRL_EXPORT RandomDevice_C *random_device_new();
+SYMCTRL_EXPORT void random_device_free(rgen *obj);
+
+typedef struct RandomDistribution_C RandomDistribution_C;
+typedef struct RandomDistribution_C dist;
+
+SYMCTRL_EXPORT RandomDistribution_C *random_number_distribution_new();
+SYMCTRL_EXPORT void normal_distribution_set(dist *obj,
+                                            const double mean,
+                                            const double stddev);
+SYMCTRL_EXPORT void random_number_distribution_free(dist *obj);
+
+typedef struct RandomVariable_C RandomVariable_C;
+
+SYMCTRL_EXPORT RandomVariable_C *random_variable_new();
+SYMCTRL_EXPORT void random_variable_free(RandomVariable_C *obj);
+
+SYMCTRL_EXPORT void random_variable_set(RandomVariable_C *obj,
+                                        const char *arg,
+                                        const dist *d);
+
+SYMCTRL_EXPORT void random_variable_name_get(RandomVariable_C *obj,
+                                             char *result);
+
+SYMCTRL_EXPORT double random_variable_sample(RandomVariable_C *obj);
 
 #ifdef __cplusplus
 }

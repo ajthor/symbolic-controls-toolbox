@@ -1,11 +1,14 @@
 #include <tuple>
 #include <vector>
 
-#include <symengine/basic.h>
-#include <symengine/dict.h>
+// #include <symengine/basic.h>
+// #include <symengine/dict.h>
 #include <symengine/lambda_double.h>
+#include <symengine/visitor.h>
 
 #include "ode.hpp"
+
+#include <symctrl/random_variable.hpp>
 
 namespace Controls {
 
@@ -38,7 +41,7 @@ public:
   ~EulerVisitor() {}
 
   virtual void visit(StateSpace &m) {
-    size_t i, n = m.get_num_f();
+    size_t i, j, n = m.get_num_f();
 
     std::vector<SymEngine::LambdaRealDoubleVisitor> v(n);
 
@@ -49,9 +52,50 @@ public:
 
     fun_params.push_back(t);
 
+    // Initialize the RNG.
+    std::random_device gen;
+
+    SymEngine::vec_basic args;
+    SymEngine::vec_basic rv_vec;
+
     for(i = 0; i < n; i++) {
       fun_params.push_back(m.get_state(i));
       funs.push_back(m.get_f(i));
+
+      // Check if the function has random variables.
+      // rv_vec.clear();
+      // rv_vec = SymEngine::free_symbols(*m.get_f(i));
+      args = m.get_f(i)->get_args();
+      // for(j = 0; j < args.size(); j++) {
+      //   if(is_a_random_variable(*args[j])) {
+      //     // auto var = SymEngine::rcp_dynamic_cast<const RandomVariable>(args[j]);
+      //     // std::cout << var->sample(gen) << '\n';
+      //     // rv_vec.push_back(SymEngine::rcp_dynamic_cast<const RandomVariable>(args[j]));
+      //   }
+      // }
+      if(!args.empty()) {
+        for (auto it = args.begin(); it != args.end(); ++it) {
+          // std::cout << *it << std::endl;
+          if(is_a_random_variable(**it)) {
+            // auto var = dynamic_cast<const RandomVariable*>(*it);
+            // std::cout << (var)->sample(gen) << '\n';
+            // rv_vec.push_back(dynamic_cast<const RandomVariable*>(it));
+            rv_vec.push_back(*it);
+          }
+        }
+      }
+    }
+
+    // std::cout << rv_vec << '\n';
+    // if(rv_vec.size() > 0)
+    //   std::cout << rv_vec[0]->sample(gen) << '\n';
+
+    // Check if there are any RVs in the functions.
+    if(rv_vec.size() > 0) {
+      // Add the RVs to the variables list.
+      for (auto it = rv_vec.begin(); it != rv_vec.end(); ++it) {
+        fun_params.push_back(*it);
+      }
     }
 
     // Initialize Lambda functions.
@@ -75,6 +119,9 @@ public:
     std::vector<double> last_val;
     last_val = x_result_;
 
+    auto pos = current_val.begin();
+    auto rv_pos = current_val.end();
+
     double d;
 
     // Main ODE loop.
@@ -82,8 +129,15 @@ public:
       // Get the current n values.
       current_val = last_val;
 
-      auto pos = current_val.begin();
+      pos = current_val.begin();
       pos = current_val.insert(pos, t_current);
+
+      if(rv_vec.size() > 0) {
+        rv_pos = current_val.end();
+        for (auto it = rv_vec.begin(); it != rv_vec.end(); ++it) {
+          rv_pos = current_val.insert(rv_pos, SymEngine::rcp_dynamic_cast<const RandomVariable>(*it)->sample(gen));
+        }
+      }
 
       // Evaluate the state functions.
       for(i = 0; i < n; i++) {

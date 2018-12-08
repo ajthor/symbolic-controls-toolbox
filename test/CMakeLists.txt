@@ -28,3 +28,5 @@ ADD_TEST_FILE(test_kernel test_kernel.cc)
 ADD_TEST_FILE(test_ode test_ode.cc)
 
 ADD_TEST_FILE(test_dense_matrix test_dense_matrix.cc)
+
+ADD_TEST_FILE(test_random_variable test_random_variable.cc)
