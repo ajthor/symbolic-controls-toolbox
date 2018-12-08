@@ -47,22 +47,22 @@ SYMCTRL_EXPORT void statespace_free(StateSpace_C *obj);
 SYMCTRL_EXPORT void statespace_states_push_back(StateSpace_C *obj,
                                              const basic arg);
 SYMCTRL_EXPORT void statespace_states_get(StateSpace_C *obj,
-                                       size_t n,
-                                       basic result);
+                                          size_t n,
+                                          basic result);
 SYMCTRL_EXPORT void statespace_states_set(StateSpace_C *obj,
-                                       size_t n,
-                                       const basic arg);
+                                          size_t n,
+                                          const basic arg);
 SYMCTRL_EXPORT void statespace_states_erase(StateSpace_C *obj, size_t n);
 SYMCTRL_EXPORT size_t statespace_states_size(StateSpace_C *obj);
 
 SYMCTRL_EXPORT void statespace_inputs_push_back(StateSpace_C *obj,
                                              const basic arg);
 SYMCTRL_EXPORT void statespace_inputs_get(StateSpace_C *obj,
-                                       size_t n,
-                                       basic result);
+                                          size_t n,
+                                          basic result);
 SYMCTRL_EXPORT void statespace_inputs_set(StateSpace_C *obj,
-                                       size_t n,
-                                       const basic arg);
+                                          size_t n,
+                                          const basic arg);
 SYMCTRL_EXPORT void statespace_inputs_erase(StateSpace_C *obj, size_t n);
 SYMCTRL_EXPORT size_t statespace_inputs_size(StateSpace_C *obj);
 
@@ -84,8 +84,8 @@ SYMCTRL_EXPORT void statespace_C_get(StateSpace_C *obj, CDenseMatrix *result);
 SYMCTRL_EXPORT void statespace_D_get(StateSpace_C *obj, CDenseMatrix *result);
 
 SYMCTRL_EXPORT void statespace_subs(StateSpace_C *obj,
-                                 const basic k,
-                                 const basic m);
+                                    const basic k,
+                                    const basic m);
 
 SYMCTRL_EXPORT void statespace_linearize(StateSpace_C *obj);
 
@@ -215,17 +215,20 @@ SYMCTRL_EXPORT void slv_ode_euler(StateSpace_C *obj,
 // C Wrapper for RandomVariable Interface
 //
 typedef struct RandomDevice_C RandomDevice_C;
-typedef struct RandomDevice_C rgen;
+typedef struct RandomDevice_C generator;
 SYMCTRL_EXPORT RandomDevice_C *random_device_new();
-SYMCTRL_EXPORT void random_device_free(rgen *obj);
+SYMCTRL_EXPORT void random_device_init(generator *obj);
+SYMCTRL_EXPORT void random_device_free(generator *obj);
 
 typedef struct RandomDistribution_C RandomDistribution_C;
 typedef struct RandomDistribution_C dist;
 
 SYMCTRL_EXPORT RandomDistribution_C *random_number_distribution_new();
+
 SYMCTRL_EXPORT void normal_distribution_set(dist *obj,
                                             const double mean,
                                             const double stddev);
+
 SYMCTRL_EXPORT void random_number_distribution_free(dist *obj);
 
 typedef struct RandomVariable_C RandomVariable_C;
@@ -238,9 +241,10 @@ SYMCTRL_EXPORT void random_variable_set(RandomVariable_C *obj,
                                         const dist *d);
 
 SYMCTRL_EXPORT void random_variable_name_get(RandomVariable_C *obj,
-                                             char *result);
+                                             char **result);
 
-SYMCTRL_EXPORT double random_variable_sample(RandomVariable_C *obj);
+SYMCTRL_EXPORT double random_variable_sample(RandomVariable_C *obj,
+                                             generator *g);
 
 #ifdef __cplusplus
 }

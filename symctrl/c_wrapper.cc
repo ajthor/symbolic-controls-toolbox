@@ -653,7 +653,10 @@ struct RandomDevice_C {
 RandomDevice_C *random_device_new() {
   return new RandomDevice_C;
 }
-void random_device_free(rgen *obj) {
+void random_device_init(generator *obj) {
+  obj->m = new std::random_device;
+}
+void random_device_free(generator *obj) {
   if(!obj) {
     return;
   }
@@ -667,17 +670,13 @@ struct RandomDistribution_C {
 RandomDistribution_C *random_number_distribution_new() {
   return new RandomDistribution_C;
 }
+
 void normal_distribution_set(dist *obj,
                              const double mean,
                              const double stddev) {
   obj->m = new Controls::normal_distribution<>(mean, stddev);
 }
-// #define SYMCTRL_RANDOM_DISTRIBUTION_C_WRAPPER(type, Class) \
-// RandomDistribution_C *##Class_set() { \
-//   RandomDistribution_C *s = new RandomDistribution_C; \
-//   \
-// }
-// #undef SYMCTRL_RANDOM_DISTRIBUTION_C_WRAPPER
+
 void random_number_distribution_free(RandomDistribution_C *obj) {
   if(!obj) {
     return;
@@ -704,44 +703,28 @@ void random_variable_set(RandomVariable_C *obj,
                          const RandomDistribution_C *d) {
   C_WRAPPER_BEGIN
 
-  // Controls::normal_distribution<> d{0,1};
   obj->m = Controls::random_variable(std::string(arg), d->m);
 
   C_WRAPPER_END()
 }
 
-void random_variable_name_get(RandomVariable_C *obj, char *result) {
+void random_variable_name_get(RandomVariable_C *obj, char **result) {
   C_WRAPPER_BEGIN
 
   std::string str = obj->m->__str__();
   auto cc = new char[str.length() + 1];
   std::strcpy(cc, str.c_str());
-  result = cc;
+  result[0] = cc;
+  // std::cout << cc << '\n';
+  // result[0] = cc;
 
   C_WRAPPER_END()
 }
 
-double random_variable_sample(RandomVariable_C *obj) {
+double random_variable_sample(RandomVariable_C *obj, generator *gen) {
   C_WRAPPER_BEGIN
 
-  std::random_device gen;
-  // std::cout << basic_str(obj) << '\n';
-  // std::cout << Controls::is_a_random_variable(*(obj->m)) << '\n';
-  // SymEngine::RCP<const Controls::RandomVariable> s = obj->m;
-  // std::cout << (*(obj->m)).sample(gen) << '\n';
-  // double r = SymEngine::rcp_dynamic_cast<const Controls::RandomVariable>(s)->sample(gen);
-  // s = SymEngine::rcp_static_cast<const Controls::RandomVariable>((obj->m));
-  // std::cout << Controls::is_a_random_variable(*(s->m)) << '\n';
-  // double r = (s->m).sample(gen);
-  // double r = (SymEngine::rcp_static_cast<const Controls::RandomVariable>((obj->m)))->sample(gen);
-  // auto S = SymEngine::rcp_static_cast<const Controls::RandomVariable>((obj->m));
-  // double r = (*(obj->m)).sample(gen);
-  // std::cout << r << '\n';
-  // double r = obj->m->sample(gen);
-  // return r;
-  // return 0;
-
-  return (*(obj->m)).sample(gen);
+  return (*(obj->m)).sample(*(gen->m));
 
   C_WRAPPER_END(0)
 }

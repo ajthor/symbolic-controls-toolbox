@@ -145,6 +145,37 @@ void ml_slv_ode_euler(StateSpace_C *obj,
                       double *t_result,
                       double *x_result,
                       OdeOptions_C *options);
+//
+
+// ----------------------------------------------------------------------
+// Random variable wrapper functions.
+//
+typedef struct RandomDevice_C RandomDevice_C;
+
+RandomDevice_C *ml_random_device_new();
+void ml_random_device_init(RandomDevice_C *obj);
+void ml_random_device_free(RandomDevice_C *obj);
+
+typedef struct RandomDistribution_C RandomDistribution_C;
+
+RandomDistribution_C *ml_random_number_distribution_new();
+
+void ml_normal_distribution_set(RandomDistribution_C *obj,
+                                const double mean,
+                                const double stddev);
+
+void ml_random_number_distribution_free(RandomDistribution_C *obj);
+
+// typedef struct CRCPBasic CRCPBasic;
+typedef struct RandomVariable_C RandomVariable_C;
+
+RandomVariable_C *ml_random_variable_new(const char **arg,
+                                         RandomDistribution_C *d);
+void ml_random_variable_free(RandomVariable_C *obj);
+
+void ml_random_variable_name_get(RandomVariable_C *obj, char **result);
+
+double ml_random_variable_sample(RandomVariable_C *obj, RandomDevice_C *g);
 
 #ifdef __cplusplus
 }

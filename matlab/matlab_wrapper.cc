@@ -780,5 +780,55 @@ void ml_slv_ode_euler(StateSpace_C *obj,
                 t_result, x_result, options);
 }
 
+// ----------------------------------------------------------------------
+// Random variable wrapper functions.
+//
+RandomDevice_C *ml_random_device_new() {
+  return random_device_new();
+}
+void ml_random_device_init(RandomDevice_C *obj) {
+  random_device_init(obj);
+}
+void ml_random_device_free(RandomDevice_C *obj) {
+  random_device_free(obj);
+}
+
+RandomDistribution_C *ml_random_number_distribution_new() {
+  return random_number_distribution_new();
+}
+
+void ml_normal_distribution_set(RandomDistribution_C *obj,
+                                const double mean,
+                                const double stddev) {
+  normal_distribution_set(obj, mean, stddev);
+}
+
+void ml_random_number_distribution_free(RandomDistribution_C *obj) {
+  random_number_distribution_free(obj);
+}
+
+RandomVariable_C *ml_random_variable_new(const char **arg,
+                                         RandomDistribution_C *d) {
+  auto s = random_variable_new();
+  random_variable_set(s, *arg, d);
+  return s;
+}
+void ml_random_variable_free(RandomVariable_C *obj) {
+  random_variable_free(obj);
+}
+
+void ml_random_variable_name_get(RandomVariable_C *obj, char **result) {
+  // result[0] = se_parse(basic_str(obj));
+  // random_variable_name_get(obj, *result);
+  // std::string str = obj->m->__str__();
+  // auto cc = new char[str.length() + 1];
+  // std::strcpy(cc, str.c_str());
+  // result[0] = se_parse(cc);
+  random_variable_name_get(obj, result);
+}
+
+double ml_random_variable_sample(RandomVariable_C *obj, RandomDevice_C *g) {
+  return random_variable_sample(obj, g);
+}
 
 } // C
