@@ -306,7 +306,7 @@ SYMCTRL_EXPORT double random_variable_sample(RandomVariable_C *obj,
                                              generator *g);
 
 // ---------------------------------------------------------------------------
-// C Wrapper for RandomVariable Replacement Interface
+// C Wrapper for RandomVariable Replacement Functions
 //
 SYMCTRL_EXPORT
 void statespace_random_variable_replace(StateSpace_C *obj,

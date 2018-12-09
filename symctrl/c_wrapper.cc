@@ -684,11 +684,9 @@ void uniform_int_distribution_set(dist *obj, const int a, const int b) {
 void uniform_real_distribution_set(dist *obj, const double a, const double b) {
   obj->m = new Controls::uniform_real_distribution<>(a, b);
 }
-
-// void bernoulli_distribution_set(dist *obj, const double p) {
-//   obj->m = new Controls::bernoulli_distribution(p);
-// }
-
+void bernoulli_distribution_set(dist *obj, const double p) {
+  // obj->m = new Controls::bernoulli_distribution(p);
+}
 void negative_binomial_distribution_set(dist *obj,
                                         const int k,
                                         const double p) {
@@ -755,14 +753,6 @@ void random_variable_set(RandomVariable_C *obj,
   C_WRAPPER_END()
 }
 
-// void random_variable_replace(basic obj,
-//                              const basic key,
-//                              const basic mapped) {
-//   CMapBasicBasic *map = mapbasicbasic_new();
-//   mapbasicbasic_insert(map, key, mapped);
-//   basic_subs(obj, obj, map);
-//   mapbasicbasic_free(map);
-// }
 void random_variable_name_get(RandomVariable_C *obj, char **result) {
   C_WRAPPER_BEGIN
 
@@ -795,37 +785,25 @@ void statespace_random_variable_replace(StateSpace_C *obj,
   CRCPBasic *r = new CRCPBasic();
   CRCPBasic *mapp = new CRCPBasic();
   mapp->m = mapped->m;
-  // CRCPBasic *k = new CRCPBasic();
-  CMapBasicBasic *mapbb = new CMapBasicBasic();
-  size_t sz, i, j;
 
-  // for(i = 0; i < len; i++) {
-  //   k->m = SymEngine::parse(key[i]);
-    (mapbb->m)[key->m] = mapp->m;
-  // }
+  CMapBasicBasic *mapbb = new CMapBasicBasic();
+
+  size_t sz, i;
+
+  (mapbb->m)[key->m] = mapp->m;
 
   sz = statespace_f_size(obj);
   for(i = 0; i < sz; i++) {
     s->m = obj->m.get_f(i);
 
-    // k->m = SymEngine::parse(key[i]);
-    // mapp->m = mapped->m;
     r->m = s->m->subs(mapbb->m);
 
     obj->m.set_f(i, r->m);
   }
 
-  // sz = statespace_g_size(obj);
-  // for(i = 0; i < sz; i++) {
-  //   s->m = obj->m.get_g(i);
-  //   r->m = s->m->subs(map->m);
-  //   obj->m.set_g(i, r->m);
-  // }
-
   delete mapbb;
   delete s;
   delete r;
-  // delete k;
   delete mapp;
 
   C_WRAPPER_END()

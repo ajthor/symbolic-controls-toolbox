@@ -28,7 +28,7 @@ classdef randomdistribution
         FisherF                 ('fisher_f_distribution')
         StudentT                ('student_t_distribution')
     end
-    % Discrete                discrete_distribution
-    % PiecewiseConstant       piecewise_constant_distribution
-    % PiecewiseLinear         piecewise_linear_distribution
+    % Discrete                ('discrete_distribution')
+    % PiecewiseConstant       ('piecewise_constant_distribution')
+    % PiecewiseLinear         ('piecewise_linear_distribution')
 end

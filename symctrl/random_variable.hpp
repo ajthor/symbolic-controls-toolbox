@@ -43,12 +43,6 @@ random_variable(const std::string &name,
 // ----------------------------------------------------------------------
 // Utility Functions
 //
-// inline RCP<const Basic> sub_rv(const RCP<const Basic> &x,
-//                                const map_basic_basic &subs_dict) {
-//   //
-//
-// }
-
 inline bool is_a_random_variable(const SymEngine::Basic &b) {
     return dynamic_cast<const RandomVariable*>(&b) != nullptr;
 }

@@ -327,8 +327,6 @@ classdef test_state_space < matlab.unittest.TestCase
             sys.inputs = u;
             sys.f = [x2 + w1.sym(), -sin(x1) - x2 + u + w2.sym()];
             sys.g = x1;
-
-            sys.f
         end
     end
 end

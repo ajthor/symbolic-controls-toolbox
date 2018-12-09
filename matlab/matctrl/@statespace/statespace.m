@@ -170,6 +170,19 @@ classdef (SupportExtensionMethods = true) statespace < handle
                     obj.cobj_, ...
                     numel(s), ...
                     s);
+
+            w = evalin('caller', 'whos');
+            R = {w(strcmp('randomvar', {w.class})).name};
+
+            for k = 1:numel(R)
+                RV = evalin('caller', R{k});
+                cptr = libpointer('stringPtrPtr', symctrl.mat2se(R{k}));
+
+                calllib('matctrl', 'ml_statespace_random_variable_replace', ...
+                        obj.cobj_, ...
+                        cptr, ...
+                        RV.cobj_);
+            end
         end
 
         function g = get.g(obj)
