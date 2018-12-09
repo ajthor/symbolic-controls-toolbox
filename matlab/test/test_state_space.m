@@ -316,5 +316,19 @@ classdef test_state_space < matlab.unittest.TestCase
 
             testCase.verifyEqual(obsv(sys), [1, 0; 0, 1]);
         end
+
+        function testStateSpaceRandomVariables(testCase)
+            w1 = randomvar('w1', randomdistribution.Normal, 0, 1);
+            w2 = randomvar('w2', randomdistribution.Normal, 0, 1);
+
+            syms x1 x2 u
+            sys = statespace();
+            sys.states = [x1; x2];
+            sys.inputs = u;
+            sys.f = [x2 + w1.sym(), -sin(x1) - x2 + u + w2.sym()];
+            sys.g = x1;
+
+            sys.f
+        end
     end
 end

@@ -15,7 +15,7 @@ using SymEngine::Basic;
 using SymEngine::RCP;
 
 TEST_CASE("Random Variable", "[randomvariable]") {
-  std::random_device rd;
+  std::random_device gen;
   Controls::normal_distribution<> d{5,2};
 
   RCP<const Controls::RandomVariable> X;
@@ -28,12 +28,15 @@ TEST_CASE("Random Variable", "[randomvariable]") {
 
   REQUIRE(not Controls::is_a_random_variable(*y));
 
-  // std::cout << d(rd) << '\n';
-  // std::cout << X->sample(rd) << '\n';
+  // std::cout << d(gen) << '\n';
+  // std::cout << X->sample(gen) << '\n';
+  // for(size_t i = 0; i < 10000; i++) {
+  //   X->sample(gen);
+  // }
 }
 
 TEST_CASE("Random Variable: add", "[randomvariable]") {
-  std::random_device rd;
+  std::random_device gen;
   Controls::normal_distribution<> d{5,2};
 
   RCP<const Controls::RandomVariable> X;
@@ -60,19 +63,23 @@ TEST_CASE("Random Variable: add", "[randomvariable]") {
   REQUIRE(Controls::is_a_random_variable(*search->first));
 }
 
-TEST_CASE("Random Variable: Wrapper", "[randomvariable]") {
+TEST_CASE("Random Variable: C Wrapper", "[randomvariable]") {
   auto d = random_number_distribution_new();
   normal_distribution_set(d, 0, 1);
+
+  auto g = random_device_new();
+  random_device_init(g);
 
   auto s = random_variable_new();
   random_variable_set(s, "x", d);
 
   // std::cout << *(s->m) << '\n';
 
-  double r = random_variable_sample(s);
+  double r = random_variable_sample(s, g);
   // std::cout << "TEST SAMPLE" << '\n';
-  // std::cout << random_variable_sample(s) << '\n';
+  // std::cout << random_variable_sample(s, g) << '\n';
 
+  random_device_free(g);
   random_variable_free(s);
   random_number_distribution_free(d);
 

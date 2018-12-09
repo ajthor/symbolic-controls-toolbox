@@ -797,10 +797,79 @@ RandomDistribution_C *ml_random_number_distribution_new() {
   return random_number_distribution_new();
 }
 
+void ml_uniform_int_distribution_set(RandomDistribution_C *obj,
+                                     const int a,
+                                     const int b) {
+  uniform_int_distribution_set(obj, a, b);
+}
+void ml_uniform_real_distribution_set(RandomDistribution_C *obj,
+                                      const double a,
+                                      const double b) {
+  uniform_real_distribution_set(obj, a, b);
+}
+// void ml_bernoulli_distribution_set(RandomDistribution_C *obj,
+//                                    const double p) {
+//   bernoulli_distribution_set(obj, p);
+// }
+void ml_negative_binomial_distribution_set(RandomDistribution_C *obj,
+                                           const int k,
+                                           const double p) {
+  negative_binomial_distribution_set(obj, k, p);
+}
+void ml_geometric_distribution_set(RandomDistribution_C *obj,
+                                   const double p) {
+  geometric_distribution_set(obj, p);
+}
+void ml_poisson_distribution_set(RandomDistribution_C *obj,
+                                 const double mean) {
+  poisson_distribution_set(obj, mean);
+}
+void ml_exponential_distribution_set(RandomDistribution_C *obj,
+                                     const double lambda) {
+  exponential_distribution_set(obj, lambda);
+}
+void ml_gamma_distribution_set(RandomDistribution_C *obj,
+                               const double alpha,
+                               const double beta) {
+  gamma_distribution_set(obj, alpha, beta);
+}
+void ml_weibull_distribution_set(RandomDistribution_C *obj,
+                                 const double a,
+                                 const double b) {
+  weibull_distribution_set(obj, a, b);
+}
+void ml_extreme_value_distribution_set(RandomDistribution_C *obj,
+                                       const double a,
+                                       const double b) {
+  extreme_value_distribution_set(obj, a, b);
+}
 void ml_normal_distribution_set(RandomDistribution_C *obj,
                                 const double mean,
                                 const double stddev) {
   normal_distribution_set(obj, mean, stddev);
+}
+void ml_lognormal_distribution_set(RandomDistribution_C *obj,
+                                   const double m,
+                                   const double s) {
+  lognormal_distribution_set(obj, m, s);
+}
+void ml_chi_squared_distribution_set(RandomDistribution_C *obj,
+                                     const double n) {
+  chi_squared_distribution_set(obj, n);
+}
+void ml_cauchy_distribution_set(RandomDistribution_C *obj,
+                                const double a,
+                                const double b) {
+  cauchy_distribution_set(obj, a, b);
+}
+void ml_fisher_f_distribution_set(RandomDistribution_C *obj,
+                                  const double m,
+                                  const double n) {
+  fisher_f_distribution_set(obj, m, n);
+}
+void ml_student_t_distribution_set(RandomDistribution_C *obj,
+                                   const double n) {
+  student_t_distribution_set(obj, n);
 }
 
 void ml_random_number_distribution_free(RandomDistribution_C *obj) {
@@ -816,6 +885,15 @@ RandomVariable_C *ml_random_variable_new(const char **arg,
 void ml_random_variable_free(RandomVariable_C *obj) {
   random_variable_free(obj);
 }
+void ml_random_variable_set(RandomVariable_C *obj,
+                            const char **arg,
+                            RandomDistribution_C *d) {
+  random_variable_set(obj, *arg, d);
+}
+// void ml_random_variable_distribution_set(RandomVariable_C *obj,
+//                                          RandomDistribution_C *d) {
+//   random_variable_distribution_set(obj, d);
+// }
 
 void ml_random_variable_name_get(RandomVariable_C *obj, char **result) {
   // result[0] = se_parse(basic_str(obj));
@@ -829,6 +907,19 @@ void ml_random_variable_name_get(RandomVariable_C *obj, char **result) {
 
 double ml_random_variable_sample(RandomVariable_C *obj, RandomDevice_C *g) {
   return random_variable_sample(obj, g);
+}
+
+// ----------------------------------------------------------------------
+// Random variable replacement wrapper functions.
+//
+void ml_statespace_random_variable_replace(StateSpace_C *obj,
+                                           const char** key,
+                                           RandomVariable_C *mapped) {
+  //
+  auto k = basic_new_heap();
+  basic_parse(k, key[0]);
+  statespace_random_variable_replace(obj, k, mapped);
+  basic_free_heap(k);
 }
 
 } // C

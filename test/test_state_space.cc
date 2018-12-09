@@ -4,14 +4,20 @@
 #include <symengine/visitor.h>
 #include <symengine/parser.h>
 
+#include <symctrl/random_variable.hpp>
 #include <symctrl/state_space.hpp>
+
+using SymEngine::Basic;
+using SymEngine::RCP;
+using SymEngine::symbol;
+using SymEngine::Symbol;
 
 TEST_CASE("State space: states", "[statespace]") {
   Controls::StateSpace *ss = new Controls::StateSpace();
 
-  SymEngine::RCP<const SymEngine::Symbol> x1 = SymEngine::symbol("x1");
-  SymEngine::RCP<const SymEngine::Symbol> x2 = SymEngine::symbol("x2");
-  SymEngine::RCP<const SymEngine::Symbol> x3 = SymEngine::symbol("x3");
+  RCP<const Symbol> x1 = symbol("x1");
+  RCP<const Symbol> x2 = symbol("x2");
+  RCP<const Symbol> x3 = symbol("x3");
 
   ss->add_state(x1);
   REQUIRE(x1->__eq__(*(ss->get_state(0))));
@@ -34,9 +40,9 @@ TEST_CASE("State space: states", "[statespace]") {
 TEST_CASE("State space: inputs", "[statespace]") {
   Controls::StateSpace *ss = new Controls::StateSpace();
 
-  SymEngine::RCP<const SymEngine::Symbol> u1 = SymEngine::symbol("u1");
-  SymEngine::RCP<const SymEngine::Symbol> u2 = SymEngine::symbol("u2");
-  SymEngine::RCP<const SymEngine::Symbol> u3 = SymEngine::symbol("u3");
+  RCP<const Symbol> u1 = symbol("u1");
+  RCP<const Symbol> u2 = symbol("u2");
+  RCP<const Symbol> u3 = symbol("u3");
 
   ss->add_input(u1);
   REQUIRE(u1->__eq__(*(ss->get_input(0))));
@@ -59,15 +65,15 @@ TEST_CASE("State space: inputs", "[statespace]") {
 TEST_CASE("State space: state functions", "[statespace]") {
   Controls::StateSpace *ss = new Controls::StateSpace();
 
-  SymEngine::RCP<const SymEngine::Symbol> x1 = SymEngine::symbol("x1");
-  SymEngine::RCP<const SymEngine::Symbol> x2 = SymEngine::symbol("x2");
+  RCP<const Symbol> x1 = symbol("x1");
+  RCP<const Symbol> x2 = symbol("x2");
 
-  SymEngine::RCP<const SymEngine::Symbol> u1 = SymEngine::symbol("u1");
+  RCP<const Symbol> u1 = symbol("u1");
 
   std::string s1;
   std::string s2;
-  SymEngine::RCP<const SymEngine::Basic> res1;
-  SymEngine::RCP<const SymEngine::Basic> res2;
+  RCP<const Basic> res1;
+  RCP<const Basic> res2;
 
   s1 = "x2";
   res1 = SymEngine::parse(s1);
@@ -99,15 +105,15 @@ TEST_CASE("State space: state functions", "[statespace]") {
 TEST_CASE("State space: output functions", "[statespace]") {
   Controls::StateSpace *ss = new Controls::StateSpace();
 
-  SymEngine::RCP<const SymEngine::Symbol> x1 = SymEngine::symbol("x1");
-  SymEngine::RCP<const SymEngine::Symbol> x2 = SymEngine::symbol("x2");
+  RCP<const Symbol> x1 = symbol("x1");
+  RCP<const Symbol> x2 = symbol("x2");
 
-  SymEngine::RCP<const SymEngine::Symbol> u1 = SymEngine::symbol("u1");
+  RCP<const Symbol> u1 = symbol("u1");
 
   std::string s1;
   std::string s2;
-  SymEngine::RCP<const SymEngine::Basic> res1;
-  SymEngine::RCP<const SymEngine::Basic> res2;
+  RCP<const Basic> res1;
+  RCP<const Basic> res2;
 
   s1 = "x1";
   res1 = SymEngine::parse(s1);
@@ -138,17 +144,17 @@ TEST_CASE("State space: output functions", "[statespace]") {
 TEST_CASE("State space: A matrix", "[statespace]") {
   Controls::StateSpace *ss = new Controls::StateSpace();
 
-  SymEngine::RCP<const SymEngine::Symbol> x1 = SymEngine::symbol("x1");
-  SymEngine::RCP<const SymEngine::Symbol> x2 = SymEngine::symbol("x2");
+  RCP<const Symbol> x1 = symbol("x1");
+  RCP<const Symbol> x2 = symbol("x2");
 
-  SymEngine::RCP<const SymEngine::Symbol> u1 = SymEngine::symbol("u1");
+  RCP<const Symbol> u1 = symbol("u1");
 
   ss->add_state(x1);
   ss->add_state(x2);
   ss->add_input(u1);
 
   std::string s;
-  SymEngine::RCP<const SymEngine::Basic> res;
+  RCP<const Basic> res;
 
   s = "x2";
   res = SymEngine::parse(s);
@@ -172,17 +178,17 @@ TEST_CASE("State space: A matrix", "[statespace]") {
 TEST_CASE("State space: B matrix", "[statespace]") {
   Controls::StateSpace *ss = new Controls::StateSpace();
 
-  SymEngine::RCP<const SymEngine::Symbol> x1 = SymEngine::symbol("x1");
-  SymEngine::RCP<const SymEngine::Symbol> x2 = SymEngine::symbol("x2");
+  RCP<const Symbol> x1 = symbol("x1");
+  RCP<const Symbol> x2 = symbol("x2");
 
-  SymEngine::RCP<const SymEngine::Symbol> u1 = SymEngine::symbol("u1");
+  RCP<const Symbol> u1 = symbol("u1");
 
   ss->add_state(x1);
   ss->add_state(x2);
   ss->add_input(u1);
 
   std::string s;
-  SymEngine::RCP<const SymEngine::Basic> res;
+  RCP<const Basic> res;
 
   s = "x2";
   res = SymEngine::parse(s);
@@ -203,17 +209,17 @@ TEST_CASE("State space: B matrix", "[statespace]") {
 TEST_CASE("State space: C matrix", "[statespace]") {
   Controls::StateSpace *ss = new Controls::StateSpace();
 
-  SymEngine::RCP<const SymEngine::Symbol> x1 = SymEngine::symbol("x1");
-  SymEngine::RCP<const SymEngine::Symbol> x2 = SymEngine::symbol("x2");
+  RCP<const Symbol> x1 = symbol("x1");
+  RCP<const Symbol> x2 = symbol("x2");
 
-  SymEngine::RCP<const SymEngine::Symbol> u1 = SymEngine::symbol("u1");
+  RCP<const Symbol> u1 = symbol("u1");
 
   ss->add_state(x1);
   ss->add_state(x2);
   ss->add_input(u1);
 
   std::string s;
-  SymEngine::RCP<const SymEngine::Basic> res;
+  RCP<const Basic> res;
 
   s = "x2";
   res = SymEngine::parse(s);
@@ -230,17 +236,17 @@ TEST_CASE("State space: C matrix", "[statespace]") {
 TEST_CASE("State space: D matrix", "[statespace]") {
   Controls::StateSpace *ss = new Controls::StateSpace();
 
-  SymEngine::RCP<const SymEngine::Symbol> x1 = SymEngine::symbol("x1");
-  SymEngine::RCP<const SymEngine::Symbol> x2 = SymEngine::symbol("x2");
+  RCP<const Symbol> x1 = symbol("x1");
+  RCP<const Symbol> x2 = symbol("x2");
 
-  SymEngine::RCP<const SymEngine::Symbol> u1 = SymEngine::symbol("u1");
+  RCP<const Symbol> u1 = symbol("u1");
 
   ss->add_state(x1);
   ss->add_state(x2);
   ss->add_input(u1);
 
   std::string s;
-  SymEngine::RCP<const SymEngine::Basic> res;
+  RCP<const Basic> res;
 
   s = "x2";
   res = SymEngine::parse(s);
@@ -257,17 +263,17 @@ TEST_CASE("State space: D matrix", "[statespace]") {
 TEST_CASE("State space: linearize", "[statespace]") {
   Controls::StateSpace *ss = new Controls::StateSpace();
 
-  SymEngine::RCP<const SymEngine::Symbol> x1 = SymEngine::symbol("x1");
-  SymEngine::RCP<const SymEngine::Symbol> x2 = SymEngine::symbol("x2");
+  RCP<const Symbol> x1 = symbol("x1");
+  RCP<const Symbol> x2 = symbol("x2");
 
-  SymEngine::RCP<const SymEngine::Symbol> u1 = SymEngine::symbol("u1");
+  RCP<const Symbol> u1 = symbol("u1");
 
   ss->add_state(x1);
   ss->add_state(x2);
   ss->add_input(u1);
 
   std::string s;
-  SymEngine::RCP<const SymEngine::Basic> res;
+  RCP<const Basic> res;
 
   s = "x2";
   res = SymEngine::parse(s);
@@ -293,5 +299,61 @@ TEST_CASE("State space: linearize", "[statespace]") {
   REQUIRE(A == SymEngine::DenseMatrix(2, 2,
                {SymEngine::integer(0),  SymEngine::integer(1),
                 SymEngine::integer(-1), SymEngine::integer(-1)}));
+
+}
+
+TEST_CASE("State space: nonlinear separation", "[statespace]") {
+  Controls::StateSpace *ss = new Controls::StateSpace();
+
+  RCP<const Symbol> x = symbol("x");
+  RCP<const Symbol> u = symbol("u");
+  RCP<const Symbol> a = symbol("a");
+  RCP<const Symbol> b = symbol("b");
+
+  ss->add_state(x);
+  ss->add_input(u);
+
+  std::string s;
+  RCP<const Basic> res, V;
+
+  s = "a*x - b*x^3 + u";
+  res = SymEngine::parse(s);
+  ss->add_f(res);
+
+  s = "x^2/2";
+  V = SymEngine::parse(s);
+
+}
+
+TEST_CASE("State space: random variable", "[statespace]") {
+  Controls::StateSpace *ss = new Controls::StateSpace();
+
+  RCP<const Symbol> x1 = symbol("x1");
+  RCP<const Symbol> x2 = symbol("x2");
+
+  Controls::normal_distribution<> d1{0, 1};
+  Controls::normal_distribution<> d2{0, 1};
+
+  RCP<const Controls::RandomVariable> w1;
+  RCP<const Controls::RandomVariable> w2;
+  w1 = Controls::random_variable("w1", &d1);
+  w2 = Controls::random_variable("w2", &d2);
+
+  RCP<const Symbol> u1 = symbol("u1");
+
+  ss->add_state(x1);
+  ss->add_state(x2);
+  ss->add_input(u1);
+
+  std::string s;
+  RCP<const Basic> res;
+
+  s = "x2 + w1";
+  res = SymEngine::parse(s);
+  ss->add_f(res);
+
+  s = "-sin(x1) - x2 + u1 + w2";
+  res = SymEngine::parse(s);
+  ss->add_f(res);
 
 }

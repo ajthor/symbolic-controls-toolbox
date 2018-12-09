@@ -1,7 +1,7 @@
 classdef randomdevice < handle
     %RANDOMVAR Symbolic random variable.
 
-    properties (Access = {?randomvar}, Hidden)
+    properties (GetAccess = {?randomvar}, Hidden)
         % C Pointer Handle
         cobj_;
     end

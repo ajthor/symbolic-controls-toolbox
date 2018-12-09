@@ -59,6 +59,10 @@ enum DistributionType {
 //   public RandomNumberDistribution, public std::bernoulli_distribution {
 // public:
 //   using std::bernoulli_distribution::bernoulli_distribution;
+//   using std::bernoulli_distribution::operator();
+//   using std::bernoulli_distribution::min;
+//
+//   void accept(SampleVisitor &visitor);
 // };
 
 // ----------------------------------------------------------------------

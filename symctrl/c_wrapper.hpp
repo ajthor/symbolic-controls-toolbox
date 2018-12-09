@@ -216,6 +216,7 @@ SYMCTRL_EXPORT void slv_ode_euler(StateSpace_C *obj,
 //
 typedef struct RandomDevice_C RandomDevice_C;
 typedef struct RandomDevice_C generator;
+
 SYMCTRL_EXPORT RandomDevice_C *random_device_new();
 SYMCTRL_EXPORT void random_device_init(generator *obj);
 SYMCTRL_EXPORT void random_device_free(generator *obj);
@@ -224,12 +225,65 @@ typedef struct RandomDistribution_C RandomDistribution_C;
 typedef struct RandomDistribution_C dist;
 
 SYMCTRL_EXPORT RandomDistribution_C *random_number_distribution_new();
+SYMCTRL_EXPORT void random_number_distribution_free(dist *obj);
 
+SYMCTRL_EXPORT void uniform_int_distribution_set(dist *obj,
+                                                 const int a,
+                                                 const int b);
+SYMCTRL_EXPORT void uniform_real_distribution_set(dist *obj,
+                                                  const double a,
+                                                  const double b);
+// SYMCTRL_EXPORT void bernoulli_distribution_set(dist *obj, const double p);
+SYMCTRL_EXPORT void negative_binomial_distribution_set(dist *obj,
+                                                       const int k,
+                                                       const double p);
+SYMCTRL_EXPORT void geometric_distribution_set(dist *obj, const double p);
+SYMCTRL_EXPORT void poisson_distribution_set(dist *obj, const double mean);
+SYMCTRL_EXPORT void exponential_distribution_set(dist *obj,
+                                                 const double lambda);
+SYMCTRL_EXPORT void gamma_distribution_set(dist *obj,
+                                           const double alpha,
+                                           const double beta);
+SYMCTRL_EXPORT void weibull_distribution_set(dist *obj,
+                                             const double a,
+                                             const double b);
+SYMCTRL_EXPORT void extreme_value_distribution_set(dist *obj,
+                                                   const double a,
+                                                   const double b);
 SYMCTRL_EXPORT void normal_distribution_set(dist *obj,
                                             const double mean,
                                             const double stddev);
+SYMCTRL_EXPORT void lognormal_distribution_set(dist *obj,
+                                               const double m,
+                                               const double s);
+SYMCTRL_EXPORT void chi_squared_distribution_set(dist *obj, const double n);
+SYMCTRL_EXPORT void cauchy_distribution_set(dist *obj,
+                                            const double a,
+                                            const double b);
+SYMCTRL_EXPORT void fisher_f_distribution_set(dist *obj,
+                                              const double m,
+                                              const double n);
+SYMCTRL_EXPORT void student_t_distribution_set(dist *obj, const double n);
 
-SYMCTRL_EXPORT void random_number_distribution_free(dist *obj);
+// uniform_int_distribution
+// uniform_real_distribution
+// binomial_distribution
+// negative_binomial_distribution
+// geometric_distribution
+// poisson_distribution
+// exponential_distribution
+// gamma_distribution
+// weibull_distribution
+// extreme_value_distribution
+// normal_distribution
+// lognormal_distribution
+// chi_squared_distribution
+// cauchy_distribution
+// fisher_f_distribution
+// student_t_distribution
+// discrete_distribution
+// piecewise_constant_distribution
+// piecewise_linear_distribution
 
 typedef struct RandomVariable_C RandomVariable_C;
 
@@ -239,12 +293,25 @@ SYMCTRL_EXPORT void random_variable_free(RandomVariable_C *obj);
 SYMCTRL_EXPORT void random_variable_set(RandomVariable_C *obj,
                                         const char *arg,
                                         const dist *d);
+// SYMCTRL_EXPORT void random_variable_distribution_set(RandomVariable_C *obj,
+//                                                      const dist *d);
 
+// SYMCTRL_EXPORT void random_variable_replace(basic obj,
+//                                             const basic key,
+//                                             const basic mapped);
 SYMCTRL_EXPORT void random_variable_name_get(RandomVariable_C *obj,
                                              char **result);
 
 SYMCTRL_EXPORT double random_variable_sample(RandomVariable_C *obj,
                                              generator *g);
+
+// ---------------------------------------------------------------------------
+// C Wrapper for RandomVariable Replacement Interface
+//
+SYMCTRL_EXPORT
+void statespace_random_variable_replace(StateSpace_C *obj,
+                                        const basic key,
+                                        RandomVariable_C *mapped);
 
 #ifdef __cplusplus
 }

@@ -160,9 +160,48 @@ typedef struct RandomDistribution_C RandomDistribution_C;
 
 RandomDistribution_C *ml_random_number_distribution_new();
 
+void ml_uniform_int_distribution_set(RandomDistribution_C *obj,
+                                     const int a,
+                                     const int b);
+void ml_uniform_real_distribution_set(RandomDistribution_C *obj,
+                                      const double a,
+                                      const double b);
+// void ml_bernoulli_distribution_set(RandomDistribution_C *obj,
+//                                    const double p);
+void ml_negative_binomial_distribution_set(RandomDistribution_C *obj,
+                                           const int k,
+                                           const double p);
+void ml_geometric_distribution_set(RandomDistribution_C *obj,
+                                   const double p);
+void ml_poisson_distribution_set(RandomDistribution_C *obj,
+                                 const double mean);
+void ml_exponential_distribution_set(RandomDistribution_C *obj,
+                                     const double lambda);
+void ml_gamma_distribution_set(RandomDistribution_C *obj,
+                               const double alpha,
+                               const double beta);
+void ml_weibull_distribution_set(RandomDistribution_C *obj,
+                                 const double a,
+                                 const double b);
+void ml_extreme_value_distribution_set(RandomDistribution_C *obj,
+                                       const double a,
+                                       const double b);
 void ml_normal_distribution_set(RandomDistribution_C *obj,
                                 const double mean,
                                 const double stddev);
+void ml_lognormal_distribution_set(RandomDistribution_C *obj,
+                                   const double m,
+                                   const double s);
+void ml_chi_squared_distribution_set(RandomDistribution_C *obj,
+                                     const double n);
+void ml_cauchy_distribution_set(RandomDistribution_C *obj,
+                                const double a,
+                                const double b);
+void ml_fisher_f_distribution_set(RandomDistribution_C *obj,
+                                  const double m,
+                                  const double n);
+void ml_student_t_distribution_set(RandomDistribution_C *obj,
+                                   const double n);
 
 void ml_random_number_distribution_free(RandomDistribution_C *obj);
 
@@ -172,10 +211,22 @@ typedef struct RandomVariable_C RandomVariable_C;
 RandomVariable_C *ml_random_variable_new(const char **arg,
                                          RandomDistribution_C *d);
 void ml_random_variable_free(RandomVariable_C *obj);
+void ml_random_variable_set(RandomVariable_C *obj,
+                            const char **arg,
+                            RandomDistribution_C *d);
+// void ml_random_variable_distribution_set(RandomVariable_C *obj,
+//                                          RandomDistribution_C *d);
 
 void ml_random_variable_name_get(RandomVariable_C *obj, char **result);
 
 double ml_random_variable_sample(RandomVariable_C *obj, RandomDevice_C *g);
+
+// ----------------------------------------------------------------------
+// Random variable replacement wrapper functions.
+//
+void ml_statespace_random_variable_replace(StateSpace_C *obj,
+                                           const char** key,
+                                           RandomVariable_C *mapped);
 
 #ifdef __cplusplus
 }

@@ -650,6 +650,7 @@ void slv_ode_euler(StateSpace_C *obj,
 struct RandomDevice_C {
   std::random_device *m;
 };
+
 RandomDevice_C *random_device_new() {
   return new RandomDevice_C;
 }
@@ -670,18 +671,64 @@ struct RandomDistribution_C {
 RandomDistribution_C *random_number_distribution_new() {
   return new RandomDistribution_C;
 }
-
-void normal_distribution_set(dist *obj,
-                             const double mean,
-                             const double stddev) {
-  obj->m = new Controls::normal_distribution<>(mean, stddev);
-}
-
 void random_number_distribution_free(RandomDistribution_C *obj) {
   if(!obj) {
     return;
   }
   delete obj;
+}
+
+void uniform_int_distribution_set(dist *obj, const int a, const int b) {
+  obj->m = new Controls::uniform_int_distribution<>(a, b);
+}
+void uniform_real_distribution_set(dist *obj, const double a, const double b) {
+  obj->m = new Controls::uniform_real_distribution<>(a, b);
+}
+
+// void bernoulli_distribution_set(dist *obj, const double p) {
+//   obj->m = new Controls::bernoulli_distribution(p);
+// }
+
+void negative_binomial_distribution_set(dist *obj,
+                                        const int k,
+                                        const double p) {
+  obj->m = new Controls::negative_binomial_distribution<>(k, p);
+}
+void geometric_distribution_set(dist *obj, const double p) {
+  obj->m = new Controls::geometric_distribution<>(p);
+}
+void poisson_distribution_set(dist *obj, const double mean) {
+  obj->m = new Controls::poisson_distribution<>(mean);
+}
+void exponential_distribution_set(dist *obj, const double lambda) {
+  obj->m = new Controls::exponential_distribution<>(lambda);
+}
+void gamma_distribution_set(dist *obj, const double alpha, const double beta) {
+  obj->m = new Controls::gamma_distribution<>(alpha, beta);
+}
+void weibull_distribution_set(dist *obj, const double a, const double b) {
+  obj->m = new Controls::weibull_distribution<>(a, b);
+}
+void extreme_value_distribution_set(dist *obj, const double a, const double b) {
+  obj->m = new Controls::extreme_value_distribution<>(a, b);
+}
+void normal_distribution_set(dist *obj, const double mean, const double stddev) {
+  obj->m = new Controls::normal_distribution<>(mean, stddev);
+}
+void lognormal_distribution_set(dist *obj, const double m, const double s) {
+  obj->m = new Controls::lognormal_distribution<>(m, s);
+}
+void chi_squared_distribution_set(dist *obj, const double n) {
+  obj->m = new Controls::chi_squared_distribution<>(n);
+}
+void cauchy_distribution_set(dist *obj, const double a, const double b) {
+  obj->m = new Controls::cauchy_distribution<>(a, b);
+}
+void fisher_f_distribution_set(dist *obj, const double m, const double n) {
+  obj->m = new Controls::fisher_f_distribution<>(m, n);
+}
+void student_t_distribution_set(dist *obj, const double n) {
+  obj->m = new Controls::student_t_distribution<>(n);
 }
 
 struct RandomVariable_C {
@@ -708,6 +755,14 @@ void random_variable_set(RandomVariable_C *obj,
   C_WRAPPER_END()
 }
 
+// void random_variable_replace(basic obj,
+//                              const basic key,
+//                              const basic mapped) {
+//   CMapBasicBasic *map = mapbasicbasic_new();
+//   mapbasicbasic_insert(map, key, mapped);
+//   basic_subs(obj, obj, map);
+//   mapbasicbasic_free(map);
+// }
 void random_variable_name_get(RandomVariable_C *obj, char **result) {
   C_WRAPPER_BEGIN
 
@@ -715,8 +770,6 @@ void random_variable_name_get(RandomVariable_C *obj, char **result) {
   auto cc = new char[str.length() + 1];
   std::strcpy(cc, str.c_str());
   result[0] = cc;
-  // std::cout << cc << '\n';
-  // result[0] = cc;
 
   C_WRAPPER_END()
 }
@@ -727,6 +780,55 @@ double random_variable_sample(RandomVariable_C *obj, generator *gen) {
   return (*(obj->m)).sample(*(gen->m));
 
   C_WRAPPER_END(0)
+}
+
+// ---------------------------------------------------------------------------
+// RandomVariable Replacement Function Definitions
+//
+void statespace_random_variable_replace(StateSpace_C *obj,
+                                        const basic key,
+                                        RandomVariable_C *mapped) {
+  //
+  C_WRAPPER_BEGIN
+
+  CRCPBasic *s = new CRCPBasic();
+  CRCPBasic *r = new CRCPBasic();
+  CRCPBasic *mapp = new CRCPBasic();
+  mapp->m = mapped->m;
+  // CRCPBasic *k = new CRCPBasic();
+  CMapBasicBasic *mapbb = new CMapBasicBasic();
+  size_t sz, i, j;
+
+  // for(i = 0; i < len; i++) {
+  //   k->m = SymEngine::parse(key[i]);
+    (mapbb->m)[key->m] = mapp->m;
+  // }
+
+  sz = statespace_f_size(obj);
+  for(i = 0; i < sz; i++) {
+    s->m = obj->m.get_f(i);
+
+    // k->m = SymEngine::parse(key[i]);
+    // mapp->m = mapped->m;
+    r->m = s->m->subs(mapbb->m);
+
+    obj->m.set_f(i, r->m);
+  }
+
+  // sz = statespace_g_size(obj);
+  // for(i = 0; i < sz; i++) {
+  //   s->m = obj->m.get_g(i);
+  //   r->m = s->m->subs(map->m);
+  //   obj->m.set_g(i, r->m);
+  // }
+
+  delete mapbb;
+  delete s;
+  delete r;
+  // delete k;
+  delete mapp;
+
+  C_WRAPPER_END()
 }
 
 } // C
