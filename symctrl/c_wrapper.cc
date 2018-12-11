@@ -678,6 +678,31 @@ void random_number_distribution_free(RandomDistribution_C *obj) {
   delete obj;
 }
 
+// #ifndef SYMCTRL_RANDOM_DISTRIBUTIONS_C
+// #define SYMCTRL_RANDOM_DISTRIBUTIONS_C(MACRO) \
+//   MACRO(uniform_int_distribution, const int a, const int b) \
+//   MACRO(uniform_real_distribution, const double a, const double b) \
+//   MACRO(bernoulli_distribution, const double p) \
+//   MACRO(negative_binomial_distribution, const int k,
+//   const double p) \
+//   MACRO(geometric_distribution, const double p) \
+//   MACRO(poisson_distribution, const double mean) \
+//   MACRO(exponential_distribution, const double lambda) \
+//   MACRO(gamma_distribution, const double alpha, const double beta) \
+//   MACRO(weibull_distribution, const double a, const double b) \
+//   MACRO(extreme_value_distribution, const double a, const double b) \
+//   MACRO(normal_distribution, const double mean, const double stddev) \
+//   MACRO(lognormal_distribution, const double m, const double s) \
+//   MACRO(chi_squared_distribution, const double n) \
+//   MACRO(cauchy_distribution, const double a, const double b) \
+//   MACRO(fisher_f_distribution, const double m, const double n) \
+//   MACRO(student_t_distribution, const double n)
+// #endif
+// //
+// // #define CONST_ARGS(type, ...)
+// // #define SYMCTRL_RANDOM_DISTRIBUTIONS_C_HEADER(name, ...) \
+// // void ##name##_set(dist *obj, __VA_ARGS__)
+
 void uniform_int_distribution_set(dist *obj, const int a, const int b) {
   obj->m = new Controls::uniform_int_distribution<>(a, b);
 }
