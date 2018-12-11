@@ -57,13 +57,44 @@ public:
   }
 
   std::vector<T> as_vec() { return v_; }
-  std::vector<T> row(size_t n) {
-
-  }
-  std::vector<T> col(size_t n) {
-
-  }
 };
+
+template<typename T>
+void ones(DenseMatrix<T> &M) {
+  size_t i, j;
+  for(i = 0; i < M.nrows(); i++) {
+    for(j = 0; j < M.ncols(); j++) {
+      M(i, j) = 1;
+    }
+  }
+  // for(auto it = M.begin(); it != M.end(); ++it) {
+  //   *it = 1;
+  // }
+}
+
+template<typename T>
+void zeros(DenseMatrix<T> &M) {
+  size_t i, j;
+  for(i = 0; i < M.nrows(); i++) {
+    for(j = 0; j < M.ncols(); j++) {
+      M(i, j) = 0;
+    }
+  }
+  // for(auto it = M.begin(); it != M.end(); ++it) {
+  //   *it = 0;
+  // }
+}
+
+template<typename T>
+void eye(DenseMatrix<T> &M) {
+  size_t i, j;
+  for(i = 0; i < M.nrows(); i++) {
+    for(j = 0; j < M.ncols(); j++) {
+      M(i, j) = (i == j) ? 1 : 0;
+    }
+  }
+}
+// void diag(DenseMatrix &M, std::vector<T> &v, int k);
 
 } // Controls
 

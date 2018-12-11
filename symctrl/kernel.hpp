@@ -10,8 +10,8 @@ namespace Controls {
 // ----------------------------------------------------------------------
 // Kernel Function class.
 //
-// For each function that takes a matrix as a function parameter, the matrix
-// should represent data points on every row.
+// For each function that takes a matrix as a function parameter, the
+// matrix should represent data points on every row.
 //
 // For example:
 //
@@ -26,8 +26,8 @@ public:
   virtual void gramian(const std::vector<T> &x,
                        const std::vector<T> &y,
                        DenseMatrix<double> &result) = 0;
-  virtual void gramian(const DenseMatrix<T> &x,
-                       const DenseMatrix<T> &y,
+  virtual void gramian(const DenseMatrix<T> &X,
+                       const DenseMatrix<T> &Y,
                        DenseMatrix<double> &result) = 0;
   virtual void gramian(const DenseMatrix<T> &X,
                        DenseMatrix<double> &result) = 0;
@@ -44,8 +44,8 @@ public:
   void gramian(const std::vector<T> &x,
                const std::vector<T> &y,
                DenseMatrix<double> &result);
-  void gramian(const DenseMatrix<T> &x,
-               const DenseMatrix<T> &y,
+  void gramian(const DenseMatrix<T> &X,
+               const DenseMatrix<T> &Y,
                DenseMatrix<double> &result);
   void gramian(const DenseMatrix<T> &X,
                DenseMatrix<double> &result);
@@ -56,17 +56,17 @@ void DotKernel<T>::gramian(const std::vector<T> &x,
                            const std::vector<T> &y,
                            DenseMatrix<double> &result) {
   //
-  size_t i, j;
-  for(i = 0; i < x.size(); i++) {
-    for(j = 0; j < y.size(); j++) {
+#pragma omp parallel for
+  for(size_t i = 0; i < x.size(); i++) {
+    for(size_t j = 0; j < y.size(); j++) {
       result(i, j) = x[i] * y[j];
     }
   }
 }
 
 template<typename T>
-void DotKernel<T>::gramian(const DenseMatrix<T> &x,
-                           const DenseMatrix<T> &y,
+void DotKernel<T>::gramian(const DenseMatrix<T> &X,
+                           const DenseMatrix<T> &Y,
                            DenseMatrix<double> &result) {
   //
 
@@ -100,8 +100,8 @@ public:
   void gramian(const std::vector<T> &x,
                const std::vector<T> &y,
                DenseMatrix<double> &result);
-  void gramian(const DenseMatrix<T> &x,
-               const DenseMatrix<T> &y,
+  void gramian(const DenseMatrix<T> &X,
+               const DenseMatrix<T> &Y,
                DenseMatrix<double> &result);
   void gramian(const DenseMatrix<T> &X,
                DenseMatrix<double> &result);
@@ -112,17 +112,17 @@ void PolynomialKernel<T>::gramian(const std::vector<T> &x,
                                   const std::vector<T> &y,
                                   DenseMatrix<double> &result) {
   //
-  size_t i, j;
-  for(i = 0; i < x.size(); i++) {
-    for(j = 0; j < y.size(); j++) {
+#pragma omp parallel for
+  for(size_t i = 0; i < x.size(); i++) {
+    for(size_t j = 0; j < y.size(); j++) {
       result(i, j) = pow(scale_ * (x[i] * y[j]) + offset_, degree_);
     }
   }
 }
 
 template<typename T>
-void PolynomialKernel<T>::gramian(const DenseMatrix<T> &x,
-                                  const DenseMatrix<T> &y,
+void PolynomialKernel<T>::gramian(const DenseMatrix<T> &X,
+                                  const DenseMatrix<T> &Y,
                                   DenseMatrix<double> &result) {
   //
 
@@ -149,8 +149,8 @@ public:
   void gramian(const std::vector<T> &x,
                const std::vector<T> &y,
                DenseMatrix<double> &result);
-  void gramian(const DenseMatrix<T> &x,
-               const DenseMatrix<T> &y,
+  void gramian(const DenseMatrix<T> &X,
+               const DenseMatrix<T> &Y,
                DenseMatrix<double> &result);
   void gramian(const DenseMatrix<T> &X,
                DenseMatrix<double> &result);
@@ -161,10 +161,9 @@ void GaussianKernel<T>::gramian(const std::vector<T> &x,
                                 const std::vector<T> &y,
                                 DenseMatrix<double> &result) {
   //
-  size_t i, j;
-
-  for(i = 0; i < x.size(); i++) {
-    for(j = 0; j < y.size(); j++) {
+#pragma omp parallel for
+  for(size_t i = 0; i < x.size(); i++) {
+    for(size_t j = 0; j < y.size(); j++) {
       result(i, j) =
         ::exp((-1*::pow(::fabs(x[i] - y[j]), 2))/(2*::pow(sigma_, 2)));
     }
@@ -172,45 +171,48 @@ void GaussianKernel<T>::gramian(const std::vector<T> &x,
 }
 
 template<typename T>
-void GaussianKernel<T>::gramian(const DenseMatrix<T> &x,
-                                const DenseMatrix<T> &y,
+void GaussianKernel<T>::gramian(const DenseMatrix<T> &X,
+                                const DenseMatrix<T> &Y,
                                 DenseMatrix<double> &result) {
   //
-  size_t i, j;
-  std::vector<T> x_norm(x.nrows());
-  std::vector<T> y_norm(y.nrows());
+  size_t i, j, k;
 
-  for(i = 0; i < x.nrows(); i++) {
-    for(j = 0; j < x.ncols(); j++) {
-      x_norm[i] += x(i, j) * x(i, j);
+  // Compute the norm of each row.
+  std::vector<T> x_norm(X.nrows(), 0);
+  std::vector<T> y_norm(Y.nrows(), 0);
+
+  for(i = 0; i < X.nrows(); i++) {
+    for(j = 0; j < X.ncols(); j++) {
+      x_norm[i] += X(i, j) * X(i, j);
     }
   }
 
-  for(i = 0; i < y.nrows(); i++) {
-    for(j = 0; j < y.ncols(); j++) {
-      y_norm[i] += y(i, j) * y(i, j);
+  for(i = 0; i < Y.nrows(); i++) {
+    for(j = 0; j < Y.ncols(); j++) {
+      y_norm[i] += Y(i, j) * Y(i, j);
     }
   }
 
-  DenseMatrix<T> M(x.nrows(), y.nrows());
-  // M = x * transpose(y);
+  // Initialize the matrix to hold the intermediate result (X * Y').
+  DenseMatrix<double> M(X.nrows(), Y.nrows());
+  zeros(M);
 
-  // for(i = 0; i < x.nrows(); i++) {
-  //   for(j = 0; j < y.nrows(); j++) {
-  //     result(i, j) = x(i, j) * y(i, j);
-  //     // result(i, j) = x_norm[i] + y_norm[j] - 2*M(i, j);
-  //   }
-  // }
+  // Compute (X * Y').
+  for(i = 0; i < X.nrows(); i++) {
+    for(j = 0; j < Y.nrows(); j++) {
+      for(k = 0; k < X.ncols(); k++) {
+        M(i, j) += X(i, k) * Y(j, k);
+      }
+    }
+  }
 
-  // for(i = 0; i < y.ncols(); i++) {
-  //   // result()
-  // }
-
-  // result(0, 0) = 1;
-  // result(0, 1) = 2;
-  // result(1, 0) = 2;
-  // result(1, 1) = 1;
-
+  // Compute the Gramian.
+  for(i = 0; i < M.nrows(); i++) {
+    for(j = 0; j < M.ncols(); j++) {
+      result(i, j) =
+        ::exp(-1*(x_norm[i] + y_norm[j] - 2*M(i, j))/(2*::pow(sigma_, 2)));
+    }
+  }
 }
 
 template<typename T>
@@ -221,26 +223,47 @@ void GaussianKernel<T>::gramian(const DenseMatrix<T> &X,
 }
 
 // ----------------------------------------------------------------------
-// Kernel multiplication function.
+// Kernel coefficient vector function.
 //
 template<typename T>
-void kernel_mul(const std::vector<T> &x,
-                const std::vector<T> &y,
-                const std::vector<T> &alpha,
-                KernelFunction<T> *K,
-                std::vector<double> &result) {
+void kernel_coefficient_vector(const DenseMatrix<double> &K,
+                               const double lambda,
+                               std::vector<double> &alpha) {
   //
-  size_t i, j;
+
+  size_t m = K.nrows();
+
+  // Calculate K + (lambda * m * I)
+  for(size_t i = 0; i < m; i++) {
+    // K(i, i) += lambda * m;
+  }
+
+  // Calculate W = (K + (lambda * m * I))^-1
+  DenseMatrix<double> W(m, m);
+
+}
+
+// ----------------------------------------------------------------------
+// Kernel estimate function.
+//
+template<typename T>
+void kernel_estimate(const std::vector<T> &x,
+                     const std::vector<T> &y,
+                     const std::vector<double> &alpha,
+                     KernelFunction<T> *K,
+                     std::vector<double> &result) {
+  //
   double sum_;
 
   DenseMatrix<double> M(x.size(), y.size());
   K->gramian(x, y, M);
 
   // Perform the matrix multiplication (M * alpha).
-  for(i = 0; i < M.nrows(); i++) {
+#pragma omp parallel for
+  for(size_t i = 0; i < M.nrows(); i++) {
     sum_ = 0;
 
-    for(j = 0; j < M.ncols(); j++) {
+    for(size_t j = 0; j < M.ncols(); j++) {
       sum_ += M(i, j) * alpha.at(j);
     }
 
@@ -249,20 +272,35 @@ void kernel_mul(const std::vector<T> &x,
 }
 
 template<typename T>
-void kernel_mul(const DenseMatrix<T> &x,
-                const DenseMatrix<T> &y,
-                const std::vector<T> &alpha,
-                KernelFunction<T> *K,
-                std::vector<double> &result) {
+void kernel_estimate(const DenseMatrix<T> &X,
+                     const DenseMatrix<T> &Y,
+                     const std::vector<double> &alpha,
+                     KernelFunction<T> *K,
+                     std::vector<double> &result) {
   //
+  double sum_;
 
+  DenseMatrix<double> M(X.nrows(), Y.nrows());
+  K->gramian(X, Y, M);
+
+  // Perform the matrix multiplication (M * alpha).
+#pragma omp parallel for
+  for(size_t i = 0; i < M.nrows(); i++) {
+    sum_ = 0;
+
+    for(size_t j = 0; j < M.ncols(); j++) {
+      sum_ += M(i, j) * alpha.at(j);
+    }
+
+    result.at(i) = sum_;
+  }
 }
 
 template<typename T>
-void kernel_mul(const DenseMatrix<T> &X,
-                std::vector<T> alpha,
-                KernelFunction<T> *K,
-                std::vector<double> &result) {
+void kernel_estimate(const DenseMatrix<T> &X,
+                     std::vector<double> &alpha,
+                     KernelFunction<T> *K,
+                     std::vector<double> &result) {
   //
   size_t i, j;
   T sum_;
