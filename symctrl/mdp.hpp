@@ -6,12 +6,11 @@
 #include <type_traits>
 #include <vector>
 
-#include "control_model.hpp"
-// #include "matrix/sparse.hpp"
+#include "system.hpp"
+#include "cost_function.hpp"
+#include "transition_function.hpp"
 
 namespace Controls {
-
-class MDPVisitor;
 
 // ----------------------------------------------------------------------
 // MDP
@@ -49,37 +48,45 @@ class MDPVisitor;
 // of transferring to state x' given the discrete state x and discrete action
 // u. The reward matrix has elements of the form E{x'|x, u}, which denotes the
 // expected reward for reaching state x' given x and u.
-class MDP {
+class MDP : public System {
 private:
-  size_t states_;
-  size_t inputs_;
+  size_t nstates_;
+  size_t ninputs_;
+
+  CostFunction &cost_function_;
+  TransitionFunction &transition_kernel_;
 
   double gamma_;
 
 public:
-  MDP(const size_t nx, const size_t nu);
-  ~MDP();
+  MDP(const size_t nstates,
+      const size_t ninputs,
+      CostFunction &R,
+      TransitionFunction &T,
+      const double gamma) :
+      nstates_(nstates),
+      ninputs_(ninputs),
+      cost_function_(R),
+      transition_kernel_(T),
+      gamma_(gamma) {}
 
-  size_t nstates() const { return states_; }
-  size_t ninputs() const { return inputs_; }
+  ~MDP() {}
 
-  // P & R are X x U x X'.
-  // This is stored as a vector (U) of sparse adjacency matrices (X x X').
-  // std::vector<CSRMatrix<double>> probabilities_;
-  // std::vector<CSRMatrix<double>> rewards_;
-
-  // void set_probability(size_t x, size_t u, size_t xp, const double value);
-  // double get_probability(size_t x, size_t u, size_t xp);
+  // size_t nstates() const { return nstates_; }
+  // size_t ninputs() const { return ninputs_; }
   //
-  // void set_reward(size_t x, size_t u, size_t xp, const double value);
-  // double get_reward(size_t x, size_t u, size_t xp);
+  // void set_transition_function(TransitionFunction &T);
+  // TransitionFunction &get_transition_function();
+  //
+  // void set_cost_function(CostFunction &R);
+  // CostFunction &get_cost_function();
+  //
+  // void set_gamma(const double arg) {
+  //   gamma_ = (arg > 0 ? (arg < 1 ? arg : 1) : 0);
+  // }
+  // double get_gamma() { return gamma_; }
 
-  void set_gamma(const double arg) {
-    gamma_ = (arg > 0 ? (arg < 1 ? arg : 1) : 0);
-  }
-  double get_gamma() { return gamma_; }
-
-  void accept(MDPVisitor &visitor);
+  void accept(SystemVisitor &visitor);
 };
 
 // ----------------------------------------------------------------------
@@ -87,11 +94,22 @@ public:
 //
 // Partially-Observable Markov Decision Process
 class POMDP : public MDP {
+private:
+  TransitionFunction &observation_kernel_;
+
 public:
-  POMDP(const size_t nx, const size_t nu) : MDP(nx, nu) {}
+  POMDP(const size_t nstates,
+        const size_t ninputs,
+        CostFunction &R,
+        TransitionFunction &T,
+        TransitionFunction &Ob,
+        const double gamma) :
+        MDP{nstates, ninputs, R, T, gamma},
+        observation_kernel_(Ob) {}
+
   ~POMDP() {}
 
-  void accept(MDPVisitor &visitor);
+  void accept(SystemVisitor &visitor);
 };
 
 } // Controls
