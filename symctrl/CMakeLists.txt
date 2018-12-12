@@ -5,6 +5,7 @@
 set(SRC
   analysis.cc
   c_wrapper.cc
+  controller.cc
   random_distribution.cc
   state_space.cc
   transfer_function.cc
@@ -22,7 +23,7 @@ set(SRC
 set(HEADERS
   analysis.hpp
   c_wrapper.hpp
-  control_model.hpp
+  controller.hpp
   kernel.hpp
   random_distribution.hpp
   random_variable.hpp
