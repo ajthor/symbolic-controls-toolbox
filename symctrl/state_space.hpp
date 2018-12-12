@@ -8,6 +8,11 @@
 
 #include "system.hpp"
 
+using SymEngine::Basic;
+using SymEngine::DenseMatrix;
+using SymEngine::MatrixBase;
+using SymEngine::RCP;
+
 namespace Controls {
 
 // ----------------------------------------------------------------------
@@ -16,42 +21,42 @@ namespace Controls {
 class StateSpace : public System {
 public:
   StateSpace();
-  StateSpace(SymEngine::MatrixBase &A,
-             SymEngine::MatrixBase &B,
-             SymEngine::MatrixBase &C,
-             SymEngine::MatrixBase &D);
+  StateSpace(MatrixBase &A,
+             MatrixBase &B,
+             MatrixBase &C,
+             MatrixBase &D);
   ~StateSpace();
 
-  void add_state(const SymEngine::RCP<const SymEngine::Basic> arg);
-  void set_state(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg);
-  SymEngine::RCP<const SymEngine::Basic> get_state(size_t n);
-  // void remove_state(size_t n);
-  size_t get_num_states();
+  void add_state(const RCP<const Basic> arg);
+  void set_state(const size_t n, const RCP<const Basic> arg);
+  RCP<const Basic> get_state(const size_t n) const;
+  // void remove_state(const size_t n);
+  size_t get_num_states() const;
 
-  void add_input(const SymEngine::RCP<const SymEngine::Basic> arg);
-  void set_input(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg);
-  SymEngine::RCP<const SymEngine::Basic> get_input(size_t n);
-  // void remove_input(size_t n);
-  size_t get_num_inputs();
+  void add_input(const RCP<const Basic> arg);
+  void set_input(const size_t n, const RCP<const Basic> arg);
+  RCP<const Basic> get_input(const size_t n) const;
+  // void remove_input(const size_t n);
+  size_t get_num_inputs() const;
 
-  void add_f(const SymEngine::RCP<const SymEngine::Basic> arg);
-  void set_f(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg);
-  SymEngine::RCP<const SymEngine::Basic> get_f(size_t n);
-  // void remove_f(size_t n);
-  size_t get_num_f();
+  void add_f(const RCP<const Basic> arg);
+  void set_f(const size_t n, const RCP<const Basic> arg);
+  RCP<const Basic> get_f(const size_t n) const;
+  // void remove_f(const size_t n);
+  size_t get_num_f() const;
 
-  void add_g(const SymEngine::RCP<const SymEngine::Basic> arg);
-  void set_g(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg);
-  SymEngine::RCP<const SymEngine::Basic> get_g(size_t n);
-  // void remove_g(size_t n);
-  size_t get_num_g();
+  void add_g(const RCP<const Basic> arg);
+  void set_g(const size_t n, const RCP<const Basic> arg);
+  RCP<const Basic> get_g(const size_t n) const;
+  // void remove_g(const size_t n);
+  size_t get_num_g() const;
 
-  void get_A_matrix(SymEngine::DenseMatrix &result);
-  void get_B_matrix(SymEngine::DenseMatrix &result);
-  void get_C_matrix(SymEngine::DenseMatrix &result);
-  void get_D_matrix(SymEngine::DenseMatrix &result);
+  void get_A_matrix(DenseMatrix &result) const;
+  void get_B_matrix(DenseMatrix &result) const;
+  void get_C_matrix(DenseMatrix &result) const;
+  void get_D_matrix(DenseMatrix &result) const;
 
-  void accept(SystemVisitor &visitor);
+  void accept(Visitor &visitor);
 
 protected:
   // Vector of symbolic state variables.
@@ -74,16 +79,16 @@ protected:
 };
 
 
-bool check_abcd(SymEngine::MatrixBase &A,
-                SymEngine::MatrixBase &B,
-                SymEngine::MatrixBase &C,
-                SymEngine::MatrixBase &D);
+bool check_abcd(MatrixBase &A,
+                MatrixBase &B,
+                MatrixBase &C,
+                MatrixBase &D);
 
 void set_abcd(StateSpace &obj,
-              SymEngine::DenseMatrix &A,
-              SymEngine::DenseMatrix &B,
-              SymEngine::DenseMatrix &C,
-              SymEngine::DenseMatrix &D);
+              DenseMatrix &A,
+              DenseMatrix &B,
+              DenseMatrix &C,
+              DenseMatrix &D);
 
 // Separate dx/dt = f(.) + g(.)u into f(.) and g(.) terms.
 void nonlinear_sep();
@@ -91,7 +96,7 @@ void nonlinear_sep();
 void c2d();
 void d2c();
 
-void similarity_transform(StateSpace &obj, SymEngine::DenseMatrix &P);
+void similarity_transform(StateSpace &obj, DenseMatrix &P);
 
 // ----------------------------------------------------------------------
 // Linearization

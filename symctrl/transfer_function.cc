@@ -6,53 +6,53 @@
 
 #include "transfer_function.hpp"
 
-using Controls::TransferFunction;
+using SymEngine::Basic;
+using SymEngine::RCP;
 
 namespace Controls {
 
 TransferFunction::TransferFunction() {}
-// TransferFunction::TransferFunction(SymEngine::RCP<const SymEngine::Basic> arg) : var_(arg) {};
+// TransferFunction::TransferFunction(RCP<const Basic> arg) : var_(arg) {};
 TransferFunction::~TransferFunction() {}
 
 void
-TransferFunction::set_var(const SymEngine::RCP<const SymEngine::Basic> arg) {
+TransferFunction::set_var(const RCP<const Basic> arg) {
   var_ = arg;
 }
-SymEngine::RCP<const SymEngine::Basic> TransferFunction::get_var() {
+RCP<const Basic> TransferFunction::get_var() const {
   return var_;
 }
 
 void
-TransferFunction::add_num(const SymEngine::RCP<const SymEngine::Basic> arg) {
+TransferFunction::add_num(const RCP<const Basic> arg) {
   nums_.push_back(arg);
 }
 void
 TransferFunction::set_num(size_t n,
-                          const SymEngine::RCP<const SymEngine::Basic> arg) {
+                          const RCP<const Basic> arg) {
   nums_.at(n) = arg;
 }
-SymEngine::RCP<const SymEngine::Basic> TransferFunction::get_num(size_t n) {
+RCP<const Basic> TransferFunction::get_num(size_t n) const {
   return nums_.at(n);
 }
-size_t TransferFunction::get_num_nums() {
+size_t TransferFunction::get_num_nums() const {
   return nums_.size();
 }
 
 void
-TransferFunction::add_den(const SymEngine::RCP<const SymEngine::Basic> arg) {
+TransferFunction::add_den(const RCP<const Basic> arg) {
   dens_.push_back(arg);
 }
 void
 TransferFunction::set_den(size_t n,
-                          const SymEngine::RCP<const SymEngine::Basic> arg) {
+                          const RCP<const Basic> arg) {
   dens_.at(n) = arg;
 }
-SymEngine::RCP<const SymEngine::Basic> TransferFunction::get_den(size_t n) {
+RCP<const Basic> TransferFunction::get_den(size_t n) const {
   return dens_.at(n);
 }
-size_t TransferFunction::get_num_dens() {
+size_t TransferFunction::get_num_dens() const {
   return dens_.size();
 }
-
 
 } // Controls

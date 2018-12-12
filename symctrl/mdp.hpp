@@ -53,16 +53,16 @@ private:
   size_t nstates_;
   size_t ninputs_;
 
-  CostFunction &cost_function_;
-  TransitionFunction &transition_kernel_;
+  CostFunction *cost_function_;
+  TransitionFunction *transition_kernel_;
 
   double gamma_;
 
 public:
   MDP(const size_t nstates,
       const size_t ninputs,
-      CostFunction &R,
-      TransitionFunction &T,
+      CostFunction *R,
+      TransitionFunction *T,
       const double gamma) :
       nstates_(nstates),
       ninputs_(ninputs),
@@ -75,8 +75,8 @@ public:
   // size_t nstates() const { return nstates_; }
   // size_t ninputs() const { return ninputs_; }
   //
-  // void set_transition_function(TransitionFunction &T);
-  // TransitionFunction &get_transition_function();
+  // void set_transition_function(TransitionFunction *T);
+  // TransitionFunction *get_transition_function();
   //
   // void set_cost_function(CostFunction &R);
   // CostFunction &get_cost_function();
@@ -86,7 +86,7 @@ public:
   // }
   // double get_gamma() { return gamma_; }
 
-  void accept(SystemVisitor &visitor);
+  void accept(Visitor &visitor);
 };
 
 // ----------------------------------------------------------------------
@@ -95,21 +95,21 @@ public:
 // Partially-Observable Markov Decision Process
 class POMDP : public MDP {
 private:
-  TransitionFunction &observation_kernel_;
+  TransitionFunction *observation_kernel_;
 
 public:
   POMDP(const size_t nstates,
         const size_t ninputs,
-        CostFunction &R,
-        TransitionFunction &T,
-        TransitionFunction &Ob,
+        CostFunction *R,
+        TransitionFunction *T,
+        TransitionFunction *Ob,
         const double gamma) :
         MDP{nstates, ninputs, R, T, gamma},
         observation_kernel_(Ob) {}
 
   ~POMDP() {}
 
-  void accept(SystemVisitor &visitor);
+  void accept(Visitor &visitor);
 };
 
 } // Controls

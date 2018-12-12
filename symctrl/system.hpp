@@ -3,14 +3,14 @@
 
 namespace Controls {
 
-class SystemVisitor;
+class Visitor;
 
 class System {
 public:
   virtual ~System() {};
 
   // Visitor Pattern
-  virtual void accept(SystemVisitor &visitor) = 0;
+  virtual void accept(Visitor &visitor) = 0;
 };
 
 } // Controls

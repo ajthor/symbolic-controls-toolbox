@@ -13,7 +13,7 @@ namespace Controls {
 // ----------------------------------------------------------------------
 // Controller Class
 //
-class Controller : public SystemVisitor {
+class Controller : public SystemVisitor<Controller> {
 public:
   virtual ~Controller() {}
   virtual void visit(System &s) = 0;
@@ -24,12 +24,12 @@ public:
 //
 class GainController : public Controller {
 private:
-  std::vector<double> &k_;
+  std::vector<double> *k_;
   SymEngine::vec_basic r_;
 
 public:
   GainController(SymEngine::vec_basic r,
-                 std::vector<double> &K) :
+                 std::vector<double> *K) :
                  r_(r),
                  k_(K) {}
   ~GainController() {}

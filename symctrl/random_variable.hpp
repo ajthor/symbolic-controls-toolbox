@@ -43,7 +43,7 @@ random_variable(const std::string &name,
 // ----------------------------------------------------------------------
 // Utility Functions
 //
-inline bool is_a_random_variable(const SymEngine::Basic &b) {
+inline bool is_a_random_variable(const Basic &b) {
     return dynamic_cast<const RandomVariable*>(&b) != nullptr;
 }
 

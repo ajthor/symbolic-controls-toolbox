@@ -7,39 +7,34 @@
 
 namespace Controls {
 
+#ifndef SYMCTRL_SYSTEM_ENUM
+#define SYMCTRL_SYSTEM_ENUM(MACRO) \
+MACRO(StateSpace) \
+MACRO(TransferFunction) \
+MACRO(MDP) \
+MACRO(POMDP)
+#endif
+
 class Visitor {
 public:
-  virtual ~Visitor() {}
-
-  virtual void visit(StateSpace &m) = 0;
-  virtual void visit(MDP &m) = 0;
-  virtual void visit(TransferFunction &m) = 0;
+  #define SYMCTRL_VISITOR_DECL(Class) \
+  virtual void visit(Class &m) = 0;
+  SYMCTRL_SYSTEM_ENUM(SYMCTRL_VISITOR_DECL)
+  #undef SYMCTRL_VISITOR_DECL
 };
 
-// class MDPVisitor {
-// public:
-//   virtual ~MDPVisitor() {}
-//
-//   virtual void visit(MDP &m) = 0;
-// };
-
-class SystemVisitor {
+template<class Derived, class Base = Visitor>
+class SystemVisitor : public Base {
 public:
-  virtual ~SystemVisitor() {}
-  virtual void visit(System &m) = 0;
-};
+  using Base::Base;
 
-// class StateSpaceVisitor {
-// public:
-//   virtual ~StateSpaceVisitor() {}
-//   virtual void visit(StateSpace &m) = 0;
-// };
-//
-// class TransferFunctionVisitor {
-// public:
-//   virtual ~TransferFunctionVisitor() {}
-//   virtual void visit(TransferFunction &m) = 0;
-// };
+  #define SYMCTRL_SYSTEM_VISITOR_DECL(Class) \
+  virtual void visit(Class &m) { \
+    static_cast<Derived *>(this)->visit(m); \
+  }
+  SYMCTRL_SYSTEM_ENUM(SYMCTRL_SYSTEM_VISITOR_DECL)
+  #undef SYMCTRL_SYSTEM_VISITOR_DECL
+};
 
 } // Controls
 

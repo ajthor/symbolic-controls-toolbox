@@ -6,33 +6,36 @@
 
 #include "system.hpp"
 
+using SymEngine::Basic;
+using SymEngine::RCP;
+
 namespace Controls {
 
 class TransferFunction : public System {
 public:
   TransferFunction();
-  TransferFunction(const SymEngine::RCP<const SymEngine::Basic> arg) : var_(arg) {};
+  TransferFunction(const RCP<const Basic> arg) : var_(arg) {};
   ~TransferFunction();
 
-  void set_var(const SymEngine::RCP<const SymEngine::Basic> arg);
-  SymEngine::RCP<const SymEngine::Basic> get_var();
+  void set_var(const RCP<const Basic> arg);
+  RCP<const Basic> get_var() const;
 
-  void add_num(const SymEngine::RCP<const SymEngine::Basic> arg);
-  void set_num(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg);
-  SymEngine::RCP<const SymEngine::Basic> get_num(size_t n);
+  void add_num(const RCP<const Basic> arg);
+  void set_num(const size_t n, const RCP<const Basic> arg);
+  RCP<const Basic> get_num(const size_t n) const;
   // void remove_num(size_t n);
-  size_t get_num_nums();
+  size_t get_num_nums() const;
 
-  void add_den(const SymEngine::RCP<const SymEngine::Basic> arg);
-  void set_den(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg);
-  SymEngine::RCP<const SymEngine::Basic> get_den(size_t n);
+  void add_den(const RCP<const Basic> arg);
+  void set_den(const size_t n, const RCP<const Basic> arg);
+  RCP<const Basic> get_den(const size_t n) const;
   // void remove_den(size_t n);
-  size_t get_num_dens();
+  size_t get_num_dens() const;
 
-  void accept(SystemVisitor &visitor);
+  void accept(Visitor &visitor);
 
 private:
-  SymEngine::RCP<const SymEngine::Basic> var_;
+  RCP<const Basic> var_;
 
   SymEngine::vec_basic nums_;
   SymEngine::vec_basic dens_;

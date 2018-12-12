@@ -15,7 +15,7 @@ namespace Controls {
 // ----------------------------------------------------------------------
 // Euler Method
 //
-class EulerVisitor : public SystemVisitor {
+class EulerVisitor : public SystemVisitor<EulerVisitor> {
 private:
   std::vector<double> &t_span_;
 
@@ -40,7 +40,7 @@ public:
 
   ~EulerVisitor() {}
 
-  virtual void visit(StateSpace &m) {
+  void visit(StateSpace &m) {
     size_t i, j, n = m.get_num_f();
 
     std::vector<SymEngine::LambdaRealDoubleVisitor> v(n);
@@ -155,7 +155,7 @@ public:
     } while(t_current <= t_end);
   }
 
-  virtual void visit(System &m) {}
+  void visit(System &m) {}
 };
 
 void ode_euler(StateSpace &m,

@@ -7,128 +7,133 @@
 
 #include "state_space.hpp"
 
+using SymEngine::Basic;
+using SymEngine::DenseMatrix;
+using SymEngine::MatrixBase;
+using SymEngine::RCP;
+
 namespace Controls {
 
 StateSpace::StateSpace() {}
 
 StateSpace::~StateSpace() {}
 
-void StateSpace::add_state(const SymEngine::RCP<const SymEngine::Basic> arg) {
+void StateSpace::add_state(const RCP<const Basic> arg) {
   states_.push_back(arg);
 }
-void StateSpace::set_state(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg) {
+void StateSpace::set_state(const size_t n, const RCP<const Basic> arg) {
   states_.at(n) = arg;
 }
-SymEngine::RCP<const SymEngine::Basic> StateSpace::get_state(size_t n) {
+RCP<const Basic> StateSpace::get_state(const size_t n) const {
   return states_.at(n);
 }
-size_t StateSpace::get_num_states() {
+size_t StateSpace::get_num_states() const {
   return states_.size();
 }
 
-void StateSpace::add_input(const SymEngine::RCP<const SymEngine::Basic> arg) {
+void StateSpace::add_input(const RCP<const Basic> arg) {
   inputs_.push_back(arg);
 }
-void StateSpace::set_input(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg) {
+void StateSpace::set_input(const size_t n, const RCP<const Basic> arg) {
   inputs_.at(n) = arg;
 }
-SymEngine::RCP<const SymEngine::Basic> StateSpace::get_input(size_t n) {
+RCP<const Basic> StateSpace::get_input(const size_t n) const {
   return inputs_.at(n);
 }
-size_t StateSpace::get_num_inputs() {
+size_t StateSpace::get_num_inputs() const {
   return inputs_.size();
 }
 
-void StateSpace::add_f(const SymEngine::RCP<const SymEngine::Basic> arg) {
+void StateSpace::add_f(const RCP<const Basic> arg) {
   f_.push_back(arg);
 }
-void StateSpace::set_f(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg) {
+void StateSpace::set_f(const size_t n, const RCP<const Basic> arg) {
   f_.at(n) = arg;
 }
-SymEngine::RCP<const SymEngine::Basic> StateSpace::get_f(size_t n) {
+RCP<const Basic> StateSpace::get_f(const size_t n) const {
   return f_.at(n);
 }
-size_t StateSpace::get_num_f() {
+size_t StateSpace::get_num_f() const {
   return f_.size();
 }
 
-void StateSpace::add_g(const SymEngine::RCP<const SymEngine::Basic> arg) {
+void StateSpace::add_g(const RCP<const Basic> arg) {
   g_.push_back(arg);
 }
-void StateSpace::set_g(size_t n, const SymEngine::RCP<const SymEngine::Basic> arg) {
+void StateSpace::set_g(const size_t n, const RCP<const Basic> arg) {
   g_.at(n) = arg;
 }
-SymEngine::RCP<const SymEngine::Basic> StateSpace::get_g(size_t n) {
+RCP<const Basic> StateSpace::get_g(const size_t n) const {
   return g_.at(n);
 }
-size_t StateSpace::get_num_g() {
+size_t StateSpace::get_num_g() const {
   return g_.size();
 }
 
-void StateSpace::get_A_matrix(SymEngine::DenseMatrix &result) {
+void StateSpace::get_A_matrix(DenseMatrix &result) const {
   unsigned n = states_.size();
-  SymEngine::DenseMatrix f;
-  SymEngine::DenseMatrix x;
+  DenseMatrix f;
+  DenseMatrix x;
 
-  result = SymEngine::DenseMatrix(n, n);
+  result = DenseMatrix(n, n);
 
   if(n > 0 && f_.size() == n) {
-    f = SymEngine::DenseMatrix(n, 1, {f_});
-    x = SymEngine::DenseMatrix(n, 1, {states_});
+    f = DenseMatrix(n, 1, {f_});
+    x = DenseMatrix(n, 1, {states_});
 
     SymEngine::sjacobian(f, x, result);
   }
 }
-void StateSpace::get_B_matrix(SymEngine::DenseMatrix &result) {
+void StateSpace::get_B_matrix(DenseMatrix &result) const {
   unsigned n = states_.size();
   unsigned m = inputs_.size();
-  SymEngine::DenseMatrix f;
-  SymEngine::DenseMatrix u;
+  DenseMatrix f;
+  DenseMatrix u;
 
-  result = SymEngine::DenseMatrix(n, m);
+  result = DenseMatrix(n, m);
 
   if(n > 0 && f_.size() == n && m > 0) {
-    f = SymEngine::DenseMatrix(n, 1, {f_});
-    u = SymEngine::DenseMatrix(m, 1, {inputs_});
+    f = DenseMatrix(n, 1, {f_});
+    u = DenseMatrix(m, 1, {inputs_});
 
     SymEngine::sjacobian(f, u, result);
   }
 }
-void StateSpace::get_C_matrix(SymEngine::DenseMatrix &result) {
+void StateSpace::get_C_matrix(DenseMatrix &result) const {
   unsigned n = states_.size();
   unsigned p = g_.size();
-  SymEngine::DenseMatrix g;
-  SymEngine::DenseMatrix x;
+  DenseMatrix g;
+  DenseMatrix x;
 
-  result = SymEngine::DenseMatrix(p, n);
+  result = DenseMatrix(p, n);
 
   if(n > 0 && p > 0) {
-    g = SymEngine::DenseMatrix(p, 1, {g_});
-    x = SymEngine::DenseMatrix(n, 1, {states_});
+    g = DenseMatrix(p, 1, {g_});
+    x = DenseMatrix(n, 1, {states_});
 
     SymEngine::sjacobian(g, x, result);
   }
 }
-void StateSpace::get_D_matrix(SymEngine::DenseMatrix &result) {
+void StateSpace::get_D_matrix(DenseMatrix &result) const {
   unsigned m = inputs_.size();
   unsigned p = g_.size();
-  SymEngine::DenseMatrix g;
-  SymEngine::DenseMatrix u;
+  DenseMatrix g;
+  DenseMatrix u;
 
-  result = SymEngine::DenseMatrix(p, m);
+  result = DenseMatrix(p, m);
 
   if(m > 0 && p > 0) {
-    g = SymEngine::DenseMatrix(p, 1, {g_});
-    u = SymEngine::DenseMatrix(m, 1, {inputs_});
+    g = DenseMatrix(p, 1, {g_});
+    u = DenseMatrix(m, 1, {inputs_});
 
     SymEngine::sjacobian(g, u, result);
   }
 }
 
-bool check_abcd(SymEngine::MatrixBase &A,
-                SymEngine::MatrixBase &B,
-                SymEngine::MatrixBase &C,
-                SymEngine::MatrixBase &D) {
+bool check_abcd(const MatrixBase &A,
+                const MatrixBase &B,
+                const MatrixBase &C,
+                const MatrixBase &D) {
   //
   size_t n = A.ncols();
   size_t m = B.ncols();
@@ -143,34 +148,34 @@ bool check_abcd(SymEngine::MatrixBase &A,
 }
 
 void set_abcd(StateSpace &obj,
-              SymEngine::DenseMatrix &A,
-              SymEngine::DenseMatrix &B,
-              SymEngine::DenseMatrix &C,
-              SymEngine::DenseMatrix &D) {
+              DenseMatrix &A,
+              DenseMatrix &B,
+              DenseMatrix &C,
+              DenseMatrix &D) {
   //
   size_t n = obj.get_num_states();
   size_t m = obj.get_num_inputs();
   size_t p = obj.get_num_g();
   size_t i, j;
 
-  SymEngine::DenseMatrix x, u, M, R;
+  DenseMatrix x, u, M, R;
   SymEngine::vec_basic fv, gv, xv, xu;
 
   for(i = 0; i < n; i++) {
     xv.push_back(obj.get_state(i));
     // x.set(i, 1, obj.get_state(i));
   }
-  x = SymEngine::DenseMatrix(n, 1, {xv});
+  x = DenseMatrix(n, 1, {xv});
 
   for(i = 0; i < m; i++) {
     xu.push_back(obj.get_input(i));
     // u.set(i, 1, obj.get_input(i));
   }
-  u = SymEngine::DenseMatrix(m, 1, {xu});
+  u = DenseMatrix(m, 1, {xu});
 
   // f = A*x + B*u
-  M = SymEngine::DenseMatrix(n, 1);
-  R = SymEngine::DenseMatrix(n, 1);
+  M = DenseMatrix(n, 1);
+  R = DenseMatrix(n, 1);
   A.mul_matrix(x, M);
   B.mul_matrix(u, R);
   M.add_matrix(R, M);
@@ -180,8 +185,8 @@ void set_abcd(StateSpace &obj,
   }
 
   // g = C*x + D*u
-  M = SymEngine::DenseMatrix(p, 1);
-  R = SymEngine::DenseMatrix(p, 1);
+  M = DenseMatrix(p, 1);
+  R = DenseMatrix(p, 1);
   C.mul_matrix(x, M);
   D.mul_matrix(u, R);
   M.add_matrix(R, M);
@@ -201,7 +206,7 @@ void linearize(StateSpace &obj) {
 
   // Substitute x and u for 0 in A, B, C, D.
   SymEngine::map_basic_basic d;
-  SymEngine::DenseMatrix A, B, C, D;
+  DenseMatrix A, B, C, D;
 
   size_t i, j;
   for(i = 0; i < n; i++) {

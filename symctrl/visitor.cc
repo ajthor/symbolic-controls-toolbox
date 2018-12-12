@@ -2,20 +2,11 @@
 
 namespace Controls {
 
-void StateSpace::accept(SystemVisitor &visitor) {
-  visitor.visit(*this);
+#define SYMCTRL_SYSTEM_ACCEPT(Class) \
+void Class::accept(Visitor &visitor) { \
+  visitor.visit(*this); \
 }
-
-void TransferFunction::accept(SystemVisitor &visitor) {
-  visitor.visit(*this);
-}
-
-void MDP::accept(SystemVisitor &visitor) {
-  visitor.visit(*this);
-}
-
-void POMDP::accept(SystemVisitor &visitor) {
-  visitor.visit(*this);
-}
+SYMCTRL_SYSTEM_ENUM(SYMCTRL_SYSTEM_ACCEPT)
+#undef SYMCTRL_SYSTEM_ACCEPT
 
 } // Controls
