@@ -18,7 +18,9 @@ private:
 
 public:
   SubsVisitor(const SymEngine::RCP<const SymEngine::Basic> key,
-              const SymEngine::RCP<const SymEngine::Basic> map) : key_(key), map_(map) {}
+              const SymEngine::RCP<const SymEngine::Basic> map) :
+              key_(key),
+              map_(map) {}
 
   virtual void visit(StateSpace &m) {
     size_t n = m.get_num_f();
@@ -37,10 +39,7 @@ public:
     }
   }
 
-  // TODO: Add subs for transfer function.
-  virtual void visit(TransferFunction &m) {}
-
-  // TODO: Add subs for hybrid system.
+  virtual void visit(System &m) {}
 };
 
 void subs(System &m,

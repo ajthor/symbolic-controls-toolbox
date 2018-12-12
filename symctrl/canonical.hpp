@@ -5,51 +5,46 @@
 
 namespace Controls {
 
-void ctrb_form(StateSpace &m);
-void obsv_form(StateSpace &m);
-void jordan_form(StateSpace &m);
-
-// class SomeVisitor : public Visitor {
-// private:
-//
-// public:
-//   SomeVisitor() {}
-//   ~SomeVisitor() {}
-//
-//   virtual void visit(SomeClass &m);
-// };
-
+// ----------------------------------------------------------------------
 // Controllable Canonical Form
-class ControllableFormVisitor : public StateSpaceVisitor {
+//
+class ControllableFormVisitor : public SystemVisitor {
 private:
 
 public:
-  SomeVisitor() {}
-  ~SomeVisitor() {}
+  ControllableFormVisitor() {}
+  ~ControllableFormVisitor() {}
 
-  virtual void visit(StateSpace &m);
+  void visit(StateSpace &m);
+  void visit(System &m) {};
 };
 
+// ----------------------------------------------------------------------
 // Observable Canonical Form
-class ObservableFormVisitor : public StateSpaceVisitor {
+//
+class ObservableFormVisitor : public SystemVisitor {
 private:
 
 public:
-  SomeVisitor() {}
-  ~SomeVisitor() {}
+  ObservableFormVisitor() {}
+  ~ObservableFormVisitor() {}
 
-  virtual void visit(StateSpace &m);
+  void visit(StateSpace &m);
+  void visit(System &m) {};
 };
 
+// ----------------------------------------------------------------------
 // Jordan Canonical Form
-class JordanFormVisitor : public StateSpaceVisitor {
+//
+class JordanFormVisitor : public SystemVisitor {
 private:
 
 public:
-  SomeVisitor() {}
-  ~SomeVisitor() {}
+  JordanFormVisitor() {}
+  ~JordanFormVisitor() {}
 
-  virtual void visit(StateSpace &m);
+  void visit(StateSpace &m);
+  void visit(System &m) {};
 };
 
 

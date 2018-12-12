@@ -16,7 +16,7 @@ namespace Controls {
 // ----------------------------------------------------------------------
 // Runge-Kutta 45
 //
-class RK45Visitor : public StateSpaceVisitor {
+class RK45Visitor : public SystemVisitor {
 private:
   std::tuple<unsigned, unsigned> &t_span_;
   SymEngine::vec_basic &x0_;

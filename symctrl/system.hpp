@@ -1,15 +1,11 @@
 #ifndef SYMCTRL_SYSTEM_HPP
 #define SYMCTRL_SYSTEM_HPP
 
-#include <symengine/basic.h>
-
-#include "control_model.hpp"
-
 namespace Controls {
 
 class SystemVisitor;
 
-class System : public ControlModel {
+class System {
 public:
   virtual ~System() {};
 

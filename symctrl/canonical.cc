@@ -1,8 +1,44 @@
+#include <symengine/basic.h>
+#include <symengine/dict.h>
+#include <symengine/matrix.h>
+
+#include "analysis.hpp"
 #include "canonical.hpp"
 
 namespace Controls {
 
-virtual void ControllableFormVisitor::visit(StateSpace &m) {
+// ----------------------------------------------------------------------
+// Controllable Canonical Form
+//
+void ControllableFormVisitor::visit(StateSpace &m) {
+  SymEngine::DenseMatrix A = m.get_A_matrix(),
+                         B = m.get_B_matrix(),
+                         C = m.get_C_matrix(),
+                         D = m.get_D_matrix();
+
+  SymEngine::DenseMatrix Co = SymEngine::DenseMatrix(1, 1,
+                              {SymEngine::integer(1)});
+
+  SymEngine::DenseMatrix Ci = SymEngine::DenseMatrix(1, 1,
+                              {SymEngine::integer(1)});
+
+  size_t n = m.get_num_states();
+
+  // Get the number of inputs from the B matrix size.
+  size_t m = B.ncols();
+
+  // Compute the controllability matrix.
+  ctrb(A, B, Co);
+
+  // Single-input case (m = 1)
+  if(m == 1) {
+    Co.inv(Ci);
+
+  // Multiple-input case (m > 1)
+  } else {
+    /* code */
+  }
+
   // Compute new form.
   // size_t i;
   //
@@ -29,7 +65,10 @@ virtual void ControllableFormVisitor::visit(StateSpace &m) {
   // }
 }
 
-virtual void ObservableFormVisitor::visit(StateSpace &m) {
+// ----------------------------------------------------------------------
+// Observable Canonical Form
+//
+void ObservableFormVisitor::visit(StateSpace &m) {
   // Compute new form.
   // size_t i;
   //
@@ -56,7 +95,10 @@ virtual void ObservableFormVisitor::visit(StateSpace &m) {
   // }
 }
 
-virtual void JordanFormVisitor::visit(StateSpace &m) {
+// ----------------------------------------------------------------------
+// Jordan Canonical Form
+//
+void JordanFormVisitor::visit(StateSpace &m) {
   // Compute new form.
   // size_t i;
   //

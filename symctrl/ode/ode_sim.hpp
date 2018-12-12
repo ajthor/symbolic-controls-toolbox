@@ -15,7 +15,7 @@ void odesim(StateSpace &m,
             std::vector<double> &t,
             std::vector<std::vector<double>> &x);
 
-class OdeSimVisitor : public StateSpaceVisitor {
+class OdeSimVisitor : public SystemVisitor {
 private:
   std::vector<double> &x0_;
   std::tuple<unsigned, unsigned> &t_span_;
