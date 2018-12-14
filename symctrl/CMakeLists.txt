@@ -6,6 +6,7 @@ set(SRC
   analysis.cc
   c_wrapper.cc
   controller.cc
+  mdp.cc
   random_distribution.cc
   state_space.cc
   transfer_function.cc
@@ -25,6 +26,7 @@ set(HEADERS
   c_wrapper.hpp
   controller.hpp
   kernel.hpp
+  mdp.hpp
   random_distribution.hpp
   random_variable.hpp
   state_space.hpp

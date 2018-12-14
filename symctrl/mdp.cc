@@ -1,6 +1,46 @@
-#include "mdp.hpp"
+#include "visitor.hpp"
 
 namespace Controls {
+
+// ----------------------------------------------------------------------
+// Policy Iteration Visitor
+//
+class PolicyIterationVisitor : public SystemVisitor<PolicyIterationVisitor> {
+private:
+  ControlPolicy *policy_;
+
+public:
+  PolicyIterationVisitor(ControlPolicy *policy) : policy_(policy) {}
+
+  void visit(MDP &m) {}
+  void visit(POMDP &m) {}
+  void visit(System &m) {}
+};
+
+void policy_iteration(MDP &m, ControlPolicy *policy) {
+  PolicyIterationVisitor v(policy);
+  m.accept(v);
+}
+
+// ----------------------------------------------------------------------
+// Value Iteration Visitor
+//
+class ValueIterationVisitor : public SystemVisitor<ValueIterationVisitor> {
+private:
+  ControlPolicy *policy_;
+
+public:
+  ValueIterationVisitor(ControlPolicy *policy) : policy_(policy) {}
+
+  void visit(MDP &m) {}
+  void visit(POMDP &m) {}
+  void visit(System &m) {}
+};
+
+void value_iteration(MDP &m, ControlPolicy *policy) {
+  ValueIterationVisitor v(policy);
+  m.accept(v);
+}
 
 // MDP::MDP(const size_t x, const size_t u) {
 //   num_states_ = x;

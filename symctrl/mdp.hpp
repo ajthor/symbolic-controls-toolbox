@@ -1,73 +1,100 @@
 #ifndef SYMCTRL_MDP_HPP
 #define SYMCTRL_MDP_HPP
 
-#include <map>
-#include <tuple>
-#include <type_traits>
 #include <vector>
+
+#include <symengine/sets.h>
 
 #include "system.hpp"
 #include "cost_function.hpp"
 #include "transition_function.hpp"
 
+using SymEngine::RCP;
+using SymEngine::Set;
+
 namespace Controls {
+
+class ControlPolicyVisitor;
+
+// ----------------------------------------------------------------------
+// ControlPolicy
+//
+class ControlPolicy {
+private:
+  virtual void calc(const std::vector<double> &state,
+                    const std::vector<double> &input,
+                    std::vector<double> *result) = 0;
+
+public:
+  ControlPolicy();
+  ~ControlPolicy();
+
+  void eval(const std::vector<double> &state,
+            const std::vector<double> &input,
+            std::vector<double> *result) {
+    //
+    calc(state, input, result);
+  }
+
+  virtual void accept(ControlPolicyVisitor &visitor) = 0;
+};
+
+// ----------------------------------------------------------------------
+// ControlPolicy Visitor
+//
+class ControlPolicyVisitor {
+public:
+  virtual void visit(ControlPolicy &m) = 0;
+};
+
+// ----------------------------------------------------------------------
+// Discrete ControlPolicy
+//
+class DiscreteControlPolicy : public ControlPolicy {
+private:
+  void calc(const std::vector<double> &state,
+            const std::vector<double> &input,
+            std::vector<double> *result) {
+    //
+  }
+
+  Controls::DenseMatrix<double> *policy_matrix_;
+
+public:
+  DiscreteControlPolicy(const size_t nstates,
+                        const size_t ninputs) {
+    policy_matrix_ = new Controls::DenseMatrix<double>(nstates, ninputs);
+  }
+  ~DiscreteControlPolicy() {}
+
+  void accept(ControlPolicyVisitor &visitor) {
+    visitor.visit(*this);
+  }
+};
 
 // ----------------------------------------------------------------------
 // MDP
 //
-// Markov Decision Process
-//
-// The MDP model uses a functional model to denote the transition probabilities
-// and reward function. The transition probabilities and rewards, which are the
-// fundamental components of the MDP model are divided into two possible
-// categories, depending on whether the state space is discretized or
-// continuous.
-//
-// The state transition has a probability given by:
-//
-//     P: X x U x X' -> [0, 1]
-//
-// The reward function is an expectation given by:
-//
-//     R: X x U x X' -> Reals
-//
-// This means we can use either a functional model for every (X, U, X') tuple
-// to denote a given probability or reward, or a linear mapping using a
-// discrete set of states.
-//
-// In theory, the above function definitions use (X, U, X') as function
-// parameters. However, in practice, the transition probabilities are given as
-// a probability distribution given a state X and taking action U. The rewards,
-// similarly, are a function that returns a real value given a state X and
-// taking action U. This does not take into account the resulting state X',
-// because the MDP model has no intuition over whether the state will actually
-// reach the desired state X' outside of the transition probabilities.
-//
-// In the discretized case, the transition probability matrix has elements
-// which are of the form P{x'| x, u}, which denotes the conditional probability
-// of transferring to state x' given the discrete state x and discrete action
-// u. The reward matrix has elements of the form E{x'|x, u}, which denotes the
-// expected reward for reaching state x' given x and u.
 class MDP : public System {
 private:
-  size_t nstates_;
-  size_t ninputs_;
+  RCP<const Set> state_space_;
+  RCP<const Set> input_space_;
 
-  CostFunction *cost_function_;
   TransitionFunction *transition_kernel_;
+  CostFunction *cost_function_;
 
   double gamma_;
 
 public:
-  MDP(const size_t nstates,
-      const size_t ninputs,
-      CostFunction *R,
+  MDP(RCP<const Set> state_space,
+      RCP<const Set> input_space,
       TransitionFunction *T,
+      CostFunction *R,
       const double gamma) :
-      nstates_(nstates),
-      ninputs_(ninputs),
-      cost_function_(R),
+      state_space_(state_space),
+      input_space_(input_space),
       transition_kernel_(T),
+      cost_function_(R),
       gamma_(gamma) {}
 
   ~MDP() {}
@@ -92,25 +119,34 @@ public:
 // ----------------------------------------------------------------------
 // POMDP
 //
-// Partially-Observable Markov Decision Process
 class POMDP : public MDP {
 private:
   TransitionFunction *observation_kernel_;
 
 public:
-  POMDP(const size_t nstates,
-        const size_t ninputs,
-        CostFunction *R,
+  POMDP(RCP<const Set> state_space,
+        RCP<const Set> input_space,
         TransitionFunction *T,
+        CostFunction *R,
         TransitionFunction *Ob,
         const double gamma) :
-        MDP{nstates, ninputs, R, T, gamma},
+        MDP{state_space, input_space, T, R, gamma},
         observation_kernel_(Ob) {}
 
   ~POMDP() {}
 
   void accept(Visitor &visitor);
 };
+
+// ----------------------------------------------------------------------
+// Policy Iteration
+//
+void policy_iteration(MDP &m, ControlPolicy *policy);
+
+// ----------------------------------------------------------------------
+// Value Iteration
+//
+void value_iteration(MDP &m, ControlPolicy *policy);
 
 } // Controls
 
