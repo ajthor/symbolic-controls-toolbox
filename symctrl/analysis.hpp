@@ -5,8 +5,6 @@
 
 #include "visitor.hpp"
 
-using SymEngine::DenseMatrix;
-
 namespace Controls {
 
 // ----------------------------------------------------------------------
@@ -17,30 +15,30 @@ void expm(StateSpace &obj);
 // ----------------------------------------------------------------------
 // Controllability
 //
-void ctrb(StateSpace &obj, DenseMatrix &result);
-void ctrb(DenseMatrix &A,
-          DenseMatrix &B,
-          DenseMatrix &result);
+void ctrb(StateSpace &obj, SymEngine::DenseMatrix &result);
+void ctrb(SymEngine::DenseMatrix &A,
+          SymEngine::DenseMatrix &B,
+          SymEngine::DenseMatrix &result);
 
 // TODO: Implement rank revealing function.
 size_t ctrb_rank(StateSpace *obj);
-size_t ctrb_rank(DenseMatrix &C);
+size_t ctrb_rank(SymEngine::DenseMatrix &C);
 
-bool is_controllable(DenseMatrix &Co);
+bool is_controllable(SymEngine::DenseMatrix &Co);
 
 // ----------------------------------------------------------------------
 // Observability
 //
-void obsv(StateSpace &obj, DenseMatrix &result);
-void obsv(DenseMatrix &A,
-          DenseMatrix &C,
-          DenseMatrix &result);
+void obsv(StateSpace &obj, SymEngine::DenseMatrix &result);
+void obsv(SymEngine::DenseMatrix &A,
+          SymEngine::DenseMatrix &C,
+          SymEngine::DenseMatrix &result);
 
 // TODO: Implement rank revealing function.
 size_t obsv_rank(StateSpace *obj);
-size_t obsv_rank(DenseMatrix &C);
+size_t obsv_rank(SymEngine::DenseMatrix &C);
 
-bool is_observable(DenseMatrix &Ob);
+bool is_observable(SymEngine::DenseMatrix &Ob);
 
 } // Controls
 

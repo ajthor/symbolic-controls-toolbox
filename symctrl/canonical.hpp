@@ -8,7 +8,7 @@ namespace Controls {
 // ----------------------------------------------------------------------
 // Controllable Canonical Form
 //
-class ControllableFormVisitor : public SystemVisitor {
+class ControllableFormVisitor : public SystemVisitor<ControllableFormVisitor> {
 private:
 
 public:
@@ -22,7 +22,7 @@ public:
 // ----------------------------------------------------------------------
 // Observable Canonical Form
 //
-class ObservableFormVisitor : public SystemVisitor {
+class ObservableFormVisitor : public SystemVisitor<ObservableFormVisitor> {
 private:
 
 public:
@@ -36,7 +36,7 @@ public:
 // ----------------------------------------------------------------------
 // Jordan Canonical Form
 //
-class JordanFormVisitor : public SystemVisitor {
+class JordanFormVisitor : public SystemVisitor<JordanFormVisitor> {
 private:
 
 public:

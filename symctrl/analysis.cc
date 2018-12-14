@@ -4,32 +4,30 @@
 
 #include "analysis.hpp"
 
-using SymEngine::DenseMatrix;
-
 namespace Controls {
 
 // ----------------------------------------------------------------------
 // Controllability
 //
-void ctrb(StateSpace &obj, DenseMatrix &result) {
-  DenseMatrix A;
-  DenseMatrix B;
+void ctrb(StateSpace &obj, SymEngine::DenseMatrix &result) {
+  SymEngine::DenseMatrix A;
+  SymEngine::DenseMatrix B;
   obj.get_A_matrix(A);
   obj.get_B_matrix(B);
 
   ctrb(A, B, result);
 }
-void ctrb(DenseMatrix &A,
-          DenseMatrix &B,
-          DenseMatrix &result) {
+void ctrb(SymEngine::DenseMatrix &A,
+          SymEngine::DenseMatrix &B,
+          SymEngine::DenseMatrix &result) {
 
   // TODO: Add dimension checking.
   unsigned n = A.ncols();
   unsigned m = B.ncols();
-  DenseMatrix M;
+  SymEngine::DenseMatrix M;
 
-  result = DenseMatrix(B);
-  M = DenseMatrix(result);
+  result = SymEngine::DenseMatrix(B);
+  M = SymEngine::DenseMatrix(result);
 
   int k = 0;
   for(k = m; k < n*m; k += m) {
@@ -40,7 +38,7 @@ void ctrb(DenseMatrix &A,
 }
 
 int ctrb_rank(StateSpace &obj) {
-  DenseMatrix co;
+  SymEngine::DenseMatrix co;
   ctrb(obj, co);
   //
   // SymEngine::permutelist pl;
@@ -51,25 +49,25 @@ int ctrb_rank(StateSpace &obj) {
 // ----------------------------------------------------------------------
 // Observability
 //
-void obsv(StateSpace &obj, DenseMatrix &result) {
-  DenseMatrix A;
-  DenseMatrix C;
+void obsv(StateSpace &obj, SymEngine::DenseMatrix &result) {
+  SymEngine::DenseMatrix A;
+  SymEngine::DenseMatrix C;
   obj.get_A_matrix(A);
   obj.get_C_matrix(C);
 
   obsv(A, C, result);
 }
-void obsv(DenseMatrix &A,
-          DenseMatrix &C,
-          DenseMatrix &result) {
+void obsv(SymEngine::DenseMatrix &A,
+          SymEngine::DenseMatrix &C,
+          SymEngine::DenseMatrix &result) {
 
   // TODO: Add dimension checking.
   unsigned n = A.nrows();
   unsigned p = C.nrows();
-  DenseMatrix M;
+  SymEngine::DenseMatrix M;
 
-  result = DenseMatrix(C);
-  M = DenseMatrix(result);
+  result = SymEngine::DenseMatrix(C);
+  M = SymEngine::DenseMatrix(result);
 
   int k = 0;
   for(k = p; k < n*p; k += p) {

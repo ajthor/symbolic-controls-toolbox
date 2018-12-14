@@ -9,8 +9,6 @@
 #include "system.hpp"
 
 using SymEngine::Basic;
-using SymEngine::DenseMatrix;
-using SymEngine::MatrixBase;
 using SymEngine::RCP;
 
 namespace Controls {
@@ -21,10 +19,10 @@ namespace Controls {
 class StateSpace : public System {
 public:
   StateSpace();
-  StateSpace(MatrixBase &A,
-             MatrixBase &B,
-             MatrixBase &C,
-             MatrixBase &D);
+  StateSpace(SymEngine::MatrixBase &A,
+             SymEngine::MatrixBase &B,
+             SymEngine::MatrixBase &C,
+             SymEngine::MatrixBase &D);
   ~StateSpace();
 
   void add_state(const RCP<const Basic> arg);
@@ -51,10 +49,10 @@ public:
   // void remove_g(const size_t n);
   size_t get_num_g() const;
 
-  void get_A_matrix(DenseMatrix &result) const;
-  void get_B_matrix(DenseMatrix &result) const;
-  void get_C_matrix(DenseMatrix &result) const;
-  void get_D_matrix(DenseMatrix &result) const;
+  void get_A_matrix(SymEngine::DenseMatrix &result) const;
+  void get_B_matrix(SymEngine::DenseMatrix &result) const;
+  void get_C_matrix(SymEngine::DenseMatrix &result) const;
+  void get_D_matrix(SymEngine::DenseMatrix &result) const;
 
   void accept(Visitor &visitor);
 
@@ -79,16 +77,16 @@ protected:
 };
 
 
-bool check_abcd(MatrixBase &A,
-                MatrixBase &B,
-                MatrixBase &C,
-                MatrixBase &D);
+bool check_abcd(SymEngine::MatrixBase &A,
+                SymEngine::MatrixBase &B,
+                SymEngine::MatrixBase &C,
+                SymEngine::MatrixBase &D);
 
 void set_abcd(StateSpace &obj,
-              DenseMatrix &A,
-              DenseMatrix &B,
-              DenseMatrix &C,
-              DenseMatrix &D);
+              SymEngine::DenseMatrix &A,
+              SymEngine::DenseMatrix &B,
+              SymEngine::DenseMatrix &C,
+              SymEngine::DenseMatrix &D);
 
 // Separate dx/dt = f(.) + g(.)u into f(.) and g(.) terms.
 void nonlinear_sep();
@@ -96,7 +94,7 @@ void nonlinear_sep();
 void c2d();
 void d2c();
 
-void similarity_transform(StateSpace &obj, DenseMatrix &P);
+void similarity_transform(StateSpace &obj, SymEngine::DenseMatrix &P);
 
 // ----------------------------------------------------------------------
 // Linearization
