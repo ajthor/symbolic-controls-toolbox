@@ -16,7 +16,7 @@ public:
 
 template<typename T>
 class DenseMatrix : DenseMatrixBase<DenseMatrix<T>> {
-private:
+protected:
   // typedef elem_type T;
 
   std::vector<T> v_;

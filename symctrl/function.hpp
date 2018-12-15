@@ -13,6 +13,8 @@ template<typename ...Args>
 class Function {
 public:
   virtual void eval(Args... args) = 0;
+
+  virtual void operator()(Args... args) = 0;
 };
 
 // ----------------------------------------------------------------------
@@ -23,8 +25,12 @@ class BaseFunction : public Function<Args...> {
 public:
   using Function<Args...>::Function;
 
-  void eval(Args... args) {
+  inline void eval(Args... args) {
     static_cast<Derived *>(this)->eval(args...);
+  }
+
+  void operator()(Args... args) {
+    eval(args...);
   }
 };
 

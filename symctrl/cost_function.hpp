@@ -48,35 +48,33 @@ inline bool is_a_cost_function(T &b) {
 // ----------------------------------------------------------------------
 // Discrete CostFunction
 //
-class DiscreteCostFunction : public CostFunction {
-private:
-  Controls::DenseMatrix<double> *cost_matrix_;
-
+class DiscreteCostFunction :
+public CostFunction, public Controls::DenseMatrix<double> {
 public:
-  DiscreteCostFunction(const size_t nstates,
-                       const size_t ninputs) {
-    cost_matrix_ = new Controls::DenseMatrix<double>(nstates, ninputs);
-  }
+  DiscreteCostFunction(const size_t n_states,
+                       const size_t n_inputs) :
+                       Controls::DenseMatrix<double>(n_states*n_inputs, 1) {}
   ~DiscreteCostFunction() {}
 
   void eval(const std::vector<double> &state,
             const std::vector<double> &input,
             double &result) {
     //
-    // Matrix multiplication.
+    // Hash the state and input vector to come up with a unique identifier.
+    // The identifier corresponds to a specific row in the matrix.
+    // Return the result.
   }
 };
 
 // ----------------------------------------------------------------------
 // Kernelized CostFunction
 //
-template<typename T>
 class KernelCostFunction : public CostFunction {
 private:
-  KernelFunction<T> &kernel_function_;
+  KernelFunction<double> &kernel_function_;
 
 public:
-  KernelCostFunction(KernelFunction<T> &K) : kernel_function_(K) {}
+  KernelCostFunction(KernelFunction<double> &K) : kernel_function_(K) {}
   ~KernelCostFunction() {}
 
   void eval(const std::vector<double> &state,

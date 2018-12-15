@@ -48,35 +48,33 @@ inline bool is_a_transition_function(T &b) {
 // ----------------------------------------------------------------------
 // Discrete TransitionFunction
 //
-class DiscreteTransitionFunction : public TransitionFunction {
-private:
-  Controls::DenseMatrix<double> *transition_matrix_;
-
+class DiscreteTransitionFunction :
+public TransitionFunction, public Controls::DenseMatrix<double> {
 public:
-  DiscreteTransitionFunction(const size_t nstates,
-                             const size_t ninputs) {
-    transition_matrix_ = new Controls::DenseMatrix<double>(nstates, nstates);
-  }
+  DiscreteTransitionFunction(const size_t n_states,
+                             const size_t n_inputs) :
+                             Controls::DenseMatrix<double>(n_states*n_inputs, n_states) {}
   ~DiscreteTransitionFunction() {}
 
   void eval(const std::vector<double> &state,
             const std::vector<double> &input,
             std::vector<double> &result) {
     //
-    // Matrix multiplication.
+    // Hash the state and input vector to come up with a unique identifier.
+    // The identifier corresponds to a specific row in the matrix.
+    // Return the result.
   }
 };
 
 // ----------------------------------------------------------------------
 // Kernelized TransitionFunction
 //
-template<typename T>
 class KernelTransitionFunction : public TransitionFunction {
 private:
-  KernelFunction<T> &kernel_function_;
+  KernelFunction<double> &kernel_function_;
 
 public:
-  KernelTransitionFunction(KernelFunction<T> &K) : kernel_function_(K) {}
+  KernelTransitionFunction(KernelFunction<double> &K) : kernel_function_(K) {}
   ~KernelTransitionFunction() {}
 
   void eval(const std::vector<double> &state,

@@ -6,69 +6,62 @@
 #include <symengine/sets.h>
 
 #include "system.hpp"
+#include "matrix/dense.hpp"
 #include "cost_function.hpp"
 #include "transition_function.hpp"
+#include "function.hpp"
 
 using SymEngine::RCP;
 using SymEngine::Set;
 
-namespace Controls {
+typedef Controls::Function<const std::vector<double> &,
+                           std::vector<double> &> control_policy;
+//
 
-class ControlPolicyVisitor;
+namespace Controls {
 
 // ----------------------------------------------------------------------
 // ControlPolicy
 //
-class ControlPolicy {
-private:
-  virtual void calc(const std::vector<double> &state,
-                    const std::vector<double> &input,
-                    std::vector<double> *result) = 0;
-
+class ControlPolicy :
+public Controls::BaseFunction<ControlPolicy,
+                              const std::vector<double> &,
+                              std::vector<double> &> {
 public:
-  ControlPolicy();
-  ~ControlPolicy();
-
   void eval(const std::vector<double> &state,
-            const std::vector<double> &input,
-            std::vector<double> *result) {
-    //
-    calc(state, input, result);
-  }
-
-  virtual void accept(ControlPolicyVisitor &visitor) = 0;
+            std::vector<double> &result) = 0;
 };
 
-// ----------------------------------------------------------------------
-// ControlPolicy Visitor
+template<typename Fun>
+inline control_policy *make_control_policy(Fun f) {
+  return new Controls::LambdaFunction<Fun,
+                                      const std::vector<double> &,
+                                      std::vector<double> &>(f);
+}
 //
-class ControlPolicyVisitor {
-public:
-  virtual void visit(ControlPolicy &m) = 0;
-};
+
+template<typename T>
+inline bool is_a_control_policy(T &b) {
+    return dynamic_cast<control_policy *>(&b) != nullptr;
+}
 
 // ----------------------------------------------------------------------
 // Discrete ControlPolicy
 //
-class DiscreteControlPolicy : public ControlPolicy {
-private:
-  void calc(const std::vector<double> &state,
-            const std::vector<double> &input,
-            std::vector<double> *result) {
-    //
-  }
-
-  Controls::DenseMatrix<double> *policy_matrix_;
-
+class DiscreteControlPolicy :
+public ControlPolicy, public Controls::DenseMatrix<double> {
 public:
-  DiscreteControlPolicy(const size_t nstates,
-                        const size_t ninputs) {
-    policy_matrix_ = new Controls::DenseMatrix<double>(nstates, ninputs);
-  }
+  DiscreteControlPolicy(const size_t n_states,
+                        const size_t n_inputs) :
+                        Controls::DenseMatrix<double>(n_states, n_inputs) {}
   ~DiscreteControlPolicy() {}
 
-  void accept(ControlPolicyVisitor &visitor) {
-    visitor.visit(*this);
+  void eval(const std::vector<double> &state,
+            std::vector<double> &result) {
+    //
+    // Hash the state vector to come up with a unique identifier.
+    // The identifier corresponds to a specific row in the matrix.
+    // Return the result.
   }
 };
 
@@ -99,8 +92,8 @@ public:
 
   ~MDP() {}
 
-  // size_t nstates() const { return nstates_; }
-  // size_t ninputs() const { return ninputs_; }
+  // size_t n_states() const { return nstates_; }
+  // size_t n_inputs() const { return ninputs_; }
   //
   // void set_transition_function(TransitionFunction *T);
   // TransitionFunction *get_transition_function();

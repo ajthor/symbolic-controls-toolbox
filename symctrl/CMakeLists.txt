@@ -25,6 +25,7 @@ set(HEADERS
   analysis.hpp
   c_wrapper.hpp
   controller.hpp
+  cost_function.hpp
   function.hpp
   kernel.hpp
   mdp.hpp
@@ -34,6 +35,7 @@ set(HEADERS
   subs.hpp
   system.hpp
   transfer_function.hpp
+  transition_function.hpp
   visitor.hpp
   matrix/eig.hpp
   matrix/linalg.hpp
