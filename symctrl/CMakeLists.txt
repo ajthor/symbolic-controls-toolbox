@@ -25,6 +25,7 @@ set(HEADERS
   analysis.hpp
   c_wrapper.hpp
   controller.hpp
+  function.hpp
   kernel.hpp
   mdp.hpp
   random_distribution.hpp

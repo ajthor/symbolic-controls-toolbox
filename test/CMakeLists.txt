@@ -32,3 +32,5 @@ ADD_TEST_FILE(test_ode test_ode.cc)
 ADD_TEST_FILE(test_dense_matrix test_dense_matrix.cc)
 
 ADD_TEST_FILE(test_mdp test_mdp.cc)
+
+ADD_TEST_FILE(test_function test_function.cc)

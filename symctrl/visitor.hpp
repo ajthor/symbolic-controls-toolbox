@@ -15,6 +15,9 @@ MACRO(MDP) \
 MACRO(POMDP)
 #endif
 
+// ----------------------------------------------------------------------
+// Visitor Class
+//
 class Visitor {
 public:
   #define SYMCTRL_VISITOR_DECL(Class) \
@@ -23,6 +26,9 @@ public:
   #undef SYMCTRL_VISITOR_DECL
 };
 
+// ----------------------------------------------------------------------
+// SystemVisitor Class
+//
 template<class Derived, class Base = Visitor>
 class SystemVisitor : public Base {
 public:

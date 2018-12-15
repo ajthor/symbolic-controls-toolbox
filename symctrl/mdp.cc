@@ -3,7 +3,7 @@
 namespace Controls {
 
 // ----------------------------------------------------------------------
-// Policy Iteration Visitor
+// PolicyIteration Visitor
 //
 class PolicyIterationVisitor : public SystemVisitor<PolicyIterationVisitor> {
 private:
@@ -23,7 +23,7 @@ void policy_iteration(MDP &m, ControlPolicy *policy) {
 }
 
 // ----------------------------------------------------------------------
-// Value Iteration Visitor
+// ValueIteration Visitor
 //
 class ValueIterationVisitor : public SystemVisitor<ValueIterationVisitor> {
 private:

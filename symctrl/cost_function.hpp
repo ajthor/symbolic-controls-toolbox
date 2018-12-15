@@ -6,54 +6,50 @@
 #include <symengine/dict.h>
 #include <symengine/matrix.h>
 
+#include "kernel.hpp"
 #include "matrix/dense.hpp"
+#include "function.hpp"
+
+typedef Controls::Function<const std::vector<double> &,
+                           const std::vector<double> &,
+                           double &> cost_function;
+//
 
 namespace Controls {
-
-class CostFunctionVisitor;
 
 // ----------------------------------------------------------------------
 // CostFunction
 //
-class CostFunction {
-private:
-  virtual void calc(const std::vector<double> &state,
+class CostFunction :
+public Controls::BaseFunction<CostFunction,
+                              const std::vector<double> &,
+                              const std::vector<double> &,
+                              double &> {
+public:
+  virtual void eval(const std::vector<double> &state,
                     const std::vector<double> &input,
-                    double *result) = 0;
-
-public:
-  virtual ~CostFunction() {}
-
-  void eval(const std::vector<double> &state,
-            const std::vector<double> &input,
-            double *result) {
-    //
-    calc(state, input, result);
-  }
-
-  virtual void accept(CostFunctionVisitor &visitor) = 0;
+                    double &result) = 0;
 };
 
-// ----------------------------------------------------------------------
-// CostFunction Visitor
+template<typename Fun>
+inline cost_function *make_cost_function(Fun f) {
+  return new Controls::LambdaFunction<Fun,
+                                      const std::vector<double> &,
+                                      const std::vector<double> &,
+                                      double &>(f);
+}
 //
-class CostFunctionVisitor {
-public:
-  virtual void visit(CostFunction &m) = 0;
-};
+
+template<typename T>
+inline bool is_a_cost_function(T &b) {
+    return dynamic_cast<cost_function *>(&b) != nullptr;
+}
 
 // ----------------------------------------------------------------------
 // Discrete CostFunction
 //
 class DiscreteCostFunction : public CostFunction {
 private:
-  void calc(const std::vector<double> &state,
-            const std::vector<double> &input,
-            double *result) {
-    //
-    // Matrix multiplication.
-  }
-
   Controls::DenseMatrix<double> *cost_matrix_;
 
 public:
@@ -63,8 +59,31 @@ public:
   }
   ~DiscreteCostFunction() {}
 
-  void accept(CostFunctionVisitor &visitor) {
-    visitor.visit(*this);
+  void eval(const std::vector<double> &state,
+            const std::vector<double> &input,
+            double &result) {
+    //
+    // Matrix multiplication.
+  }
+};
+
+// ----------------------------------------------------------------------
+// Kernelized CostFunction
+//
+template<typename T>
+class KernelCostFunction : public CostFunction {
+private:
+  KernelFunction<T> &kernel_function_;
+
+public:
+  KernelCostFunction(KernelFunction<T> &K) : kernel_function_(K) {}
+  ~KernelCostFunction() {}
+
+  void eval(const std::vector<double> &state,
+            const std::vector<double> &input,
+            double &result) {
+    //
+    // Dot product in Hilbert space.
   }
 };
 

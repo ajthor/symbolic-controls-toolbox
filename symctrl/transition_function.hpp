@@ -6,67 +6,50 @@
 #include <symengine/dict.h>
 #include <symengine/matrix.h>
 
-// #include "ode.hpp"
-// #include "state_space.hpp"
 #include "kernel.hpp"
 #include "matrix/dense.hpp"
+#include "function.hpp"
+
+typedef Controls::Function<const std::vector<double> &,
+                           const std::vector<double> &,
+                           std::vector<double> &> transition_function;
+//
 
 namespace Controls {
-
-class TransitionFunctionVisitor;
 
 // ----------------------------------------------------------------------
 // TransitionFunction
 //
-class TransitionFunction {
-private:
-  virtual void calc(const std::vector<double> &state,
+class TransitionFunction :
+public Controls::BaseFunction<TransitionFunction,
+                              const std::vector<double> &,
+                              const std::vector<double> &,
+                              std::vector<double> &> {
+public:
+  virtual void eval(const std::vector<double> &state,
                     const std::vector<double> &input,
-                    // const std::vector<double> &next_state,
                     std::vector<double> &result) = 0;
-
-public:
-  virtual ~TransitionFunction() {}
-
-  void eval(const std::vector<double> &state,
-            const std::vector<double> &input,
-            // const std::vector<double> &next_state,
-            std::vector<double> &result) {
-    //
-
-    // Ensure x0 and x1 are n elements or have capacity n.
-    if(result.capacity() != state.size()) {
-
-    }
-
-    // Compute the transition.
-    calc(state, input, result);
-  }
-
-  virtual void accept(TransitionFunctionVisitor &visitor) = 0;
 };
 
-// ----------------------------------------------------------------------
-// TransitionFunction Visitor
+template<typename Fun>
+inline transition_function *make_transition_function(Fun f) {
+  return new Controls::LambdaFunction<Fun,
+                                      const std::vector<double> &,
+                                      const std::vector<double> &,
+                                      std::vector<double> &>(f);
+}
 //
-class TransitionFunctionVisitor {
-public:
-  virtual void visit(TransitionFunction &m) = 0;
-};
+
+template<typename T>
+inline bool is_a_transition_function(T &b) {
+    return dynamic_cast<transition_function *>(&b) != nullptr;
+}
 
 // ----------------------------------------------------------------------
 // Discrete TransitionFunction
 //
 class DiscreteTransitionFunction : public TransitionFunction {
 private:
-  void calc(const std::vector<double> &state,
-            const std::vector<double> &input,
-            // const std::vector<double> &next_state,
-            std::vector<double> &result) {
-    //
-    // Matrix multiplication.
-  }
-
   Controls::DenseMatrix<double> *transition_matrix_;
 
 public:
@@ -76,8 +59,11 @@ public:
   }
   ~DiscreteTransitionFunction() {}
 
-  void accept(TransitionFunctionVisitor &visitor) {
-    visitor.visit(*this);
+  void eval(const std::vector<double> &state,
+            const std::vector<double> &input,
+            std::vector<double> &result) {
+    //
+    // Matrix multiplication.
   }
 };
 
@@ -87,22 +73,17 @@ public:
 template<typename T>
 class KernelTransitionFunction : public TransitionFunction {
 private:
-  void calc(const std::vector<double> &state,
-            const std::vector<double> &input,
-            // const std::vector<double> &next_state,
-            std::vector<double> &result) {
-    //
-    // Dot product in Hilbert space.
-  }
-
   KernelFunction<T> &kernel_function_;
 
 public:
   KernelTransitionFunction(KernelFunction<T> &K) : kernel_function_(K) {}
   ~KernelTransitionFunction() {}
 
-  void accept(TransitionFunctionVisitor &visitor) {
-    visitor.visit(*this);
+  void eval(const std::vector<double> &state,
+            const std::vector<double> &input,
+            std::vector<double> &result) {
+    //
+    // Dot product in Hilbert space.
   }
 };
 
