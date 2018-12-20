@@ -27,7 +27,7 @@ macro(INSTALL_HEADERS_WITH_DIRECTORY HEADER_LIST)
 
         install(FILES
           ${HEADER}
-          DESTINATION include/libsymctrl/${DIR}
+          DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/symctrl/${DIR}
         )
 
     endforeach()
@@ -45,6 +45,9 @@ macro(PREPEND NEW_VAR PREFIX)
 
 endmacro()
 
+set(PROJECT_SRC "")
+set(PROJECT_HEADERS "")
+
 # Project Directories
 #
 # List of project subdirectories to be added.
@@ -53,6 +56,7 @@ endmacro()
 # order of the project directories is the order the subdirectories will be
 # added.
 set(symctrl_INCLUDE_DIRECTORIES
+  math
   symctrl
 )
 
@@ -91,12 +95,12 @@ install(TARGETS symctrl
 install(EXPORT symctrl
   FILE CtrlTargets.cmake
   NAMESPACE Control::
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libsymctrl
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/symctrl
 )
 
 install(FILES
   ${CMAKE_BINARY_DIR}/symctrl_export.h
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libsymctrl
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/symctrl
 )
 
 # Testing
@@ -112,12 +116,6 @@ option(BUILD_MATLAB "Build Matlab wrapper library." OFF)
 
 if(BUILD_MATLAB)
   add_subdirectory(matlab)
-  # ExternalProject_Add(ctrltbx_matlab
-  #   SOURCE_DIR "${PROJECT_SOURCE_DIR}/matlab"
-  #   BUILD_COMMAND make
-  #   INSTALL_COMMAND make install
-  #   BUILD_ALWAYS 1
-  # )
 endif()
 
 # Python Support
@@ -125,10 +123,4 @@ option(BUILD_PYTHON "Build Python wrapper library." OFF)
 
 if(BUILD_PYTHON)
   add_subdirectory(python)
-  # ExternalProject_Add(ctrltbx_matlab
-  #   SOURCE_DIR "${PROJECT_SOURCE_DIR}/python"
-  #   BUILD_COMMAND make
-  #   INSTALL_COMMAND make install
-  #   BUILD_ALWAYS 1
-  # )
 endif()
