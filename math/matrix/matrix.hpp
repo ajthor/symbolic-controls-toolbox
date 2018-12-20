@@ -38,124 +38,124 @@ namespace Math {
 // ----------------------------------------------------------------------
 // Matrix
 //
-template<typename T, typename Derived>
+template<typename DT>
 class Matrix {
 public:
-  inline Derived &operator~() {
-    return *static_cast<Derived *>(this);
+  inline DT &operator~() {
+    return *static_cast<DT *>(this);
   }
-  inline const Derived &operator~() const {
-    return *static_cast<const Derived *>(this);
+  inline const DT &operator~() const {
+    return *static_cast<const DT *>(this);
   }
 
-  inline T &operator[](const size_t pos);
-  inline const T &operator[](const size_t pos) const;
+  // inline T &operator[](const size_t pos);
+  // inline const T &operator[](const size_t pos) const;
 };
 
 // ----------------------------------------------------------------------
-// Matrix Derived Functions
+// Matrix DT Functions
 //
-template<typename T, typename Derived>
-size_t size(Matrix<T, Derived> &m) {
+template<typename DT>
+size_t size(Matrix<DT> &m) {
   return (~m).size();
 }
 
-template<typename T, typename Derived>
-size_t capacity(Matrix<T, Derived> &m) {
+template<typename DT>
+size_t capacity(Matrix<DT> &m) {
   return (~m).capacity();
 }
 
-template<typename T, typename Derived>
-bool empty(Matrix<T, Derived> &m) {
+template<typename DT>
+bool empty(Matrix<DT> &m) {
   return (~m).empty();
 }
 
-template<typename T, typename Derived>
-typename std::vector<T>::iterator
-begin(Matrix<T, Derived> &m) {
-  return (~m).begin();
-}
+// template<typename DT>
+// typename std::vector<T>::iterator
+// begin(Matrix<DT> &m) {
+//   return (~m).begin();
+// }
+//
+// template<typename DT>
+// typename std::vector<T>::iterator
+// end(Matrix<DT> &m) {
+//   return (~m).end();
+// }
+//
+// template<typename DT>
+// typename std::vector<T>::const_iterator
+// begin(const Matrix<DT> &m) {
+//   return (~m).begin();
+// }
+//
+// template<typename DT>
+// typename std::vector<T>::const_iterator
+// end(const Matrix<DT> &m) {
+//   return (~m).end();
+// }
+//
+// template<typename DT>
+// typename std::vector<T>::const_iterator
+// cbegin(const Matrix<DT> &m) {
+//   return (~m).cbegin();
+// }
+//
+// template<typename DT>
+// typename std::vector<T>::const_iterator
+// cend(const Matrix<DT> &m) {
+//   return (~m).cend();
+// }
 
-template<typename T, typename Derived>
-typename std::vector<T>::iterator
-end(Matrix<T, Derived> &m) {
-  return (~m).end();
-}
-
-template<typename T, typename Derived>
-typename std::vector<T>::const_iterator
-begin(const Matrix<T, Derived> &m) {
-  return (~m).begin();
-}
-
-template<typename T, typename Derived>
-typename std::vector<T>::const_iterator
-end(const Matrix<T, Derived> &m) {
-  return (~m).end();
-}
-
-template<typename T, typename Derived>
-typename std::vector<T>::const_iterator
-cbegin(const Matrix<T, Derived> &m) {
-  return (~m).cbegin();
-}
-
-template<typename T, typename Derived>
-typename std::vector<T>::const_iterator
-cend(const Matrix<T, Derived> &m) {
-  return (~m).cend();
-}
-
-template<typename T, typename Derived>
-size_t nrows(Matrix<T, Derived> &m) {
+template<typename DT>
+size_t nrows(Matrix<DT> &m) {
   return (~m).nrows();
 }
 
-template<typename T, typename Derived>
-size_t ncols(Matrix<T, Derived> &m) {
+template<typename DT>
+size_t ncols(Matrix<DT> &m) {
   return (~m).ncols();
 }
 
-template<typename T, typename Derived>
-std::vector<T> as_vec(Matrix<T, Derived> &m) {
-  return (~m).as_vec();
-}
+// template<typename DT>
+// std::vector<T> as_vec(Matrix<DT> &m) {
+//   return (~m).as_vec();
+// }
 
-template<typename T, typename Derived>
-inline T &Matrix<T, Derived>::operator[](const size_t pos) {
-  return (this)->operator[](pos);
-}
+// template<typename DT>
+// inline T &Matrix<DT>::operator[](const size_t pos) {
+//   return (this)->operator[](pos);
+// }
+//
+// template<typename DT>
+// inline const T &Matrix<DT>::operator[](const size_t pos) const {
+//   return (this)->operator[](pos);
+// }
 
-template<typename T, typename Derived>
-inline const T &Matrix<T, Derived>::operator[](const size_t pos) const {
-  return (this)->operator[](pos);
-}
+// template<typename DT>
+// void reshape(Matrix<DT> &m, const size_t row, const size_t col) {
+//   (~m).reshape(row, col);
+// }
 
-template<typename T, typename Derived>
-void reshape(Matrix<T, Derived> &m, const size_t row, const size_t col) {
-  (~m).reshape(row, col);
-}
-
-template<typename T, typename Derived>
-inline void transpose(Matrix<T, Derived> &m) {
-  (~m).transpose();
-}
+// template<typename DT>
+// inline void transpose(Matrix<DT> &m) {
+//   (~m).transpose();
+// }
 
 // ----------------------------------------------------------------------
 // Matrix Assignment Functions
 //
-template<typename T1, typename D1, typename T2, typename D2>
-inline void apply_(Matrix<T1, D1> &lhs, const Matrix<T2, D2> &rhs) {
+template<typename D1, typename D2>
+inline void apply_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
   (~lhs).apply(~rhs);
 }
 
-template<typename T1, typename D1, typename T2, typename D2>
-inline void apply_add_(Matrix<T1, D1> &lhs, const Matrix<T2, D2> &rhs) {
+template<typename D1, typename D2>
+inline void apply_add_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
   (~lhs).apply_add(~rhs);
 }
 
-template<typename T1, typename D1, typename T2, typename D2>
-inline void apply_mul_(Matrix<T1, D1> &lhs, const Matrix<T2, D2> &rhs) {
+template<typename D1, typename D2>
+inline void apply_mul_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
   (~lhs).apply_mul(~rhs);
 }
 

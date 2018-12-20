@@ -3,7 +3,12 @@
 
 #include <algorithm>
 
+#include <symengine/add.h>
+#include <symengine/basic.h>
+
 #include "matrix.hpp"
+
+typedef SymEngine::RCP<const SymEngine::Basic> basic;
 
 namespace Controls {
 namespace Math {
@@ -12,7 +17,7 @@ namespace Math {
 // Vector
 //
 template<typename T>
-class Vector : public Matrix<T, Vector<T>> {
+class Vector : public Matrix<Vector<T>> {
 private:
   size_t n_;
   size_t m_;
@@ -32,18 +37,19 @@ public:
   inline Vector<T> &operator=(const std::vector<T> rhs);
   inline Vector<T> &operator=(const Vector<T> &rhs);
 
-  template<typename DT, typename Derived>
-  inline Vector<T> &operator=(const Matrix<DT, Derived> &rhs);
+  template<typename DT>
+  inline Vector<T> &operator=(const Matrix<DT> &rhs);
 
   inline Vector<T> &operator+=(const T &rhs);
   inline Vector<T> &operator*=(const T &rhs);
 
-  template<typename DT, typename Derived>
-  inline void apply(const Matrix<DT, Derived> &rhs);
-  template<typename DT, typename Derived>
-  inline void apply_add(const Matrix<DT, Derived> &rhs);
-  template<typename DT, typename Derived>
-  inline void apply_mul(const Matrix<DT, Derived> &rhs);
+  template<typename DT>
+  inline void apply(const Matrix<DT> &rhs);
+  inline void apply_add(const Vector<T> &rhs);
+  template<typename DT>
+  inline void apply_add(const Matrix<DT> &rhs);
+  template<typename DT>
+  inline void apply_mul(const Matrix<DT> &rhs);
 
   inline size_t size() const;
   inline size_t capacity() const;
@@ -145,25 +151,43 @@ inline Vector<T> &Vector<T>::operator*=(const T &rhs) {
 }
 
 template<typename T>
-template<typename DT, typename Derived>
+template<typename DT>
 inline Vector<T>&
-Vector<T>::operator=(const Matrix<DT, Derived> &rhs) {
+Vector<T>::operator=(const Matrix<DT> &rhs) {
   apply_(*this, ~rhs);
 
   return *this;
 }
 
 template<typename T>
-template<typename DT, typename Derived>
-inline void Vector<T>::apply(const Matrix<DT, Derived> &rhs) {
+template<typename DT>
+inline void Vector<T>::apply(const Matrix<DT> &rhs) {
   n_ = (~rhs).n_;
   m_ = (~rhs).m_;
   v_ = (~rhs).v_;
 }
 
 template<typename T>
-template<typename DT, typename Derived>
-inline void Vector<T>::apply_add(const Matrix<DT, Derived> &rhs) {
+inline void Vector<T>::apply_add(const Vector<T> &rhs) {
+  for(size_t row = 0; row < n_; row++) {
+    for(size_t col = 0; col < m_; col++) {
+      v_[row*m_ + col] += (~rhs)[row*m_ + col];
+    }
+  }
+}
+
+template<>
+inline void Vector<basic>::apply_add(const Vector<basic> &rhs) {
+  for(size_t row = 0; row < n_; row++) {
+    for(size_t col = 0; col < m_; col++) {
+      v_[row*m_ + col] = SymEngine::add(v_[row*m_ + col], (~rhs)[row*m_ + col]);
+    }
+  }
+}
+
+template<typename T>
+template<typename DT>
+inline void Vector<T>::apply_add(const Matrix<DT> &rhs) {
   for(size_t row = 0; row < n_; row++) {
     for(size_t col = 0; col < m_; col++) {
       v_[row*m_ + col] += (~rhs)[row*m_ + col];
@@ -172,8 +196,8 @@ inline void Vector<T>::apply_add(const Matrix<DT, Derived> &rhs) {
 }
 
 template<typename T>
-template<typename DT, typename Derived>
-inline void Vector<T>::apply_mul(const Matrix<DT, Derived> &rhs) {
+template<typename DT>
+inline void Vector<T>::apply_mul(const Matrix<DT> &rhs) {
   for(size_t row = 0; row < n_; row++) {
     for(size_t col = 0; col < m_; col++) {
       v_[row*m_ + col] *= (~rhs)[row*m_ + col];

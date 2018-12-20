@@ -9,8 +9,8 @@ namespace Math {
 // ----------------------------------------------------------------------
 // Expression
 //
-template<typename T, typename Derived>
-class Expression : public Matrix<T, Expression<T, Derived>> {
+template<typename DT>
+class Expression : public DT {
 public:
   // size_t size() const;
   // size_t capacity() const;
