@@ -6,6 +6,7 @@
 #include <symengine/add.h>
 #include <symengine/basic.h>
 
+#include "assert.hpp"
 #include "matrix.hpp"
 
 typedef SymEngine::RCP<const SymEngine::Basic> basic;
@@ -35,6 +36,7 @@ public:
   inline DenseMatrix(const DenseMatrix<T> &m);
 
   inline DenseMatrix<T> &operator=(const T &rhs);
+  inline DenseMatrix<T> &operator=(const DenseMatrix<T> &rhs);
 
   template<typename DT>
   inline DenseMatrix<T> &operator=(const Matrix<DT> &rhs);
@@ -44,7 +46,6 @@ public:
 
   template<typename DT>
   inline void apply(const Matrix<DT> &rhs);
-  inline void apply_add(const DenseMatrix<T> &rhs);
   template<typename DT>
   inline void apply_add(const Matrix<DT> &rhs);
   template<typename DT>
@@ -124,9 +125,17 @@ inline DenseMatrix<T> &DenseMatrix<T>::operator=(const T &rhs) {
 }
 
 template<typename T>
+inline DenseMatrix<T> &DenseMatrix<T>::operator=(const DenseMatrix<T> &rhs) {
+  n_ = rhs.n_;
+  m_ = rhs.m_;
+  v_ = rhs.v_;
+
+  return *this;
+}
+
+template<typename T>
 template<typename DT>
-inline DenseMatrix<T>&
-DenseMatrix<T>::operator=(const Matrix<DT> &rhs) {
+inline DenseMatrix<T> &DenseMatrix<T>::operator=(const Matrix<DT> &rhs) {
   apply_(*this, ~rhs);
   return *this;
 }
@@ -167,29 +176,27 @@ inline void DenseMatrix<T>::apply(const Matrix<DT> &rhs) {
 }
 
 template<typename T>
-inline void DenseMatrix<T>::apply_add(const DenseMatrix<T> &rhs) {
-  for(size_t row = 0; row < n_; row++) {
-    for(size_t col = 0; col < m_; col++) {
-      v_[row*m_ + col] += (~rhs)[row*m_ + col];
+template<typename DT>
+inline void DenseMatrix<T>::apply_add(const Matrix<DT> &rhs) {
+  MATRIX_ASSERT(n_ == (~rhs).n_);
+  MATRIX_ASSERT(m_ == (~rhs).m_);
+
+  for(size_t i = 0; i < n_; i++) {
+    for(size_t j = 0; j < m_; j++) {
+      v_[i*m_ + j] += (~rhs)[i*m_ + j];
     }
   }
 }
 
 template<>
-inline void DenseMatrix<basic>::apply_add(const DenseMatrix<basic> &rhs) {
-  for(size_t row = 0; row < n_; row++) {
-    for(size_t col = 0; col < m_; col++) {
-      v_[row*m_ + col] = SymEngine::add(v_[row*m_ + col], (~rhs)[row*m_ + col]);
-    }
-  }
-}
+template<>
+inline void DenseMatrix<basic>::apply_add(const Matrix<DenseMatrix<basic>> &rhs) {
+  MATRIX_ASSERT(n_ == (~rhs).n_);
+  MATRIX_ASSERT(m_ == (~rhs).m_);
 
-template<typename T>
-template<typename DT>
-inline void DenseMatrix<T>::apply_add(const Matrix<DT> &rhs) {
-  for(size_t row = 0; row < n_; row++) {
-    for(size_t col = 0; col < m_; col++) {
-      v_[row*m_ + col] += (~rhs)[row*m_ + col];
+  for(size_t i = 0; i < n_; i++) {
+    for(size_t j = 0; j < m_; j++) {
+      v_[i*m_ + j] = SymEngine::add(v_[i*m_ + j], (~rhs)[i*m_ + j]);
     }
   }
 }
@@ -197,11 +204,21 @@ inline void DenseMatrix<T>::apply_add(const Matrix<DT> &rhs) {
 template<typename T>
 template<typename DT>
 inline void DenseMatrix<T>::apply_mul(const Matrix<DT> &rhs) {
-  for(size_t row = 0; row < n_; row++) {
-    for(size_t col = 0; col < m_; col++) {
-      v_[row*m_ + col] *= (~rhs)[row*m_ + col];
+  MATRIX_ASSERT(m_ == (~rhs).n_);
+
+  std::vector<T> t_(n_*(~rhs).m_, 0);
+
+  for(size_t i = 0; i < n_; i++) {
+    for(size_t j = 0; j < (~rhs).m_; j++) {
+
+      for(size_t k = 0; k < m_; k++) {
+        t_[i*(~rhs).m_ + j] += v_[i*m_ + k] * (~rhs)[k*(~rhs).m_ + j];
+      }
     }
   }
+
+  m_ = (~rhs).m_;
+  v_ = t_;
 }
 
 // ----------------------------------------------------------------------

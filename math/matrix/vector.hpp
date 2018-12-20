@@ -6,6 +6,7 @@
 #include <symengine/add.h>
 #include <symengine/basic.h>
 
+#include "assert.hpp"
 #include "matrix.hpp"
 
 typedef SymEngine::RCP<const SymEngine::Basic> basic;
@@ -45,7 +46,6 @@ public:
 
   template<typename DT>
   inline void apply(const Matrix<DT> &rhs);
-  inline void apply_add(const Vector<T> &rhs);
   template<typename DT>
   inline void apply_add(const Matrix<DT> &rhs);
   template<typename DT>
@@ -118,6 +118,8 @@ inline Vector<T> &Vector<T>::operator=(const T &rhs) {
 
 template<typename T>
 inline Vector<T> &Vector<T>::operator=(const std::vector<T> rhs) {
+  n_ = rhs.size();
+  m_ = 1;
   v_ = rhs;
 
   return *this;
@@ -133,9 +135,26 @@ inline Vector<T> &Vector<T>::operator=(const Vector<T> &rhs) {
 }
 
 template<typename T>
+template<typename DT>
+inline Vector<T> &Vector<T>::operator=(const Matrix<DT> &rhs) {
+  apply_(*this, ~rhs);
+
+  return *this;
+}
+
+template<typename T>
 inline Vector<T> &Vector<T>::operator+=(const T &rhs) {
   for(size_t i = 0; i < v_.size(); i++) {
     v_[i] += rhs;
+  }
+
+  return *this;
+}
+
+template<>
+inline Vector<basic> &Vector<basic>::operator+=(const basic &rhs) {
+  for(size_t i = 0; i < v_.size(); i++) {
+    v_[i] = SymEngine::add(v_[i], rhs);
   }
 
   return *this;
@@ -152,15 +171,6 @@ inline Vector<T> &Vector<T>::operator*=(const T &rhs) {
 
 template<typename T>
 template<typename DT>
-inline Vector<T>&
-Vector<T>::operator=(const Matrix<DT> &rhs) {
-  apply_(*this, ~rhs);
-
-  return *this;
-}
-
-template<typename T>
-template<typename DT>
 inline void Vector<T>::apply(const Matrix<DT> &rhs) {
   n_ = (~rhs).n_;
   m_ = (~rhs).m_;
@@ -168,29 +178,27 @@ inline void Vector<T>::apply(const Matrix<DT> &rhs) {
 }
 
 template<typename T>
-inline void Vector<T>::apply_add(const Vector<T> &rhs) {
-  for(size_t row = 0; row < n_; row++) {
-    for(size_t col = 0; col < m_; col++) {
-      v_[row*m_ + col] += (~rhs)[row*m_ + col];
+template<typename DT>
+inline void Vector<T>::apply_add(const Matrix<DT> &rhs) {
+  MATRIX_ASSERT(n_ == (~rhs).n_);
+  MATRIX_ASSERT(m_ == (~rhs).m_);
+  
+  for(size_t i = 0; i < n_; i++) {
+    for(size_t j = 0; j < m_; j++) {
+      v_[i*m_ + j] += (~rhs)[i*m_ + j];
     }
   }
 }
 
 template<>
-inline void Vector<basic>::apply_add(const Vector<basic> &rhs) {
-  for(size_t row = 0; row < n_; row++) {
-    for(size_t col = 0; col < m_; col++) {
-      v_[row*m_ + col] = SymEngine::add(v_[row*m_ + col], (~rhs)[row*m_ + col]);
-    }
-  }
-}
+template<>
+inline void Vector<basic>::apply_add(const Matrix<Vector<basic>> &rhs) {
+  MATRIX_ASSERT(n_ == (~rhs).n_);
+  MATRIX_ASSERT(m_ == (~rhs).m_);
 
-template<typename T>
-template<typename DT>
-inline void Vector<T>::apply_add(const Matrix<DT> &rhs) {
-  for(size_t row = 0; row < n_; row++) {
-    for(size_t col = 0; col < m_; col++) {
-      v_[row*m_ + col] += (~rhs)[row*m_ + col];
+  for(size_t i = 0; i < n_; i++) {
+    for(size_t j = 0; j < m_; j++) {
+      v_[i*m_ + j] = SymEngine::add(v_[i*m_ + j], (~rhs)[i*m_ + j]);
     }
   }
 }
@@ -198,11 +206,21 @@ inline void Vector<T>::apply_add(const Matrix<DT> &rhs) {
 template<typename T>
 template<typename DT>
 inline void Vector<T>::apply_mul(const Matrix<DT> &rhs) {
-  for(size_t row = 0; row < n_; row++) {
-    for(size_t col = 0; col < m_; col++) {
-      v_[row*m_ + col] *= (~rhs)[row*m_ + col];
+  MATRIX_ASSERT(m_ == (~rhs).n_);
+
+  std::vector<T> t_(n_*(~rhs).m_, 0);
+
+  for(size_t i = 0; i < n_; i++) {
+    for(size_t j = 0; j < (~rhs).m_; j++) {
+
+      for(size_t k = 0; k < m_; k++) {
+        t_[i*(~rhs).m_ + j] += v_[i*m_ + k] * (~rhs)[k*(~rhs).m_ + j];
+      }
     }
   }
+
+  m_ = (~rhs).m_;
+  v_ = t_;
 }
 
 // ----------------------------------------------------------------------

@@ -33,12 +33,12 @@ public:
     apply_add_(~lhs, rhs.rhs_);
   }
 
-  // template<typename DT>
-  // friend inline void apply_mul_(Matrix<DT> &lhs,
-  //                               const ExprAdd<M1, M2> &rhs) {
-  //   apply_add_(~lhs, rhs.lhs_);
-  //   apply_add_(~lhs, rhs.rhs_);
-  // }
+  template<typename DT>
+  friend inline void apply_mul_(Matrix<DT> &lhs,
+                                const ExprAdd<M1, M2> &rhs) {
+    apply_mul_(~lhs, rhs.lhs_);
+    apply_mul_(~lhs, rhs.rhs_);
+  }
 };
 
 template<typename M1, typename M2>
@@ -66,20 +66,6 @@ inline const ExprAdd<M1, M2>
 operator+(const Matrix<M1> &m1, const Matrix<M2> &m2) {
   return ExprAdd<M1, M2>(~m1, ~m2);
 }
-
-// template<typename T, typename M1, typename M2, typename DT, typename Derived>
-// inline void apply_(Matrix<DT> &lhs,
-//                    const ExprAdd<M1, M2> &rhs) {
-//   apply_(~lhs, *rhs.lhs_);
-//   apply_add_(~lhs, *rhs.rhs_);
-// }
-
-// template<typename T, typename M1, typename M2>
-// inline void apply(Matrix<T, M1> &lhs,
-//                   const ExprAdd<M1, M2> &rhs) {
-//   (~lhs).apply(*rhs.lhs_);
-//   (~lhs).apply_add(*rhs.rhs_);
-// }
 
 } // Math
 } // Controls

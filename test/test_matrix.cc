@@ -50,36 +50,105 @@ TEST_CASE("Matrix: Vector", "[matrix]") {
   REQUIRE(v[0] == 5);
   REQUIRE(v[1] == 5);
 
-  v = {1, 2};
-
-  REQUIRE(v[0] == 1);
-  REQUIRE(v[1] == 2);
-
-  Controls::Math::Vector<int> w({3, 4});
-  v = w;
+  v = {3, 4};
 
   REQUIRE(v[0] == 3);
   REQUIRE(v[1] == 4);
 
+  Controls::Math::Vector<int> w({1, 2});
+
+  v = w;
+
+  REQUIRE(v[0] == 1);
+  REQUIRE(v[1] == 2);
+
   v[0] = 2;
 
-  REQUIRE(w[0] == 3);
+  REQUIRE(w[0] == 1);
 
   // Addition
   v = v + w;
 
-  REQUIRE(v[0] == 5);
+  REQUIRE(v[0] == 3);
+  REQUIRE(v[1] == 4);
+
+  v = w + w + w + w;
+
+  REQUIRE(v[0] == 4);
   REQUIRE(v[1] == 8);
 }
 
-TEST_CASE("Matrix: DenseMatrix int", "[matrix]") {
+TEST_CASE("Matrix: Vector RCP<const Basic>", "[matrix]") {
+  Controls::Math::Vector<RCP<const Basic>> v(2);
+
+  REQUIRE(v.nrows() == 2);
+  REQUIRE(v.ncols() == 1);
+
+  v[0] = integer(1);
+  v[1] = integer(2);
+
+  REQUIRE(eq(*v[0], *integer(1)));
+  REQUIRE(eq(*v[1], *integer(2)));
+
+  v(0) = integer(3);
+  v(1) = integer(4);
+
+  REQUIRE(eq(*v(0), *integer(3)));
+  REQUIRE(eq(*v(1), *integer(4)));
+
+  // Transposition
+  v.transpose();
+
+  REQUIRE(v.nrows() == 1);
+  REQUIRE(v.ncols() == 2);
+  REQUIRE(eq(*v[0], *integer(3)));
+  REQUIRE(eq(*v[1], *integer(4)));
+
+  v.transpose();
+
+  REQUIRE(v.nrows() == 2);
+  REQUIRE(v.ncols() == 1);
+  REQUIRE(eq(*v[0], *integer(3)));
+  REQUIRE(eq(*v[1], *integer(4)));
+
+  // Assignment
+  v = integer(5);
+
+  REQUIRE(eq(*v[0], *integer(5)));
+  REQUIRE(eq(*v[1], *integer(5)));
+
+  Controls::Math::Vector<RCP<const Basic>> w(2);
+
+  w[0] = integer(1);
+  w[1] = integer(2);
+
+  v = w;
+
+  REQUIRE(eq(*v[0], *integer(1)));
+  REQUIRE(eq(*v[1], *integer(2)));
+
+  v[0] = integer(2);
+
+  REQUIRE(eq(*w[0], *integer(1)));
+
+  // Addition
+  v = v + w;
+
+  REQUIRE(eq(*v[0], *integer(3)));
+  REQUIRE(eq(*v[1], *integer(4)));
+
+  v = w + w + w + w;
+
+  REQUIRE(eq(*v[0], *integer(4)));
+  REQUIRE(eq(*v[1], *integer(8)));
+}
+
+TEST_CASE("Matrix: DenseMatrix", "[matrix]") {
   Controls::Math::DenseMatrix<int> M(2, 2);
 
   REQUIRE(M.nrows() == 2);
   REQUIRE(M.ncols() == 2);
 
-  // [ 1, 2 ]
-  // [ 3, 4 ]
   M(0, 0) = 1;
   M(0, 1) = 2;
   M(1, 0) = 3;
@@ -141,16 +210,63 @@ TEST_CASE("Matrix: DenseMatrix int", "[matrix]") {
   REQUIRE(M(1, 0) == 6);
   REQUIRE(M(1, 1) == 8);
 
-  M += 1;
+  M = Q + Q + Q + Q;
 
   REQUIRE(M(0, 0) == 4);
-  REQUIRE(M(0, 1) == 5);
-  REQUIRE(M(1, 0) == 7);
-  REQUIRE(M(1, 1) == 9);
+  REQUIRE(M(0, 1) == 8);
+  REQUIRE(M(1, 0) == 12);
+  REQUIRE(M(1, 1) == 16);
+
+  M += 1;
+
+  REQUIRE(M(0, 0) == 5);
+  REQUIRE(M(0, 1) == 9);
+  REQUIRE(M(1, 0) == 13);
+  REQUIRE(M(1, 1) == 17);
+
+  // Multiplication
+  M = M * Q;
+
+  REQUIRE(M(0, 0) == 32);
+  REQUIRE(M(0, 1) == 46);
+  REQUIRE(M(1, 0) == 64);
+  REQUIRE(M(1, 1) == 94);
+
+  M = Q * Q * Q * Q;
+
+  REQUIRE(M(0, 0) == 199);
+  REQUIRE(M(0, 1) == 290);
+  REQUIRE(M(1, 0) == 435);
+  REQUIRE(M(1, 1) == 634);
+
+  M = Q + Q * Q + Q;
+
+  REQUIRE(M(0, 0) == 9);
+  REQUIRE(M(0, 1) == 14);
+  REQUIRE(M(1, 0) == 21);
+  REQUIRE(M(1, 1) == 30);
+
+  M = Q + (Q * Q) + Q;
+
+  REQUIRE(M(0, 0) == 9);
+  REQUIRE(M(0, 1) == 14);
+  REQUIRE(M(1, 0) == 21);
+  REQUIRE(M(1, 1) == 30);
+
+  Controls::Math::DenseMatrix<int> R(2, 3, {1, 2, 3, 4, 5, 6});
+
+  M = Q * R;
+
+  REQUIRE(M(0, 0) == 9);
+  REQUIRE(M(0, 1) == 12);
+  REQUIRE(M(0, 2) == 15);
+  REQUIRE(M(1, 0) == 19);
+  REQUIRE(M(1, 1) == 26);
+  REQUIRE(M(1, 2) == 33);
 }
 
-TEST_CASE("Matrix: DenseMatrix RCP<const Integer>", "[matrix]") {
-  Controls::Math::DenseMatrix<RCP<const Integer>> M(2, 2);
+TEST_CASE("Matrix: DenseMatrix RCP<const Basic>", "[matrix]") {
+  Controls::Math::DenseMatrix<RCP<const Basic>> M(2, 2);
 
   M(0, 0) = integer(1);
   M(0, 1) = integer(2);
@@ -161,4 +277,45 @@ TEST_CASE("Matrix: DenseMatrix RCP<const Integer>", "[matrix]") {
   REQUIRE(eq(*M(0, 1), *integer(2)));
   REQUIRE(eq(*M(1, 0), *integer(3)));
   REQUIRE(eq(*M(1, 1), *integer(4)));
+
+  // Assignment
+  M = integer(5);
+
+  REQUIRE(eq(*M(0, 0), *integer(5)));
+  REQUIRE(eq(*M(0, 1), *integer(5)));
+  REQUIRE(eq(*M(1, 0), *integer(5)));
+  REQUIRE(eq(*M(1, 1), *integer(5)));
+
+  Controls::Math::DenseMatrix<RCP<const Basic>> Q(2, 2);
+
+  Q(0, 0) = integer(1);
+  Q(0, 1) = integer(2);
+  Q(1, 0) = integer(3);
+  Q(1, 1) = integer(4);
+
+  M = Q;
+
+  REQUIRE(eq(*M(0, 0), *integer(1)));
+  REQUIRE(eq(*M(0, 1), *integer(2)));
+  REQUIRE(eq(*M(1, 0), *integer(3)));
+  REQUIRE(eq(*M(1, 1), *integer(4)));
+
+  M(0, 0) = integer(2);
+
+  REQUIRE(eq(*Q(0, 0), *integer(1)));
+
+  // Addition
+  M = M + Q;
+
+  REQUIRE(eq(*M(0, 0), *integer(3)));
+  REQUIRE(eq(*M(0, 1), *integer(4)));
+  REQUIRE(eq(*M(1, 0), *integer(6)));
+  REQUIRE(eq(*M(1, 1), *integer(8)));
+
+  M = Q + Q + Q + Q;
+
+  REQUIRE(eq(*M(0, 0), *integer(4)));
+  REQUIRE(eq(*M(0, 1), *integer(8)));
+  REQUIRE(eq(*M(1, 0), *integer(12)));
+  REQUIRE(eq(*M(1, 1), *integer(16)));
 }

@@ -23,14 +23,23 @@ public:
   friend inline void apply_(Matrix<DT> &lhs,
                             const ExprMul<M1, M2> &rhs) {
     apply_(~lhs, rhs.lhs_);
-    apply_add_(~lhs, rhs.rhs_);
+    apply_mul_(~lhs, rhs.rhs_);
   }
 
   template<typename DT>
   friend inline void apply_add_(Matrix<DT> &lhs,
                                 const ExprMul<M1, M2> &rhs) {
-    apply_add_(~lhs, rhs.lhs_);
-    apply_add_(~lhs, rhs.rhs_);
+    M1 tmp;
+    tmp = rhs.lhs_;
+    apply_mul_(tmp, rhs.rhs_);
+    apply_add_(~lhs, tmp);
+  }
+
+  template<typename DT>
+  friend inline void apply_mul_(Matrix<DT> &lhs,
+                                const ExprMul<M1, M2> &rhs) {
+    apply_mul_(~lhs, rhs.lhs_);
+    apply_mul_(~lhs, rhs.rhs_);
   }
 };
 
