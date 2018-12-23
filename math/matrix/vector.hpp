@@ -3,13 +3,8 @@
 
 #include <algorithm>
 
-#include <symengine/add.h>
-#include <symengine/basic.h>
-
 #include "assert.hpp"
 #include "matrix.hpp"
-
-typedef SymEngine::RCP<const SymEngine::Basic> basic;
 
 namespace Controls {
 namespace Math {
@@ -42,7 +37,9 @@ public:
   inline Vector<T> &operator=(const Matrix<DT> &rhs);
 
   inline Vector<T> &operator+=(const T &rhs);
+  inline Vector<T> &operator-=(const T &rhs);
   inline Vector<T> &operator*=(const T &rhs);
+  inline Vector<T> &operator/=(const T &rhs);
 
   template<typename DT>
   inline void apply(const Matrix<DT> &rhs);
@@ -50,6 +47,8 @@ public:
   inline void apply_add(const Matrix<DT> &rhs);
   template<typename DT>
   inline void apply_mul(const Matrix<DT> &rhs);
+  template<typename DT>
+  inline void apply_transpose(const Matrix<DT> &rhs);
 
   inline size_t size() const;
   inline size_t capacity() const;
@@ -76,7 +75,7 @@ public:
 
   // void reshape(const size_t row, const size_t col);
 
-  inline void transpose();
+  inline Vector<T> &transpose();
 };
 
 // ----------------------------------------------------------------------
@@ -101,6 +100,14 @@ inline Vector<T>::Vector(const std::vector<T> v) :
                          n_(v.size()),
                          m_(1),
                          v_(v) {
+  //
+}
+
+template<typename T>
+inline Vector<T>::Vector(const Vector<T> &m) :
+                         n_(m.n_),
+                         m_(m.m_),
+                         v_(m.v_) {
   //
 }
 
@@ -151,10 +158,10 @@ inline Vector<T> &Vector<T>::operator+=(const T &rhs) {
   return *this;
 }
 
-template<>
-inline Vector<basic> &Vector<basic>::operator+=(const basic &rhs) {
+template<typename T>
+inline Vector<T> &Vector<T>::operator-=(const T &rhs) {
   for(size_t i = 0; i < v_.size(); i++) {
-    v_[i] = SymEngine::add(v_[i], rhs);
+    v_[i] -= rhs;
   }
 
   return *this;
@@ -164,6 +171,15 @@ template<typename T>
 inline Vector<T> &Vector<T>::operator*=(const T &rhs) {
   for(size_t i = 0; i < v_.size(); i++) {
     v_[i] *= rhs;
+  }
+
+  return *this;
+}
+
+template<typename T>
+inline Vector<T> &Vector<T>::operator/=(const T &rhs) {
+  for(size_t i = 0; i < v_.size(); i++) {
+    v_[i] /= rhs;
   }
 
   return *this;
@@ -182,23 +198,10 @@ template<typename DT>
 inline void Vector<T>::apply_add(const Matrix<DT> &rhs) {
   MATRIX_ASSERT(n_ == (~rhs).n_);
   MATRIX_ASSERT(m_ == (~rhs).m_);
-  
+
   for(size_t i = 0; i < n_; i++) {
     for(size_t j = 0; j < m_; j++) {
       v_[i*m_ + j] += (~rhs)[i*m_ + j];
-    }
-  }
-}
-
-template<>
-template<>
-inline void Vector<basic>::apply_add(const Matrix<Vector<basic>> &rhs) {
-  MATRIX_ASSERT(n_ == (~rhs).n_);
-  MATRIX_ASSERT(m_ == (~rhs).m_);
-
-  for(size_t i = 0; i < n_; i++) {
-    for(size_t j = 0; j < m_; j++) {
-      v_[i*m_ + j] = SymEngine::add(v_[i*m_ + j], (~rhs)[i*m_ + j]);
     }
   }
 }
@@ -221,6 +224,15 @@ inline void Vector<T>::apply_mul(const Matrix<DT> &rhs) {
 
   m_ = (~rhs).m_;
   v_ = t_;
+}
+
+template<typename T>
+template<typename DT>
+inline void Vector<T>::apply_transpose(const Matrix<DT> &rhs) {
+  size_t tmp = (~rhs).n_;
+  n_ = (~rhs).m_;
+  m_ = tmp;
+  v_ = (~rhs).v_;
 }
 
 // ----------------------------------------------------------------------
@@ -317,9 +329,37 @@ inline const T &Vector<T>::operator()(const size_t pos) const {
 //
 // }
 
+// ----------------------------------------------------------------------
+// Vector Transpose
+//
 template<typename T>
-inline void Vector<T>::transpose() {
-  std::swap(this->n_, this->m_);
+inline Vector<T> &Vector<T>::transpose() {
+  apply_transpose(*this);
+
+  return *this;
+}
+
+// ----------------------------------------------------------------------
+// Vector Helper Functions
+//
+template<typename T>
+void ones(Vector<T> &M) {
+  size_t i, j;
+  for(i = 0; i < M.nrows(); i++) {
+    for(j = 0; j < M.ncols(); j++) {
+      M(i, j) = 1;
+    }
+  }
+}
+
+template<typename T>
+void zeros(Vector<T> &M) {
+  size_t i, j;
+  for(i = 0; i < M.nrows(); i++) {
+    for(j = 0; j < M.ncols(); j++) {
+      M(i, j) = 0;
+    }
+  }
 }
 
 } // Math

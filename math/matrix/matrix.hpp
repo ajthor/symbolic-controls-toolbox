@@ -1,7 +1,7 @@
 #ifndef MATH_MATRIX_MATRIX_HPP
 #define MATH_MATRIX_MATRIX_HPP
 
-#include <vector>
+#include <type_traits>
 
 namespace Controls {
 namespace Math {
@@ -47,9 +47,6 @@ public:
   inline const DT &operator~() const {
     return *static_cast<const DT *>(this);
   }
-
-  // inline T &operator[](const size_t pos);
-  // inline const T &operator[](const size_t pos) const;
 };
 
 // ----------------------------------------------------------------------
@@ -70,42 +67,6 @@ bool empty(Matrix<DT> &m) {
   return (~m).empty();
 }
 
-// template<typename DT>
-// typename std::vector<T>::iterator
-// begin(Matrix<DT> &m) {
-//   return (~m).begin();
-// }
-//
-// template<typename DT>
-// typename std::vector<T>::iterator
-// end(Matrix<DT> &m) {
-//   return (~m).end();
-// }
-//
-// template<typename DT>
-// typename std::vector<T>::const_iterator
-// begin(const Matrix<DT> &m) {
-//   return (~m).begin();
-// }
-//
-// template<typename DT>
-// typename std::vector<T>::const_iterator
-// end(const Matrix<DT> &m) {
-//   return (~m).end();
-// }
-//
-// template<typename DT>
-// typename std::vector<T>::const_iterator
-// cbegin(const Matrix<DT> &m) {
-//   return (~m).cbegin();
-// }
-//
-// template<typename DT>
-// typename std::vector<T>::const_iterator
-// cend(const Matrix<DT> &m) {
-//   return (~m).cend();
-// }
-
 template<typename DT>
 size_t nrows(Matrix<DT> &m) {
   return (~m).nrows();
@@ -116,30 +77,12 @@ size_t ncols(Matrix<DT> &m) {
   return (~m).ncols();
 }
 
-// template<typename DT>
-// std::vector<T> as_vec(Matrix<DT> &m) {
-//   return (~m).as_vec();
-// }
-
-// template<typename DT>
-// inline T &Matrix<DT>::operator[](const size_t pos) {
-//   return (this)->operator[](pos);
-// }
-//
-// template<typename DT>
-// inline const T &Matrix<DT>::operator[](const size_t pos) const {
-//   return (this)->operator[](pos);
-// }
-
-// template<typename DT>
-// void reshape(Matrix<DT> &m, const size_t row, const size_t col) {
-//   (~m).reshape(row, col);
-// }
-
-// template<typename DT>
-// inline void transpose(Matrix<DT> &m) {
-//   (~m).transpose();
-// }
+template<typename D1, typename D2>
+inline bool is_equal(const Matrix<D1> &m1, const Matrix<D2> &m2) {
+  return (std::is_same<D1, D2>::value &&
+          reinterpret_cast<const void *>(&m1) ==
+          reinterpret_cast<const void *>(&m2));
+}
 
 // ----------------------------------------------------------------------
 // Matrix Assignment Functions
@@ -157,6 +100,16 @@ inline void apply_add_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
 template<typename D1, typename D2>
 inline void apply_mul_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
   (~lhs).apply_mul(~rhs);
+}
+
+template<typename D1, typename D2>
+inline void apply_inverse_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
+  (~lhs).apply_inverse(~rhs);
+}
+
+template<typename D1, typename D2>
+inline void apply_transpose_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
+  (~lhs).apply_transpose(~rhs);
 }
 
 } // Math
