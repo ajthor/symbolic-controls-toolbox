@@ -2,9 +2,15 @@
 #define MATH_MATRIX_DENSE_HPP
 
 #include <algorithm>
+#include <type_traits>
+
+#include <symengine/basic.h>
 
 #include "assert.hpp"
 #include "matrix.hpp"
+#include "vector_sym.hpp"
+
+#include <math/traits/is_symbolic.hpp>
 
 namespace Controls {
 namespace Math {
@@ -84,7 +90,13 @@ public:
   inline DenseMatrix<T> &transpose();
 
   template<typename DT>
-  inline void apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v);
+  inline auto
+  apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
+  -> enable_if_symbolic_t<DT>;
+  // template<typename DT>
+  // inline auto
+  // apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
+  // -> typename std::enable_if<std::is_same<DT, Vector<SymEngine::RCP<const SymEngine::Basic>>>::value>::type;
 };
 
 // ----------------------------------------------------------------------

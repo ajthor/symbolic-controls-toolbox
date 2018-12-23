@@ -12,13 +12,12 @@ namespace Math {
 // Expression
 //
 template<typename DT>
-class Expression : public DT {
-public:
-};
+class Expression : public DT {};
 
 template<typename DT>
 inline bool is_expression(const Matrix<DT> &m) {
   return std::is_base_of<Expression<Matrix<DT>>, DT>::value;
+  // return is_expr_d<DT>::value;
 }
 
 } // Math

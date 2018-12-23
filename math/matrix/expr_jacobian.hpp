@@ -7,7 +7,8 @@
 #include "assert.h"
 #include "matrix.hpp"
 #include "dense_sym.hpp"
-#include "vector_sym.hpp"
+
+#include <math/traits/is_symbolic.hpp>
 
 template<typename T>
 struct derived {};
@@ -18,85 +19,91 @@ namespace Math {
 // ----------------------------------------------------------------------
 // DenseMatrix Jacobian
 //
-class ExprJacobian : public Expression<Matrix<ExprJacobian>> {
+template<typename M1, typename M2>
+class ExprJacobian : public Expression<Matrix<ExprJacobian<M1, M2>>> {
 private:
-  const SymbolicVector &f_;
-  const SymbolicVector &v_;
+  const M1 f_;
+  const M2 v_;
 
 public:
-  explicit inline ExprJacobian(const SymbolicVector &f,
-                               const SymbolicVector &v);
+  explicit inline ExprJacobian(const M1 &f,
+                               const M2 &v);
 
 private:
   template<typename DT>
   friend inline void
   apply_(Matrix<DT> &lhs, const ExprJacobian &rhs) {
-    MATRIX_DEBUG("jacobian apply");
-    // derived<DT>::show;
-    // std::cout << rhs.f_[0]->__str__() << '\n';
-    // SymbolicMatrix tmp;
-
-    // tmp = rhs.f_.jacobian(rhs.v_);
-    // apply_(~lhs, tmp.jacobian(rhs.v_));
-
-    (~lhs).apply_jacobian(rhs.f_, rhs.v_);
-
-    // lhs.apply(jacobian(~rhs));
+    MATRIX_DEBUG("jacobian(A)");
+    // (~lhs).apply_jacobian(rhs.f_, rhs.v_);
+    DT tmp(~lhs);
+    tmp.apply_jacobian(rhs.f_, rhs.v_);
+    apply_(~lhs, tmp);
   }
 
   template<typename DT>
   friend inline void
   apply_add_(Matrix<DT> &lhs, const ExprJacobian &rhs) {
-    MATRIX_DEBUG("jacobian apply_add");
-    apply_add_(~lhs, rhs.f_);
-    // lhs.apply_add(jacobian(~rhs));
+    MATRIX_DEBUG("A + jacobian(B)");
+    DT tmp(~lhs);
+    tmp.apply_jacobian(rhs.f_, rhs.v_);
+    apply_add_(~lhs, tmp);
   }
 
   template<typename DT>
   friend inline void
   apply_mul_(Matrix<DT> &lhs, const ExprJacobian &rhs) {
-    MATRIX_DEBUG("jacobian apply_mul");
-    apply_mul_(~lhs, rhs.f_);
-    // lhs.apply_mul(jacobian(~rhs));
+    MATRIX_DEBUG("A * jacobian(B)");
+    DT tmp(~lhs);
+    tmp.apply_jacobian(rhs.f_, rhs.v_);
+    apply_mul_(~lhs, tmp);
   }
 
   template<typename DT>
   friend inline void
   apply_transpose_(Matrix<DT> &lhs, const ExprJacobian &rhs) {
-    MATRIX_DEBUG("jacobian apply_transpose");
-    apply_transpose_(~lhs, rhs.f_);
-    // lhs.apply_transpose(jacobian(~rhs));
+    MATRIX_DEBUG("(jacobian(A))^T");
+    DT tmp(~lhs);
+    tmp.apply_jacobian(rhs.f_, rhs.v_);
+    apply_transpose_(~lhs, tmp);
   }
 
   template<typename DT>
   friend inline void
   apply_inverse_(Matrix<DT> &lhs, const ExprJacobian &rhs) {
-    MATRIX_DEBUG("jacobian apply_inverse");
-    apply_inverse_(~lhs, rhs.f_);
-    // lhs.apply_inverse(jacobian(~rhs));
+    MATRIX_DEBUG("(jacobian(A))^-1");
+    DT tmp(~lhs);
+    tmp.apply_jacobian(rhs.f_, rhs.v_);
+    apply_inverse_(~lhs, tmp);
   }
 };
 
-inline ExprJacobian::ExprJacobian(const SymbolicVector &f,
-                                  const SymbolicVector &v) :
-                                  f_(f),
-                                  v_(v) {
+template<typename M1, typename M2>
+inline ExprJacobian<M1, M2>::ExprJacobian(const M1 &f,
+                                          const M2 &v) :
+                                          f_(f),
+                                          v_(v) {
   //
 }
 
-inline const ExprJacobian
-jacobian(const SymbolicVector &f, const SymbolicVector &v) {
-  return ExprJacobian(~f, ~v);
+template<typename M1, typename M2>
+inline const ExprJacobian<M1, M2>
+jacobian(const Matrix<M1> &f, const Matrix<M2> &v) {
+  return ExprJacobian<M1, M2>(~f, ~v);
 }
 
 // ----------------------------------------------------------------------
-// SymbolicVector Jacobian
+// SymbolicMatrix Jacobian
 //
-template<typename T>
+template<>
 template<typename DT>
-inline void DenseMatrix<T>::apply_jacobian(const Matrix<DT> &f,
-                                           const Matrix<DT> &v) {
-  // SymbolicMatrix result(v_.size(), f.size());
+inline auto
+SymbolicMatrix::apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
+-> enable_if_symbolic_t<DT> {
+// template<>
+// template<typename DT>
+// inline auto
+// SymbolicMatrix::apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
+// -> typename std::enable_if<std::is_same<DT, Vector<SymEngine::RCP<const SymEngine::Basic>>>::value>::type {
   n_ = (~f).size();
   m_ = (~f).size();
 
@@ -113,24 +120,6 @@ inline void DenseMatrix<T>::apply_jacobian(const Matrix<DT> &f,
       }
     }
   }
-
-//   for (unsigned i = 0; i < result.row_; i++) {
-//     for (unsigned j = 0; j < result.col_; j++) {
-//         if (is_a<Symbol>(*(x.m_[j]))) {
-//             const RCP<const Symbol> x_
-//                 = rcp_static_cast<const Symbol>(x.m_[j]);
-//             result.m_[i * result.col_ + j] = A.m_[i]->diff(x_);
-//         } else {
-//             // TODO: Use a dummy symbol
-//             const RCP<const Symbol> x_ = symbol("x_");
-//             result.m_[i * result.col_ + j] = ssubs(
-//                 ssubs(A.m_[i], {{x.m_[j], x_}})->diff(x_), {{x_, x.m_[j]}});
-//         }
-//     }
-// }
-
-  // return result;
-  // return *this;
 }
 
 } // Math
