@@ -82,6 +82,9 @@ public:
 
   inline DenseMatrix<T> &inverse();
   inline DenseMatrix<T> &transpose();
+
+  template<typename DT>
+  inline void apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v);
 };
 
 // ----------------------------------------------------------------------

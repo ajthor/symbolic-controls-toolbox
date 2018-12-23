@@ -7,6 +7,7 @@
 #include "matrix/expr_transpose.hpp"
 #include "matrix/expr_mul.hpp"
 #include "matrix/expr_add.hpp"
+#include "matrix/expr_jacobian.hpp"
 #include "matrix/dense.hpp"
 #include "matrix/dense_sym.hpp"
 #include "matrix/vector.hpp"

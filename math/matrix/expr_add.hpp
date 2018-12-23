@@ -27,7 +27,7 @@ public:
   template<typename DT>
   friend inline void
   apply_(Matrix<DT> &lhs, const ExprAdd<M1, M2> &rhs) {
-    std::cout << "result = A + B" << '\n';
+    MATRIX_DEBUG("result = A + B");
     if(!is_expression(rhs.lhs_) && is_equal(~lhs, rhs.lhs_)) {
       apply_add_(~lhs, rhs.rhs_);
     }
@@ -44,7 +44,7 @@ public:
   template<typename DT>
   friend inline void
   apply_add_(Matrix<DT> &lhs, const ExprAdd<M1, M2> &rhs) {
-    std::cout << "result = A + (B + C)" << '\n';
+    MATRIX_DEBUG("result = A + (B + C)");
     apply_add_(~lhs, rhs.lhs_);
     apply_add_(~lhs, rhs.rhs_);
   }
@@ -53,7 +53,7 @@ public:
   template<typename DT>
   friend inline void
   apply_mul_(Matrix<DT> &lhs, const ExprAdd<M1, M2> &rhs) {
-    std::cout << "result = A * (B + C)" << '\n';
+    MATRIX_DEBUG("result = A * (B + C)");
     M1 tmp(rhs.lhs_);
     apply_add_(tmp, rhs.rhs_);
     apply_mul_(~lhs, tmp);
@@ -63,7 +63,7 @@ public:
   template<typename DT>
   friend inline void
   apply_transpose_(Matrix<DT> &lhs, const ExprAdd<M1, M2> &rhs) {
-    std::cout << "result = (A + B)^T" << '\n';
+    MATRIX_DEBUG("result = (A + B)^T");
     M1 tmp(rhs.lhs_);
     apply_add_(tmp, rhs.rhs_);
     apply_transpose_(~lhs, tmp);
@@ -73,7 +73,7 @@ public:
   template<typename DT>
   friend inline void
   apply_inverse_(Matrix<DT> &lhs, const ExprAdd<M1, M2> &rhs) {
-    std::cout << "result = (A + B)^-1" << '\n';
+    MATRIX_DEBUG("result = (A + B)^-1");
     M1 tmp(rhs.lhs_);
     apply_add_(tmp, rhs.rhs_);
     apply_inverse_(~lhs, tmp);

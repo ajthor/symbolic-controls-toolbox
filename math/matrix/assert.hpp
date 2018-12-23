@@ -11,6 +11,15 @@ namespace Math {
 #define MATRIX_ASSERT(expr) assert(expr);
 #endif
 
+#define MATRIX_DEBUG_OUT
+
+#ifdef MATRIX_DEBUG_OUT
+#define MATRIX_DEBUG(msg) \
+std::cout << msg << '\n';
+#else
+#define MATRIX_DEBUG(msg) // msg
+#endif
+
 } // Math
 } // Controls
 

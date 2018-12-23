@@ -24,7 +24,7 @@ private:
   template<typename DT>
   friend inline void
   apply_(Matrix<DT> &lhs, const ExprTranspose<M> &rhs) {
-    std::cout << "result = A^T" << '\n';
+    MATRIX_DEBUG("result = A^T");
     apply_transpose_(~lhs, rhs.m_);
   }
 
@@ -32,7 +32,7 @@ private:
   template<typename DT>
   friend inline void
   apply_add_(Matrix<DT> &lhs, const ExprTranspose<M> &rhs) {
-    std::cout << "result = A + B^T" << '\n';
+    MATRIX_DEBUG("result = A + B^T");
     M tmp(rhs.m_);
     apply_transpose_(tmp, rhs.m_);
     apply_add_(~lhs, tmp);
@@ -42,7 +42,7 @@ private:
   template<typename DT>
   friend inline void
   apply_mul_(Matrix<DT> &lhs, const ExprTranspose<M> &rhs) {
-    std::cout << "result = A * B^T" << '\n';
+    MATRIX_DEBUG("result = A * B^T");
     M tmp(rhs.m_);
     apply_transpose_(tmp, rhs.m_);
     apply_mul_(~lhs, tmp);
@@ -52,7 +52,7 @@ private:
   template<typename DT>
   friend inline void
   apply_transpose_(Matrix<DT> &lhs, const ExprTranspose<M> &rhs) {
-    std::cout << "result = (A^T)^T" << '\n';
+    MATRIX_DEBUG("result = (A^T)^T");
     apply_(~lhs, rhs.m_);
   }
 
@@ -60,7 +60,7 @@ private:
   template<typename DT>
   friend inline void
   apply_inverse_(Matrix<DT> &lhs, const ExprTranspose<M> &rhs) {
-    std::cout << "result = (A^T)^-1" << '\n';
+    MATRIX_DEBUG("result = (A^T)^-1");
     apply_inverse_(~lhs, rhs.m_);
   }
 };

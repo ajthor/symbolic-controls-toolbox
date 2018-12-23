@@ -13,12 +13,11 @@
 namespace Controls {
 namespace Math {
 
-// typedef Vector<SymEngine::RCP<const SymEngine::Basic>> SymbolicVector;
 using RCPBasic = SymEngine::RCP<const SymEngine::Basic>;
 using SymbolicVector = Vector<RCPBasic>;
 
 // ----------------------------------------------------------------------
-// Vector Symbolic Specializations
+// Vector Symbolic Specialization
 //
 template<>
 inline SymbolicVector&

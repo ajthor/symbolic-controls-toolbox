@@ -13,12 +13,11 @@
 namespace Controls {
 namespace Math {
 
-// typedef DenseMatrix<SymEngine::RCP<const SymEngine::Basic>> SymbolicMatrix;
 using RCPBasic = SymEngine::RCP<const SymEngine::Basic>;
 using SymbolicMatrix = DenseMatrix<RCPBasic>;
 
 // ----------------------------------------------------------------------
-// DenseMatrix Symbolic Specializations
+// DenseMatrix Symbolic Specialization
 //
 template<>
 inline SymbolicMatrix&
