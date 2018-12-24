@@ -1,19 +1,12 @@
 #ifndef MATH_MATRIX_DENSE_SYM_HPP
 #define MATH_MATRIX_DENSE_SYM_HPP
 
-#include <type_traits>
-
-#include <symengine/add.h>
-#include <symengine/mul.h>
-#include <symengine/basic.h>
-#include <symengine/constants.h>
-
 #include "dense.hpp"
+#include "symbolic.hpp"
 
 namespace Controls {
 namespace Math {
 
-using RCPBasic = SymEngine::RCP<const SymEngine::Basic>;
 using SymbolicMatrix = DenseMatrix<RCPBasic>;
 
 // ----------------------------------------------------------------------
@@ -92,6 +85,25 @@ inline void SymbolicMatrix::apply_mul(const Matrix<SymbolicMatrix> &rhs) {
 
   m_ = (~rhs).m_;
   v_ = t_;
+}
+
+// ----------------------------------------------------------------------
+// SymbolicMatrix Equal
+//
+template<>
+inline bool equal(const SymbolicMatrix &lhs, const SymbolicMatrix &rhs) {
+  if((~lhs).nrows() != (~rhs).nrows() || (~lhs).ncols() != (~rhs).ncols()) {
+    return false;
+  }
+
+  for(size_t i = 0; i < (~lhs).nrows(); i++) {
+    for(size_t j = 0; j < (~lhs).ncols(); j++) {
+      if(!equal((~lhs)(i, j), (~rhs)(i, j)))
+        return false;
+    }
+  }
+
+  return true;
 }
 
 } // Math

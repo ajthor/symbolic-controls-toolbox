@@ -8,7 +8,6 @@
 
 #include "assert.hpp"
 #include "matrix.hpp"
-#include "vector_sym.hpp"
 
 #include <math/traits/is_symbolic.hpp>
 
@@ -58,6 +57,10 @@ public:
   template<typename DT>
   inline void apply_inverse(const Matrix<DT> &rhs);
 
+  template<typename DT>
+  inline auto apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
+  -> enable_if_symbolic_t<DT>;
+
   inline size_t size() const;
   inline size_t capacity() const;
 
@@ -84,19 +87,8 @@ public:
   inline T &operator()(const size_t row, const size_t col);
   inline const T &operator()(const size_t row, const size_t col) const;
 
-  // void reshape(const size_t row, const size_t col);
-
   inline DenseMatrix<T> &inverse();
   inline DenseMatrix<T> &transpose();
-
-  template<typename DT>
-  inline auto
-  apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
-  -> enable_if_symbolic_t<DT>;
-  // template<typename DT>
-  // inline auto
-  // apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
-  // -> typename std::enable_if<std::is_same<DT, Vector<SymEngine::RCP<const SymEngine::Basic>>>::value>::type;
 };
 
 // ----------------------------------------------------------------------
@@ -279,6 +271,25 @@ inline void DenseMatrix<T>::apply_inverse(const Matrix<DT> &rhs) {
   n_ = (~rhs).m_;
   m_ = tmp;
   v_ = t_;
+}
+
+// ----------------------------------------------------------------------
+// DenseMatrix Equal
+//
+template<typename T>
+inline bool equal(const DenseMatrix<T> &lhs, const DenseMatrix<T> &rhs) {
+  if((~lhs).nrows() != (~rhs).nrows() || (~lhs).ncols() != (~rhs).ncols()) {
+    return false;
+  }
+
+  for(size_t i = 0; i < (~lhs).nrows(); i++) {
+    for(size_t j = 0; j < (~lhs).ncols(); j++) {
+      if(!equal((~lhs)(i, j), (~rhs)(i, j)))
+        return false;
+    }
+  }
+
+  return true;
 }
 
 // ----------------------------------------------------------------------

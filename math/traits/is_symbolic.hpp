@@ -68,16 +68,6 @@ struct enable_if_symbolic : std::enable_if<is_symbolic<T>::value> {};
 template<typename T>
 using enable_if_symbolic_t = typename enable_if_symbolic<T>::type;
 
-// template<typename T>
-// using enable_if_symbolic_t =
-//   typename std::enable_if<is_symbolic<T>::value>::type;
-
-// template<typename T>
-// struct is_symbolic : std::integral_constant<bool, is_symbolic_helper<T>::value>::value {};
-//
-// template<typename T>
-// struct enable_if_symbolic : std::enable_if<is_symbolic<T>::value>::type {};
-
 } // Math
 } // Controls
 

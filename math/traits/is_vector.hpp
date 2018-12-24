@@ -9,16 +9,7 @@ namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// SFINAE is_vector
-//
-template<template<typename> class T>
-struct is_vector : std::false_type {};
-
-template<>
-struct is_vector<Vector> : std::true_type {};
-
-// ----------------------------------------------------------------------
-// SFINAE is_vector_t
+// SFINAE is_vector_helper
 //
 template<class T>
 struct is_vector_helper {
@@ -35,8 +26,17 @@ public:
   using type = decltype(test(std::declval<T&>()));
 };
 
+// ----------------------------------------------------------------------
+// SFINAE is_vector_t
+//
 template<typename T>
 using is_vector_t = typename is_vector_helper<T>::type;
+
+// ----------------------------------------------------------------------
+// SFINAE is_vector
+//
+template<typename T>
+struct is_vector : is_vector_t<T>::type {};
 
 } // Math
 } // Controls

@@ -9,16 +9,7 @@ namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// SFINAE is_dense_matrix
-//
-template<template<typename> class T>
-struct is_dense_matrix : std::false_type {};
-
-template<>
-struct is_dense_matrix<DenseMatrix> : std::true_type {};
-
-// ----------------------------------------------------------------------
-// SFINAE is_dense_matrix_t
+// SFINAE is_dense_matrix_helper
 //
 template<class T>
 struct is_dense_matrix_helper {
@@ -35,8 +26,18 @@ public:
   using type = decltype(test(std::declval<T&>()));
 };
 
+// ----------------------------------------------------------------------
+// SFINAE is_dense_matrix_t
+//
 template<typename T>
 using is_dense_matrix_t = typename is_dense_matrix_helper<T>::type;
+
+// ----------------------------------------------------------------------
+// SFINAE is_dense_matrix
+//
+template<typename T>
+struct is_dense_matrix : is_dense_matrix_t<T>::type {};
+
 
 } // Math
 } // Controls

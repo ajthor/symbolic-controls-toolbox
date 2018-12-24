@@ -6,7 +6,8 @@
 
 #include "assert.h"
 #include "matrix.hpp"
-#include "dense_sym.hpp"
+#include "expr.hpp"
+#include "symbolic_dense.hpp"
 
 #include <math/traits/is_symbolic.hpp>
 
@@ -34,7 +35,6 @@ private:
   friend inline void
   apply_(Matrix<DT> &lhs, const ExprJacobian &rhs) {
     MATRIX_DEBUG("jacobian(A)");
-    // (~lhs).apply_jacobian(rhs.f_, rhs.v_);
     DT tmp(~lhs);
     tmp.apply_jacobian(rhs.f_, rhs.v_);
     apply_(~lhs, tmp);
@@ -99,11 +99,6 @@ template<typename DT>
 inline auto
 SymbolicMatrix::apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
 -> enable_if_symbolic_t<DT> {
-// template<>
-// template<typename DT>
-// inline auto
-// SymbolicMatrix::apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
-// -> typename std::enable_if<std::is_same<DT, Vector<SymEngine::RCP<const SymEngine::Basic>>>::value>::type {
   n_ = (~f).size();
   m_ = (~f).size();
 
@@ -116,7 +111,9 @@ SymbolicMatrix::apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
       else {
         auto t_ = SymEngine::symbol("t_");
         v_[i*m_ + j] = SymEngine::ssubs(
-          SymEngine::ssubs((~f)[i], {{(~v)[j], t_}})->diff(t_), {{t_, (~v)[j]}});
+            SymEngine::ssubs((~f)[i], {{(~v)[j], t_}})->diff(t_),
+            {{t_, (~v)[j]}}
+          );
       }
     }
   }

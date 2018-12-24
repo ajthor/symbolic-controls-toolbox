@@ -5,6 +5,8 @@
 #include "matrix.hpp"
 #include "expr.hpp"
 
+#include <math/traits/is_expr.hpp>
+
 namespace Controls {
 namespace Math {
 
@@ -28,10 +30,10 @@ private:
   friend inline void
   apply_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
     MATRIX_DEBUG("result = A * B");
-    if(!is_expression(rhs.lhs_) && is_equal(~lhs, rhs.lhs_)) {
+    if(!is_expr<M1>::value && equal(~lhs, rhs.lhs_)) {
       apply_mul_(~lhs, rhs.rhs_);
     }
-    else if(!is_expression(rhs.rhs_) && is_equal(~lhs, rhs.rhs_)) {
+    else if(!is_expr<M2>::value && equal(~lhs, rhs.rhs_)) {
       apply_(~lhs, rhs.lhs_);
       apply_mul_(~lhs, rhs.rhs_);
     }

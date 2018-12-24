@@ -73,8 +73,6 @@ public:
   inline T &operator()(const size_t pos);
   inline const T &operator()(const size_t pos) const;
 
-  // void reshape(const size_t row, const size_t col);
-
   inline Vector<T> &transpose();
 };
 
@@ -233,6 +231,23 @@ inline void Vector<T>::apply_transpose(const Matrix<DT> &rhs) {
   n_ = (~rhs).m_;
   m_ = tmp;
   v_ = (~rhs).v_;
+}
+
+// ----------------------------------------------------------------------
+// Vector Equal
+//
+template<typename T>
+inline bool equal(const Vector<T> &lhs, const Vector<T> &rhs) {
+  if((~lhs).nrows() != (~rhs).nrows() || (~lhs).ncols() != (~rhs).ncols()) {
+    return false;
+  }
+
+  for(size_t i = 0; i < (~lhs).size(); i++) {
+    if((~lhs)[i] != (~rhs)[i])
+      return false;
+  }
+
+  return true;
 }
 
 // ----------------------------------------------------------------------

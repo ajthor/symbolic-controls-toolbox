@@ -9,16 +9,7 @@ namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// SFINAE is_matrix
-//
-template<template<typename> class T>
-struct is_matrix : std::false_type {};
-
-template<>
-struct is_matrix<Matrix> : std::true_type {};
-
-// ----------------------------------------------------------------------
-// SFINAE is_matrix_t
+// SFINAE is_matrix_helper
 //
 template<class T>
 struct is_matrix_helper {
@@ -35,15 +26,17 @@ public:
   using type = decltype(test(std::declval<T&>()));
 };
 
+// ----------------------------------------------------------------------
+// SFINAE is_matrix_t
+//
 template<typename T>
 using is_matrix_t = typename is_matrix_helper<T>::type;
 
 // ----------------------------------------------------------------------
-// SFINAE is_matrix_b
+// SFINAE is_matrix
 //
-// template<template<typename> typename T>
-// template<template<typename...> class T>
-// struct is_matrix_b : std::is_base_of<Matrix<T>, T> {};
+template<typename T>
+struct is_matrix : is_matrix_t<T>::type {};
 
 } // Math
 } // Controls

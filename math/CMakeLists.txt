@@ -11,9 +11,23 @@ set(SRC
 set(HEADERS
   c_wrapper_math.hpp
   math.hpp
-  matrix/dense.hpp
+  matrix/assert.hpp
   matrix/matrix.hpp
+  matrix/dense.hpp
   matrix/vector.hpp
+  matrix/symbolic.hpp
+  matrix/symbolic_dense.hpp
+  matrix/symbolic_vector.hpp
+  matrix/expr_add.hpp
+  matrix/expr_mul.hpp
+  matrix/expr_transpose.hpp
+  matrix/expr_inverse.hpp
+  matrix/expr_jacobian.hpp
+  traits/is_dense_matrix.hpp
+  traits/is_expr.hpp
+  traits/is_matrix.hpp
+  traits/is_symbolic.hpp
+  traits/is_vector.hpp
 )
 
 INSTALL_HEADERS_WITH_DIRECTORY(HEADERS)

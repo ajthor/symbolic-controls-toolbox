@@ -1,19 +1,12 @@
 #ifndef MATH_MATRIX_VECTOR_SYM_HPP
 #define MATH_MATRIX_VECTOR_SYM_HPP
 
-#include <type_traits>
-
-#include <symengine/add.h>
-#include <symengine/mul.h>
-#include <symengine/basic.h>
-#include <symengine/constants.h>
-
 #include "vector.hpp"
+#include "symbolic.hpp"
 
 namespace Controls {
 namespace Math {
 
-using RCPBasic = SymEngine::RCP<const SymEngine::Basic>;
 using SymbolicVector = Vector<RCPBasic>;
 
 // ----------------------------------------------------------------------
@@ -90,6 +83,23 @@ inline void SymbolicVector::apply_mul(const Matrix<SymbolicVector> &rhs) {
 
   m_ = (~rhs).m_;
   v_ = t_;
+}
+
+// ----------------------------------------------------------------------
+// SymbolicVector Equal
+//
+template<>
+inline bool equal(const SymbolicVector &lhs, const SymbolicVector &rhs) {
+  if((~lhs).nrows() != (~rhs).nrows() || (~lhs).ncols() != (~rhs).ncols()) {
+    return false;
+  }
+
+  for(size_t i = 0; i < (~lhs).size(); i++) {
+    if(!eq(*(~lhs)[i], *(~rhs)[i]))
+      return false;
+  }
+
+  return true;
 }
 
 } // Math

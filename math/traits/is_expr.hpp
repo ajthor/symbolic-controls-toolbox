@@ -9,16 +9,7 @@ namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// SFINAE is_expr
-//
-template<template<typename> class T>
-struct is_expr : std::false_type {};
-
-template<>
-struct is_expr<Expression> : std::true_type {};
-
-// ----------------------------------------------------------------------
-// SFINAE is_expr_t
+// SFINAE is_expr_helper
 //
 template<class T>
 struct is_expr_helper {
@@ -35,8 +26,17 @@ public:
   using type = decltype(test(std::declval<T&>()));
 };
 
+// ----------------------------------------------------------------------
+// SFINAE is_expr_t
+//
 template<class T>
 using is_expr_t = typename is_expr_helper<T>::type;
+
+// ----------------------------------------------------------------------
+// SFINAE is_expr
+//
+template<typename T>
+struct is_expr : is_expr_t<T>::type {};
 
 } // Math
 } // Controls
