@@ -455,6 +455,51 @@ void eye(DenseMatrix<T> &M) {
 }
 // void diag(DenseMatrix &M, std::vector<T> &v, int k);
 
+// ----------------------------------------------------------------------
+// DenseMatrix Structure Functions
+//
+template<typename T>
+bool is_symmetric(const DenseMatrix<T> &m) {
+  size_t i, j;
+  for(i = 1; i < m.nrows(); ++i) {
+    for(j = 0; j < i; ++j) {
+      if(!equal(m(i, j), m(j, i))) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+template<typename T>
+bool is_upper(const DenseMatrix<T> &m) {
+  size_t i, j;
+  for(i = 1; i < m.nrows(); ++i) {
+    for(j = 0; j < i; ++j) {
+      if(!is_default(m(i, j))) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+template<typename T>
+bool is_lower(const DenseMatrix<T> &m) {
+  size_t i, j;
+  for(i = 1; i < m.ncols(); ++i) {
+    for(j = 0; j < i; ++j) {
+      if(!is_default(m(j, i))) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 } // Math
 } // Controls
 
