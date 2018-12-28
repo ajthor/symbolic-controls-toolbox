@@ -4,8 +4,6 @@
 #include <algorithm>
 #include <type_traits>
 
-#include <symengine/basic.h>
-
 #include "assert.hpp"
 #include "matrix.hpp"
 
@@ -51,11 +49,13 @@ public:
   template<typename DT>
   inline void apply_add(const Matrix<DT> &rhs);
   template<typename DT>
+  inline void apply_sub(const Matrix<DT> &rhs);
+  template<typename DT>
   inline void apply_mul(const Matrix<DT> &rhs);
   template<typename DT>
-  inline void apply_transpose(const Matrix<DT> &rhs);
-  template<typename DT>
   inline void apply_inverse(const Matrix<DT> &rhs);
+  template<typename DT>
+  inline void apply_transpose(const Matrix<DT> &rhs);
 
   template<typename DT>
   inline auto apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
@@ -197,16 +197,16 @@ inline DenseMatrix<T> &DenseMatrix<T>::operator/=(const T &rhs) {
 template<typename T>
 template<typename DT>
 inline void DenseMatrix<T>::apply(const Matrix<DT> &rhs) {
-  n_ = (~rhs).n_;
-  m_ = (~rhs).m_;
-  v_ = (~rhs).v_;
+  n_ = (~rhs).nrows();
+  m_ = (~rhs).ncols();
+  v_ = (~rhs).as_vec();
 }
 
 template<typename T>
 template<typename DT>
 inline void DenseMatrix<T>::apply_add(const Matrix<DT> &rhs) {
-  MATRIX_ASSERT(n_ == (~rhs).n_);
-  MATRIX_ASSERT(m_ == (~rhs).m_);
+  MATRIX_ASSERT(n_ == (~rhs).nrows());
+  MATRIX_ASSERT(m_ == (~rhs).ncols());
 
   for(size_t i = 0; i < n_; i++) {
     for(size_t j = 0; j < m_; j++) {
@@ -217,21 +217,53 @@ inline void DenseMatrix<T>::apply_add(const Matrix<DT> &rhs) {
 
 template<typename T>
 template<typename DT>
-inline void DenseMatrix<T>::apply_mul(const Matrix<DT> &rhs) {
-  MATRIX_ASSERT(m_ == (~rhs).n_);
-
-  std::vector<T> t_(n_*(~rhs).m_, 0);
+inline void DenseMatrix<T>::apply_sub(const Matrix<DT> &rhs) {
+  MATRIX_ASSERT(n_ == (~rhs).nrows());
+  MATRIX_ASSERT(m_ == (~rhs).ncols());
 
   for(size_t i = 0; i < n_; i++) {
-    for(size_t j = 0; j < (~rhs).m_; j++) {
+    for(size_t j = 0; j < m_; j++) {
+      v_[i*m_ + j] -= (~rhs)[i*m_ + j];
+    }
+  }
+}
+
+template<typename T>
+template<typename DT>
+inline void DenseMatrix<T>::apply_mul(const Matrix<DT> &rhs) {
+  MATRIX_ASSERT(m_ == (~rhs).nrows());
+
+  std::vector<T> t_(n_*(~rhs).ncols(), 0);
+
+  for(size_t i = 0; i < n_; i++) {
+    for(size_t j = 0; j < (~rhs).ncols(); j++) {
 
       for(size_t k = 0; k < m_; k++) {
-        t_[i*(~rhs).m_ + j] += v_[i*m_ + k] * (~rhs)[k*(~rhs).m_ + j];
+        t_[i*(~rhs).ncols() + j] += v_[i*m_ + k] * (~rhs)[k*(~rhs).ncols() + j];
       }
     }
   }
 
-  m_ = (~rhs).m_;
+  m_ = (~rhs).ncols();
+  v_ = t_;
+}
+
+template<typename T>
+template<typename DT>
+inline void DenseMatrix<T>::apply_inverse(const Matrix<DT> &rhs) {
+  MATRIX_ASSERT(v_.size() == (~rhs).size());
+
+  std::vector<T> t_((~rhs).size());
+
+  for(size_t i = 0; i < (~rhs).nrows(); i++) {
+    for(size_t j = 0; j < (~rhs).ncols(); j++) {
+      t_[j*(~rhs).nrows() + i] = (~rhs)[i*(~rhs).ncols() + j];
+    }
+  }
+
+  size_t tmp = (~rhs).nrows();
+  n_ = (~rhs).ncols();
+  m_ = tmp;
   v_ = t_;
 }
 
@@ -240,35 +272,16 @@ template<typename DT>
 inline void DenseMatrix<T>::apply_transpose(const Matrix<DT> &rhs) {
   MATRIX_ASSERT(v_.size() == (~rhs).size());
 
-  std::vector<T> t_((~rhs).v_.size());
+  std::vector<T> t_((~rhs).size());
 
-  for(size_t i = 0; i < (~rhs).n_; i++) {
-    for(size_t j = 0; j < (~rhs).m_; j++) {
-      t_[j*(~rhs).n_ + i] = (~rhs)[i*(~rhs).m_ + j];
+  for(size_t i = 0; i < (~rhs).nrows(); i++) {
+    for(size_t j = 0; j < (~rhs).ncols(); j++) {
+      t_[j*(~rhs).nrows() + i] = (~rhs)[i*(~rhs).ncols() + j];
     }
   }
 
-  size_t tmp = (~rhs).n_;
-  n_ = (~rhs).m_;
-  m_ = tmp;
-  v_ = t_;
-}
-
-template<typename T>
-template<typename DT>
-inline void DenseMatrix<T>::apply_inverse(const Matrix<DT> &rhs) {
-  // MATRIX_ASSERT(v_.size() == (~rhs).size());
-
-  std::vector<T> t_((~rhs).v_.size());
-
-  for(size_t i = 0; i < (~rhs).n_; i++) {
-    for(size_t j = 0; j < (~rhs).m_; j++) {
-      t_[j*(~rhs).n_ + i] = (~rhs)[i*(~rhs).m_ + j];
-    }
-  }
-
-  size_t tmp = (~rhs).n_;
-  n_ = (~rhs).m_;
+  size_t tmp = (~rhs).nrows();
+  n_ = (~rhs).ncols();
   m_ = tmp;
   v_ = t_;
 }
@@ -421,39 +434,60 @@ inline DenseMatrix<T> &DenseMatrix<T>::transpose() {
   return *this;
 }
 
-// ----------------------------------------------------------------------
-// DenseMatrix Helper Functions
+// // ----------------------------------------------------------------------
+// // DenseMatrix Helper Functions
+// //
+// template<typename T>
+// DenseMatrix<T> &ones(const size_t nrows, const size_t ncols) {
+//   DenseMatrix<T> M(nrows, ncols);
+//   size_t i, j;
+//   for(i = 0; i < nrows; i++) {
+//     for(j = 0; j < ncols; j++) {
+//       M(i, j) = 1;
+//     }
+//   }
+//   return &M;
+// }
 //
-template<typename T>
-void ones(DenseMatrix<T> &M) {
-  size_t i, j;
-  for(i = 0; i < M.nrows(); i++) {
-    for(j = 0; j < M.ncols(); j++) {
-      M(i, j) = 1;
-    }
-  }
-}
-
-template<typename T>
-void zeros(DenseMatrix<T> &M) {
-  size_t i, j;
-  for(i = 0; i < M.nrows(); i++) {
-    for(j = 0; j < M.ncols(); j++) {
-      M(i, j) = 0;
-    }
-  }
-}
-
-template<typename T>
-void eye(DenseMatrix<T> &M) {
-  size_t i, j;
-  for(i = 0; i < M.nrows(); i++) {
-    for(j = 0; j < M.ncols(); j++) {
-      M(i, j) = (i == j) ? 1 : 0;
-    }
-  }
-}
-// void diag(DenseMatrix &M, std::vector<T> &v, int k);
+// template<typename T>
+// DenseMatrix<T> &ones(const size_t size) {
+//   return ones(size, size);
+// }
+//
+// template<typename T>
+// DenseMatrix<T> &zeros(const size_t nrows, const size_t ncols) {
+//   DenseMatrix<T> M(nrows, ncols);
+//   size_t i, j;
+//   for(i = 0; i < nrows; i++) {
+//     for(j = 0; j < ncols; j++) {
+//       M(i, j) = 0;
+//     }
+//   }
+//   return &M;
+// }
+//
+// template<typename T>
+// DenseMatrix<T> &zeros(const size_t size) {
+//   return zeros(size, size);
+// }
+//
+// template<typename T>
+// DenseMatrix<T> &eye(const size_t nrows, const size_t ncols) {
+//   DenseMatrix<T> M(nrows, ncols);
+//   size_t i, j;
+//   for(i = 0; i < nrows; i++) {
+//     for(j = 0; j < ncols; j++) {
+//       M(i, j) = (i == j) ? 1 : 0;
+//     }
+//   }
+//   return &M;
+// }
+//
+// template<typename T>
+// DenseMatrix<T> &eye(const size_t size) {
+//   return eye(size, size);
+// }
+// // void diag(DenseMatrix &M, std::vector<T> &v, int k);
 
 // ----------------------------------------------------------------------
 // DenseMatrix Structure Functions

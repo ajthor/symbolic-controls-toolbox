@@ -21,7 +21,7 @@ using Controls::Math::Expression;
 using Controls::Math::ExprAdd;
 using Controls::Math::ExprMul;
 using Controls::Math::ExprTranspose;
-using Controls::Math::ExprJacobian;
+// using Controls::Math::ExprJacobian;
 
 using SymEngine::Basic;
 using SymEngine::Integer;
@@ -48,14 +48,12 @@ TEST_CASE("Type Traits: is_dense_matrix", "[typetraits]") {
   REQUIRE(is_matrix<DenseMatrix<int>>::value);
   REQUIRE(is_dense_matrix<DenseMatrix<int>>::value);
   REQUIRE(!is_dense_matrix<Vector<int>>::value);
-  REQUIRE(is_dense_matrix<DenseMatrix<int>>::value);
 }
 
 TEST_CASE("Type Traits: is_vector", "[typetraits]") {
   REQUIRE(is_matrix<Vector<int>>::value);
   REQUIRE(is_vector<Vector<int>>::value);
   REQUIRE(!is_vector<DenseMatrix<int>>::value);
-  REQUIRE(is_vector<Vector<int>>::value);
 }
 
 TEST_CASE("Type Traits: is_expr", "[typetraits]") {

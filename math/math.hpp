@@ -5,13 +5,16 @@
 #include "matrix/matrix.hpp"
 #include "matrix/expr.hpp"
 #include "matrix/expr_add.hpp"
+#include "matrix/expr_sub.hpp"
 #include "matrix/expr_mul.hpp"
+#include "matrix/expr_inverse.hpp"
 #include "matrix/expr_transpose.hpp"
 #include "matrix/expr_jacobian.hpp"
 #include "matrix/dense.hpp"
 #include "matrix/vector.hpp"
 #include "matrix/symbolic_dense.hpp"
 #include "matrix/symbolic_vector.hpp"
+#include "matrix/block.hpp"
 
 namespace Controls {
 namespace Math {

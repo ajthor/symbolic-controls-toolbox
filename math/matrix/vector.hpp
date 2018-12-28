@@ -46,6 +46,8 @@ public:
   template<typename DT>
   inline void apply_add(const Matrix<DT> &rhs);
   template<typename DT>
+  inline void apply_sub(const Matrix<DT> &rhs);
+  template<typename DT>
   inline void apply_mul(const Matrix<DT> &rhs);
   template<typename DT>
   inline void apply_transpose(const Matrix<DT> &rhs);
@@ -186,16 +188,16 @@ inline Vector<T> &Vector<T>::operator/=(const T &rhs) {
 template<typename T>
 template<typename DT>
 inline void Vector<T>::apply(const Matrix<DT> &rhs) {
-  n_ = (~rhs).n_;
-  m_ = (~rhs).m_;
-  v_ = (~rhs).v_;
+  n_ = (~rhs).nrows();
+  m_ = (~rhs).ncols();
+  v_ = (~rhs).as_vec();
 }
 
 template<typename T>
 template<typename DT>
 inline void Vector<T>::apply_add(const Matrix<DT> &rhs) {
-  MATRIX_ASSERT(n_ == (~rhs).n_);
-  MATRIX_ASSERT(m_ == (~rhs).m_);
+  MATRIX_ASSERT(n_ == (~rhs).nrows());
+  MATRIX_ASSERT(m_ == (~rhs).ncols());
 
   for(size_t i = 0; i < n_; i++) {
     for(size_t j = 0; j < m_; j++) {
@@ -206,31 +208,44 @@ inline void Vector<T>::apply_add(const Matrix<DT> &rhs) {
 
 template<typename T>
 template<typename DT>
-inline void Vector<T>::apply_mul(const Matrix<DT> &rhs) {
-  MATRIX_ASSERT(m_ == (~rhs).n_);
-
-  std::vector<T> t_(n_*(~rhs).m_, 0);
+inline void Vector<T>::apply_sub(const Matrix<DT> &rhs) {
+  MATRIX_ASSERT(n_ == (~rhs).nrows());
+  MATRIX_ASSERT(m_ == (~rhs).ncols());
 
   for(size_t i = 0; i < n_; i++) {
-    for(size_t j = 0; j < (~rhs).m_; j++) {
+    for(size_t j = 0; j < m_; j++) {
+      v_[i*m_ + j] -= (~rhs)[i*m_ + j];
+    }
+  }
+}
+
+template<typename T>
+template<typename DT>
+inline void Vector<T>::apply_mul(const Matrix<DT> &rhs) {
+  MATRIX_ASSERT(m_ == (~rhs).nrows());
+
+  std::vector<T> t_(n_*(~rhs).ncols(), 0);
+
+  for(size_t i = 0; i < n_; i++) {
+    for(size_t j = 0; j < (~rhs).ncols(); j++) {
 
       for(size_t k = 0; k < m_; k++) {
-        t_[i*(~rhs).m_ + j] += v_[i*m_ + k] * (~rhs)[k*(~rhs).m_ + j];
+        t_[i*(~rhs).ncols() + j] += v_[i*m_ + k] * (~rhs)[k*(~rhs).ncols() + j];
       }
     }
   }
 
-  m_ = (~rhs).m_;
+  m_ = (~rhs).ncols();
   v_ = t_;
 }
 
 template<typename T>
 template<typename DT>
 inline void Vector<T>::apply_transpose(const Matrix<DT> &rhs) {
-  size_t tmp = (~rhs).n_;
-  n_ = (~rhs).m_;
+  size_t tmp = (~rhs).nrows();
+  n_ = (~rhs).ncols();
   m_ = tmp;
-  v_ = (~rhs).v_;
+  v_ = (~rhs).as_vec();
 }
 
 // ----------------------------------------------------------------------
@@ -243,7 +258,7 @@ inline bool equal(const Vector<T> &lhs, const Vector<T> &rhs) {
   }
 
   for(size_t i = 0; i < (~lhs).size(); i++) {
-    if((~lhs)[i] != (~rhs)[i])
+    if(!equal((~lhs)[i], (~rhs)[i]))
       return false;
   }
 

@@ -1,5 +1,5 @@
-#ifndef MATH_ASSERT_HPP
-#define MATH_ASSERT_HPP
+#ifndef MATH_MATRIX_ASSERT_HPP
+#define MATH_MATRIX_ASSERT_HPP
 
 #include <cassert>
 
@@ -24,4 +24,4 @@ std::cout << msg << '\n';
 } // Math
 } // Controls
 
-#endif /* end of include guard: MATH_ASSERT_HPP */
+#endif /* end of include guard: MATH_MATRIX_ASSERT_HPP */

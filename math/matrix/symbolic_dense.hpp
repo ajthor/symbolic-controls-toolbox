@@ -1,5 +1,5 @@
-#ifndef MATH_MATRIX_DENSE_SYM_HPP
-#define MATH_MATRIX_DENSE_SYM_HPP
+#ifndef MATH_MATRIX_SYMBOLIC_DENSE_HPP
+#define MATH_MATRIX_SYMBOLIC_DENSE_HPP
 
 #include "dense.hpp"
 #include "symbolic.hpp"
@@ -67,6 +67,19 @@ inline void SymbolicMatrix::apply_add(const Matrix<SymbolicMatrix> &rhs) {
 
 template<>
 template<>
+inline void SymbolicMatrix::apply_sub(const Matrix<SymbolicMatrix> &rhs) {
+  MATRIX_ASSERT(n_ == (~rhs).n_);
+  MATRIX_ASSERT(m_ == (~rhs).m_);
+
+  for(size_t i = 0; i < n_; i++) {
+    for(size_t j = 0; j < m_; j++) {
+      v_[i*m_ + j] = SymEngine::sub(v_[i*m_ + j], (~rhs)[i*m_ + j]);
+    }
+  }
+}
+
+template<>
+template<>
 inline void SymbolicMatrix::apply_mul(const Matrix<SymbolicMatrix> &rhs) {
   MATRIX_ASSERT(m_ == (~rhs).n_);
 
@@ -109,4 +122,4 @@ inline bool equal(const SymbolicMatrix &lhs, const SymbolicMatrix &rhs) {
 } // Math
 } // Controls
 
-#endif /* end of include guard: MATH_MATRIX_DENSE_SYM_HPP */
+#endif /* end of include guard: MATH_MATRIX_SYMBOLIC_DENSE_HPP */

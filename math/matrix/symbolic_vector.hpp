@@ -1,5 +1,5 @@
-#ifndef MATH_MATRIX_VECTOR_SYM_HPP
-#define MATH_MATRIX_VECTOR_SYM_HPP
+#ifndef MATH_MATRIX_SYMBOLIC_VECTOR_HPP
+#define MATH_MATRIX_SYMBOLIC_VECTOR_HPP
 
 #include "vector.hpp"
 #include "symbolic.hpp"
@@ -67,6 +67,19 @@ inline void SymbolicVector::apply_add(const Matrix<SymbolicVector> &rhs) {
 
 template<>
 template<>
+inline void SymbolicVector::apply_sub(const Matrix<SymbolicVector> &rhs) {
+  MATRIX_ASSERT(n_ == (~rhs).n_);
+  MATRIX_ASSERT(m_ == (~rhs).m_);
+
+  for(size_t i = 0; i < n_; i++) {
+    for(size_t j = 0; j < m_; j++) {
+      v_[i*m_ + j] = SymEngine::sub(v_[i*m_ + j], (~rhs)[i*m_ + j]);
+    }
+  }
+}
+
+template<>
+template<>
 inline void SymbolicVector::apply_mul(const Matrix<SymbolicVector> &rhs) {
   MATRIX_ASSERT(m_ == (~rhs).n_);
 
@@ -105,4 +118,4 @@ inline bool equal(const SymbolicVector &lhs, const SymbolicVector &rhs) {
 } // Math
 } // Controls
 
-#endif /* end of include guard: MATH_MATRIX_VECTOR_SYM_HPP */
+#endif /* end of include guard: MATH_MATRIX_SYMBOLIC_VECTOR_HPP */

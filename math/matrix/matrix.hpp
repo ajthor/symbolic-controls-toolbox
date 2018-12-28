@@ -132,6 +132,11 @@ inline void apply_add_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
 }
 
 template<typename D1, typename D2>
+inline void apply_sub_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
+  (~lhs).apply_sub(~rhs);
+}
+
+template<typename D1, typename D2>
 inline void apply_mul_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
   (~lhs).apply_mul(~rhs);
 }

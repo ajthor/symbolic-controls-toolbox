@@ -9,10 +9,10 @@ namespace Math {
 // Direct Methods for Sparse Linear Systems Timothy Davis
 
 // ----------------------------------------------------------------------
-// BaseSparseMatrix
+// SparseMatrix
 //
 template<typename T, typename Derived>
-class BaseSparseMatrix : public BaseMatrix<T, Derived> {
+class SparseMatrix : public BaseMatrix<T, Derived> {
 protected:
   size_t nrows_;
   size_t ncols_;
@@ -22,14 +22,14 @@ protected:
   std::vector<T> v_;
 
 public:
-  BaseSparseMatrix(const size_t nrows,
+  SparseMatrix(const size_t nrows,
              const size_t ncols) :
              nrows_(nrows),
              ncols_(ncols) {
     v_ = std::vector<T>(nrows*ncols);
   }
 
-  BaseSparseMatrix(const size_t nrows,
+  SparseMatrix(const size_t nrows,
              const size_t ncols,
              const std::vector<T> v) :
              nrows_(nrows),

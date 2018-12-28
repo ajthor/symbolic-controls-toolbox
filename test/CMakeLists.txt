@@ -19,6 +19,12 @@ macro(ADD_TEST_FILE TEST_NAME FILE_NAME)
   add_test(${TEST_NAME} ${PROJECT_BINARY_DIR}/${TEST_NAME})
 endmacro()
 
+ADD_TEST_FILE(test_matrix_dense test_matrix_dense.cc)
+# ADD_TEST_FILE(test_matrix_sparse test_matrix_sparse.cc)
+ADD_TEST_FILE(test_matrix_vector test_matrix_vector.cc)
+ADD_TEST_FILE(test_type_traits test_type_traits.cc)
+ADD_TEST_FILE(test_matrix_block test_matrix_block.cc)
+
 ADD_TEST_FILE(test_state_space test_state_space.cc)
 ADD_TEST_FILE(test_transfer_function test_transfer_function.cc)
 ADD_TEST_FILE(test_analysis test_analysis.cc)
