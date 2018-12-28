@@ -2,6 +2,7 @@
 #define MATH_MATRIX_MATRIX_HPP
 
 #include <type_traits>
+#include <vector>
 
 namespace Controls {
 namespace Math {

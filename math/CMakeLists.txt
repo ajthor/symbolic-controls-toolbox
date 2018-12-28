@@ -19,9 +19,11 @@ set(HEADERS
   matrix/symbolic_dense.hpp
   matrix/symbolic_vector.hpp
   matrix/expr_add.hpp
+  matrix/expr_sub.hpp
   matrix/expr_mul.hpp
-  matrix/expr_transpose.hpp
   matrix/expr_inverse.hpp
+  matrix/expr_transpose.hpp
+  matrix/expr_neg.hpp
   matrix/expr_jacobian.hpp
   traits/is_dense_matrix.hpp
   traits/is_expr.hpp

@@ -27,7 +27,7 @@ public:
 
   inline ExprUnary(const ExprUnary<M> &m);
 
-  inline const M get_underlying_matrix();
+  inline const M get_operand();
 
 private:
   template<typename DT>
@@ -80,7 +80,7 @@ inline ExprUnary<M>::ExprUnary(const ExprUnary<M> &m) :
 }
 
 template<typename M>
-inline const M ExprUnary<M>::get_underlying_matrix() {
+inline const M ExprUnary<M>::get_operand() {
   return m_;
 }
 

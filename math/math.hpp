@@ -9,6 +9,7 @@
 #include "matrix/expr_mul.hpp"
 #include "matrix/expr_inverse.hpp"
 #include "matrix/expr_transpose.hpp"
+#include "matrix/expr_neg.hpp"
 #include "matrix/expr_jacobian.hpp"
 #include "matrix/dense.hpp"
 #include "matrix/vector.hpp"

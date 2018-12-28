@@ -6,6 +6,7 @@
 #include "expr.hpp"
 
 #include <math/traits/is_expr.hpp>
+#include <math/traits/is_symbolic.hpp>
 
 namespace Controls {
 namespace Math {
@@ -53,6 +54,16 @@ private:
     apply_add_(~lhs, tmp);
   }
 
+  // A - (B * C)
+  template<typename DT>
+  friend inline void
+  apply_sub_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
+    MATRIX_DEBUG("result = A - (B * C)");
+    M1 tmp(rhs.lhs_);
+    apply_mul_(tmp, rhs.rhs_);
+    apply_sub_(~lhs, tmp);
+  }
+
   // A * (B * C)
   template<typename DT>
   friend inline void
@@ -61,16 +72,6 @@ private:
     M1 tmp(rhs.lhs_);
     apply_mul_(tmp, rhs.rhs_);
     apply_mul_(~lhs, tmp);
-  }
-
-  // (A * B)^T = B^T * A^T
-  template<typename DT>
-  friend inline void
-  apply_transpose_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
-    MATRIX_DEBUG("result = (A * B)^T");
-    M1 tmp(rhs.lhs_);
-    apply_mul_(tmp, rhs.rhs_);
-    apply_transpose_(~lhs, tmp);
   }
 
   // (A * B)^-1
@@ -82,8 +83,21 @@ private:
     apply_mul_(tmp, rhs.rhs_);
     apply_inverse_(~lhs, tmp);
   }
+
+  // (A * B)^T = B^T * A^T
+  template<typename DT>
+  friend inline void
+  apply_transpose_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
+    MATRIX_DEBUG("result = (A * B)^T");
+    M1 tmp(rhs.lhs_);
+    apply_mul_(tmp, rhs.rhs_);
+    apply_transpose_(~lhs, tmp);
+  }
 };
 
+// ----------------------------------------------------------------------
+// ExprMul Constructor
+//
 template<typename M1, typename M2>
 inline ExprMul<M1, M2>::ExprMul(const M1 &lhs,
                                 const M2 &rhs) :
@@ -99,10 +113,40 @@ inline ExprMul<M1, M2>::ExprMul(const ExprMul<M1, M2> &m) :
   //
 }
 
+// ----------------------------------------------------------------------
+// ExprMul Operator
+//
 template<typename M1, typename M2>
 inline const ExprMul<M1, M2>
 operator*(const Matrix<M1> &lhs, const Matrix<M2> &rhs) {
   return ExprMul<M1, M2>(~lhs, ~rhs);
+}
+
+// ----------------------------------------------------------------------
+// ExprMul Multiply Scalar Operator
+//
+template<typename M1, typename M2>
+inline auto
+operator*(const Matrix<M1> &lhs, const M2 rhs) -> typename std::enable_if<std::is_scalar<M2>::value, const ExprUnary<M1>>::type {
+  M1 tmp(~lhs);
+  return ExprUnary<M1>(tmp *= rhs);
+}
+
+template<typename M1, typename M2>
+inline auto
+operator*(const M1 lhs, const Matrix<M2> &rhs) -> typename std::enable_if<std::is_scalar<M1>::value, const ExprUnary<M2>>::type {
+  M2 tmp(~rhs);
+  return ExprUnary<M2>(tmp *= lhs);
+}
+
+// ----------------------------------------------------------------------
+// ExprMul Divide Scalar Operator
+//
+template<typename M1, typename M2>
+inline auto
+operator/(const Matrix<M1> &lhs, const M2 rhs) -> typename std::enable_if<std::is_scalar<M2>::value, const ExprUnary<M1>>::type {
+  M1 tmp(~lhs);
+  return ExprUnary<M1>(tmp /= rhs);
 }
 
 } // Math
