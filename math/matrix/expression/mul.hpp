@@ -4,9 +4,9 @@
 #include <math/assert.hpp>
 #include <math/matrix/matrix.hpp>
 #include <math/matrix/expression/expression.hpp>
-
 #include <math/traits/is_expr.hpp>
 #include <math/traits/is_symbolic.hpp>
+#include <math/traits/is_scalar.hpp>
 
 namespace Controls {
 namespace Math {
@@ -127,14 +127,16 @@ operator*(const Matrix<M1> &lhs, const Matrix<M2> &rhs) {
 //
 template<typename M1, typename M2>
 inline auto
-operator*(const Matrix<M1> &lhs, const M2 rhs) -> typename std::enable_if<std::is_scalar<M2>::value, const ExprUnary<M1>>::type {
+operator*(const Matrix<M1> &lhs, const M2 rhs)
+-> enable_if_scalar_t<M2, const ExprUnary<M1>> {
   M1 tmp(~lhs);
   return ExprUnary<M1>(tmp *= rhs);
 }
 
 template<typename M1, typename M2>
 inline auto
-operator*(const M1 lhs, const Matrix<M2> &rhs) -> typename std::enable_if<std::is_scalar<M1>::value, const ExprUnary<M2>>::type {
+operator*(const M1 lhs, const Matrix<M2> &rhs)
+-> enable_if_scalar_t<M1, const ExprUnary<M2>> {
   M2 tmp(~rhs);
   return ExprUnary<M2>(tmp *= lhs);
 }
@@ -144,7 +146,8 @@ operator*(const M1 lhs, const Matrix<M2> &rhs) -> typename std::enable_if<std::i
 //
 template<typename M1, typename M2>
 inline auto
-operator/(const Matrix<M1> &lhs, const M2 rhs) -> typename std::enable_if<std::is_scalar<M2>::value, const ExprUnary<M1>>::type {
+operator/(const Matrix<M1> &lhs, const M2 rhs)
+-> enable_if_scalar_t<M2, const ExprUnary<M1>> {
   M1 tmp(~lhs);
   return ExprUnary<M1>(tmp /= rhs);
 }

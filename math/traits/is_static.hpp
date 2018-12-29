@@ -21,10 +21,10 @@ private:
   static std::true_type test(const StaticMatrix<DT, N, M> &);
 
   template<typename DT, size_t N, size_t M>
-  static std::true_type test(IdentityMatrix<DT, N, M> &);
+  static std::true_type test(Identity<DT, N, M> &);
 
   template<typename DT, size_t N, size_t M>
-  static std::true_type test(const IdentityMatrix<DT, N, M> &);
+  static std::true_type test(const Identity<DT, N, M> &);
 
   static std::false_type test(...);
 

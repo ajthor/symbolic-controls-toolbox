@@ -10,14 +10,14 @@ namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// IdentityMatrix
+// Identity
 //
 template<typename T, size_t N, size_t M>
-class IdentityMatrix : public Matrix<IdentityMatrix<T, N, M>> {
+class Identity : public Matrix<Identity<T, N, M>> {
 private:
 
 public:
-  IdentityMatrix();
+  Identity();
 
   inline size_t size() const;
   inline size_t capacity() const;
@@ -38,37 +38,37 @@ public:
 };
 
 template<typename T, size_t N, size_t M>
-IdentityMatrix<T, N, M>::IdentityMatrix() {
+Identity<T, N, M>::Identity() {
   //
 }
 
 template<typename T, size_t N, size_t M>
-inline size_t IdentityMatrix<T, N, M>::size() const {
+inline size_t Identity<T, N, M>::size() const {
   return N*M;
 }
 
 template<typename T, size_t N, size_t M>
-inline size_t IdentityMatrix<T, N, M>::capacity() const {
+inline size_t Identity<T, N, M>::capacity() const {
   return 0;
 }
 
 template<typename T, size_t N, size_t M>
-inline bool IdentityMatrix<T, N, M>::empty() const {
+inline bool Identity<T, N, M>::empty() const {
   return false;
 }
 
 template<typename T, size_t N, size_t M>
-inline size_t IdentityMatrix<T, N, M>::nrows() const {
+inline size_t Identity<T, N, M>::nrows() const {
   return N;
 }
 
 template<typename T, size_t N, size_t M>
-inline size_t IdentityMatrix<T, N, M>::ncols() const {
+inline size_t Identity<T, N, M>::ncols() const {
   return M;
 }
 
 template<typename T, size_t N, size_t M>
-inline std::vector<T> IdentityMatrix<T, N, M>::as_vec() const {
+inline std::vector<T> Identity<T, N, M>::as_vec() const {
   std::vector<T> v_(N*M, T(0));
   for(size_t i = 0; i < std::min(N, M); i++) {
     v_[i*M + i] = T(1);
@@ -78,29 +78,29 @@ inline std::vector<T> IdentityMatrix<T, N, M>::as_vec() const {
 }
 
 template<typename T, size_t N, size_t M>
-inline DenseMatrix<T> IdentityMatrix<T, N, M>::as_dense() const {
+inline DenseMatrix<T> Identity<T, N, M>::as_dense() const {
   std::vector<T> v_ = (*this).as_vec();
   return DenseMatrix<T>(N, M, v_);
 }
 
 template<typename T, size_t N, size_t M>
-inline T IdentityMatrix<T, N, M>::operator[](const size_t pos) {
+inline T Identity<T, N, M>::operator[](const size_t pos) {
   return (pos%(M + 1) == 0) ? T(1) : T(0);
 }
 
 template<typename T, size_t N, size_t M>
-inline const T IdentityMatrix<T, N, M>::operator[](const size_t pos) const {
+inline const T Identity<T, N, M>::operator[](const size_t pos) const {
   return (pos%(M + 1) == 0) ? T(1) : T(0);
 }
 
 template<typename T, size_t N, size_t M>
-inline T IdentityMatrix<T, N, M>::operator()(const size_t row,
+inline T Identity<T, N, M>::operator()(const size_t row,
                                               const size_t col) {
   return (row == col) ? T(1) : T(0);
 }
 
 template<typename T, size_t N, size_t M>
-inline const T IdentityMatrix<T, N, M>::operator()(const size_t row,
+inline const T Identity<T, N, M>::operator()(const size_t row,
                                                     const size_t col) const {
   return (row == col) ? T(1) : T(0);
 }

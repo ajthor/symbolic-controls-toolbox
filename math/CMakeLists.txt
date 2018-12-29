@@ -37,8 +37,9 @@ set(HEADERS
   traits/is_dense.hpp
   traits/is_expr.hpp
   traits/is_matrix.hpp
-  traits/is_symbolic.hpp
+  traits/is_scalar.hpp
   traits/is_static.hpp
+  traits/is_symbolic.hpp
   traits/is_vector.hpp
 )
 
