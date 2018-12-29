@@ -1,5 +1,5 @@
-#ifndef MATH_TRAITS_IS_DENSE_MATRIX_HPP
-#define MATH_TRAITS_IS_DENSE_MATRIX_HPP
+#ifndef MATH_TRAITS_IS_DENSE_HPP
+#define MATH_TRAITS_IS_DENSE_HPP
 
 #include <type_traits>
 
@@ -9,10 +9,10 @@ namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// SFINAE is_dense_matrix_helper
+// SFINAE is_dense_helper
 //
 template<class T>
-struct is_dense_matrix_helper {
+struct is_dense_helper {
 private:
   template<typename ...DT>
   static std::true_type test(DenseMatrix<DT...> &);
@@ -27,19 +27,19 @@ public:
 };
 
 // ----------------------------------------------------------------------
-// SFINAE is_dense_matrix_t
+// SFINAE is_dense_t
 //
 template<typename T>
-using is_dense_matrix_t = typename is_dense_matrix_helper<T>::type;
+using is_dense_t = typename is_dense_helper<T>::type;
 
 // ----------------------------------------------------------------------
-// SFINAE is_dense_matrix
+// SFINAE is_dense
 //
 template<typename T>
-struct is_dense_matrix : is_dense_matrix_t<T>::type {};
+struct is_dense : is_dense_t<T>::type {};
 
 
 } // Math
 } // Controls
 
-#endif /* end of include guard: MATH_TRAITS_IS_DENSE_MATRIX_HPP */
+#endif /* end of include guard: MATH_TRAITS_IS_DENSE_HPP */

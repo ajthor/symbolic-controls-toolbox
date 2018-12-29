@@ -3,7 +3,7 @@
 
 #include <type_traits>
 
-#include <math/matrix/expr.hpp>
+#include <math/matrix/expression/expression.hpp>
 
 namespace Controls {
 namespace Math {

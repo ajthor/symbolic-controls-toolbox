@@ -6,6 +6,8 @@
 #include <symengine/basic.h>
 #include <symengine/constants.h>
 
+#include <math/matrix/expression/unary.hpp>
+
 namespace Controls {
 namespace Math {
 
@@ -29,7 +31,7 @@ inline bool is_default(const RCPBasic v) {
 //
 template<typename M1, typename M2>
 inline auto
-operator+(const Matrix<M1> lhs, const M2 &rhs) -> typename std::enable_if<std::is_same<M2, RCPBasic>::value, const ExprUnary<M1>>::type {
+operator+(const Matrix<M1> &lhs, const M2 rhs) -> typename std::enable_if<std::is_same<M2, RCPBasic>::value, const ExprUnary<M1>>::type {
   M1 tmp(~lhs);
   return ExprUnary<M1>(tmp += rhs);
 }
@@ -46,7 +48,7 @@ operator+(const M1 lhs, const Matrix<M2> &rhs) -> typename std::enable_if<std::i
 //
 template<typename M1, typename M2>
 inline auto
-operator-(const Matrix<M1> lhs, const M2 &rhs) -> typename std::enable_if<std::is_same<M2, RCPBasic>::value, const ExprUnary<M1>>::type {
+operator-(const Matrix<M1> &lhs, const M2 rhs) -> typename std::enable_if<std::is_same<M2, RCPBasic>::value, const ExprUnary<M1>>::type {
   M1 tmp(~lhs);
   return ExprUnary<M1>(tmp -= rhs);
 }
@@ -63,7 +65,7 @@ operator-(const M1 lhs, const Matrix<M2> &rhs) -> typename std::enable_if<std::i
 //
 template<typename M1, typename M2>
 inline auto
-operator*(const Matrix<M1> lhs, const M2 &rhs) -> typename std::enable_if<std::is_same<M2, RCPBasic>::value, const ExprUnary<M1>>::type {
+operator*(const Matrix<M1> &lhs, const M2 rhs) -> typename std::enable_if<std::is_same<M2, RCPBasic>::value, const ExprUnary<M1>>::type {
   M1 tmp(~lhs);
   return ExprUnary<M1>(tmp *= rhs);
 }
@@ -80,7 +82,7 @@ operator*(const M1 lhs, const Matrix<M2> &rhs) -> typename std::enable_if<std::i
 //
 template<typename M1, typename M2>
 inline auto
-operator/(const Matrix<M1> lhs, const M2 &rhs) -> typename std::enable_if<std::is_same<M2, RCPBasic>::value, const ExprUnary<M1>>::type {
+operator/(const Matrix<M1> &lhs, const M2 rhs) -> typename std::enable_if<std::is_same<M2, RCPBasic>::value, const ExprUnary<M1>>::type {
   M1 tmp(~lhs);
   return ExprUnary<M1>(tmp /= rhs);
 }

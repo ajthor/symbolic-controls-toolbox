@@ -1,18 +1,10 @@
-#ifndef MATH_MATRIX_EXPR_HPP
-#define MATH_MATRIX_EXPR_HPP
+#ifndef MATH_MATRIX_EXPRESSION_UNARY_HPP
+#define MATH_MATRIX_EXPRESSION_UNARY_HPP
 
-#include <type_traits>
-
-#include "matrix.hpp"
+#include <math/matrix/expression/expression.hpp>
 
 namespace Controls {
 namespace Math {
-
-// ----------------------------------------------------------------------
-// Expression
-//
-template<typename DT>
-class Expression : public DT {};
 
 // ----------------------------------------------------------------------
 // ExprUnary
@@ -87,4 +79,4 @@ inline const M ExprUnary<M>::get_operand() {
 } // Math
 } // Controls
 
-#endif /* end of include guard: MATH_MATRIX_EXPR_HPP */
+#endif /* end of include guard: MATH_MATRIX_EXPRESSION_UNARY_HPP */

@@ -1,13 +1,14 @@
-#ifndef MATH_MATRIX_EXPR_JACOBIAN_HPP
-#define MATH_MATRIX_EXPR_JACOBIAN_HPP
+#ifndef MATH_MATRIX_EXPRESSION_JACOBIAN_HPP
+#define MATH_MATRIX_EXPRESSION_JACOBIAN_HPP
 
 #include <symengine/basic.h>
 #include <symengine/subs.h>
 
-#include "assert.h"
-#include "matrix.hpp"
-#include "expr.hpp"
-#include "symbolic_dense.hpp"
+#include <math/assert.hpp>
+#include <math/matrix/matrix.hpp>
+#include <math/matrix/expression/expression.hpp>
+#include <math/matrix/expression/unary.hpp>
+#include <math/matrix/expression/dense.hpp>
 
 #include <math/traits/is_symbolic.hpp>
 
@@ -15,24 +16,24 @@ namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// SymbolicMatrix Jacobian
+// SymbolicDense Jacobian
 //
 template<typename DT>
 inline auto
 jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
--> enable_if_symbolic_t<DT, const ExprUnary<SymbolicMatrix>> {
-  SymbolicMatrix tmp;
-  tmp.apply_jacobian(~f, ~v);
-  return ExprUnary<SymbolicMatrix>(tmp);
+-> enable_if_symbolic_t<DT, const ExprUnary<SymbolicDense>> {
+  SymbolicDense tmp;
+  tmp.jacobian(~f, ~v);
+  return ExprUnary<SymbolicDense>(tmp);
 }
 
 // ----------------------------------------------------------------------
-// SymbolicMatrix Jacobian Member Function
+// SymbolicDense Jacobian Member Function
 //
 template<>
 template<typename DT>
 inline auto
-SymbolicMatrix::apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
+SymbolicDense::jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
 -> enable_if_symbolic_t<DT> {
   n_ = (~f).size();
   m_ = (~v).size();
@@ -59,4 +60,4 @@ SymbolicMatrix::apply_jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
 } // Math
 } // Controls
 
-#endif /* end of include guard: MATH_MATRIX_EXPR_JACOBIAN_HPP */
+#endif /* end of include guard: MATH_MATRIX_EXPRESSION_JACOBIAN_HPP */

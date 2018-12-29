@@ -1,9 +1,9 @@
-#ifndef MATH_MATRIX_EXPR_NEG_HPP
-#define MATH_MATRIX_EXPR_NEG_HPP
+#ifndef MATH_MATRIX_EXPRESSION_NEG_HPP
+#define MATH_MATRIX_EXPRESSION_NEG_HPP
 
-#include "assert.hpp"
-#include "matrix.hpp"
-#include "expr.hpp"
+#include <math/assert.hpp>
+#include <math/matrix/matrix.hpp>
+#include <math/matrix/expression/expression.hpp>
 
 #include <math/traits/is_expr.hpp>
 
@@ -30,7 +30,7 @@ private:
   template<typename DT>
   friend inline void
   apply_(Matrix<DT> &lhs, const ExprNeg<M> &rhs) {
-    MATRIX_DEBUG("result = -A");
+    MATH_DEBUG("result = -A");
     apply_(~lhs, rhs.m_);
     ~lhs *= -1;
   }
@@ -39,7 +39,7 @@ private:
   template<typename DT>
   friend inline void
   apply_add_(Matrix<DT> &lhs, const ExprNeg<M> &rhs) {
-    MATRIX_DEBUG("result = A + -B");
+    MATH_DEBUG("result = A + -B");
     apply_sub_(~lhs, rhs.m_);
   }
 
@@ -47,7 +47,7 @@ private:
   template<typename DT>
   friend inline void
   apply_sub_(Matrix<DT> &lhs, const ExprNeg<M> &rhs) {
-    MATRIX_DEBUG("result = A - -B");
+    MATH_DEBUG("result = A - -B");
     apply_add_(~lhs, rhs.m_);
   }
 
@@ -55,7 +55,7 @@ private:
   template<typename DT>
   friend inline void
   apply_mul_(Matrix<DT> &lhs, const ExprNeg<M> &rhs) {
-    MATRIX_DEBUG("result = A * -B");
+    MATH_DEBUG("result = A * -B");
     apply_mul_(~lhs, rhs.m_);
     ~lhs *= -1;
   }
@@ -64,7 +64,7 @@ private:
   template<typename DT>
   friend inline void
   apply_inverse_(Matrix<DT> &lhs, const ExprNeg<M> &rhs) {
-    MATRIX_DEBUG("result = (-A)^-1");
+    MATH_DEBUG("result = (-A)^-1");
     apply_inverse_(~lhs, rhs.m_);
     ~lhs *= -1;
   }
@@ -73,7 +73,7 @@ private:
   template<typename DT>
   friend inline void
   apply_transpose_(Matrix<DT> &lhs, const ExprNeg<M> &rhs) {
-    MATRIX_DEBUG("result = (-A)^T");
+    MATH_DEBUG("result = (-A)^T");
     apply_transpose_(~lhs, rhs.m_);
     ~lhs *= -1;
   }
@@ -114,4 +114,4 @@ operator-(const ExprNeg<M> &m) {
 } // Math
 } // Controls
 
-#endif /* end of include guard: MATH_MATRIX_EXPR_NEG_HPP */
+#endif /* end of include guard: MATH_MATRIX_EXPRESSION_NEG_HPP */

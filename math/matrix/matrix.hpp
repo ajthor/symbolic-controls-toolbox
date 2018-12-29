@@ -1,18 +1,20 @@
 #ifndef MATH_MATRIX_MATRIX_HPP
 #define MATH_MATRIX_MATRIX_HPP
 
+#include <iomanip>
+#include <ostream>
 #include <type_traits>
 #include <vector>
 
 namespace Controls {
 namespace Math {
 
-// // ----------------------------------------------------------------------
-// // Matrix
-// //
-// template<typename T>
-// class Matrix {
-// public:
+// ----------------------------------------------------------------------
+// BaseMatrix
+//
+class BaseMatrix {
+public:
+  virtual ~BaseMatrix() {}
 //   virtual size_t size() const = 0;
 //   virtual size_t capacity() const = 0;
 //
@@ -34,13 +36,13 @@ namespace Math {
 //   virtual const T &operator[](const size_t pos) const = 0;
 //
 //   virtual void transpose() = 0;
-// };
+};
 
 // ----------------------------------------------------------------------
 // Matrix
 //
 template<typename DT>
-class Matrix {
+class Matrix : public BaseMatrix {
 public:
   inline DT &operator~() {
     return *static_cast<DT *>(this);
@@ -107,50 +109,21 @@ inline bool is_default(const T v) {
 }
 
 // ----------------------------------------------------------------------
-// Matrix Equality Operator
+// Stream Output
 //
-template<typename D1, typename D2>
-inline bool operator==(const Matrix<D1> &lhs, const Matrix<D2> &rhs) {
-  return equal(~lhs, ~rhs);
-}
+// template<template<typename> class DT, typename T>
+// inline auto operator<<(std::ostream& os, const Matrix<DT<T>> &m)
+// -> typename std::enable_if<std::is_scalar<T>::value, std::ostream&>::type {
+//   for(size_t i = 0; i < (~m).nrows(); i++) {
+//     os << "| ";
+//     for(size_t j = 0; j < (~m).ncols(); j++) {
+//       os << std::setw(12) << (~m)[i*(~m).ncols() + j] << " ";
+//     }
+//     os << "|" << '\n';
+//   }
+//   return os;
+// }
 
-template<typename D1, typename D2>
-inline bool operator!=(const Matrix<D1> &lhs, const Matrix<D2> &rhs) {
-  return !equal(~lhs, ~rhs);
-}
-
-// ----------------------------------------------------------------------
-// Matrix Assignment Functions
-//
-template<typename D1, typename D2>
-inline void apply_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
-  (~lhs).apply(~rhs);
-}
-
-template<typename D1, typename D2>
-inline void apply_add_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
-  (~lhs).apply_add(~rhs);
-}
-
-template<typename D1, typename D2>
-inline void apply_sub_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
-  (~lhs).apply_sub(~rhs);
-}
-
-template<typename D1, typename D2>
-inline void apply_mul_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
-  (~lhs).apply_mul(~rhs);
-}
-
-template<typename D1, typename D2>
-inline void apply_inverse_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
-  (~lhs).apply_inverse(~rhs);
-}
-
-template<typename D1, typename D2>
-inline void apply_transpose_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
-  (~lhs).apply_transpose(~rhs);
-}
 
 } // Math
 } // Controls

@@ -1,9 +1,9 @@
-#ifndef MATH_MATRIX_EXPR_TRANSPOSE_HPP
-#define MATH_MATRIX_EXPR_TRANSPOSE_HPP
+#ifndef MATH_MATRIX_EXPRESSION_TRANSPOSE_HPP
+#define MATH_MATRIX_EXPRESSION_TRANSPOSE_HPP
 
-#include "assert.hpp"
-#include "matrix.hpp"
-#include "expr.hpp"
+#include <math/assert.hpp>
+#include <math/matrix/matrix.hpp>
+#include <math/matrix/expression/expression.hpp>
 
 namespace Controls {
 namespace Math {
@@ -24,7 +24,7 @@ private:
   template<typename DT>
   friend inline void
   apply_(Matrix<DT> &lhs, const ExprTranspose<M> &rhs) {
-    MATRIX_DEBUG("result = A^T");
+    MATH_DEBUG("result = A^T");
     apply_transpose_(~lhs, rhs.m_);
   }
 
@@ -32,7 +32,7 @@ private:
   template<typename DT>
   friend inline void
   apply_add_(Matrix<DT> &lhs, const ExprTranspose<M> &rhs) {
-    MATRIX_DEBUG("result = A + B^T");
+    MATH_DEBUG("result = A + B^T");
     M tmp(rhs.m_);
     apply_transpose_(tmp, rhs.m_);
     apply_add_(~lhs, tmp);
@@ -42,7 +42,7 @@ private:
   template<typename DT>
   friend inline void
   apply_mul_(Matrix<DT> &lhs, const ExprTranspose<M> &rhs) {
-    MATRIX_DEBUG("result = A * B^T");
+    MATH_DEBUG("result = A * B^T");
     M tmp(rhs.m_);
     apply_transpose_(tmp, rhs.m_);
     apply_mul_(~lhs, tmp);
@@ -52,7 +52,7 @@ private:
   template<typename DT>
   friend inline void
   apply_transpose_(Matrix<DT> &lhs, const ExprTranspose<M> &rhs) {
-    MATRIX_DEBUG("result = (A^T)^T");
+    MATH_DEBUG("result = (A^T)^T");
     apply_(~lhs, rhs.m_);
   }
 
@@ -60,7 +60,7 @@ private:
   template<typename DT>
   friend inline void
   apply_inverse_(Matrix<DT> &lhs, const ExprTranspose<M> &rhs) {
-    MATRIX_DEBUG("result = (A^T)^-1");
+    MATH_DEBUG("result = (A^T)^-1");
     apply_inverse_(~lhs, rhs.m_);
   }
 };
@@ -80,4 +80,4 @@ transpose(const Matrix<M> &m) {
 } // Math
 } // Controls
 
-#endif /* end of include guard: MATH_MATRIX_EXPR_TRANSPOSE_HPP */
+#endif /* end of include guard: MATH_MATRIX_EXPRESSION_TRANSPOSE_HPP */

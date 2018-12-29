@@ -7,18 +7,18 @@ namespace Controls {
 namespace Math {
 
 //
-#ifndef MATRIX_ASSERT
-#define MATRIX_ASSERT(expr) assert(expr);
+#ifndef MATH_ASSERT
+#define MATH_ASSERT(expr) assert(expr);
 #endif
 
 // Uncomment this line to enable debugging.
-// #define MATRIX_DEBUG_OUT
+// #define MATH_DEBUG_OUT
 
-#ifdef MATRIX_DEBUG_OUT
-#define MATRIX_DEBUG(msg) \
+#ifdef MATH_DEBUG_OUT
+#define MATH_DEBUG(msg) \
 std::cout << msg << '\n';
 #else
-#define MATRIX_DEBUG(msg) // msg
+#define MATH_DEBUG(msg) // msg
 #endif
 
 } // Math

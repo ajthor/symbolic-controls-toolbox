@@ -1,9 +1,9 @@
-#ifndef MATH_MATRIX_EXPR_MUL_HPP
-#define MATH_MATRIX_EXPR_MUL_HPP
+#ifndef MATH_MATRIX_EXPRESSION_MUL_HPP
+#define MATH_MATRIX_EXPRESSION_MUL_HPP
 
-#include "assert.hpp"
-#include "matrix.hpp"
-#include "expr.hpp"
+#include <math/assert.hpp>
+#include <math/matrix/matrix.hpp>
+#include <math/matrix/expression/expression.hpp>
 
 #include <math/traits/is_expr.hpp>
 #include <math/traits/is_symbolic.hpp>
@@ -30,7 +30,7 @@ private:
   template<typename DT>
   friend inline void
   apply_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
-    MATRIX_DEBUG("result = A * B");
+    MATH_DEBUG("result = A * B");
     if(!is_expr<M1>::value && equal(~lhs, rhs.lhs_)) {
       apply_mul_(~lhs, rhs.rhs_);
     }
@@ -48,7 +48,7 @@ private:
   template<typename DT>
   friend inline void
   apply_add_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
-    MATRIX_DEBUG("result = A + (B * C)");
+    MATH_DEBUG("result = A + (B * C)");
     M1 tmp(rhs.lhs_);
     apply_mul_(tmp, rhs.rhs_);
     apply_add_(~lhs, tmp);
@@ -58,7 +58,7 @@ private:
   template<typename DT>
   friend inline void
   apply_sub_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
-    MATRIX_DEBUG("result = A - (B * C)");
+    MATH_DEBUG("result = A - (B * C)");
     M1 tmp(rhs.lhs_);
     apply_mul_(tmp, rhs.rhs_);
     apply_sub_(~lhs, tmp);
@@ -68,7 +68,7 @@ private:
   template<typename DT>
   friend inline void
   apply_mul_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
-    MATRIX_DEBUG("result = A * (B * C)");
+    MATH_DEBUG("result = A * (B * C)");
     M1 tmp(rhs.lhs_);
     apply_mul_(tmp, rhs.rhs_);
     apply_mul_(~lhs, tmp);
@@ -78,7 +78,7 @@ private:
   template<typename DT>
   friend inline void
   apply_inverse_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
-    MATRIX_DEBUG("result = (A * B)^-1");
+    MATH_DEBUG("result = (A * B)^-1");
     M1 tmp(rhs.lhs_);
     apply_mul_(tmp, rhs.rhs_);
     apply_inverse_(~lhs, tmp);
@@ -88,7 +88,7 @@ private:
   template<typename DT>
   friend inline void
   apply_transpose_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
-    MATRIX_DEBUG("result = (A * B)^T");
+    MATH_DEBUG("result = (A * B)^T");
     M1 tmp(rhs.lhs_);
     apply_mul_(tmp, rhs.rhs_);
     apply_transpose_(~lhs, tmp);
@@ -152,4 +152,4 @@ operator/(const Matrix<M1> &lhs, const M2 rhs) -> typename std::enable_if<std::i
 } // Math
 } // Controls
 
-#endif /* end of include guard: MATH_MATRIX_EXPR_MUL_HPP */
+#endif /* end of include guard: MATH_MATRIX_EXPRESSION_MUL_HPP */

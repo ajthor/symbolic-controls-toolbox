@@ -11,24 +11,34 @@ set(SRC
 set(HEADERS
   c_wrapper_math.hpp
   math.hpp
-  matrix/assert.hpp
+  assert.hpp
   matrix/matrix.hpp
   matrix/dense.hpp
   matrix/vector.hpp
-  matrix/symbolic.hpp
-  matrix/symbolic_dense.hpp
-  matrix/symbolic_vector.hpp
-  matrix/expr_add.hpp
-  matrix/expr_sub.hpp
-  matrix/expr_mul.hpp
-  matrix/expr_inverse.hpp
-  matrix/expr_transpose.hpp
-  matrix/expr_neg.hpp
-  matrix/expr_jacobian.hpp
-  traits/is_dense_matrix.hpp
+  matrix/static.hpp
+  matrix/block.hpp
+  matrix/sparse.hpp
+  matrix/expression.hpp
+  matrix/expression/expression.hpp
+  matrix/expression/matrix.hpp
+  matrix/expression/symbolic.hpp
+  matrix/expression/dense.hpp
+  matrix/expression/vector.hpp
+  matrix/expression/static.hpp
+  matrix/expression/block.hpp
+  matrix/expression/sparse.hpp
+  matrix/expression/add.hpp
+  matrix/expression/sub.hpp
+  matrix/expression/mul.hpp
+  matrix/expression/inverse.hpp
+  matrix/expression/transpose.hpp
+  matrix/expression/neg.hpp
+  matrix/expression/jacobian.hpp
+  traits/is_dense.hpp
   traits/is_expr.hpp
   traits/is_matrix.hpp
   traits/is_symbolic.hpp
+  traits/is_static.hpp
   traits/is_vector.hpp
 )
 
