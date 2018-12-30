@@ -10,7 +10,7 @@
 #include <math/math.hpp>
 
 using Controls::Math::DenseMatrix;
-using Controls::Math::SymbolicMatrix;
+using Controls::Math::SymbolicDense;
 using Controls::Math::Vector;
 using Controls::Math::SymbolicVector;
 using Controls::Math::BlockMatrix;
@@ -156,6 +156,7 @@ TEST_CASE("Block: Add", "[block]") {
     BlockMatrix<int> R(2, 2);
     TEST_DEBUG("R = P + Q");
     R = P + Q;
+
     REQUIRE(*R[0] == DenseMatrix<int>(2, 2, {6, 6, 6, 6}));
     REQUIRE(*R[1] == DenseMatrix<int>(2, 2, {8, 8, 8, 8}));
     REQUIRE(*R[2] == DenseMatrix<int>(2, 2, {10, 10, 10, 10}));
@@ -166,6 +167,7 @@ TEST_CASE("Block: Add", "[block]") {
     BlockMatrix<int> R(2, 2);
     TEST_DEBUG("R = 5 + P");
     R = 5 + P;
+
     REQUIRE(*R[0] == DenseMatrix<int>(2, 2, {6, 6, 6, 6}));
     REQUIRE(*R[1] == DenseMatrix<int>(2, 2, {7, 7, 7, 7}));
     REQUIRE(*R[2] == DenseMatrix<int>(2, 2, {8, 8, 8, 8}));
@@ -176,6 +178,7 @@ TEST_CASE("Block: Add", "[block]") {
     BlockMatrix<int> R(2, 2);
     TEST_DEBUG("R = P + 5");
     R = 5 + P;
+
     REQUIRE(*R[0] == DenseMatrix<int>(2, 2, {6, 6, 6, 6}));
     REQUIRE(*R[1] == DenseMatrix<int>(2, 2, {7, 7, 7, 7}));
     REQUIRE(*R[2] == DenseMatrix<int>(2, 2, {8, 8, 8, 8}));

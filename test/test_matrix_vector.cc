@@ -10,7 +10,7 @@
 #include <math/math.hpp>
 
 using Controls::Math::DenseMatrix;
-using Controls::Math::SymbolicMatrix;
+using Controls::Math::SymbolicDense;
 using Controls::Math::Vector;
 using Controls::Math::SymbolicVector;
 
@@ -261,8 +261,8 @@ TEST_CASE("Vector: transpose", "[vector]") {
 //   }
 //
 //   {
-//     SymbolicMatrix C(2, 2);
-//     SymbolicMatrix D(2, 2, {integer(1), integer(0), integer(0), integer(1)});
+//     SymbolicDense C(2, 2);
+//     SymbolicDense D(2, 2, {integer(1), integer(0), integer(0), integer(1)});
 //     RCP<const Basic> x = symbol("x");
 //
 //     C = x * D;
@@ -304,3 +304,27 @@ TEST_CASE("Vector: transpose", "[vector]") {
 //   // REQUIRE(eq(*v[0], *integer(4)));
 //   // REQUIRE(eq(*v[1], *integer(8)));
 // }
+
+TEST_CASE("Vector: Norm", "[vector]") {
+  Vector<int> v({1, -2, 3});
+
+  {
+    auto result = Controls::Math::norm(v, 1);
+    REQUIRE(::fabs(result - 6) < 1e-3);
+  }
+
+  {
+    auto result = Controls::Math::norm(v, 2);
+    REQUIRE(::fabs(result - 3.7417) < 1e-3);
+  }
+
+  {
+    auto result = Controls::Math::norm(v, 3);
+    REQUIRE(::fabs(result - 3.3019) < 1e-3);
+  }
+
+  {
+    auto result = Controls::Math::infinity_norm(v);
+    REQUIRE(result == 3);
+  }
+}

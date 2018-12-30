@@ -24,12 +24,12 @@ public:
 
   inline bool empty() const;
 
-  // inline typename std::vector<T>::iterator begin();
-  // inline typename std::vector<T>::iterator end();
-  // inline typename std::vector<T>::const_iterator begin() const;
-  // inline typename std::vector<T>::const_iterator end() const;
-  // inline typename std::vector<T>::const_iterator cbegin() const;
-  // inline typename std::vector<T>::const_iterator cend() const;
+  inline typename std::vector<T>::iterator begin();
+  inline typename std::vector<T>::iterator end();
+  inline typename std::vector<T>::const_iterator begin() const;
+  inline typename std::vector<T>::const_iterator end() const;
+  inline typename std::vector<T>::const_iterator cbegin() const;
+  inline typename std::vector<T>::const_iterator cend() const;
 
   inline size_t nrows() const;
   inline size_t ncols() const;
@@ -70,41 +70,41 @@ inline bool StaticMatrix<T, N, M>::empty() const {
   return v_.empty();
 }
 
-// template<typename T, size_t N, size_t M>
-// inline typename std::vector<T>::iterator
-// StaticMatrix<T, N, M>::begin() {
-//   return v_.begin();
-// }
-//
-// template<typename T, size_t N, size_t M>
-// inline typename std::vector<T>::iterator
-// StaticMatrix<T, N, M>::end() {
-//   return v_.end();
-// }
-//
-// template<typename T, size_t N, size_t M>
-// inline typename std::vector<T>::const_iterator
-// StaticMatrix<T, N, M>::begin() const {
-//   return v_.begin();
-// }
-//
-// template<typename T, size_t N, size_t M>
-// inline typename std::vector<T>::const_iterator
-// StaticMatrix<T, N, M>::end() const {
-//   return v_.end();
-// }
-//
-// template<typename T, size_t N, size_t M>
-// inline typename std::vector<T>::const_iterator
-// StaticMatrix<T, N, M>::cbegin() const {
-//   return v_.cbegin();
-// }
-//
-// template<typename T, size_t N, size_t M>
-// inline typename std::vector<T>::const_iterator
-// StaticMatrix<T, N, M>::cend() const {
-//   return v_.cend();
-// }
+template<typename T, size_t N, size_t M>
+inline typename std::vector<T>::iterator
+StaticMatrix<T, N, M>::begin() {
+  return v_.begin();
+}
+
+template<typename T, size_t N, size_t M>
+inline typename std::vector<T>::iterator
+StaticMatrix<T, N, M>::end() {
+  return v_.end();
+}
+
+template<typename T, size_t N, size_t M>
+inline typename std::vector<T>::const_iterator
+StaticMatrix<T, N, M>::begin() const {
+  return v_.begin();
+}
+
+template<typename T, size_t N, size_t M>
+inline typename std::vector<T>::const_iterator
+StaticMatrix<T, N, M>::end() const {
+  return v_.end();
+}
+
+template<typename T, size_t N, size_t M>
+inline typename std::vector<T>::const_iterator
+StaticMatrix<T, N, M>::cbegin() const {
+  return v_.cbegin();
+}
+
+template<typename T, size_t N, size_t M>
+inline typename std::vector<T>::const_iterator
+StaticMatrix<T, N, M>::cend() const {
+  return v_.cend();
+}
 
 template<typename T, size_t N, size_t M>
 inline size_t StaticMatrix<T, N, M>::nrows() const {

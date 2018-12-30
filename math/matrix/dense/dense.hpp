@@ -85,10 +85,6 @@ public:
 
   inline DenseMatrix<T> &inverse();
   inline DenseMatrix<T> &transpose();
-
-  template<typename DT>
-  inline auto jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
-  -> enable_if_symbolic_t<DT>;
 };
 
 // ----------------------------------------------------------------------
@@ -286,61 +282,6 @@ inline DenseMatrix<T> &DenseMatrix<T>::transpose() {
 
   return *this;
 }
-
-// // ----------------------------------------------------------------------
-// // DenseMatrix Helper Functions
-// //
-// template<typename T>
-// DenseMatrix<T> &ones(const size_t nrows, const size_t ncols) {
-//   DenseMatrix<T> M(nrows, ncols);
-//   size_t i, j;
-//   for(i = 0; i < nrows; i++) {
-//     for(j = 0; j < ncols; j++) {
-//       M(i, j) = 1;
-//     }
-//   }
-//   return &M;
-// }
-//
-// template<typename T>
-// DenseMatrix<T> &ones(const size_t size) {
-//   return ones(size, size);
-// }
-//
-// template<typename T>
-// DenseMatrix<T> &zeros(const size_t nrows, const size_t ncols) {
-//   DenseMatrix<T> M(nrows, ncols);
-//   size_t i, j;
-//   for(i = 0; i < nrows; i++) {
-//     for(j = 0; j < ncols; j++) {
-//       M(i, j) = 0;
-//     }
-//   }
-//   return &M;
-// }
-//
-// template<typename T>
-// DenseMatrix<T> &zeros(const size_t size) {
-//   return zeros(size, size);
-// }
-//
-// template<typename T>
-// DenseMatrix<T> &eye(const size_t nrows, const size_t ncols) {
-//   DenseMatrix<T> M(nrows, ncols);
-//   size_t i, j;
-//   for(i = 0; i < nrows; i++) {
-//     for(j = 0; j < ncols; j++) {
-//       M(i, j) = (i == j) ? 1 : 0;
-//     }
-//   }
-//   return &M;
-// }
-//
-// template<typename T>
-// DenseMatrix<T> &eye(const size_t size) {
-//   return eye(size, size);
-// }
-// // void diag(DenseMatrix &M, std::vector<T> &v, int k);
 
 // ----------------------------------------------------------------------
 // DenseMatrix Structure Functions

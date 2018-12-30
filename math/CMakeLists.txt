@@ -4,7 +4,7 @@
 # point to files with extern "C" function definitions.
 set(SRC
   c_wrapper_math.cc
-  # math.cc
+  # visitor.cc
 )
 
 # A list of all header files with C header definitions.
@@ -14,17 +14,26 @@ set(HEADERS
   assert.hpp
   matrix/matrix.hpp
   matrix/dense.hpp
+  matrix/dense/dense.hpp
   matrix/vector.hpp
+  matrix/vector/vector.hpp
   matrix/static.hpp
+  matrix/static/static.hpp
+  matrix/constant.hpp
+  matrix/constant/identity.hpp
+  matrix/constant/ones.hpp
+  matrix/constant/zeros.hpp
   matrix/block.hpp
+  matrix/block/block.hpp
   matrix/sparse.hpp
+  matrix/sparse/sparse.hpp
   matrix/expression.hpp
   matrix/expression/expression.hpp
   matrix/expression/matrix.hpp
   matrix/expression/symbolic.hpp
   matrix/expression/dense.hpp
   matrix/expression/vector.hpp
-  matrix/expression/static.hpp
+  matrix/expression/constant.hpp
   matrix/expression/block.hpp
   matrix/expression/sparse.hpp
   matrix/expression/add.hpp
@@ -33,7 +42,8 @@ set(HEADERS
   matrix/expression/inverse.hpp
   matrix/expression/transpose.hpp
   matrix/expression/neg.hpp
-  matrix/expression/jacobian.hpp
+  matrix/operation/jacobian.hpp
+  matrix/operation/norm.hpp
   traits/is_dense.hpp
   traits/is_expr.hpp
   traits/is_matrix.hpp
@@ -41,6 +51,7 @@ set(HEADERS
   traits/is_static.hpp
   traits/is_symbolic.hpp
   traits/is_vector.hpp
+  # matrix/visitor.hpp
 )
 
 INSTALL_HEADERS_WITH_DIRECTORY(HEADERS)

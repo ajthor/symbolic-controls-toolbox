@@ -5,9 +5,11 @@
 #include <math/matrix/matrix.hpp>
 #include <math/matrix/dense.hpp>
 #include <math/matrix/vector.hpp>
+#include <math/matrix/constant.hpp>
 #include <math/matrix/static.hpp>
 #include <math/matrix/block.hpp>
 #include <math/matrix/expression.hpp>
+#include <math/matrix/operation.hpp>
 // #include "matrix/scalar.hpp"
 // #include "matrix/symbolic_dense.hpp"
 // #include "matrix/symbolic_scalar.hpp"

@@ -10,6 +10,5 @@
 #include <math/matrix/expression/inverse.hpp>
 #include <math/matrix/expression/transpose.hpp>
 #include <math/matrix/expression/neg.hpp>
-#include <math/matrix/expression/jacobian.hpp>
 
 #endif /* end of include guard: MATH_MATRIX_EXPRESSION_HPP */
