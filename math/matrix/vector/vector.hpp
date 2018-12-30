@@ -3,6 +3,9 @@
 
 #include <algorithm>
 
+#include <symengine/basic.h>
+#include <symengine/constants.h>
+
 #include <math/assert.hpp>
 #include <math/matrix/matrix.hpp>
 
@@ -95,6 +98,16 @@ inline Vector<T>::Vector(const size_t count) :
                          n_(count),
                          m_(1) {
   v_ = std::vector<T>(count);
+}
+
+using RCPBasic = SymEngine::RCP<const SymEngine::Basic>;
+
+template<>
+inline Vector<RCPBasic>::Vector(const size_t count) :
+                                n_(count),
+                                m_(1) {
+  //
+  v_ = std::vector<RCPBasic>(count, SymEngine::zero);
 }
 
 template<typename T>

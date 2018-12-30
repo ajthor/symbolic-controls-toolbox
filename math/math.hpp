@@ -10,18 +10,5 @@
 #include <math/matrix/block.hpp>
 #include <math/matrix/expression.hpp>
 #include <math/matrix/operation.hpp>
-// #include "matrix/scalar.hpp"
-// #include "matrix/symbolic_dense.hpp"
-// #include "matrix/symbolic_scalar.hpp"
-// #include "matrix/symbolic_vector.hpp"
-
-namespace Controls {
-namespace Math {
-
-//
-
-
-} // Math
-} // Controls
 
 #endif /* end of include guard: MATH_MATH_HPP */

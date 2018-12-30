@@ -2,6 +2,7 @@
 #define MATH_MATRIX_EXPRESSION_JACOBIAN_HPP
 
 #include <symengine/basic.h>
+#include <symengine/constants.h>
 #include <symengine/subs.h>
 
 #include <math/matrix/dense/dense.hpp>
@@ -16,17 +17,20 @@ namespace Math {
 template<typename DT>
 auto jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
 -> enable_if_symbolic_t<DT, SymbolicDense> {
-  SymbolicDense J((~f).size(), (~v).size());
+  size_t n_ = (~f).size();
+  size_t m_ = (~v).size();
 
-  for(size_t i = 0; i < J.nrows(); i++) {
-    for(size_t j = 0; j < J.ncols(); j++) {
+  std::vector<RCPBasic> v_(n_*m_, SymEngine::zero);
+
+  for(size_t i = 0; i < n_; i++) {
+    for(size_t j = 0; j < m_; j++) {
       if(SymEngine::is_a<SymEngine::Symbol>(*(~f)[j])) {
         auto t_ = SymEngine::rcp_static_cast<const SymEngine::Symbol>((~v)[j]);
-        J[i*J.ncols() + j] = (~f)[i]->diff(t_);
+        v_[i*m_ + j] = (~f)[i]->diff(t_);
       }
       else {
         auto t_ = SymEngine::symbol("t_");
-        J[i*J.ncols() + j] = SymEngine::ssubs(
+        v_[i*m_ + j] = SymEngine::ssubs(
             SymEngine::ssubs((~f)[i], {{(~v)[j], t_}})->diff(t_),
             {{t_, (~v)[j]}}
           );
@@ -34,7 +38,7 @@ auto jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
     }
   }
 
-  return J;
+  return SymbolicDense(n_, m_, v_);
 }
 
 } // Math

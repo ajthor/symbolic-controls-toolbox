@@ -4,6 +4,9 @@
 #include <algorithm>
 #include <type_traits>
 
+#include <symengine/basic.h>
+#include <symengine/constants.h>
+
 #include <math/assert.hpp>
 #include <math/matrix/matrix.hpp>
 
@@ -105,6 +108,17 @@ inline DenseMatrix<T>::DenseMatrix(const size_t nrows,
                                    m_(ncols) {
   //
   v_ = std::vector<T>(nrows*ncols);
+}
+
+using RCPBasic = SymEngine::RCP<const SymEngine::Basic>;
+
+template<>
+inline DenseMatrix<RCPBasic>::DenseMatrix(const size_t nrows,
+                                          const size_t ncols) :
+                                          n_(nrows),
+                                          m_(ncols) {
+  //
+  v_ = std::vector<RCPBasic>(nrows*ncols, SymEngine::zero);
 }
 
 template<typename T>

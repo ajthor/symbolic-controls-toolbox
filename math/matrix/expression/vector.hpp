@@ -228,7 +228,7 @@ inline bool equal(const SymbolicVector &lhs, const SymbolicVector &rhs) {
   }
 
   for(size_t i = 0; i < (~lhs).size(); i++) {
-    if(!eq(*(~lhs)[i], *(~rhs)[i]))
+    if(!equal((~lhs)[i], (~rhs)[i]))
       return false;
   }
 
