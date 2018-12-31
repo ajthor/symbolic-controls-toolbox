@@ -24,6 +24,7 @@ ADD_TEST_FILE(test_matrix_dense test_matrix_dense.cc)
 ADD_TEST_FILE(test_matrix_vector test_matrix_vector.cc)
 ADD_TEST_FILE(test_type_traits test_type_traits.cc)
 ADD_TEST_FILE(test_matrix_block test_matrix_block.cc)
+ADD_TEST_FILE(test_matrix_constant test_matrix_constant.cc)
 
 ADD_TEST_FILE(test_state_space test_state_space.cc)
 ADD_TEST_FILE(test_transfer_function test_transfer_function.cc)
@@ -34,8 +35,6 @@ ADD_TEST_FILE(test_random_variable test_random_variable.cc)
 ADD_TEST_FILE(test_kernel test_kernel.cc)
 
 ADD_TEST_FILE(test_ode test_ode.cc)
-
-ADD_TEST_FILE(test_dense_matrix test_dense_matrix.cc)
 
 ADD_TEST_FILE(test_mdp test_mdp.cc)
 

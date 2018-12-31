@@ -7,7 +7,7 @@
 #include <symengine/integer.h>
 #include <symengine/symbol.h>
 
-#include <math/math.hpp>
+#include <symctrl/math/math.hpp>
 
 using Controls::Math::DenseMatrix;
 using Controls::Math::SymbolicDense;
@@ -351,6 +351,10 @@ TEST_CASE("Dense: jacobian", "[dense]") {
   C = integer(1);
 
   {
+    REQUIRE(a != b);
+  }
+
+  {
     SymbolicDense R(2, 2);
     TEST_DEBUG("R = jacobian(a, b)");
     R = jacobian(a, b);
@@ -360,35 +364,35 @@ TEST_CASE("Dense: jacobian", "[dense]") {
     REQUIRE(eq(*R(1, 1), *x));
   }
 
-  // {
-  //   SymbolicDense R(2, 2);
-  //   TEST_DEBUG("R = C + jacobian(a, b)");
-  //   R = C + jacobian(a, b);
-  //   REQUIRE(eq(*R(0, 0), *integer(2)));
-  //   REQUIRE(eq(*R(0, 1), *integer(1)));
-  //   REQUIRE(eq(*R(1, 0), *add(y, integer(1))));
-  //   REQUIRE(eq(*R(1, 1), *add(x, integer(1))));
-  // }
+  {
+    SymbolicDense R(2, 2);
+    TEST_DEBUG("R = C + jacobian(a, b)");
+    R = C + jacobian(a, b);
+    REQUIRE(eq(*R(0, 0), *integer(2)));
+    REQUIRE(eq(*R(0, 1), *integer(1)));
+    REQUIRE(eq(*R(1, 0), *add(y, integer(1))));
+    REQUIRE(eq(*R(1, 1), *add(x, integer(1))));
+  }
 
-  // {
-  //   SymbolicDense R(2, 2);
-  //   TEST_DEBUG("R = C * jacobian(a, b)");
-  //   R = C * jacobian(a, b);
-  //   REQUIRE(eq(*R(0, 0), *add(y, integer(1))));
-  //   REQUIRE(eq(*R(0, 1), *x));
-  //   REQUIRE(eq(*R(1, 0), *add(y, integer(1))));
-  //   REQUIRE(eq(*R(1, 1), *x));
-  // }
+  {
+    SymbolicDense R(2, 2);
+    TEST_DEBUG("R = C * jacobian(a, b)");
+    R = C * jacobian(a, b);
+    REQUIRE(eq(*R(0, 0), *add(y, integer(1))));
+    REQUIRE(eq(*R(0, 1), *x));
+    REQUIRE(eq(*R(1, 0), *add(y, integer(1))));
+    REQUIRE(eq(*R(1, 1), *x));
+  }
 
-  // {
-  //   SymbolicDense R(2, 2);
-  //   TEST_DEBUG("R = transpose(jacobian(a, b))");
-  //   R = transpose(jacobian(a, b));
-  //   REQUIRE(eq(*R(0, 0), *integer(1)));
-  //   REQUIRE(eq(*R(0, 1), *y));
-  //   REQUIRE(eq(*R(1, 0), *integer(0)));
-  //   REQUIRE(eq(*R(1, 1), *x));
-  // }
+  {
+    SymbolicDense R(2, 2);
+    TEST_DEBUG("R = transpose(jacobian(a, b))");
+    R = transpose(jacobian(a, b));
+    REQUIRE(eq(*R(0, 0), *integer(1)));
+    REQUIRE(eq(*R(0, 1), *y));
+    REQUIRE(eq(*R(1, 0), *integer(0)));
+    REQUIRE(eq(*R(1, 1), *x));
+  }
 
   Vector<int> c({1, 1});
   Vector<int> d({1, 1});
@@ -401,93 +405,79 @@ TEST_CASE("Dense: jacobian", "[dense]") {
 }
 
 TEST_CASE("Dense: DenseMatrix RCP<const Basic>", "[dense]") {
-  SymbolicDense A(2, 2, {integer(1), integer(1), integer(1), integer(1)});
-  SymbolicDense C(2, 2);
+  SymbolicDense A(2, 2, {integer(0), integer(1), integer(2), integer(3)});
+  SymbolicDense B(2, 2, {integer(1), integer(1), integer(1), integer(1)});
 
-  // Assignment
-  C = integer(5);
+  // // Assignment
+  {
+    SymbolicDense C(2, 2);
+    C = integer(5);
 
-  REQUIRE(eq(*C(0, 0), *integer(5)));
-  REQUIRE(eq(*C(0, 1), *integer(5)));
-  REQUIRE(eq(*C(1, 0), *integer(5)));
-  REQUIRE(eq(*C(1, 1), *integer(5)));
+    REQUIRE(eq(*C(0, 0), *integer(5)));
+    REQUIRE(eq(*C(0, 1), *integer(5)));
+    REQUIRE(eq(*C(1, 0), *integer(5)));
+    REQUIRE(eq(*C(1, 1), *integer(5)));
+  }
 
-  C = A;
+  {
+    SymbolicDense C(2, 2);
+    C = A;
 
-  REQUIRE(C == A);
+    REQUIRE(C == A);
+  }
 
-  C(0, 0) = integer(2);
+  {
+    SymbolicDense C(2, 2);
+    C(0, 0) = integer(2);
 
-  REQUIRE(C != A);
+    REQUIRE(C != A);
+  }
 
-  // // Addition
-  // M = M + Q;
-  //
-  // REQUIRE(eq(*M(0, 0), *integer(3)));
-  // REQUIRE(eq(*M(0, 1), *integer(4)));
-  // REQUIRE(eq(*M(1, 0), *integer(6)));
-  // REQUIRE(eq(*M(1, 1), *integer(8)));
-  //
-  // M = Q + Q + Q + Q;
-  //
-  // REQUIRE(eq(*M(0, 0), *integer(4)));
-  // REQUIRE(eq(*M(0, 1), *integer(8)));
-  // REQUIRE(eq(*M(1, 0), *integer(12)));
-  // REQUIRE(eq(*M(1, 1), *integer(16)));
-  //
-  // M += integer(1);
-  //
-  // REQUIRE(eq(*M(0, 0), *integer(5)));
-  // REQUIRE(eq(*M(0, 1), *integer(9)));
-  // REQUIRE(eq(*M(1, 0), *integer(13)));
-  // REQUIRE(eq(*M(1, 1), *integer(17)));
-  //
-  // // Multiplication
-  // M = M * Q;
-  //
-  // REQUIRE(eq(*M(0, 0), *integer(32)));
-  // REQUIRE(eq(*M(0, 1), *integer(46)));
-  // REQUIRE(eq(*M(1, 0), *integer(64)));
-  // REQUIRE(eq(*M(1, 1), *integer(94)));
-  //
-  // M = Q * Q * Q * Q;
-  //
-  // REQUIRE(eq(*M(0, 0), *integer(199)));
-  // REQUIRE(eq(*M(0, 1), *integer(290)));
-  // REQUIRE(eq(*M(1, 0), *integer(435)));
-  // REQUIRE(eq(*M(1, 1), *integer(634)));
-  //
-  // M = Q + Q * Q + Q;
-  //
-  // REQUIRE(eq(*M(0, 0), *integer(9)));
-  // REQUIRE(eq(*M(0, 1), *integer(14)));
-  // REQUIRE(eq(*M(1, 0), *integer(21)));
-  // REQUIRE(eq(*M(1, 1), *integer(30)));
-  //
-  // M = Q + (Q * Q) + Q;
-  //
-  // REQUIRE(eq(*M(0, 0), *integer(9)));
-  // REQUIRE(eq(*M(0, 1), *integer(14)));
-  // REQUIRE(eq(*M(1, 0), *integer(21)));
-  // REQUIRE(eq(*M(1, 1), *integer(30)));
-  //
-  // SymbolicDense R(2, 3);
-  //
-  // R(0, 0) = integer(1);
-  // R(0, 1) = integer(2);
-  // R(0, 2) = integer(3);
-  // R(1, 0) = integer(4);
-  // R(1, 1) = integer(5);
-  // R(1, 2) = integer(6);
-  //
-  // M = Q * R;
-  //
-  // REQUIRE(eq(*M(0, 0), *integer(9)));
-  // REQUIRE(eq(*M(0, 1), *integer(12)));
-  // REQUIRE(eq(*M(0, 2), *integer(15)));
-  // REQUIRE(eq(*M(1, 0), *integer(19)));
-  // REQUIRE(eq(*M(1, 1), *integer(26)));
-  // REQUIRE(eq(*M(1, 2), *integer(33)));
+  // Addition
+  {
+    SymbolicDense C(2, 2);
+    TEST_DEBUG("C = A + B");
+    C = A + B;
+
+    REQUIRE(eq(*C(0, 0), *integer(1)));
+    REQUIRE(eq(*C(0, 1), *integer(2)));
+    REQUIRE(eq(*C(1, 0), *integer(3)));
+    REQUIRE(eq(*C(1, 1), *integer(4)));
+  }
+
+  {
+    SymbolicDense C(2, 2);
+    TEST_DEBUG("C = A + A + A + A");
+    C = A + A + A + A;
+
+    REQUIRE(eq(*C(0, 0), *integer(0)));
+    REQUIRE(eq(*C(0, 1), *integer(4)));
+    REQUIRE(eq(*C(1, 0), *integer(8)));
+    REQUIRE(eq(*C(1, 1), *integer(12)));
+  }
+
+  // Multiplication
+  {
+    SymbolicDense C(2, 2);
+    TEST_DEBUG("C = A * B");
+    C = A * B;
+
+    REQUIRE(eq(*C(0, 0), *integer(1)));
+    REQUIRE(eq(*C(0, 1), *integer(1)));
+    REQUIRE(eq(*C(1, 0), *integer(5)));
+    REQUIRE(eq(*C(1, 1), *integer(5)));
+  }
+
+  {
+    SymbolicDense C(2, 2);
+    TEST_DEBUG("C = A * A * A * A");
+    C = A * A * A * A;
+
+    REQUIRE(eq(*C(0, 0), *integer(22)));
+    REQUIRE(eq(*C(0, 1), *integer(39)));
+    REQUIRE(eq(*C(1, 0), *integer(78)));
+    REQUIRE(eq(*C(1, 1), *integer(139)));
+  }
 }
 
 TEST_CASE("Dense: DenseMatrix checks", "[dense]") {

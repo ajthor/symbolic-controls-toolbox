@@ -7,7 +7,7 @@
 #include <symengine/cwrapper.h>
 #include <symctrl/c_wrapper.hpp>
 
-#include <symctrl/random_variable.hpp>
+#include <symctrl/math/random/random_variable.hpp>
 
 using SymEngine::add;
 using SymEngine::Add;
@@ -16,17 +16,17 @@ using SymEngine::RCP;
 
 TEST_CASE("Random Variable", "[randomvariable]") {
   std::random_device gen;
-  Controls::normal_distribution<> d{5,2};
+  Controls::Math::normal_distribution<> d{5,2};
 
-  RCP<const Controls::RandomVariable> X;
-  X = Controls::random_variable("X", &d);
+  RCP<const Controls::Math::RandomVariable> X;
+  X = Controls::Math::random_variable("X", &d);
 
-  REQUIRE(Controls::is_a_random_variable(*X));
+  REQUIRE(Controls::Math::is_a_random_variable(*X));
   REQUIRE(X->get_name() == "X");
 
   RCP<const Basic> y = SymEngine::symbol("y");
 
-  REQUIRE(not Controls::is_a_random_variable(*y));
+  REQUIRE(not Controls::Math::is_a_random_variable(*y));
 
   // std::cout << d(gen) << '\n';
   // std::cout << X->sample(gen) << '\n';
@@ -37,10 +37,10 @@ TEST_CASE("Random Variable", "[randomvariable]") {
 
 TEST_CASE("Random Variable: add", "[randomvariable]") {
   std::random_device gen;
-  Controls::normal_distribution<> d{5,2};
+  Controls::Math::normal_distribution<> d{5,2};
 
-  RCP<const Controls::RandomVariable> X;
-  X = Controls::random_variable("X", &d);
+  RCP<const Controls::Math::RandomVariable> X;
+  X = Controls::Math::random_variable("X", &d);
 
   RCP<const Basic> y = SymEngine::symbol("y");
 
@@ -60,7 +60,7 @@ TEST_CASE("Random Variable: add", "[randomvariable]") {
   auto search = add_map.find(X);
   REQUIRE(search != add_map.end());
   REQUIRE(eq(*search->first, *X));
-  REQUIRE(Controls::is_a_random_variable(*search->first));
+  REQUIRE(Controls::Math::is_a_random_variable(*search->first));
 }
 
 TEST_CASE("Random Variable: C Wrapper", "[randomvariable]") {

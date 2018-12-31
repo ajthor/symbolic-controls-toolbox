@@ -7,7 +7,7 @@
 #include <symengine/integer.h>
 #include <symengine/symbol.h>
 
-#include <math/math.hpp>
+#include <symctrl/math/math.hpp>
 
 using Controls::Math::DenseMatrix;
 using Controls::Math::SymbolicDense;

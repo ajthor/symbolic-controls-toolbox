@@ -56,7 +56,6 @@ set(PROJECT_HEADERS "")
 # order of the project directories is the order the subdirectories will be
 # added.
 set(symctrl_INCLUDE_DIRECTORIES
-  math
   symctrl
 )
 

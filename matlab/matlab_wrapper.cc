@@ -73,134 +73,134 @@ extern "C" {
 // ----------------------------------------------------------------------
 // Linear algebra wrapper functions.
 //
-void ml_linalg_hessenberg(int len, char **arg, char **result) {
-  auto mat = dense_matrix_new_rows_cols(len, len);
-  auto res = dense_matrix_new_rows_cols(len, len);
-  auto s = basic_new_heap();
-
-  int i = 0;
-  int j = 0;
-  int idx = 0;
-  for (i = 0; i < len; i++) {
-    for (j = 0; j < len; j++) {
-      basic_parse(s, arg[idx++]);
-      dense_matrix_set_basic(mat, j, i, s);
-    }
-  }
-
-  linalg_hessenberg(mat, res);
-
-  idx = 0;
-  for(i = 0; i < len; i++) { // rows
-    for (j = 0; j < len; j++) { // cols
-      dense_matrix_get_basic(s, res, j, i);
-      // TODO: Convert string here to Matlab Symbolic format.
-      result[idx] = se_parse(basic_str(s));
-      idx++;
-    }
-  }
-
-  basic_free_heap(s);
-  dense_matrix_free(mat);
-  dense_matrix_free(res);
-}
-
-void ml_linalg_schur(int len, char **A, char **U, char **T) {
-  auto mat = dense_matrix_new_rows_cols(len, len);
-  auto res_U = dense_matrix_new_rows_cols(len, len);
-  auto res_T = dense_matrix_new_rows_cols(len, len);
-  auto s = basic_new_heap();
-
-  int i = 0;
-  int j = 0;
-  int idx = 0;
-  for (i = 0; i < len; i++) {
-    for (j = 0; j < len; j++) {
-      basic_parse(s, A[idx++]);
-      dense_matrix_set_basic(mat, j, i, s);
-    }
-  }
-
-  linalg_schur(mat, res_U, res_T);
-
-  idx = 0;
-  for(i = 0; i < len; i++) { // rows
-    for (j = 0; j < len; j++) { // cols
-      dense_matrix_get_basic(s, res_U, j, i);
-      U[idx] = se_parse(basic_str(s));
-
-      dense_matrix_get_basic(s, res_T, j, i);
-      T[idx] = se_parse(basic_str(s));
-
-      idx++;
-    }
-  }
-
-  basic_free_heap(s);
-  dense_matrix_free(mat);
-  dense_matrix_free(res_U);
-  dense_matrix_free(res_T);
-}
-
-void ml_linalg_eigenvalues(int len, char **A, char **l, char **v) {
-  auto mat = dense_matrix_new_rows_cols(len, len);
-  auto res_l = vecbasic_new();
-  auto res_v = dense_matrix_new_rows_cols(len, len);
-  auto s = basic_new_heap();
-
-  int i = 0;
-  int j = 0;
-  int idx = 0;
-  for (i = 0; i < len; i++) {
-    for (j = 0; j < len; j++) {
-      basic_parse(s, A[idx++]);
-      dense_matrix_set_basic(mat, i, j, s);
-    }
-  }
-
-  linalg_eigenvalues(mat, res_l, res_v);
-
-  idx = 0;
-  for(i = 0; i < len; i++) { // rows
-    vecbasic_get(res_l, i, s);
-    l[i] = se_parse(basic_str(s));
-
-    for (j = 0; j < len; j++) { // cols
-      dense_matrix_get_basic(s, res_v, j, i);
-      v[idx] = se_parse(basic_str(s));
-
-      idx++;
-    }
-  }
-
-  basic_free_heap(s);
-  vecbasic_free(res_l);
-  dense_matrix_free(res_v);
-}
-
-void ml_linalg_first_eigenvalue(int len, char **A, char **l, double tol) {
-  auto mat = dense_matrix_new_rows_cols(len, len);
-  auto s = basic_new_heap();
-
-  int i = 0;
-  int j = 0;
-  int idx = 0;
-  for (i = 0; i < len; i++) {
-    for (j = 0; j < len; j++) {
-      basic_parse(s, A[idx++]);
-      dense_matrix_set_basic(mat, i, j, s);
-    }
-  }
-
-  linalg_first_eigenvalue(mat, s, tol);
-
-  l[0] = se_parse(basic_str(s));
-  // dense_matrix_set_basic(l, 0, 0, se_parse(basic_str(s)));
-
-  basic_free_heap(s);
-  dense_matrix_free(mat);
-  // dense_matrix_free(res);
-}
+// void ml_linalg_hessenberg(int len, char **arg, char **result) {
+//   auto mat = dense_matrix_new_rows_cols(len, len);
+//   auto res = dense_matrix_new_rows_cols(len, len);
+//   auto s = basic_new_heap();
+//
+//   int i = 0;
+//   int j = 0;
+//   int idx = 0;
+//   for (i = 0; i < len; i++) {
+//     for (j = 0; j < len; j++) {
+//       basic_parse(s, arg[idx++]);
+//       dense_matrix_set_basic(mat, j, i, s);
+//     }
+//   }
+//
+//   linalg_hessenberg(mat, res);
+//
+//   idx = 0;
+//   for(i = 0; i < len; i++) { // rows
+//     for (j = 0; j < len; j++) { // cols
+//       dense_matrix_get_basic(s, res, j, i);
+//       // TODO: Convert string here to Matlab Symbolic format.
+//       result[idx] = se_parse(basic_str(s));
+//       idx++;
+//     }
+//   }
+//
+//   basic_free_heap(s);
+//   dense_matrix_free(mat);
+//   dense_matrix_free(res);
+// }
+//
+// void ml_linalg_schur(int len, char **A, char **U, char **T) {
+//   auto mat = dense_matrix_new_rows_cols(len, len);
+//   auto res_U = dense_matrix_new_rows_cols(len, len);
+//   auto res_T = dense_matrix_new_rows_cols(len, len);
+//   auto s = basic_new_heap();
+//
+//   int i = 0;
+//   int j = 0;
+//   int idx = 0;
+//   for (i = 0; i < len; i++) {
+//     for (j = 0; j < len; j++) {
+//       basic_parse(s, A[idx++]);
+//       dense_matrix_set_basic(mat, j, i, s);
+//     }
+//   }
+//
+//   linalg_schur(mat, res_U, res_T);
+//
+//   idx = 0;
+//   for(i = 0; i < len; i++) { // rows
+//     for (j = 0; j < len; j++) { // cols
+//       dense_matrix_get_basic(s, res_U, j, i);
+//       U[idx] = se_parse(basic_str(s));
+//
+//       dense_matrix_get_basic(s, res_T, j, i);
+//       T[idx] = se_parse(basic_str(s));
+//
+//       idx++;
+//     }
+//   }
+//
+//   basic_free_heap(s);
+//   dense_matrix_free(mat);
+//   dense_matrix_free(res_U);
+//   dense_matrix_free(res_T);
+// }
+//
+// void ml_linalg_eigenvalues(int len, char **A, char **l, char **v) {
+//   auto mat = dense_matrix_new_rows_cols(len, len);
+//   auto res_l = vecbasic_new();
+//   auto res_v = dense_matrix_new_rows_cols(len, len);
+//   auto s = basic_new_heap();
+//
+//   int i = 0;
+//   int j = 0;
+//   int idx = 0;
+//   for (i = 0; i < len; i++) {
+//     for (j = 0; j < len; j++) {
+//       basic_parse(s, A[idx++]);
+//       dense_matrix_set_basic(mat, i, j, s);
+//     }
+//   }
+//
+//   linalg_eigenvalues(mat, res_l, res_v);
+//
+//   idx = 0;
+//   for(i = 0; i < len; i++) { // rows
+//     vecbasic_get(res_l, i, s);
+//     l[i] = se_parse(basic_str(s));
+//
+//     for (j = 0; j < len; j++) { // cols
+//       dense_matrix_get_basic(s, res_v, j, i);
+//       v[idx] = se_parse(basic_str(s));
+//
+//       idx++;
+//     }
+//   }
+//
+//   basic_free_heap(s);
+//   vecbasic_free(res_l);
+//   dense_matrix_free(res_v);
+// }
+//
+// void ml_linalg_first_eigenvalue(int len, char **A, char **l, double tol) {
+//   auto mat = dense_matrix_new_rows_cols(len, len);
+//   auto s = basic_new_heap();
+//
+//   int i = 0;
+//   int j = 0;
+//   int idx = 0;
+//   for (i = 0; i < len; i++) {
+//     for (j = 0; j < len; j++) {
+//       basic_parse(s, A[idx++]);
+//       dense_matrix_set_basic(mat, i, j, s);
+//     }
+//   }
+//
+//   linalg_first_eigenvalue(mat, s, tol);
+//
+//   l[0] = se_parse(basic_str(s));
+//   // dense_matrix_set_basic(l, 0, 0, se_parse(basic_str(s)));
+//
+//   basic_free_heap(s);
+//   dense_matrix_free(mat);
+//   // dense_matrix_free(res);
+// }
 
 // ----------------------------------------------------------------------
 // State space wrapper functions.
@@ -234,7 +234,8 @@ void ml_statespace_states_set(StateSpace_C *obj, int len, const char** arg) {
 
     if(i >= sz) {
       statespace_states_push_back(obj, s);
-    } else {
+    }
+    else {
       statespace_states_set(obj, i, s);
     }
   }
@@ -265,7 +266,8 @@ void ml_statespace_inputs_set(StateSpace_C *obj, int len, const char** arg) {
 
     if(i >= sz) {
       statespace_inputs_push_back(obj, s);
-    } else {
+    }
+    else {
       statespace_inputs_set(obj, i, s);
     }
   }
@@ -296,7 +298,8 @@ void ml_statespace_f_set(StateSpace_C *obj, int len, const char** arg) {
 
     if(i >= sz) {
       statespace_f_push_back(obj, s);
-    } else {
+    }
+    else {
       statespace_f_set(obj, i, s);
     }
   }
@@ -327,7 +330,8 @@ void ml_statespace_g_set(StateSpace_C *obj, int len, const char** arg) {
 
     if(i >= sz) {
       statespace_g_push_back(obj, s);
-    } else {
+    }
+    else {
       statespace_g_set(obj, i, s);
     }
   }
@@ -596,7 +600,8 @@ void ml_transferfunction_num_set(TransferFunction_C *obj, int len, const char** 
 
     if(i >= sz) {
       transferfunction_num_push_back(obj, s);
-    } else {
+    }
+    else {
       transferfunction_num_set(obj, i, s);
     }
   }
@@ -626,7 +631,8 @@ void ml_transferfunction_den_set(TransferFunction_C *obj, int len, const char** 
 
     if(i >= sz) {
       transferfunction_den_push_back(obj, s);
-    } else {
+    }
+    else {
       transferfunction_den_set(obj, i, s);
     }
   }

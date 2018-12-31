@@ -285,6 +285,9 @@ SYMCTRL_EXPORT void student_t_distribution_set(dist *obj, const double n);
 // piecewise_constant_distribution
 // piecewise_linear_distribution
 
+// ---------------------------------------------------------------------------
+// C Wrapper for RandomVariable Interface
+//
 typedef struct RandomVariable_C RandomVariable_C;
 
 SYMCTRL_EXPORT RandomVariable_C *random_variable_new();

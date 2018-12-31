@@ -7,7 +7,7 @@
 #include <symengine/integer.h>
 #include <symengine/symbol.h>
 
-#include <math/math.hpp>
+#include <symctrl/math/math.hpp>
 
 using Controls::Math::DenseMatrix;
 using Controls::Math::SymbolicDense;
@@ -38,10 +38,15 @@ std::cout << msg << '\n';
 #endif
 
 TEST_CASE("Constant: Assignment", "[dense]") {
-  ConstantMatrix<int, 2, 2> C(1);
+  ConstantMatrix<int, 2, 2, 1> C;
   Identity<int, 2, 2> I;
   Ones<int, 2, 2> ones;
   Zeros<int, 2, 2> zeros;
+
+  {
+    REQUIRE(ConstantMatrix<int, 2, 2, 1>() == Ones<int, 2, 2>());
+    REQUIRE(ConstantMatrix<int, 2, 2, 0>() == Zeros<int, 2, 2>());
+  }
 
   {
     DenseMatrix<int> R(2, 2);

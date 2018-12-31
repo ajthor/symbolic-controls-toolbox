@@ -6,22 +6,22 @@
 
 #include "visitor.hpp"
 
-using SymEngine::Basic;
-using SymEngine::RCP;
-
 namespace Controls {
 
 void subs(System &m,
-          const RCP<const Basic> key,
-          const RCP<const Basic> map);
+          const SymEngine::RCP<const SymEngine::Basic> key,
+          const SymEngine::RCP<const SymEngine::Basic> map);
 
 class SubsVisitor : public SystemVisitor<SubsVisitor> {
+public:
+  using BasicType = SymEngine::RCP<const SymEngine::Basic>;
+
 private:
-  const RCP<const Basic> key_, map_;
+  const BasicType key_, map_;
 
 public:
-  SubsVisitor(const RCP<const Basic> key,
-              const RCP<const Basic> map) :
+  SubsVisitor(const BasicType key,
+              const BasicType map) :
               key_(key),
               map_(map) {}
 
@@ -46,8 +46,8 @@ public:
 };
 
 void subs(System &m,
-          const RCP<const Basic> key,
-          const RCP<const Basic> map) {
+          const SymEngine::RCP<const SymEngine::Basic> key,
+          const SymEngine::RCP<const SymEngine::Basic> map) {
   //
   SubsVisitor s(key, map);
   m.accept(s);

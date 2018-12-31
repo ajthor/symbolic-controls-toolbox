@@ -15,12 +15,11 @@
 
 #include "analysis.hpp"
 #include "subs.hpp"
-#include "matrix/eig.hpp"
-#include "matrix/linalg.hpp"
+// #include "matrix/eig.hpp"
+// #include "matrix/linalg.hpp"
 
-#include "ode/ode.hpp"
-
-#include "random_variable.hpp"
+#include <symctrl/ode/ode.hpp>
+#include <symctrl/math/math.hpp>
 
 extern "C" {
 

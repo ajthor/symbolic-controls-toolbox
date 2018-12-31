@@ -4,11 +4,12 @@
 // #include <symengine/basic.h>
 // #include <symengine/dict.h>
 #include <symengine/lambda_double.h>
+#include <symengine/symbol.h>
 #include <symengine/visitor.h>
 
-#include "ode.hpp"
+#include <symctrl/ode/ode.hpp>
 
-#include <symctrl/random_variable.hpp>
+#include <symctrl/math/random/random_variable.hpp>
 
 namespace Controls {
 
@@ -76,7 +77,7 @@ public:
       if(!args.empty()) {
         for (auto it = args.begin(); it != args.end(); ++it) {
           // std::cout << *it << std::endl;
-          if(is_a_random_variable(**it)) {
+          if(Math::is_a_random_variable(**it)) {
             // auto var = dynamic_cast<const RandomVariable*>(*it);
             // std::cout << (var)->sample(gen) << '\n';
             // rv_vec.push_back(dynamic_cast<const RandomVariable*>(it));
@@ -135,7 +136,7 @@ public:
       if(rv_vec.size() > 0) {
         rv_pos = current_val.end();
         for (auto it = rv_vec.begin(); it != rv_vec.end(); ++it) {
-          rv_pos = current_val.insert(rv_pos, SymEngine::rcp_dynamic_cast<const RandomVariable>(*it)->sample(gen));
+          rv_pos = current_val.insert(rv_pos, SymEngine::rcp_dynamic_cast<const Math::RandomVariable>(*it)->sample(gen));
         }
       }
 

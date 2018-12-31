@@ -5,6 +5,9 @@ namespace Controls {
 
 class Visitor;
 
+// ----------------------------------------------------------------------
+// System Class
+//
 class System {
 public:
   virtual ~System() {};

@@ -5,7 +5,7 @@
 #include <symengine/parser.h>
 
 #include <symctrl/ode/ode.hpp>
-#include <symctrl/random_variable.hpp>
+#include <symctrl/math/random/random_variable.hpp>
 
 using SymEngine::Basic;
 using SymEngine::RCP;
@@ -84,9 +84,9 @@ TEST_CASE("ODE: Random Variable", "[ODE]") {
   RCP<const Symbol> x1 = symbol("x1");
   RCP<const Symbol> x2 = symbol("x2");
 
-  Controls::normal_distribution<> d{5,2};
-  RCP<const Controls::RandomVariable> Z;
-  Z = Controls::random_variable("Z", &d);
+  Controls::Math::normal_distribution<> d{5,2};
+  RCP<const Controls::Math::RandomVariable> Z;
+  Z = Controls::Math::random_variable("Z", &d);
 
   std::string s;
   RCP<const Basic> res;

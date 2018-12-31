@@ -4,7 +4,7 @@
 #include <symengine/visitor.h>
 #include <symengine/parser.h>
 
-#include <symctrl/random_variable.hpp>
+#include <symctrl/math/random/random_variable.hpp>
 #include <symctrl/state_space.hpp>
 
 using SymEngine::Basic;
@@ -331,13 +331,13 @@ TEST_CASE("State space: random variable", "[statespace]") {
   RCP<const Symbol> x1 = symbol("x1");
   RCP<const Symbol> x2 = symbol("x2");
 
-  Controls::normal_distribution<> d1{0, 1};
-  Controls::normal_distribution<> d2{0, 1};
+  Controls::Math::normal_distribution<> d1{0, 1};
+  Controls::Math::normal_distribution<> d2{0, 1};
 
-  RCP<const Controls::RandomVariable> w1;
-  RCP<const Controls::RandomVariable> w2;
-  w1 = Controls::random_variable("w1", &d1);
-  w2 = Controls::random_variable("w2", &d2);
+  RCP<const Controls::Math::RandomVariable> w1;
+  RCP<const Controls::Math::RandomVariable> w2;
+  w1 = Controls::Math::random_variable("w1", &d1);
+  w2 = Controls::Math::random_variable("w2", &d2);
 
   RCP<const Symbol> u1 = symbol("u1");
 
