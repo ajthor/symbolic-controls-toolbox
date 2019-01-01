@@ -56,7 +56,6 @@ using is_constant_t = typename is_constant_helper<T>::type;
 template<typename T>
 struct is_constant : is_constant_t<T>::type {};
 
-
 } // Math
 } // Controls
 

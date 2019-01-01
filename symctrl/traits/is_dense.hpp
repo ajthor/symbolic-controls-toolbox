@@ -38,7 +38,6 @@ using is_dense_t = typename is_dense_helper<T>::type;
 template<typename T>
 struct is_dense : is_dense_t<T>::type {};
 
-
 } // Math
 } // Controls
 

@@ -1,6 +1,9 @@
 #ifndef SYMCTRL_MATH_MATH_HPP
 #define SYMCTRL_MATH_MATH_HPP
 
+#include <symctrl/math/functor/functor.hpp>
+#include <symctrl/math/functor/kernel.hpp>
+#include <symctrl/math/functor/lambda.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
 #include <symctrl/math/matrix/dense.hpp>
 #include <symctrl/math/matrix/vector.hpp>
