@@ -1,6 +1,7 @@
 #ifndef SYMCTRL_MATH_MATRIX_DENSE_DENSE_HPP
 #define SYMCTRL_MATH_MATRIX_DENSE_DENSE_HPP
 
+#include <algorithm>
 #include <vector>
 
 #include <symengine/basic.h>
@@ -8,6 +9,7 @@
 
 #include <symctrl/assert.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
+#include <symctrl/math/matrix/vector.hpp>
 
 #include <symctrl/traits/is_symbolic.hpp>
 
@@ -19,6 +21,11 @@ namespace Math {
 //
 template<typename T>
 class DenseMatrix : public Matrix<DenseMatrix<T>> {
+public:
+  using type = T;
+
+  using result_type = DenseMatrix<T>;
+
 private:
   size_t n_;
   size_t m_;
@@ -76,8 +83,11 @@ public:
 
   inline std::vector<T> as_vec() const;
 
-  std::vector<T> row(const size_t n) const;
-  std::vector<T> col(const size_t n) const;
+  Vector<T> row(const size_t n) const;
+  Vector<T> col(const size_t n) const;
+
+  void swap_row(const size_t row1, const size_t row2);
+  void swap_col(const size_t col1, const size_t col2);
 
   inline T &operator[](const size_t pos);
   inline const T &operator[](const size_t pos) const;
@@ -237,21 +247,35 @@ inline std::vector<T> DenseMatrix<T>::as_vec() const {
 }
 
 template<typename T>
-std::vector<T> DenseMatrix<T>::row(const size_t n) const {
+Vector<T> DenseMatrix<T>::row(const size_t n) const {
   std::vector<T> result(m_);
   for(size_t i = 0; i < m_; i++) {
     result[i] = v_[n*m_ + i];
   }
-  return result;
+  return Vector<T>(result);
 }
 
 template<typename T>
-std::vector<T> DenseMatrix<T>::col(const size_t n) const {
+Vector<T> DenseMatrix<T>::col(const size_t n) const {
   std::vector<T> result(n_);
   for(size_t i = 0; i < n_; i++) {
     result[i] = v_[i*m_ + n];
   }
-  return result;
+  return Vector<T>(result);
+}
+
+template<typename T>
+void DenseMatrix<T>::swap_row(const size_t row1, const size_t row2) {
+  for(size_t j = 0; j < m_; j++) {
+    std::swap(v_[row1*m_ + j], v_[row2*m_ + j]);
+  }
+}
+
+template<typename T>
+void DenseMatrix<T>::swap_col(const size_t col1, const size_t col2) {
+  for(size_t i = 0; i < n_; i++) {
+    std::swap(v_[i*m_ + col1], v_[i*m_ + col2]);
+  }
 }
 
 template<typename T>

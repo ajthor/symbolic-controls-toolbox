@@ -1,10 +1,13 @@
 #ifndef SYMCTRL_MATH_MATRIX_EXPRESSION_VECTOR_HPP
 #define SYMCTRL_MATH_MATRIX_EXPRESSION_VECTOR_HPP
 
+#include <type_traits>
 #include <vector>
 
 #include <symctrl/math/matrix/vector/vector.hpp>
 #include <symctrl/math/matrix/expression/symbolic.hpp>
+#include <symctrl/math/matrix/expression/transpose.hpp>
+#include <symctrl/traits/is_scalar.hpp>
 
 namespace Controls {
 namespace Math {
@@ -45,6 +48,20 @@ inline Vector<T> &Vector<T>::operator/=(const T &rhs) {
     v_[i] /= rhs;
   }
 
+  return *this;
+}
+
+template<typename T>
+template<typename DT>
+inline Vector<T> &Vector<T>::operator+=(const Matrix<DT> &rhs) {
+  apply_add_(*this, ~rhs);
+  return *this;
+}
+
+template<typename T>
+template<typename DT>
+inline Vector<T> &Vector<T>::operator-=(const Matrix<DT> &rhs) {
+  apply_sub_(*this, ~rhs);
   return *this;
 }
 

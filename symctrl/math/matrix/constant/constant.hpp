@@ -13,6 +13,9 @@ namespace Math {
 //
 template<typename T, size_t N, size_t M, T v_>
 class ConstantMatrix : public Matrix<ConstantMatrix<T, N, M, v_>> {
+public:
+  using type = T;
+
 private:
 
 public:

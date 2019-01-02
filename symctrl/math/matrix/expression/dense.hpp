@@ -85,7 +85,7 @@ inline void DenseMatrix<T>::apply_sub(const Matrix<DT> &rhs) {
 template<typename T>
 template<typename DT>
 inline void DenseMatrix<T>::apply_mul(const Matrix<DT> &rhs) {
-  SYMCTRL_ASSERT(m_ == (~rhs).nrows());
+  SYMCTRL_ASSERT((~rhs).nrows() == (~rhs).ncols());
 
   std::vector<T> t_(n_*(~rhs).ncols(), 0);
 

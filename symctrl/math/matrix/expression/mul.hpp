@@ -16,6 +16,11 @@ namespace Math {
 //
 template<typename M1, typename M2>
 class ExprMul : public Expression<Matrix<ExprMul<M1, M2>>> {
+public:
+  using type = typename M1::type;
+
+  using result_type = result_type_t<M1>;
+
 private:
   const M1 lhs_;
   const M2 rhs_;
@@ -24,6 +29,19 @@ public:
   explicit inline ExprMul(const M1 &lhs, const M2 &rhs);
 
   inline ExprMul(const ExprMul<M1, M2> &m);
+
+  operator type() const;
+
+  inline size_t size() const;
+  inline size_t capacity() const;
+
+  inline bool empty() const;
+
+  inline size_t nrows() const;
+  inline size_t ncols() const;
+
+  inline type operator[](const size_t pos);
+  inline const type operator[](const size_t pos) const;
 
 private:
   // A * B
@@ -111,6 +129,77 @@ inline ExprMul<M1, M2>::ExprMul(const ExprMul<M1, M2> &m) :
                                 lhs_(m.lhs_),
                                 rhs_(m.rhs_) {
   //
+}
+
+// ----------------------------------------------------------------------
+// ExprMul Type Conversion Operator
+//
+template<typename M1, typename M2>
+ExprMul<M1, M2>::operator ExprMul<M1, M2>::type() const {
+  result_type r;
+  apply_(r, *this);
+
+  SYMCTRL_ASSERT(r.nrows() == 1);
+  SYMCTRL_ASSERT(r.ncols() == 1);
+
+  return r[0];
+}
+
+// ----------------------------------------------------------------------
+// ExprMul Member Function Definitions
+//
+template<typename M1, typename M2>
+inline size_t ExprMul<M1, M2>::size() const {
+  return lhs_.size();
+}
+
+template<typename M1, typename M2>
+inline size_t ExprMul<M1, M2>::capacity() const {
+  return lhs_.capacity();
+}
+
+template<typename M1, typename M2>
+inline bool ExprMul<M1, M2>::empty() const {
+  return lhs_.empty();
+}
+
+template<typename M1, typename M2>
+inline size_t ExprMul<M1, M2>::nrows() const {
+  return lhs_.nrows();
+}
+
+template<typename M1, typename M2>
+inline size_t ExprMul<M1, M2>::ncols() const {
+  return rhs_.ncols();
+}
+
+template<typename M1, typename M2>
+inline typename ExprMul<M1, M2>::type
+ExprMul<M1, M2>::operator[](const size_t pos) {
+  size_t row = lhs_.nrows();
+  size_t col = rhs_.ncols();
+  size_t i = pos%col;
+  size_t j = pos - 1;
+
+  ExprMul<M1, M2>::type result = 0;
+  for(size_t k = 0; k < rhs_.nrows(); k++) {
+    result += lhs_[i*col + k] * rhs_[k*col + j];
+  }
+  return result;
+}
+template<typename M1, typename M2>
+inline const typename ExprMul<M1, M2>::type
+ExprMul<M1, M2>::operator[](const size_t pos) const {
+  size_t row = lhs_.nrows();
+  size_t col = rhs_.ncols();
+  size_t i = pos%col;
+  size_t j = pos - 1;
+
+  ExprMul<M1, M2>::type result = 0;
+  for(size_t k = 0; k < rhs_.nrows(); k++) {
+    result += lhs_[i*col + k] * rhs_[k*col + j];
+  }
+  return result;
 }
 
 // ----------------------------------------------------------------------

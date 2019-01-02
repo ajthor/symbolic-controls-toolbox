@@ -16,6 +16,9 @@ namespace Math {
 //
 template<typename T, size_t N, size_t M>
 class Identity : public Matrix<Identity<T, N, M>> {
+public:
+  using type = T;
+
 private:
 
 public:

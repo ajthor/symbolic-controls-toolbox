@@ -26,7 +26,6 @@ inline bool equal(const StaticMatrix<T, N, M> &lhs, const StaticMatrix<T, N, M> 
   return true;
 }
 
-
 } // Math
 } // Controls
 

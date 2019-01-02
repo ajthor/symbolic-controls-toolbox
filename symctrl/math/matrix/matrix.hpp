@@ -15,27 +15,6 @@ namespace Math {
 class BaseMatrix {
 public:
   virtual ~BaseMatrix() {}
-//   virtual size_t size() const = 0;
-//   virtual size_t capacity() const = 0;
-//
-//   virtual bool empty() const = 0;
-//
-//   virtual typename std::vector<T>::iterator begin() = 0;
-//   virtual typename std::vector<T>::iterator end() = 0;
-//   virtual typename std::vector<T>::const_iterator begin() const = 0;
-//   virtual typename std::vector<T>::const_iterator end() const = 0;
-//   virtual typename std::vector<T>::const_iterator cbegin() const = 0;
-//   virtual typename std::vector<T>::const_iterator cend() const = 0;
-//
-//   virtual size_t nrows() const = 0;
-//   virtual size_t ncols() const = 0;
-//
-//   virtual std::vector<T> as_vec() const = 0;
-//
-//   virtual T &operator[](const size_t pos) = 0;
-//   virtual const T &operator[](const size_t pos) const = 0;
-//
-//   virtual void transpose() = 0;
 };
 
 // ----------------------------------------------------------------------
@@ -107,6 +86,12 @@ template<typename T>
 inline bool is_default(const T v) {
   return v == T();
 }
+
+// ----------------------------------------------------------------------
+// Result Type
+//
+template<typename T>
+using result_type_t = typename T::result_type;
 
 // ----------------------------------------------------------------------
 // Stream Output

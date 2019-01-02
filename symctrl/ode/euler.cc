@@ -9,7 +9,7 @@
 
 #include <symctrl/ode/ode.hpp>
 
-#include <symctrl/math/random/random_variable.hpp>
+#include <symctrl/math/random.hpp>
 
 namespace Controls {
 

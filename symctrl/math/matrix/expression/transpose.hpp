@@ -13,11 +13,29 @@ namespace Math {
 //
 template<typename M>
 class ExprTranspose : public Expression<Matrix<ExprTranspose<M>>> {
+public:
+  using type = typename M::type;
+
+  using result_type = result_type_t<M>;
+
 private:
   const M m_;
 
 public:
   explicit inline ExprTranspose(const M &m);
+
+  operator type() const;
+
+  inline size_t size() const;
+  inline size_t capacity() const;
+
+  inline bool empty() const;
+
+  inline size_t nrows() const;
+  inline size_t ncols() const;
+
+  inline type operator[](const size_t pos);
+  inline const type operator[](const size_t pos) const;
 
 private:
   // A^T
@@ -65,10 +83,75 @@ private:
   }
 };
 
+// ----------------------------------------------------------------------
+// ExprTranspose Constructor
+//
 template<typename M>
 inline ExprTranspose<M>::ExprTranspose(const M &m) :
                                        m_(m) {
   //
+}
+
+// ----------------------------------------------------------------------
+// ExprTranspose Type Conversion Operator
+//
+template<typename M>
+ExprTranspose<M>::operator ExprTranspose<M>::type() const {
+  result_type r;
+  apply_(r, *this);
+
+  SYMCTRL_ASSERT(r.nrows() == 1);
+  SYMCTRL_ASSERT(r.ncols() == 1);
+
+  return r[0];
+}
+
+// ----------------------------------------------------------------------
+// ExprTranspose Member Function Definitions
+//
+template<typename M>
+inline size_t ExprTranspose<M>::size() const {
+  return m_.size();
+}
+
+template<typename M>
+inline size_t ExprTranspose<M>::capacity() const {
+  return m_.capacity();
+}
+
+template<typename M>
+inline bool ExprTranspose<M>::empty() const {
+  return m_.empty();
+}
+
+template<typename M>
+inline size_t ExprTranspose<M>::nrows() const {
+  return m_.ncols();
+}
+
+template<typename M>
+inline size_t ExprTranspose<M>::ncols() const {
+  return m_.nrows();
+}
+
+template<typename M>
+inline typename ExprTranspose<M>::type
+ExprTranspose<M>::operator[](const size_t pos) {
+  size_t row = m_.nrows();
+  size_t col = m_.ncols();
+  size_t i = pos%col;
+  size_t j = pos - 1;
+  return m_[i + row*j];
+}
+
+template<typename M>
+inline const typename ExprTranspose<M>::type
+ExprTranspose<M>::operator[](const size_t pos) const {
+  size_t row = m_.nrows();
+  size_t col = m_.ncols();
+  size_t i = pos%col;
+  size_t j = pos - 1;
+  return m_[i + row*j];
 }
 
 template<typename M>

@@ -147,6 +147,43 @@ TEST_CASE("Vector: Add/Mul", "[vector]") {
   // }
 }
 
+TEST_CASE("Vector: Sub", "[vector]") {
+  Vector<int> a({1, 2});
+  Vector<int> b({2, 3});
+
+  {
+    Vector<int> r(2);
+    TEST_DEBUG("r = -a");
+    r = -a;
+    REQUIRE(r[0] == -1);
+    REQUIRE(r[1] == -2);
+  }
+
+  {
+    Vector<int> r(2);
+    TEST_DEBUG("r = a - b");
+    r = a - b;
+    REQUIRE(r[0] == -1);
+    REQUIRE(r[1] == -1);
+  }
+
+  {
+    Vector<int> r(2);
+    TEST_DEBUG("r = 5 - a");
+    r = 5 - a;
+    REQUIRE(r[0] == 4);
+    REQUIRE(r[1] == 3);
+  }
+
+  {
+    Vector<int> r(2);
+    TEST_DEBUG("r = a - 5");
+    r = a - 5;
+    REQUIRE(r[0] == -4);
+    REQUIRE(r[1] == -3);
+  }
+}
+
 TEST_CASE("Vector: transpose", "[vector]") {
   Vector<int> a({1, 2});
   Vector<int> b({2, 3});
@@ -304,27 +341,3 @@ TEST_CASE("Vector: transpose", "[vector]") {
 //   // REQUIRE(eq(*v[0], *integer(4)));
 //   // REQUIRE(eq(*v[1], *integer(8)));
 // }
-
-TEST_CASE("Vector: Norm", "[vector]") {
-  Vector<int> v({1, -2, 3});
-
-  {
-    auto result = Controls::Math::norm(v, 1);
-    REQUIRE(::fabs(result - 6) < 1e-3);
-  }
-
-  {
-    auto result = Controls::Math::norm(v, 2);
-    REQUIRE(::fabs(result - 3.7417) < 1e-3);
-  }
-
-  {
-    auto result = Controls::Math::norm(v, 3);
-    REQUIRE(::fabs(result - 3.3019) < 1e-3);
-  }
-
-  {
-    auto result = Controls::Math::infinity_norm(v);
-    REQUIRE(result == 3);
-  }
-}

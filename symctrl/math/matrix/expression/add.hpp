@@ -15,6 +15,11 @@ namespace Math {
 //
 template<typename M1, typename M2>
 class ExprAdd : public Expression<Matrix<ExprAdd<M1, M2>>> {
+public:
+  using type = typename M1::type;
+
+  using result_type = result_type_t<M1>;
+
 private:
   const M1 lhs_;
   const M2 rhs_;
@@ -23,6 +28,19 @@ public:
   explicit inline ExprAdd(const M1 &lhs, const M2 &rhs);
 
   inline ExprAdd(const ExprAdd<M1, M2> &m);
+
+  operator type() const;
+
+  inline size_t size() const;
+  inline size_t capacity() const;
+
+  inline bool empty() const;
+
+  inline size_t nrows() const;
+  inline size_t ncols() const;
+
+  inline type &operator[](const size_t pos);
+  inline const type &operator[](const size_t pos) const;
 
 private:
   // A + B
@@ -92,7 +110,7 @@ private:
 };
 
 // ----------------------------------------------------------------------
-// ExprAdd Scalar Constructor
+// ExprAdd Constructor
 //
 template<typename M1, typename M2>
 inline ExprAdd<M1, M2>::ExprAdd(const M1 &lhs,
@@ -107,6 +125,60 @@ inline ExprAdd<M1, M2>::ExprAdd(const ExprAdd<M1, M2> &m) :
                                 lhs_(m.lhs_),
                                 rhs_(m.rhs_) {
   //
+}
+
+// ----------------------------------------------------------------------
+// ExprAdd Type Conversion Operator
+//
+template<typename M1, typename M2>
+ExprAdd<M1, M2>::operator ExprAdd<M1, M2>::type() const {
+  result_type r;
+  apply_(r, *this);
+
+  SYMCTRL_ASSERT(r.nrows() == 1);
+  SYMCTRL_ASSERT(r.ncols() == 1);
+
+  return r[0];
+}
+
+// ----------------------------------------------------------------------
+// ExprAdd Member Function Definitions
+//
+template<typename M1, typename M2>
+inline size_t ExprAdd<M1, M2>::size() const {
+  return lhs_.size();
+}
+
+template<typename M1, typename M2>
+inline size_t ExprAdd<M1, M2>::capacity() const {
+  return lhs_.capacity();
+}
+
+template<typename M1, typename M2>
+inline bool ExprAdd<M1, M2>::empty() const {
+  return lhs_.empty();
+}
+
+template<typename M1, typename M2>
+inline size_t ExprAdd<M1, M2>::nrows() const {
+  return lhs_.nrows();
+}
+
+template<typename M1, typename M2>
+inline size_t ExprAdd<M1, M2>::ncols() const {
+  return lhs_.ncols();
+}
+
+template<typename M1, typename M2>
+inline typename ExprAdd<M1, M2>::type&
+ExprAdd<M1, M2>::operator[](const size_t pos) {
+  return lhs_[pos] + rhs_[pos];
+}
+
+template<typename M1, typename M2>
+inline const typename ExprAdd<M1, M2>::type&
+ExprAdd<M1, M2>::operator[](const size_t pos) const {
+  return lhs_[pos] + rhs_[pos];
 }
 
 // ----------------------------------------------------------------------

@@ -16,6 +16,9 @@ namespace Math {
 //
 template<typename T, size_t N, size_t M>
 class Zeros : public Matrix<Zeros<T, N, M>> {
+public:
+  using type = T;
+
 private:
 
 public:

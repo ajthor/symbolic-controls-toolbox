@@ -15,6 +15,11 @@ namespace Math {
 //
 template<typename T>
 class BlockMatrix : public Matrix<BlockMatrix<T>> {
+public:
+  using type = T;
+
+  using result_type = BlockMatrix<T>;
+
 private:
   using MT = DenseMatrix<T>;
 

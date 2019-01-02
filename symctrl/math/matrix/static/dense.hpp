@@ -17,8 +17,7 @@ private:
   const std::vector<T> v_;
 
 public:
-  StaticMatrix();
-  StaticMatrix(const std::vector<T> v);
+  explicit inline StaticMatrix(const std::vector<T> v);
 
   inline size_t size() const;
   inline size_t capacity() const;
@@ -45,13 +44,8 @@ public:
 };
 
 template<typename T, size_t N, size_t M>
-StaticMatrix<T, N, M>::StaticMatrix() {
-  // v_ = std::vector<T>(N*M, T(0));
-}
-
-template<typename T, size_t N, size_t M>
-StaticMatrix<T, N, M>::StaticMatrix(const std::vector<T> v) :
-                                    v_(v) {
+inline StaticMatrix<T, N, M>::StaticMatrix(const std::vector<T> v) :
+                                           v_(v) {
   //
   SYMCTRL_ASSERT(v.size() == N*M);
 }

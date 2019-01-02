@@ -33,7 +33,8 @@ void eigenvalues(SymEngine::DenseMatrix &A,
     V = SymEngine::DenseMatrix(n, n);
     SymEngine::eye(V);
 
-  } else {
+  }
+  else {
     // Compute the Schur decomposition.
     SymEngine::DenseMatrix T;
     T = SymEngine::DenseMatrix(n, n);

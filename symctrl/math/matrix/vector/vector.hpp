@@ -8,6 +8,7 @@
 
 #include <symctrl/assert.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
+#include <symctrl/traits/is_scalar.hpp>
 
 namespace Controls {
 namespace Math {
@@ -17,6 +18,11 @@ namespace Math {
 //
 template<typename T>
 class Vector : public Matrix<Vector<T>> {
+public:
+  using type = T;
+
+  using result_type = Vector<T>;
+
 private:
   size_t n_;
   size_t m_;
@@ -43,6 +49,10 @@ public:
   inline Vector<T> &operator-=(const T &rhs);
   inline Vector<T> &operator*=(const T &rhs);
   inline Vector<T> &operator/=(const T &rhs);
+  template<typename DT>
+  inline Vector<T> &operator+=(const Matrix<DT> &rhs);
+  template<typename DT>
+  inline Vector<T> &operator-=(const Matrix<DT> &rhs);
 
   template<typename DT>
   inline void apply(const Matrix<DT> &rhs);

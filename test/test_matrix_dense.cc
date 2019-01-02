@@ -36,16 +36,16 @@ TEST_CASE("Dense: Assignment", "[dense]") {
   DenseMatrix<int> A(2, 2, {1, 2, 3, 4});
   DenseMatrix<int> C(2, 2);
 
-  std::vector<int> v1 = {1, 2};
+  Vector<int> v1({1, 2});
   REQUIRE(A.row(0) == v1);
 
-  std::vector<int> v2 = {3, 4};
+  Vector<int> v2({3, 4});
   REQUIRE(A.row(1) == v2);
 
-  std::vector<int> v3 = {1, 3};
+  Vector<int> v3({1, 3});
   REQUIRE(A.col(0) == v3);
 
-  std::vector<int> v4 = {2, 4};
+  Vector<int> v4({2, 4});
   REQUIRE(A.col(1) == v4);
 
   // Assignment
@@ -63,6 +63,18 @@ TEST_CASE("Dense: Assignment", "[dense]") {
   C(0, 0) = 2;
 
   REQUIRE(C != A);
+
+  {
+    DenseMatrix<int> M(2, 2, {1, 2, 3, 4});
+    M.swap_row(0, 1);
+    REQUIRE(M == DenseMatrix<int>(2, 2, {3, 4, 1, 2}));
+  }
+
+  {
+    DenseMatrix<int> M(2, 2, {1, 2, 3, 4});
+    M.swap_col(0, 1);
+    REQUIRE(M == DenseMatrix<int>(2, 2, {2, 1, 4, 3}));
+  }
 }
 
 TEST_CASE("Dense: Add", "[dense]") {
@@ -209,10 +221,10 @@ TEST_CASE("Dense: Sub", "[dense]") {
     DenseMatrix<int> R(2, 2);
     TEST_DEBUG("R = 5 - A");
     R = 5 - A;
-    REQUIRE(R[0] == -4);
-    REQUIRE(R[1] == -4);
-    REQUIRE(R[2] == -4);
-    REQUIRE(R[3] == -4);
+    REQUIRE(R[0] == 4);
+    REQUIRE(R[1] == 4);
+    REQUIRE(R[2] == 4);
+    REQUIRE(R[3] == 4);
   }
 
   {
@@ -339,69 +351,6 @@ TEST_CASE("Dense: transpose", "[dense]") {
     REQUIRE(R(1, 0) == 4);
     REQUIRE(R(1, 1) == 7);
   }
-}
-
-TEST_CASE("Dense: jacobian", "[dense]") {
-  RCP<const Symbol> x = symbol("x");
-  RCP<const Symbol> y = symbol("y");
-
-  SymbolicVector a({x, mul(x, y)});
-  SymbolicVector b({x, y});
-  SymbolicDense C(2, 2);
-  C = integer(1);
-
-  {
-    REQUIRE(a != b);
-  }
-
-  {
-    SymbolicDense R(2, 2);
-    TEST_DEBUG("R = jacobian(a, b)");
-    R = jacobian(a, b);
-    REQUIRE(eq(*R(0, 0), *integer(1)));
-    REQUIRE(eq(*R(0, 1), *integer(0)));
-    REQUIRE(eq(*R(1, 0), *y));
-    REQUIRE(eq(*R(1, 1), *x));
-  }
-
-  {
-    SymbolicDense R(2, 2);
-    TEST_DEBUG("R = C + jacobian(a, b)");
-    R = C + jacobian(a, b);
-    REQUIRE(eq(*R(0, 0), *integer(2)));
-    REQUIRE(eq(*R(0, 1), *integer(1)));
-    REQUIRE(eq(*R(1, 0), *add(y, integer(1))));
-    REQUIRE(eq(*R(1, 1), *add(x, integer(1))));
-  }
-
-  {
-    SymbolicDense R(2, 2);
-    TEST_DEBUG("R = C * jacobian(a, b)");
-    R = C * jacobian(a, b);
-    REQUIRE(eq(*R(0, 0), *add(y, integer(1))));
-    REQUIRE(eq(*R(0, 1), *x));
-    REQUIRE(eq(*R(1, 0), *add(y, integer(1))));
-    REQUIRE(eq(*R(1, 1), *x));
-  }
-
-  {
-    SymbolicDense R(2, 2);
-    TEST_DEBUG("R = transpose(jacobian(a, b))");
-    R = transpose(jacobian(a, b));
-    REQUIRE(eq(*R(0, 0), *integer(1)));
-    REQUIRE(eq(*R(0, 1), *y));
-    REQUIRE(eq(*R(1, 0), *integer(0)));
-    REQUIRE(eq(*R(1, 1), *x));
-  }
-
-  Vector<int> c({1, 1});
-  Vector<int> d({1, 1});
-  DenseMatrix<int> S(2, 2);
-
-  // Fails!
-  // S = jacobian(a, b);
-  // S = jacobian(c, d);
-  // R = jacobian(c, d);
 }
 
 TEST_CASE("Dense: DenseMatrix RCP<const Basic>", "[dense]") {
