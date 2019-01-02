@@ -45,7 +45,8 @@ set(HEADERS
   math/matrix/sparse.hpp
   math/matrix/sparse/sparse.hpp
   math/matrix/static.hpp
-  math/matrix/static/static.hpp
+  math/matrix/static/dense.hpp
+  math/matrix/static/vector.hpp
   math/matrix/vector.hpp
   math/matrix/vector/vector.hpp
   math/matrix/expression.hpp

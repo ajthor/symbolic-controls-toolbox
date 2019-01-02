@@ -18,8 +18,9 @@
 
 using Controls::Math::Matrix;
 using Controls::Math::DenseMatrix;
+using Controls::Math::StaticDense;
 using Controls::Math::Vector;
-using Controls::Math::StaticMatrix;
+using Controls::Math::StaticVector;
 using Controls::Math::ConstantMatrix;
 using Controls::Math::Identity;
 using Controls::Math::Ones;

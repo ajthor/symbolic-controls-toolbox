@@ -6,7 +6,7 @@
 #include <symengine/basic.h>
 #include <symengine/constants.h>
 
-#include <symctrl/math/matrix/dense/dense.hpp>
+#include <symctrl/math/matrix/static/dense.hpp>
 
 namespace Controls {
 namespace Math {
@@ -18,6 +18,8 @@ template<typename T, size_t N, size_t M>
 class Ones : public Matrix<Ones<T, N, M>> {
 public:
   using type = T;
+
+  using result_type = StaticDense<T, N, M>;
 
 private:
 
@@ -33,7 +35,7 @@ public:
   inline size_t ncols() const;
 
   inline std::vector<T> as_vec() const;
-  inline DenseMatrix<T> as_dense() const;
+  inline StaticDense<T, N, M> as_dense() const;
 
   inline T operator[](const size_t pos);
   inline const T operator[](const size_t pos) const;
@@ -80,10 +82,10 @@ inline std::vector<T> Ones<T, N, M>::as_vec() const {
 }
 
 template<typename T, size_t N, size_t M>
-inline DenseMatrix<T> Ones<T, N, M>::as_dense() const {
+inline StaticDense<T, N, M> Ones<T, N, M>::as_dense() const {
   std::vector<T> v = (*this).as_vec();
 
-  return DenseMatrix<T>(N, M, v);
+  return StaticDense<T, N, M>(v);
 }
 
 template<typename T, size_t N, size_t M>
@@ -129,7 +131,7 @@ public:
   inline size_t ncols() const;
 
   inline std::vector<RCPBasic> as_vec() const;
-  inline DenseMatrix<RCPBasic> as_dense() const;
+  inline StaticDense<RCPBasic, N, M> as_dense() const;
 
   inline RCPBasic operator[](const size_t pos);
   inline const RCPBasic operator[](const size_t pos) const;
@@ -177,10 +179,10 @@ Ones<RCPBasic, N, M>::as_vec() const {
 }
 
 template<size_t N, size_t M>
-inline DenseMatrix<RCPBasic> Ones<RCPBasic, N, M>::as_dense() const {
+inline StaticDense<RCPBasic, N, M> Ones<RCPBasic, N, M>::as_dense() const {
   std::vector<RCPBasic> v = (*this).as_vec();
 
-  return DenseMatrix<RCPBasic>(N, M, v);
+  return StaticDense<RCPBasic, N, M>(v);
 }
 
 template<size_t N, size_t M>

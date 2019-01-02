@@ -2,6 +2,7 @@
 #define SYMCTRL_MATH_MATRIX_EXPRESSION_CONSTANT_HPP
 
 #include <symctrl/assert.hpp>
+#include <symctrl/math/matrix/static.hpp>
 #include <symctrl/math/matrix/constant/identity.hpp>
 #include <symctrl/math/matrix/constant/ones.hpp>
 #include <symctrl/math/matrix/constant/zeros.hpp>
@@ -17,29 +18,29 @@ namespace Math {
 template<typename T, size_t N, size_t M, typename M2>
 inline auto
 operator+(const Identity<T, N, M> &lhs, const M2 rhs)
--> enable_if_scalar_t<M2, const DenseMatrix<T>> {
-  return DenseMatrix<T>((~lhs).as_dense() += rhs);
+-> enable_if_scalar_t<M2, const StaticDense<T, N, M>> {
+  return StaticDense<T, N, M>((~lhs).as_dense() += rhs);
 }
 
 template<typename M1, typename T, size_t N, size_t M>
 inline auto
 operator+(const M1 lhs, const Identity<T, N, M> &rhs)
--> enable_if_scalar_t<M1, const DenseMatrix<T>> {
-  return DenseMatrix<T>((~rhs).as_dense() += lhs);
+-> enable_if_scalar_t<M1, const StaticDense<T, N, M>> {
+  return StaticDense<T, N, M>((~rhs).as_dense() += lhs);
 }
 
 template<typename T, size_t N, size_t M, typename M2>
 inline auto
 operator*(const Identity<T, N, M> &lhs, const M2 rhs)
--> enable_if_scalar_t<M2, const DenseMatrix<T>> {
-  return DenseMatrix<T>((~lhs).as_dense() *= rhs);
+-> enable_if_scalar_t<M2, const StaticDense<T, N, M>> {
+  return StaticDense<T, N, M>((~lhs).as_dense() *= rhs);
 }
 
 template<typename M1, typename T, size_t N, size_t M>
 inline auto
 operator*(const M1 lhs, const Identity<T, N, M> &rhs)
--> enable_if_scalar_t<M1, const DenseMatrix<T>> {
-  return DenseMatrix<T>((~rhs).as_dense() *= lhs);
+-> enable_if_scalar_t<M1, const StaticDense<T, N, M>> {
+  return StaticDense<T, N, M>((~rhs).as_dense() *= lhs);
 }
 
 template<typename T, size_t N, size_t M, typename M2>
@@ -93,29 +94,29 @@ inline bool equal(const Identity<T, N, M> &lhs, const Matrix<DT> &rhs) {
 template<typename T, size_t N, size_t M, typename M2>
 inline auto
 operator+(const Ones<T, N, M> &lhs, const M2 rhs)
--> enable_if_scalar_t<M2, const DenseMatrix<T>> {
-  return DenseMatrix<T>((~lhs).as_dense() += rhs);
+-> enable_if_scalar_t<M2, const StaticDense<T, N, M>> {
+  return StaticDense<T, N, M>((~lhs).as_dense() += rhs);
 }
 
 template<typename M1, typename T, size_t N, size_t M>
 inline auto
 operator+(const M1 lhs, const Ones<T, N, M> &rhs)
--> enable_if_scalar_t<M1, const DenseMatrix<T>> {
-  return DenseMatrix<T>((~rhs).as_dense() += lhs);
+-> enable_if_scalar_t<M1, const StaticDense<T, N, M>> {
+  return StaticDense<T, N, M>((~rhs).as_dense() += lhs);
 }
 
 template<typename T, size_t N, size_t M, typename M2>
 inline auto
 operator*(const Ones<T, N, M> &lhs, const M2 rhs)
--> enable_if_scalar_t<M2, const DenseMatrix<T>> {
-  return DenseMatrix<T>((~lhs).as_dense() *= rhs);
+-> enable_if_scalar_t<M2, const StaticDense<T, N, M>> {
+  return StaticDense<T, N, M>((~lhs).as_dense() *= rhs);
 }
 
 template<typename M1, typename T, size_t N, size_t M>
 inline auto
 operator*(const M1 lhs, const Ones<T, N, M> &rhs)
--> enable_if_scalar_t<M1, const DenseMatrix<T>> {
-  return DenseMatrix<T>((~rhs).as_dense() *= lhs);
+-> enable_if_scalar_t<M1, const StaticDense<T, N, M>> {
+  return StaticDense<T, N, M>((~rhs).as_dense() *= lhs);
 }
 
 // ----------------------------------------------------------------------
@@ -148,15 +149,15 @@ inline bool equal(const Ones<T, N, M> &lhs, const Matrix<DT> &rhs) {
 template<typename T, size_t N, size_t M, typename M2>
 inline auto
 operator+(const Zeros<T, N, M> &lhs, const M2 rhs)
--> enable_if_scalar_t<M2, const DenseMatrix<T>> {
-  return DenseMatrix<T>((~lhs).as_dense() += rhs);
+-> enable_if_scalar_t<M2, const StaticDense<T, N, M>> {
+  return StaticDense<T, N, M>((~lhs).as_dense() += rhs);
 }
 
 template<typename M1, typename T, size_t N, size_t M>
 inline auto
 operator+(const M1 lhs, const Zeros<T, N, M> &rhs)
--> enable_if_scalar_t<M1, const DenseMatrix<T>> {
-  return DenseMatrix<T>((~rhs).as_dense() += lhs);
+-> enable_if_scalar_t<M1, const StaticDense<T, N, M>> {
+  return StaticDense<T, N, M>((~rhs).as_dense() += lhs);
 }
 
 template<typename T, size_t N, size_t M, typename M2>

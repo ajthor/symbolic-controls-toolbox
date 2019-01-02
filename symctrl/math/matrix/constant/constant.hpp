@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include <symctrl/math/matrix/dense/dense.hpp>
+#include <symctrl/math/matrix/static/dense.hpp>
 
 namespace Controls {
 namespace Math {
@@ -11,10 +11,12 @@ namespace Math {
 // ----------------------------------------------------------------------
 // ConstantMatrix
 //
-template<typename T, size_t N, size_t M, T v_>
-class ConstantMatrix : public Matrix<ConstantMatrix<T, N, M, v_>> {
+template<typename T, size_t N, size_t M, T C>
+class ConstantMatrix : public Matrix<ConstantMatrix<T, N, M, C>> {
 public:
   using type = T;
+
+  using result_type = StaticDense<T, N, M>;
 
 private:
 
@@ -30,7 +32,7 @@ public:
   inline size_t ncols() const;
 
   inline std::vector<T> as_vec() const;
-  inline DenseMatrix<T> as_dense() const;
+  inline StaticDense<T, N, M> as_dense() const;
 
   inline T operator[](const size_t pos);
   inline const T operator[](const size_t pos) const;
@@ -39,70 +41,70 @@ public:
   inline const T operator()(const size_t row, const size_t col) const;
 };
 
-template<typename T, size_t N, size_t M, T v_>
-ConstantMatrix<T, N, M, v_>::ConstantMatrix() {
+template<typename T, size_t N, size_t M, T C>
+ConstantMatrix<T, N, M, C>::ConstantMatrix() {
   //
 }
 
-template<typename T, size_t N, size_t M, T v_>
-inline size_t ConstantMatrix<T, N, M, v_>::size() const {
+template<typename T, size_t N, size_t M, T C>
+inline size_t ConstantMatrix<T, N, M, C>::size() const {
   return N*M;
 }
 
-template<typename T, size_t N, size_t M, T v_>
-inline size_t ConstantMatrix<T, N, M, v_>::capacity() const {
+template<typename T, size_t N, size_t M, T C>
+inline size_t ConstantMatrix<T, N, M, C>::capacity() const {
   return 0;
 }
 
-template<typename T, size_t N, size_t M, T v_>
-inline bool ConstantMatrix<T, N, M, v_>::empty() const {
+template<typename T, size_t N, size_t M, T C>
+inline bool ConstantMatrix<T, N, M, C>::empty() const {
   return false;
 }
 
-template<typename T, size_t N, size_t M, T v_>
-inline size_t ConstantMatrix<T, N, M, v_>::nrows() const {
+template<typename T, size_t N, size_t M, T C>
+inline size_t ConstantMatrix<T, N, M, C>::nrows() const {
   return N;
 }
 
-template<typename T, size_t N, size_t M, T v_>
-inline size_t ConstantMatrix<T, N, M, v_>::ncols() const {
+template<typename T, size_t N, size_t M, T C>
+inline size_t ConstantMatrix<T, N, M, C>::ncols() const {
   return M;
 }
 
-template<typename T, size_t N, size_t M, T v_>
-inline std::vector<T> ConstantMatrix<T, N, M, v_>::as_vec() const {
-  std::vector<T> v(N*M, v_);
+template<typename T, size_t N, size_t M, T C>
+inline std::vector<T> ConstantMatrix<T, N, M, C>::as_vec() const {
+  std::vector<T> v(N*M, C);
 
   return v;
 }
 
-template<typename T, size_t N, size_t M, T v_>
-inline DenseMatrix<T> ConstantMatrix<T, N, M, v_>::as_dense() const {
+template<typename T, size_t N, size_t M, T C>
+inline StaticDense<T, N, M> ConstantMatrix<T, N, M, C>::as_dense() const {
   std::vector<T> v = (*this).as_vec();
 
-  return DenseMatrix<T>(N, M, v);
+  return StaticDense<T, N, M>(v);
 }
 
-template<typename T, size_t N, size_t M, T v_>
-inline T ConstantMatrix<T, N, M, v_>::operator[](const size_t pos) {
-  return v_;
+template<typename T, size_t N, size_t M, T C>
+inline T ConstantMatrix<T, N, M, C>::operator[](const size_t pos) {
+  return C;
 }
 
-template<typename T, size_t N, size_t M, T v_>
-inline const T ConstantMatrix<T, N, M, v_>::operator[](const size_t pos) const {
-  return v_;
+template<typename T, size_t N, size_t M, T C>
+inline const T ConstantMatrix<T, N, M, C>::operator[](const size_t pos) const {
+  return C;
 }
 
-template<typename T, size_t N, size_t M, T v_>
-inline T ConstantMatrix<T, N, M, v_>::operator()(const size_t row,
+template<typename T, size_t N, size_t M, T C>
+inline T ConstantMatrix<T, N, M, C>::operator()(const size_t row,
                                              const size_t col) {
-  return v_;
+  return C;
 }
 
-template<typename T, size_t N, size_t M, T v_>
-inline const T ConstantMatrix<T, N, M, v_>::operator()(const size_t row,
+template<typename T, size_t N, size_t M, T C>
+inline const T ConstantMatrix<T, N, M, C>::operator()(const size_t row,
                                                    const size_t col) const {
-  return v_;
+  return C;
 }
 
 } // Math
