@@ -4,32 +4,48 @@
 #include <vector>
 
 #include <symctrl/math/functor/functor.hpp>
+#include <symctrl/math/functor/lambda.hpp>
 
 namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
+// KernelFunction Signature
+//
+#ifndef KERNEL_FUNCTION_PARAMS
+#define KERNEL_FUNCTION_PARAMS \
+double, \
+const std::vector<double> &, \
+const std::vector<double> &
+#endif
+
+// ----------------------------------------------------------------------
 // KernelFunction
 //
-// For each function that takes a matrix as a function parameter, the
-// matrix should represent data points on every row.
-//
-// For example:
+// Example:
 //
 // Data: (1.0, 1.0), (1.2, 2.1), (1.4, 3.6)
 // Matrix:
 //   [1.0, 1.0]
 //   [1.2, 2.1]
 //   [1.4, 3.6]
-class KernelFunction : public Functor<KernelFunction,
-                                      double,
-                                      const std::vector<double> &,
-                                      const std::vector<double> &> {
+class KernelFunction : public Functor<KernelFunction, KERNEL_FUNCTION_PARAMS> {
 public:
-  virtual double eval(const std::vector<double> &input,
-                      const std::vector<double> &output) = 0;
+  using type = BaseFunctor<KERNEL_FUNCTION_PARAMS>;
+
+  virtual double eval(const std::vector<double> &x,
+                      const std::vector<double> &y) = 0;
 };
 
+template<typename F>
+inline KernelFunction::type *kernel_function(F&& f) {
+  return new LambdaFunctor<F, KERNEL_FUNCTION_PARAMS>(f);
+}
+
+template<typename T>
+inline bool is_a_kernel_function(T &b) {
+  return dynamic_cast<KernelFunction::type *>(&b) != nullptr;
+}
 
 // ----------------------------------------------------------------------
 // Dot Kernel
@@ -37,10 +53,9 @@ public:
 class DotKernel : public KernelFunction {
 public:
   explicit inline DotKernel() {}
-  // ~DotKernel() {}
 
   double eval(const std::vector<double> &x,
-                   const std::vector<double> &y);
+              const std::vector<double> &y);
 };
 
 // ----------------------------------------------------------------------
@@ -59,10 +74,9 @@ public:
                                    scale_(scale),
                                    offset_(offset),
                                    degree_(degree) {}
-  // ~PolynomialKernel() {}
 
   double eval(const std::vector<double> &x,
-                   const std::vector<double> &y);
+              const std::vector<double> &y);
 };
 
 // ----------------------------------------------------------------------
@@ -75,10 +89,9 @@ private:
 public:
   explicit inline GaussianKernel(const double sigma) :
                                  sigma_(sigma) {}
-  // ~GaussianKernel() {}
 
   double eval(const std::vector<double> &x,
-                   const std::vector<double> &y);
+              const std::vector<double> &y);
 };
 
 } // Math

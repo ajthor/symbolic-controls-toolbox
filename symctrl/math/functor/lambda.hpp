@@ -38,7 +38,7 @@ struct lambda_shim<F, R, std::tuple<T...>> {
 };
 
 template<typename F>
-inline auto make_lambda(F&& f)
+inline auto lambda_functor(F&& f)
 -> typename lambda_shim<F, functor_return_t<F>, functor_args_t<F>>::type {
   using ReturnType =
     typename lambda_shim<F, functor_return_t<F>, functor_args_t<F>>::type;

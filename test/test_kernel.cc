@@ -4,9 +4,9 @@
 #include <vector>
 
 #include <symctrl/math/functor/kernel.hpp>
-#include <symctrl/matrix/dense.hpp>
+#include <symctrl/math/matrix/dense.hpp>
 
-TEST_CASE("Kernel: dot kernel", "[kernel]") {
+TEST_CASE("Kernel: Dot Kernel", "[kernel]") {
   std::vector<double> x = {1, 2};
   std::vector<double> y = {3, 4};
   double result;
@@ -18,7 +18,7 @@ TEST_CASE("Kernel: dot kernel", "[kernel]") {
   REQUIRE(result == 11);
 }
 
-TEST_CASE("Kernel: polynomial kernel", "[kernel]") {
+TEST_CASE("Kernel: Polynomial Kernel", "[kernel]") {
   std::vector<double> x = {1, 2};
   std::vector<double> y = {3, 4};
   double result;
@@ -30,7 +30,7 @@ TEST_CASE("Kernel: polynomial kernel", "[kernel]") {
   REQUIRE(result == 121);
 }
 
-TEST_CASE("Kernel: gaussian kernel", "[kernel]") {
+TEST_CASE("Kernel: Gaussian Kernel", "[kernel]") {
   std::vector<double> x = {1, 2};
   std::vector<double> y = {3, 4};
   double result;

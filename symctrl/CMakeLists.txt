@@ -10,6 +10,8 @@ set(SRC
   state_space.cc
   transfer_function.cc
   visitor.cc
+  math/functor/kernel.cc
+  math/matrix/operation/gram.cc
   ode/euler.cc
 )
 
@@ -19,7 +21,6 @@ set(HEADERS
   analysis.hpp
   c_wrapper.hpp
   controller.hpp
-  cost_function.hpp
   function.hpp
   kernel.hpp
   mdp.hpp
@@ -27,9 +28,11 @@ set(HEADERS
   subs.hpp
   system.hpp
   transfer_function.hpp
-  transition_function.hpp
   visitor.hpp
   math/math.hpp
+  math/functor/functor.hpp
+  math/functor/kernel.hpp
+  math/functor/lambda.hpp
   math/matrix/block.hpp
   math/matrix/block/block.hpp
   math/matrix/constant.hpp
@@ -60,6 +63,7 @@ set(HEADERS
   math/matrix/expression/inverse.hpp
   math/matrix/expression/transpose.hpp
   math/matrix/expression/neg.hpp
+  math/matrix/operation/gram.hpp
   math/matrix/operation/jacobian.hpp
   math/matrix/operation/norm.hpp
   math/random/random_distribution.hpp

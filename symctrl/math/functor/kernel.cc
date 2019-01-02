@@ -27,7 +27,7 @@ inline double gk_euclidean_distance(InputIt1 first1, InputIt1 last1,
 // Dot Kernel
 //
 double DotKernel::eval(const std::vector<double> &x,
-                            const std::vector<double> &y) {
+                       const std::vector<double> &y) {
   //
   return std::inner_product(x.begin(), x.end(), y.begin(), 0);
 }
@@ -36,7 +36,7 @@ double DotKernel::eval(const std::vector<double> &x,
 // Polynomial Kernel
 //
 double PolynomialKernel::eval(const std::vector<double> &x,
-                                   const std::vector<double> &y) {
+                              const std::vector<double> &y) {
   //
   double result = std::inner_product(x.begin(), x.end(), y.begin(), 0);
   result = ::pow(scale_*result + offset_, degree_);
@@ -47,7 +47,7 @@ double PolynomialKernel::eval(const std::vector<double> &x,
 // Gaussian Kernel
 //
 double GaussianKernel::eval(const std::vector<double> &x,
-                                 const std::vector<double> &y) {
+                            const std::vector<double> &y) {
   //
   double dist = gk_euclidean_distance(x.begin(), x.end(), y.begin());
   return ::exp((-1*dist)/(2*::pow(sigma_, 2)));
