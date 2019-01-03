@@ -6,6 +6,7 @@
 #include <symengine/basic.h>
 #include <symengine/constants.h>
 
+#include <symctrl/math/matrix/dense/dense.hpp>
 #include <symctrl/math/matrix/static/dense.hpp>
 
 namespace Controls {
@@ -19,7 +20,7 @@ class Ones : public Matrix<Ones<T, N, M>> {
 public:
   using type = T;
 
-  using result_type = StaticDense<T, N, M>;
+  using result_type = DenseMatrix<T>;
 
 private:
 

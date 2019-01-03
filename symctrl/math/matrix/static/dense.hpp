@@ -2,10 +2,12 @@
 #define SYMCTRL_MATH_MATRIX_STATIC_DENSE_HPP
 
 #include <iomanip>
+#include <type_traits>
 #include <vector>
 
 #include <symctrl/assert.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
+#include <symctrl/math/matrix/dense/dense.hpp>
 
 namespace Controls {
 namespace Math {
@@ -18,16 +20,20 @@ class StaticDense : public Matrix<StaticDense<T, N, M>> {
 public:
   using type = T;
 
-  using result_type = StaticDense<T, N, M>;
+  using result_type = DenseMatrix<T>;
 
 private:
   std::vector<T> v_;
 
 public:
+  explicit inline StaticDense();
   explicit inline StaticDense(const std::vector<T> v);
 
   inline StaticDense(const DenseMatrix<T> &m);
   inline StaticDense(const StaticDense<T, N, M> &m);
+
+  template<typename DT>
+  inline StaticDense(const Matrix<DT> &m);
 
   inline StaticDense<T, N, M> &operator=(const T &rhs);
   inline StaticDense<T, N, M> &operator=(const StaticDense<T, N, M> &rhs);
@@ -75,11 +81,19 @@ public:
 
   inline T &operator()(const size_t row, const size_t col);
   inline const T &operator()(const size_t row, const size_t col) const;
+
+  SYMCTRL_STATIC_ASSERT(N != 0 && M != 0,
+    "StaticDense must have N != 0 && M != 0")
 };
 
 // ----------------------------------------------------------------------
 // StaticDense Constructor
 //
+template<typename T, size_t N, size_t M>
+inline StaticDense<T, N, M>::StaticDense() {
+  v_ = std::vector<T>(N*M);
+}
+
 template<typename T, size_t N, size_t M>
 inline StaticDense<T, N, M>::StaticDense(const std::vector<T> v) :
                                          v_(v) {
@@ -88,9 +102,26 @@ inline StaticDense<T, N, M>::StaticDense(const std::vector<T> v) :
 }
 
 template<typename T, size_t N, size_t M>
+inline StaticDense<T, N, M>::StaticDense(const DenseMatrix<T> &m) :
+                                         v_(m.as_vec()) {
+  //
+  SYMCTRL_ASSERT(N == m.nrows());
+  SYMCTRL_ASSERT(M == m.ncols());
+}
+
+template<typename T, size_t N, size_t M>
 inline StaticDense<T, N, M>::StaticDense(const StaticDense<T, N, M> &m) :
                                          v_(m.v_) {
   //
+}
+
+template<typename T, size_t N, size_t M>
+template<typename DT>
+inline StaticDense<T, N, M>::StaticDense(const Matrix<DT> &m) :
+                                         v_((~m).as_vec()) {
+  //
+  SYMCTRL_ASSERT(N == (~m).nrows());
+  SYMCTRL_ASSERT(M == (~m).ncols());
 }
 
 // ----------------------------------------------------------------------

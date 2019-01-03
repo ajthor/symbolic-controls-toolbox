@@ -4,6 +4,7 @@
 #include <symctrl/assert.hpp>
 #include <symctrl/math/matrix/static/dense.hpp>
 #include <symctrl/math/matrix/static/vector.hpp>
+#include <symctrl/traits/is_static.hpp>
 
 namespace Controls {
 namespace Math {
@@ -106,12 +107,28 @@ inline void StaticDense<T, N, M>::apply_mul(const Matrix<DT> &rhs) {
 // StaticDense Equal
 //
 template<typename T, size_t N, size_t M>
-inline bool equal(const StaticDense<T, N, M> &lhs, const StaticDense<T, N, M> &rhs) {
+inline bool equal(const StaticDense<T, N, M> &lhs,
+                  const StaticDense<T, N, M> &rhs) {
   for(size_t i = 0; i < N; i++) {
     for(size_t j = 0; j < M; j++) {
       if(!equal((~lhs)(i, j), (~rhs)(i, j)))
         return false;
     }
+  }
+
+  return true;
+}
+
+template<typename DT, typename T, size_t N, size_t M>
+inline auto equal(const Matrix<DT> &lhs, const StaticDense<T, N, M> &rhs)
+-> disable_if_static_t<DT, bool> {
+  if((~lhs).nrows() != N || (~lhs).ncols() != M) {
+    return false;
+  }
+
+  for(size_t i = 0; i < (~rhs).size(); i++) {
+    if(!equal((~lhs)[i], (~rhs)[i]))
+      return false;
   }
 
   return true;
@@ -239,11 +256,24 @@ inline void StaticVector<T, N, M>::apply_mul(const Matrix<DT> &rhs) {
 template<typename T, size_t N, size_t M>
 inline bool equal(const StaticVector<T, N, M> &lhs,
                   const StaticVector<T, N, M> &rhs) {
-  for(size_t i = 0; i < N; i++) {
-    for(size_t j = 0; j < M; j++) {
-      if(!equal((~lhs)(i, j), (~rhs)(i, j)))
-        return false;
-    }
+  for(size_t i = 0; i < N*M; i++) {
+    if(!equal((~lhs)[i], (~rhs)[i]))
+      return false;
+  }
+
+  return true;
+}
+
+template<typename DT, typename T, size_t N, size_t M>
+inline auto equal(const Matrix<DT> &lhs, const StaticVector<T, N, M> &rhs)
+-> disable_if_static_t<DT, bool> {
+  if((~lhs).nrows() != N || (~lhs).ncols() != M) {
+    return false;
+  }
+
+  for(size_t i = 0; i < N*M; i++) {
+    if(!equal((~lhs)[i], (~rhs)[i]))
+      return false;
   }
 
   return true;

@@ -5,6 +5,7 @@
 
 #include <symctrl/assert.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
+#include <symctrl/math/matrix/vector/vector.hpp>
 
 namespace Controls {
 namespace Math {
@@ -13,20 +14,24 @@ namespace Math {
 // StaticVector
 //
 template<typename T, size_t N, size_t M>
-class StaticVector : Matrix<StaticVector<T, N, M>> {
+class StaticVector : public Matrix<StaticVector<T, N, M>> {
 public:
   using type = T;
 
-  using result_type = StaticVector<T, N, M>;
+  using result_type = Vector<T>;
 
 private:
   std::vector<T> v_;
 
 public:
+  explicit inline StaticVector();
   explicit inline StaticVector(const std::vector<T> v);
 
   inline StaticVector(const Vector<T> &m);
   inline StaticVector(const StaticVector<T, N, M> &m);
+
+  template<typename DT>
+  inline StaticVector(const Matrix<DT> &m);
 
   inline StaticVector<T, N, M> &operator=(const T &rhs);
   inline StaticVector<T, N, M> &operator=(const StaticVector<T, N, M> &rhs);
@@ -79,11 +84,22 @@ public:
 
   inline T &operator()(const size_t pos);
   inline const T &operator()(const size_t pos) const;
+
+  SYMCTRL_STATIC_ASSERT(N != 0 && M != 0,
+    "StaticVector must have N != 0 && M != 0")
+  SYMCTRL_STATIC_ASSERT(N == 1 || M == 1,
+    "StaticVector must have N == 1 || M == 1");
 };
 
 // ----------------------------------------------------------------------
 // StaticVector Constructor
 //
+template<typename T, size_t N, size_t M>
+StaticVector<T, N, M>::StaticVector() {
+  //
+  v_ = std::vector<T>(N*M);
+}
+
 template<typename T, size_t N, size_t M>
 StaticVector<T, N, M>::StaticVector(const std::vector<T> v) :
                                     v_(v) {
@@ -92,9 +108,26 @@ StaticVector<T, N, M>::StaticVector(const std::vector<T> v) :
 }
 
 template<typename T, size_t N, size_t M>
+inline StaticVector<T, N, M>::StaticVector(const Vector<T> &m) :
+                                           v_(m.as_vec()) {
+  //
+  SYMCTRL_ASSERT(N == m.nrows());
+  SYMCTRL_ASSERT(M == m.ncols());
+}
+
+template<typename T, size_t N, size_t M>
 StaticVector<T, N, M>::StaticVector(const StaticVector<T, N, M> &m) :
                                     v_(m.v_) {
   //
+}
+
+template<typename T, size_t N, size_t M>
+template<typename DT>
+inline StaticVector<T, N, M>::StaticVector(const Matrix<DT> &m) :
+                                           v_((~m).as_vec()) {
+  //
+  SYMCTRL_ASSERT(N == (~m).nrows());
+  SYMCTRL_ASSERT(M == (~m).ncols());
 }
 
 // ----------------------------------------------------------------------

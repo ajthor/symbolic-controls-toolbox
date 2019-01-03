@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include <symctrl/math/matrix/dense/dense.hpp>
 #include <symctrl/math/matrix/static/dense.hpp>
 
 namespace Controls {
@@ -16,7 +17,7 @@ class ConstantMatrix : public Matrix<ConstantMatrix<T, N, M, C>> {
 public:
   using type = T;
 
-  using result_type = StaticDense<T, N, M>;
+  using result_type = DenseMatrix<T>;
 
 private:
 

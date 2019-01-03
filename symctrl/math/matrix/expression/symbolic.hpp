@@ -6,6 +6,7 @@
 #include <symengine/basic.h>
 #include <symengine/constants.h>
 
+#include <symctrl/math/matrix/expression/matrix.hpp>
 #include <symctrl/math/matrix/expression/unary.hpp>
 
 namespace Controls {

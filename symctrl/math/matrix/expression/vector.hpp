@@ -146,6 +146,20 @@ inline bool equal(const Vector<T> &lhs, const Vector<T> &rhs) {
   return true;
 }
 
+template<typename DT, typename T>
+inline bool equal(const Matrix<DT> &lhs, const Vector<T> &rhs) {
+  if((~lhs).nrows() != (~rhs).nrows() || (~lhs).ncols() != (~rhs).ncols()) {
+    return false;
+  }
+
+  for(size_t i = 0; i < (~rhs).size(); i++) {
+    if(!equal((~lhs)[i], (~rhs)[i]))
+      return false;
+  }
+
+  return true;
+}
+
 // ----------------------------------------------------------------------
 // SymbolicVector Specialization
 //

@@ -42,6 +42,9 @@ public:
 
   inline DenseMatrix(const DenseMatrix<T> &m);
 
+  template<typename DT>
+  inline DenseMatrix(const Matrix<DT> &m);
+
   inline DenseMatrix<T> &operator=(const T &rhs);
   inline DenseMatrix<T> &operator=(const DenseMatrix<T> &rhs);
 
@@ -145,6 +148,15 @@ inline DenseMatrix<T>::DenseMatrix(const DenseMatrix<T> &m) :
                                    n_(m.n_),
                                    m_(m.m_),
                                    v_(m.v_) {
+  //
+}
+
+template<typename T>
+template<typename DT>
+inline DenseMatrix<T>::DenseMatrix(const Matrix<DT> &m) :
+                                   n_((~m).nrows()),
+                                   m_((~m).ncols()),
+                                   v_((~m).as_vec()) {
   //
 }
 

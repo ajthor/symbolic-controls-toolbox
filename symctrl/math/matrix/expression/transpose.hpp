@@ -51,7 +51,7 @@ private:
   friend inline void
   apply_add_(Matrix<DT> &lhs, const ExprTranspose<M> &rhs) {
     SYMCTRL_DEBUG("result = A + B^T");
-    M tmp(rhs.m_);
+    result_type tmp(rhs.m_);
     apply_transpose_(tmp, rhs.m_);
     apply_add_(~lhs, tmp);
   }
@@ -61,7 +61,7 @@ private:
   friend inline void
   apply_mul_(Matrix<DT> &lhs, const ExprTranspose<M> &rhs) {
     SYMCTRL_DEBUG("result = A * B^T");
-    M tmp(rhs.m_);
+    result_type tmp(rhs.m_);
     apply_transpose_(tmp, rhs.m_);
     apply_mul_(~lhs, tmp);
   }

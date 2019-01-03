@@ -40,6 +40,34 @@ inline void apply_transpose_(Matrix<D1> &lhs, const Matrix<D2> &rhs) {
 }
 
 // ----------------------------------------------------------------------
+// Matrix Equal
+//
+template<typename D1, typename D2>
+inline bool is_equal(const Matrix<D1> &lhs, const Matrix<D2> &rhs) {
+  return (std::is_same<D1, D2>::value &&
+          reinterpret_cast<const void *>(&lhs) ==
+          reinterpret_cast<const void *>(&rhs));
+}
+
+template<typename D1, typename D2>
+inline bool equal(const Matrix<D1> &lhs, const Matrix<D2> &rhs) {
+  return is_equal(~lhs, ~rhs);
+}
+
+// ----------------------------------------------------------------------
+// Value Equal
+//
+template<typename T>
+inline bool equal(const T lhs, const T rhs) {
+  return lhs == rhs;
+}
+
+template<typename T>
+inline bool is_default(const T v) {
+  return v == T();
+}
+
+// ----------------------------------------------------------------------
 // Matrix Equality Operator
 //
 template<typename D1, typename D2>

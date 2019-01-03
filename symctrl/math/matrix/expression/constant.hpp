@@ -13,6 +13,67 @@ namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
+// ConstantMatrix Expressions
+//
+template<typename T, size_t N, size_t M, T C, typename M2>
+inline auto
+operator+(const ConstantMatrix<T, N, M, C> &lhs, const M2 rhs)
+-> enable_if_scalar_t<M2, const ConstantMatrix<T, N, M, C + rhs>> {
+  return ConstantMatrix<T, N, M, C + rhs>();
+}
+
+template<typename M1, typename T, size_t N, size_t M, T C>
+inline auto
+operator+(const M1 lhs, const ConstantMatrix<T, N, M, C> &rhs)
+-> enable_if_scalar_t<M1, const ConstantMatrix<T, N, M, C + lhs>> {
+  return ConstantMatrix<T, N, M, C + lhs>();
+}
+
+template<typename T, size_t N, size_t M, T C, typename M2>
+inline auto
+operator*(const ConstantMatrix<T, N, M, C> &lhs, const M2 rhs)
+-> enable_if_scalar_t<M2, const ConstantMatrix<T, N, M, C * rhs>> {
+  return ConstantMatrix<T, N, M, C * rhs>();
+}
+
+template<typename M1, typename T, size_t N, size_t M, T C>
+inline auto
+operator*(const M1 lhs, const ConstantMatrix<T, N, M, C> &rhs)
+-> enable_if_scalar_t<M1, const ConstantMatrix<T, N, M, C * lhs>> {
+  return ConstantMatrix<T, N, M, C * lhs>();
+}
+
+// ----------------------------------------------------------------------
+// ConstantMatrix Equal
+//
+template<typename T, size_t N, size_t M, T C>
+inline bool equal(const ConstantMatrix<T, N, M, C> &lhs,
+                  const ConstantMatrix<T, N, M, C> &rhs) {
+  return true;
+}
+
+template<typename DT, typename T, size_t N, size_t M, T C>
+inline bool equal(const Matrix<DT> &lhs,
+                  const ConstantMatrix<T, N, M, C> &rhs) {
+  if((~lhs).nrows() != N || (~lhs).ncols() != M) {
+    return false;
+  }
+
+  for(size_t i = 0; i < (~rhs).size(); i++) {
+    if(!equal((~lhs)[i], (~rhs)[i]))
+      return false;
+  }
+
+  return true;
+}
+
+// template<typename DT, typename T, size_t N, size_t M, T C>
+// inline bool equal(const ConstantMatrix<T, N, M, C> &lhs,
+//                   const Matrix<DT> &rhs) {
+//   return equal(~rhs, ~lhs);
+// }
+
+// ----------------------------------------------------------------------
 // Identity Expressions
 //
 template<typename T, size_t N, size_t M, typename M2>
@@ -67,26 +128,30 @@ operator*(const Identity<T, N, M> &lhs, const Identity<T, N, M> &rhs)
 // ----------------------------------------------------------------------
 // Identity Equal
 //
+template<typename T, size_t N, size_t M>
+inline bool equal(const Identity<T, N, M> &lhs,
+                  const Identity<T, N, M> &rhs) {
+  return true;
+}
+
 template<typename DT, typename T, size_t N, size_t M>
 inline bool equal(const Matrix<DT> &lhs, const Identity<T, N, M> &rhs) {
   if((~lhs).nrows() != N || (~lhs).ncols() != M) {
     return false;
   }
 
-  for(size_t i = 0; i < (~lhs).nrows(); i++) {
-    for(size_t j = 0; j < (~lhs).ncols(); j++) {
-      if(!equal((~lhs)(i, j), (~rhs)(i, j)))
-        return false;
-    }
+  for(size_t i = 0; i < (~rhs).size(); i++) {
+    if(!equal((~lhs)[i], (~rhs)[i]))
+      return false;
   }
 
   return true;
 }
 
-template<typename DT, typename T, size_t N, size_t M>
-inline bool equal(const Identity<T, N, M> &lhs, const Matrix<DT> &rhs) {
-  return equal(~rhs, ~lhs);
-}
+// template<typename DT, typename T, size_t N, size_t M>
+// inline bool equal(const Identity<T, N, M> &lhs, const Matrix<DT> &rhs) {
+//   return equal(~rhs, ~lhs);
+// }
 
 // ----------------------------------------------------------------------
 // Ones Expressions
@@ -122,26 +187,30 @@ operator*(const M1 lhs, const Ones<T, N, M> &rhs)
 // ----------------------------------------------------------------------
 // Ones Equal
 //
+template<typename T, size_t N, size_t M>
+inline bool equal(const Ones<T, N, M> &lhs,
+                  const Ones<T, N, M> &rhs) {
+  return true;
+}
+
 template<typename DT, typename T, size_t N, size_t M>
 inline bool equal(const Matrix<DT> &lhs, const Ones<T, N, M> &rhs) {
   if((~lhs).nrows() != N || (~lhs).ncols() != M) {
     return false;
   }
 
-  for(size_t i = 0; i < (~lhs).nrows(); i++) {
-    for(size_t j = 0; j < (~lhs).ncols(); j++) {
-      if(!equal((~lhs)(i, j), (~rhs)(i, j)))
-        return false;
-    }
+  for(size_t i = 0; i < (~rhs).size(); i++) {
+    if(!equal((~lhs)[i], (~rhs)[i]))
+      return false;
   }
 
   return true;
 }
 
-template<typename DT, typename T, size_t N, size_t M>
-inline bool equal(const Ones<T, N, M> &lhs, const Matrix<DT> &rhs) {
-  return equal(~rhs, ~lhs);
-}
+// template<typename DT, typename T, size_t N, size_t M>
+// inline bool equal(const Ones<T, N, M> &lhs, const Matrix<DT> &rhs) {
+//   return equal(~rhs, ~lhs);
+// }
 
 // ----------------------------------------------------------------------
 // Zeros Expressions
@@ -177,26 +246,30 @@ operator*(const M1 lhs, const Zeros<T, N, M> &rhs)
 // ----------------------------------------------------------------------
 // Zeros Equal
 //
+template<typename T, size_t N, size_t M>
+inline bool equal(const Zeros<T, N, M> &lhs,
+                  const Zeros<T, N, M> &rhs) {
+  return true;
+}
+
 template<typename DT, typename T, size_t N, size_t M>
 inline bool equal(const Matrix<DT> &lhs, const Zeros<T, N, M> &rhs) {
   if((~lhs).nrows() != N || (~lhs).ncols() != M) {
     return false;
   }
 
-  for(size_t i = 0; i < (~lhs).nrows(); i++) {
-    for(size_t j = 0; j < (~lhs).ncols(); j++) {
-      if(!equal((~lhs)(i, j), (~rhs)(i, j)))
-        return false;
-    }
+  for(size_t i = 0; i < (~rhs).size(); i++) {
+    if(!equal((~lhs)[i], (~rhs)[i]))
+      return false;
   }
 
   return true;
 }
 
-template<typename DT, typename T, size_t N, size_t M>
-inline bool equal(const Zeros<T, N, M> &lhs, const Matrix<DT> &rhs) {
-  return equal(~rhs, ~lhs);
-}
+// template<typename DT, typename T, size_t N, size_t M>
+// inline bool equal(const Zeros<T, N, M> &lhs, const Matrix<DT> &rhs) {
+//   return equal(~rhs, ~lhs);
+// }
 
 
 } // Math

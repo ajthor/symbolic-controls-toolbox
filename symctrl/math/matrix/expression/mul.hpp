@@ -7,6 +7,7 @@
 #include <symctrl/traits/is_expr.hpp>
 #include <symctrl/traits/is_symbolic.hpp>
 #include <symctrl/traits/is_scalar.hpp>
+#include <symctrl/traits/is_static.hpp>
 
 namespace Controls {
 namespace Math {
@@ -44,10 +45,11 @@ public:
   inline const type operator[](const size_t pos) const;
 
 private:
-  // A * B
+  // A * B (non-static)
   template<typename DT>
-  friend inline void
-  apply_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
+  friend inline auto
+  apply_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs)
+  -> disable_if_static_t<DT> {
     SYMCTRL_DEBUG("result = A * B");
     if(!is_expr<M1>::value && equal(~lhs, rhs.lhs_)) {
       apply_mul_(~lhs, rhs.rhs_);
@@ -62,12 +64,23 @@ private:
     }
   }
 
+  // A * B (static)
+  template<typename DT>
+  friend inline auto
+  apply_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs)
+  -> enable_if_static_t<DT> {
+    SYMCTRL_DEBUG("result = A * B");
+    result_type tmp(rhs.lhs_);
+    apply_mul_(tmp, rhs.rhs_);
+    apply_(~lhs, tmp);
+  }
+
   // A + (B * C)
   template<typename DT>
   friend inline void
   apply_add_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
     SYMCTRL_DEBUG("result = A + (B * C)");
-    M1 tmp(rhs.lhs_);
+    result_type tmp(rhs.lhs_);
     apply_mul_(tmp, rhs.rhs_);
     apply_add_(~lhs, tmp);
   }
@@ -77,7 +90,7 @@ private:
   friend inline void
   apply_sub_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
     SYMCTRL_DEBUG("result = A - (B * C)");
-    M1 tmp(rhs.lhs_);
+    result_type tmp(rhs.lhs_);
     apply_mul_(tmp, rhs.rhs_);
     apply_sub_(~lhs, tmp);
   }
@@ -87,7 +100,7 @@ private:
   friend inline void
   apply_mul_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
     SYMCTRL_DEBUG("result = A * (B * C)");
-    M1 tmp(rhs.lhs_);
+    result_type tmp(rhs.lhs_);
     apply_mul_(tmp, rhs.rhs_);
     apply_mul_(~lhs, tmp);
   }
@@ -97,7 +110,7 @@ private:
   friend inline void
   apply_inverse_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
     SYMCTRL_DEBUG("result = (A * B)^-1");
-    M1 tmp(rhs.lhs_);
+    result_type tmp(rhs.lhs_);
     apply_mul_(tmp, rhs.rhs_);
     apply_inverse_(~lhs, tmp);
   }
@@ -107,7 +120,7 @@ private:
   friend inline void
   apply_transpose_(Matrix<DT> &lhs, const ExprMul<M1, M2> &rhs) {
     SYMCTRL_DEBUG("result = (A * B)^T");
-    M1 tmp(rhs.lhs_);
+    result_type tmp(rhs.lhs_);
     apply_mul_(tmp, rhs.rhs_);
     apply_transpose_(~lhs, tmp);
   }
@@ -187,6 +200,7 @@ ExprMul<M1, M2>::operator[](const size_t pos) {
   }
   return result;
 }
+
 template<typename M1, typename M2>
 inline const typename ExprMul<M1, M2>::type
 ExprMul<M1, M2>::operator[](const size_t pos) const {

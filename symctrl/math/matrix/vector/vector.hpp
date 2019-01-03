@@ -31,12 +31,13 @@ private:
 
 public:
   explicit inline Vector();
-
   explicit inline Vector(const size_t count);
-
   explicit inline Vector(const std::vector<T> v);
 
   inline Vector(const Vector<T> &m);
+
+  template<typename DT>
+  inline Vector(const Matrix<DT> &m);
 
   inline Vector<T> &operator=(const T &rhs);
   inline Vector<T> &operator=(const std::vector<T> rhs);
@@ -133,6 +134,15 @@ inline Vector<T>::Vector(const Vector<T> &m) :
                          n_(m.n_),
                          m_(m.m_),
                          v_(m.v_) {
+  //
+}
+
+template<typename T>
+template<typename DT>
+inline Vector<T>::Vector(const Matrix<DT> &m) :
+                         n_((~m).nrows()),
+                         m_((~m).ncols()),
+                         v_((~m).as_vec()) {
   //
 }
 

@@ -85,7 +85,7 @@ inline void DenseMatrix<T>::apply_sub(const Matrix<DT> &rhs) {
 template<typename T>
 template<typename DT>
 inline void DenseMatrix<T>::apply_mul(const Matrix<DT> &rhs) {
-  SYMCTRL_ASSERT((~rhs).nrows() == (~rhs).ncols());
+  SYMCTRL_ASSERT(n_ == (~rhs).ncols());
 
   std::vector<T> t_(n_*(~rhs).ncols(), 0);
 
@@ -105,6 +105,7 @@ inline void DenseMatrix<T>::apply_mul(const Matrix<DT> &rhs) {
 template<typename T>
 template<typename DT>
 inline void DenseMatrix<T>::apply_inverse(const Matrix<DT> &rhs) {
+  SYMCTRL_ASSERT((~rhs).nrows() == (~rhs).ncols());
   SYMCTRL_ASSERT(v_.size() == (~rhs).size());
 
   std::vector<T> t_((~rhs).size());
@@ -154,6 +155,20 @@ inline bool equal(const DenseMatrix<T> &lhs, const DenseMatrix<T> &rhs) {
       if(!equal((~lhs)(i, j), (~rhs)(i, j)))
         return false;
     }
+  }
+
+  return true;
+}
+
+template<typename DT, typename T>
+inline bool equal(const Matrix<DT> &lhs, const DenseMatrix<T> &rhs) {
+  if((~lhs).nrows() != (~rhs).nrows() || (~lhs).ncols() != (~rhs).ncols()) {
+    return false;
+  }
+
+  for(size_t i = 0; i < (~rhs).size(); i++) {
+    if(!equal((~lhs)[i], (~rhs)[i]))
+      return false;
   }
 
   return true;
