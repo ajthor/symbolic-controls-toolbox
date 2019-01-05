@@ -97,4 +97,4 @@ public:
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_FUNCTOR_KERNEL_HPP */
+#endif // SYMCTRL_MATH_FUNCTOR_KERNEL_HPP

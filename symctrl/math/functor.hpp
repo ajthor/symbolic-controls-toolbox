@@ -5,4 +5,4 @@
 #include <symctrl/math/functor/kernel.hpp>
 #include <symctrl/math/functor/lambda.hpp>
 
-#endif /* end of include guard: SYMCTRL_MATH_FUNCTOR_HPP */
+#endif // SYMCTRL_MATH_FUNCTOR_HPP

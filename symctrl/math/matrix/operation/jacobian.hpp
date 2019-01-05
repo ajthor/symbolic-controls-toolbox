@@ -3,12 +3,13 @@
 
 #include <vector>
 
-#include <symengine/basic.h>
-#include <symengine/constants.h>
 #include <symengine/subs.h>
+#include <symengine/symbol.h>
 
+#include <symctrl/shims/default.hpp>
+#include <symctrl/shims/symbolic.hpp>
 #include <symctrl/math/matrix/dense/dense.hpp>
-#include <symctrl/traits/is_symbolic.hpp>
+#include <symctrl/type_traits/is_symbolic.hpp>
 
 namespace Controls {
 namespace Math {
@@ -22,7 +23,7 @@ auto jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
   size_t n_ = (~f).size();
   size_t m_ = (~v).size();
 
-  std::vector<RCPBasic> v_(n_*m_, SymEngine::zero);
+  std::vector<symbolic_t> v_(n_*m_, default_value<symbolic_t>());
 
   for(size_t i = 0; i < n_; i++) {
     for(size_t j = 0; j < m_; j++) {
@@ -46,4 +47,4 @@ auto jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_EXPRESSION_JACOBIAN_HPP */
+#endif // SYMCTRL_MATH_MATRIX_EXPRESSION_JACOBIAN_HPP

@@ -9,5 +9,15 @@
 #include <symctrl/math/matrix/block.hpp>
 #include <symctrl/math/matrix/expression.hpp>
 #include <symctrl/math/matrix/operation.hpp>
+#include <symctrl/math/matrix/type_traits/is_constant.hpp>
+#include <symctrl/math/matrix/type_traits/is_dense.hpp>
+#include <symctrl/math/matrix/type_traits/is_expr.hpp>
+#include <symctrl/math/matrix/type_traits/is_lower.hpp>
+#include <symctrl/math/matrix/type_traits/is_matrix.hpp>
+#include <symctrl/math/matrix/type_traits/is_square.hpp>
+#include <symctrl/math/matrix/type_traits/is_static.hpp>
+#include <symctrl/math/matrix/type_traits/is_symmetric.hpp>
+#include <symctrl/math/matrix/type_traits/is_upper.hpp>
+#include <symctrl/math/matrix/type_traits/is_vector.hpp>
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_HPP */
+#endif // SYMCTRL_MATH_MATRIX_HPP

@@ -4,10 +4,10 @@
 #include <symctrl/assert.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
 #include <symctrl/math/matrix/expression/expression.hpp>
-#include <symctrl/traits/is_expr.hpp>
-#include <symctrl/traits/is_symbolic.hpp>
-#include <symctrl/traits/is_scalar.hpp>
-#include <symctrl/traits/is_static.hpp>
+#include <symctrl/math/matrix/expression/unary.hpp>
+#include <symctrl/type_traits/is_scalar.hpp>
+#include <symctrl/math/matrix/type_traits/is_expr.hpp>
+#include <symctrl/math/matrix/type_traits/is_static.hpp>
 
 namespace Controls {
 namespace Math {
@@ -258,4 +258,4 @@ operator/(const Matrix<M1> &lhs, const M2 rhs)
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_EXPRESSION_MUL_HPP */
+#endif // SYMCTRL_MATH_MATRIX_EXPRESSION_MUL_HPP

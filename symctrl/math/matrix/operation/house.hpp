@@ -19,4 +19,4 @@ inline DenseMatrix<T> householder_reflector(const Vector<T> &m) {
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_OPERATION_HOUSE_HPP */
+#endif // SYMCTRL_MATH_MATRIX_OPERATION_HOUSE_HPP

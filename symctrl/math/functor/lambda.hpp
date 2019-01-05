@@ -1,11 +1,10 @@
 #ifndef SYMCTRL_MATH_FUNCTOR_LAMBDA_HPP
 #define SYMCTRL_MATH_FUNCTOR_LAMBDA_HPP
 
-#include <typeinfo>
 #include <functional>
 
 #include <symctrl/math/functor/functor.hpp>
-#include <symctrl/traits/functor_traits.hpp>
+#include <symctrl/math/traits/functor_traits.hpp>
 
 namespace Controls {
 namespace Math {
@@ -48,4 +47,4 @@ inline auto lambda_functor(F&& f)
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_FUNCTOR_LAMBDA_HPP */
+#endif // SYMCTRL_MATH_FUNCTOR_LAMBDA_HPP

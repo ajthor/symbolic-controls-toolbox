@@ -6,6 +6,7 @@
 #include <symengine/basic.h>
 #include <symengine/constants.h>
 
+#include <symctrl/shims/symbolic.hpp>
 #include <symctrl/math/matrix/dense/dense.hpp>
 #include <symctrl/math/matrix/static/dense.hpp>
 
@@ -36,7 +37,7 @@ public:
   inline size_t ncols() const;
 
   inline std::vector<T> as_vec() const;
-  inline StaticDense<T, N, M> as_dense() const;
+  inline DenseMatrix<T> as_dense() const;
 
   inline T operator[](const size_t pos);
   inline const T operator[](const size_t pos) const;
@@ -83,10 +84,10 @@ inline std::vector<T> Ones<T, N, M>::as_vec() const {
 }
 
 template<typename T, size_t N, size_t M>
-inline StaticDense<T, N, M> Ones<T, N, M>::as_dense() const {
+inline DenseMatrix<T> Ones<T, N, M>::as_dense() const {
   std::vector<T> v = (*this).as_vec();
 
-  return StaticDense<T, N, M>(v);
+  return DenseMatrix<T>(N, M, v);
 }
 
 template<typename T, size_t N, size_t M>
@@ -114,10 +115,8 @@ inline const T Ones<T, N, M>::operator()(const size_t row,
 // ----------------------------------------------------------------------
 // Symbolic Partial Specialization
 //
-using RCPBasic = SymEngine::RCP<const SymEngine::Basic>;
-
 template<size_t N, size_t M>
-class Ones<RCPBasic, N, M> : public Matrix<Ones<RCPBasic, N, M>> {
+class Ones<symbolic_t, N, M> : public Matrix<Ones<symbolic_t, N, M>> {
 private:
 
 public:
@@ -131,88 +130,88 @@ public:
   inline size_t nrows() const;
   inline size_t ncols() const;
 
-  inline std::vector<RCPBasic> as_vec() const;
-  inline StaticDense<RCPBasic, N, M> as_dense() const;
+  inline std::vector<symbolic_t> as_vec() const;
+  inline DenseMatrix<symbolic_t> as_dense() const;
 
-  inline RCPBasic operator[](const size_t pos);
-  inline const RCPBasic operator[](const size_t pos) const;
+  inline symbolic_t operator[](const size_t pos);
+  inline const symbolic_t operator[](const size_t pos) const;
 
-  inline RCPBasic operator()(const size_t row, const size_t col);
-  inline const RCPBasic operator()(const size_t row, const size_t col) const;
+  inline symbolic_t operator()(const size_t row, const size_t col);
+  inline const symbolic_t operator()(const size_t row, const size_t col) const;
 };
 
 template<size_t N, size_t M>
-Ones<RCPBasic, N, M>::Ones() {
+Ones<symbolic_t, N, M>::Ones() {
   //
 }
 
 template<size_t N, size_t M>
-inline size_t Ones<RCPBasic, N, M>::size() const {
+inline size_t Ones<symbolic_t, N, M>::size() const {
   return N*M;
 }
 
 template<size_t N, size_t M>
-inline size_t Ones<RCPBasic, N, M>::capacity() const {
+inline size_t Ones<symbolic_t, N, M>::capacity() const {
   return 0;
 }
 
 template<size_t N, size_t M>
-inline bool Ones<RCPBasic, N, M>::empty() const {
+inline bool Ones<symbolic_t, N, M>::empty() const {
   return false;
 }
 
 template<size_t N, size_t M>
-inline size_t Ones<RCPBasic, N, M>::nrows() const {
+inline size_t Ones<symbolic_t, N, M>::nrows() const {
   return N;
 }
 
 template<size_t N, size_t M>
-inline size_t Ones<RCPBasic, N, M>::ncols() const {
+inline size_t Ones<symbolic_t, N, M>::ncols() const {
   return M;
 }
 
 template<size_t N, size_t M>
-inline std::vector<RCPBasic>
-Ones<RCPBasic, N, M>::as_vec() const {
-  std::vector<RCPBasic> v(N*M, SymEngine::one);
+inline std::vector<symbolic_t>
+Ones<symbolic_t, N, M>::as_vec() const {
+  std::vector<symbolic_t> v(N*M, SymEngine::one);
 
   return v;
 }
 
 template<size_t N, size_t M>
-inline StaticDense<RCPBasic, N, M> Ones<RCPBasic, N, M>::as_dense() const {
-  std::vector<RCPBasic> v = (*this).as_vec();
+inline DenseMatrix<symbolic_t> Ones<symbolic_t, N, M>::as_dense() const {
+  std::vector<symbolic_t> v = (*this).as_vec();
 
-  return StaticDense<RCPBasic, N, M>(v);
+  return DenseMatrix<symbolic_t>(N, M, v);
 }
 
 template<size_t N, size_t M>
-inline RCPBasic
-Ones<RCPBasic, N, M>::operator[](const size_t pos) {
+inline symbolic_t
+Ones<symbolic_t, N, M>::operator[](const size_t pos) {
   return SymEngine::one;
 }
 
 template<size_t N, size_t M>
-inline const RCPBasic
-Ones<RCPBasic, N, M>::operator[](const size_t pos) const {
+inline const symbolic_t
+Ones<symbolic_t, N, M>::operator[](const size_t pos) const {
   return SymEngine::one;
 }
 
 template<size_t N, size_t M>
-inline RCPBasic
-Ones<RCPBasic, N, M>::operator()(const size_t row,
-                                 const size_t col) {
+inline symbolic_t
+Ones<symbolic_t, N, M>::operator()(const size_t row,
+                                   const size_t col) {
   return SymEngine::one;
 }
 
 template<size_t N, size_t M>
-inline const RCPBasic
-Ones<RCPBasic, N, M>::operator()(const size_t row,
-                                 const size_t col) const {
+inline const symbolic_t
+Ones<symbolic_t, N, M>::operator()(const size_t row,
+                                   const size_t col) const {
   return SymEngine::one;
 }
 
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_CONSTANT_ONES_HPP */
+#endif // SYMCTRL_MATH_MATRIX_CONSTANT_ONES_HPP

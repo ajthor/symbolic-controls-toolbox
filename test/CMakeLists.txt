@@ -22,12 +22,15 @@ endmacro()
 ADD_TEST_FILE(test_type_traits test_type_traits.cc)
 ADD_TEST_FILE(test_function test_function.cc)
 ADD_TEST_FILE(test_kernel test_kernel.cc)
-ADD_TEST_FILE(test_matrix_dense test_matrix_dense.cc)
-# ADD_TEST_FILE(test_matrix_sparse test_matrix_sparse.cc)
-ADD_TEST_FILE(test_matrix_vector test_matrix_vector.cc)
+
 ADD_TEST_FILE(test_matrix_block test_matrix_block.cc)
 ADD_TEST_FILE(test_matrix_constant test_matrix_constant.cc)
+ADD_TEST_FILE(test_matrix_dense test_matrix_dense.cc)
 ADD_TEST_FILE(test_matrix_operations test_matrix_operations.cc)
+# ADD_TEST_FILE(test_matrix_sparse test_matrix_sparse.cc)
+ADD_TEST_FILE(test_matrix_static test_matrix_static.cc)
+ADD_TEST_FILE(test_matrix_vector test_matrix_vector.cc)
+
 ADD_TEST_FILE(test_random_variable test_random_variable.cc)
 
 ADD_TEST_FILE(test_state_space test_state_space.cc)

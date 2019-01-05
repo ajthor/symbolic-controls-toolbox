@@ -12,7 +12,7 @@ namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// Vector Norm
+// Vector Infinity Norm
 //
 template<typename T>
 inline T infinity_norm(const std::vector<T> &v) {
@@ -32,6 +32,9 @@ inline T infinity_norm(const Vector<T> &v) {
   return infinity_norm(v.as_vec());
 }
 
+// ----------------------------------------------------------------------
+// Vector P-Norm
+//
 template<typename T>
 inline double norm(const std::vector<T> &v, unsigned p = 2) {
   double current = 0;
@@ -51,4 +54,4 @@ inline double norm(const Vector<T> &v, unsigned p = 2) {
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_OPERATION_NORM */
+#endif // SYMCTRL_MATH_MATRIX_OPERATION_NORM */

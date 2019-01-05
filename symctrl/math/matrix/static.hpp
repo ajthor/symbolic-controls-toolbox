@@ -5,4 +5,4 @@
 #include <symctrl/math/matrix/static/vector.hpp>
 #include <symctrl/math/matrix/expression/static.hpp>
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_STATIC_HPP */
+#endif // SYMCTRL_MATH_MATRIX_STATIC_HPP

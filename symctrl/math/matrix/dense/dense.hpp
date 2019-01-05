@@ -4,14 +4,11 @@
 #include <algorithm>
 #include <vector>
 
-#include <symengine/basic.h>
-#include <symengine/constants.h>
-
 #include <symctrl/assert.hpp>
+#include <symctrl/shims/default.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
 #include <symctrl/math/matrix/vector.hpp>
 
-#include <symctrl/traits/is_symbolic.hpp>
 
 namespace Controls {
 namespace Math {
@@ -119,18 +116,7 @@ inline DenseMatrix<T>::DenseMatrix(const size_t nrows,
                                    n_(nrows),
                                    m_(ncols) {
   //
-  v_ = std::vector<T>(nrows*ncols);
-}
-
-using RCPBasic = SymEngine::RCP<const SymEngine::Basic>;
-
-template<>
-inline DenseMatrix<RCPBasic>::DenseMatrix(const size_t nrows,
-                                          const size_t ncols) :
-                                          n_(nrows),
-                                          m_(ncols) {
-  //
-  v_ = std::vector<RCPBasic>(nrows*ncols, SymEngine::zero);
+  v_ = std::vector<T>(nrows*ncols, default_value<T>());
 }
 
 template<typename T>
@@ -332,52 +318,7 @@ inline DenseMatrix<T> &DenseMatrix<T>::transpose() {
   return *this;
 }
 
-// ----------------------------------------------------------------------
-// DenseMatrix Structure Functions
-//
-template<typename T>
-bool is_symmetric(const DenseMatrix<T> &m) {
-  size_t i, j;
-  for(i = 1; i < m.nrows(); ++i) {
-    for(j = 0; j < i; ++j) {
-      if(!equal(m(i, j), m(j, i))) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-}
-
-template<typename T>
-bool is_upper(const DenseMatrix<T> &m) {
-  size_t i, j;
-  for(i = 1; i < m.nrows(); ++i) {
-    for(j = 0; j < i; ++j) {
-      if(!is_default(m(i, j))) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-}
-
-template<typename T>
-bool is_lower(const DenseMatrix<T> &m) {
-  size_t i, j;
-  for(i = 1; i < m.ncols(); ++i) {
-    for(j = 0; j < i; ++j) {
-      if(!is_default(m(j, i))) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-}
-
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_DENSE_DENSE_HPP */
+#endif // SYMCTRL_MATH_MATRIX_DENSE_DENSE_HPP

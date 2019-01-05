@@ -1,8 +1,10 @@
 #ifndef SYMCTRL_MATH_MATRIX_OPERATION_QR_HPP
 #define SYMCTRL_MATH_MATRIX_OPERATION_QR_HPP
 
+#include <symctrl/assert.hpp>
 #include <symctrl/math/matrix/dense.hpp>
 #include <symctrl/math/matrix/vector.hpp>
+#include <symctrl/math/matrix/operation/norm.hpp>
 // #include <symctrl/math/matrix/operation/house.hpp>
 
 namespace Controls {
@@ -50,4 +52,4 @@ void qr(const DenseMatrix<T> &A, DenseMatrix<T> &Q, DenseMatrix<T> &R) {
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_OPERATION_QR_HPP */
+#endif // SYMCTRL_MATH_MATRIX_OPERATION_QR_HPP

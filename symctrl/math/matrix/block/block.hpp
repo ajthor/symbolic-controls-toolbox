@@ -322,4 +322,4 @@ BlockMatrix<T>::operator()(const size_t row, const size_t col) const {
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_BLOCK_BLOCK_HPP */
+#endif // SYMCTRL_MATH_MATRIX_BLOCK_BLOCK_HPP

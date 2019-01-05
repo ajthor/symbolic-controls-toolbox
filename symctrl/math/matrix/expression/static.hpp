@@ -1,10 +1,13 @@
 #ifndef SYMCTRL_MATH_MATRIX_EXPRESSION_STATIC_HPP
 #define SYMCTRL_MATH_MATRIX_EXPRESSION_STATIC_HPP
 
+#include <algorithm>
+
 #include <symctrl/assert.hpp>
 #include <symctrl/math/matrix/static/dense.hpp>
 #include <symctrl/math/matrix/static/vector.hpp>
-#include <symctrl/traits/is_static.hpp>
+#include <symctrl/math/matrix/expression/matrix.hpp>
+#include <symctrl/math/matrix/type_traits/is_static.hpp>
 
 namespace Controls {
 namespace Math {
@@ -54,7 +57,9 @@ inline void StaticDense<T, N, M>::apply(const Matrix<DT> &rhs) {
   SYMCTRL_ASSERT(N == (~rhs).nrows());
   SYMCTRL_ASSERT(M == (~rhs).ncols());
 
-  v_ = (~rhs).as_vec();
+  for(size_t i = 0; i < N*M; i++) {
+    v_[i] = (~rhs)[i];
+  }
 }
 
 template<typename T, size_t N, size_t M>
@@ -201,7 +206,9 @@ inline void StaticVector<T, N, M>::apply(const Matrix<DT> &rhs) {
   SYMCTRL_ASSERT(N == (~rhs).nrows());
   SYMCTRL_ASSERT(M == (~rhs).ncols());
 
-  v_ = (~rhs).as_vec();
+  for(size_t i = 0; i < N*M; i++) {
+    v_[i] = (~rhs)[i];
+  }
 }
 
 template<typename T, size_t N, size_t M>
@@ -282,4 +289,4 @@ inline auto equal(const Matrix<DT> &lhs, const StaticVector<T, N, M> &rhs)
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_EXPRESSION_STATIC_HPP */
+#endif // SYMCTRL_MATH_MATRIX_EXPRESSION_STATIC_HPP

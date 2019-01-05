@@ -3,8 +3,12 @@
 
 #include <vector>
 
+#include <symengine/add.h>
+#include <symengine/mul.h>
+
+#include <symctrl/shims/symbolic.hpp>
 #include <symctrl/math/matrix/dense/dense.hpp>
-#include <symctrl/math/matrix/expression/symbolic.hpp>
+#include <symctrl/math/matrix/expression/matrix.hpp>
 
 namespace Controls {
 namespace Math {
@@ -177,11 +181,11 @@ inline bool equal(const Matrix<DT> &lhs, const DenseMatrix<T> &rhs) {
 // ----------------------------------------------------------------------
 // SymbolicDense Specialization
 //
-using SymbolicDense = DenseMatrix<RCPBasic>;
+using SymbolicDense = DenseMatrix<symbolic_t>;
 
 template<>
 inline SymbolicDense&
-SymbolicDense::operator+=(const RCPBasic &rhs) {
+SymbolicDense::operator+=(const symbolic_t &rhs) {
   for(size_t i = 0; i < v_.size(); i++) {
     v_[i] = SymEngine::add(v_[i], rhs);
   }
@@ -191,7 +195,7 @@ SymbolicDense::operator+=(const RCPBasic &rhs) {
 
 template<>
 inline SymbolicDense&
-SymbolicDense::operator-=(const RCPBasic &rhs) {
+SymbolicDense::operator-=(const symbolic_t &rhs) {
   for(size_t i = 0; i < v_.size(); i++) {
     v_[i] = SymEngine::sub(v_[i], rhs);
   }
@@ -201,7 +205,7 @@ SymbolicDense::operator-=(const RCPBasic &rhs) {
 
 template<>
 inline SymbolicDense&
-SymbolicDense::operator*=(const RCPBasic &rhs) {
+SymbolicDense::operator*=(const symbolic_t &rhs) {
   for(size_t i = 0; i < v_.size(); i++) {
     v_[i] = SymEngine::mul(v_[i], rhs);
   }
@@ -211,7 +215,7 @@ SymbolicDense::operator*=(const RCPBasic &rhs) {
 
 template<>
 inline SymbolicDense&
-SymbolicDense::operator/=(const RCPBasic &rhs) {
+SymbolicDense::operator/=(const symbolic_t &rhs) {
   for(size_t i = 0; i < v_.size(); i++) {
     v_[i] = SymEngine::div(v_[i], rhs);
   }
@@ -250,7 +254,7 @@ template<>
 inline void SymbolicDense::apply_mul(const Matrix<SymbolicDense> &rhs) {
   SYMCTRL_ASSERT(m_ == (~rhs).n_);
 
-  std::vector<RCPBasic> t_(n_*(~rhs).m_, SymEngine::zero);
+  std::vector<symbolic_t> t_(n_*(~rhs).m_, SymEngine::zero);
 
   for(size_t i = 0; i < n_; i++) {
     for(size_t j = 0; j < (~rhs).m_; j++) {
@@ -267,26 +271,7 @@ inline void SymbolicDense::apply_mul(const Matrix<SymbolicDense> &rhs) {
   v_ = t_;
 }
 
-// ----------------------------------------------------------------------
-// SymbolicDense Equal
-//
-template<>
-inline bool equal(const SymbolicDense &lhs, const SymbolicDense &rhs) {
-  if((~lhs).nrows() != (~rhs).nrows() || (~lhs).ncols() != (~rhs).ncols()) {
-    return false;
-  }
-
-  for(size_t i = 0; i < (~lhs).nrows(); i++) {
-    for(size_t j = 0; j < (~lhs).ncols(); j++) {
-      if(!equal((~lhs)(i, j), (~rhs)(i, j)))
-        return false;
-    }
-  }
-
-  return true;
-}
-
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_EXPRESSION_DENSE_HPP */
+#endif // SYMCTRL_MATH_MATRIX_EXPRESSION_DENSE_HPP

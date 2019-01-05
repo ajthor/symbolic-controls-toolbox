@@ -1,7 +1,7 @@
-#ifndef SYMCTRL_TRAITS_IS_CONSTANT_HPP
-#define SYMCTRL_TRAITS_IS_CONSTANT_HPP
+#ifndef SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_CONSTANT_HPP
+#define SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_CONSTANT_HPP
 
-#include <type_traits>
+#include <utility>
 
 #include <symctrl/math/matrix/static.hpp>
 
@@ -59,4 +59,4 @@ struct is_constant : is_constant_t<T>::type {};
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_TRAITS_IS_CONSTANT_HPP */
+#endif // SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_CONSTANT_HPP

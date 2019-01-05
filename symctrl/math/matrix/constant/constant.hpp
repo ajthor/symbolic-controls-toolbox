@@ -4,7 +4,6 @@
 #include <vector>
 
 #include <symctrl/math/matrix/dense/dense.hpp>
-#include <symctrl/math/matrix/static/dense.hpp>
 
 namespace Controls {
 namespace Math {
@@ -33,7 +32,7 @@ public:
   inline size_t ncols() const;
 
   inline std::vector<T> as_vec() const;
-  inline StaticDense<T, N, M> as_dense() const;
+  inline DenseMatrix<T> as_dense() const;
 
   inline T operator[](const size_t pos);
   inline const T operator[](const size_t pos) const;
@@ -80,10 +79,10 @@ inline std::vector<T> ConstantMatrix<T, N, M, C>::as_vec() const {
 }
 
 template<typename T, size_t N, size_t M, T C>
-inline StaticDense<T, N, M> ConstantMatrix<T, N, M, C>::as_dense() const {
+inline DenseMatrix<T> ConstantMatrix<T, N, M, C>::as_dense() const {
   std::vector<T> v = (*this).as_vec();
 
-  return StaticDense<T, N, M>(v);
+  return DenseMatrix<T>(N, M, v);
 }
 
 template<typename T, size_t N, size_t M, T C>
@@ -111,4 +110,4 @@ inline const T ConstantMatrix<T, N, M, C>::operator()(const size_t row,
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_CONSTANT_CONSTANT_HPP */
+#endif // SYMCTRL_MATH_MATRIX_CONSTANT_CONSTANT_HPP

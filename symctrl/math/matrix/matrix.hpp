@@ -85,4 +85,4 @@ using result_type_t = typename T::result_type;
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_MATRIX_HPP */
+#endif // SYMCTRL_MATH_MATRIX_MATRIX_HPP

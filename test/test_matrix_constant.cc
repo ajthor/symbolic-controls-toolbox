@@ -75,41 +75,6 @@ TEST_CASE("Constant: Assignment", "[dense]") {
 
     REQUIRE(R == DenseMatrix<int>(2, 2, {0, 0, 0, 0}));
   }
-
-  // std::cout << I[0] << '\n';
-  // std::cout << I[1] << '\n';
-  // std::cout << I[2] << '\n';
-  // std::cout << I[3] << '\n';
-
-  // DenseMatrix<int> C(2, 2);
-  //
-  // std::vector<int> v1 = {1, 2};
-  // REQUIRE(A.row(0) == v1);
-  //
-  // std::vector<int> v2 = {3, 4};
-  // REQUIRE(A.row(1) == v2);
-  //
-  // std::vector<int> v3 = {1, 3};
-  // REQUIRE(A.col(0) == v3);
-  //
-  // std::vector<int> v4 = {2, 4};
-  // REQUIRE(A.col(1) == v4);
-  //
-  // // Assignment
-  // C = 5;
-  //
-  // REQUIRE(C(0, 0) == 5);
-  // REQUIRE(C(0, 1) == 5);
-  // REQUIRE(C(1, 0) == 5);
-  // REQUIRE(C(1, 1) == 5);
-  //
-  // C = A;
-  //
-  // REQUIRE(C == A);
-  //
-  // C(0, 0) = 2;
-  //
-  // REQUIRE(C != A);
 }
 
 TEST_CASE("Constant: Add", "[static]") {
@@ -221,7 +186,6 @@ TEST_CASE("Constant: Mul", "[static]") {
     R = I * I;
 
     REQUIRE(R == I);
-    REQUIRE(I == R);
   }
 
   {
@@ -271,7 +235,6 @@ TEST_CASE("Constant: Mul", "[static]") {
     R = 2 * zeros;
 
     REQUIRE(R == zeros);
-    REQUIRE(zeros == R);
   }
 
   {
@@ -279,7 +242,6 @@ TEST_CASE("Constant: Mul", "[static]") {
     R = zeros * 2;
 
     REQUIRE(R == zeros);
-    REQUIRE(zeros == R);
   }
 
   {

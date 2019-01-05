@@ -1,9 +1,9 @@
-#ifndef SYMCTRL_TRAITS_IS_EXPR_HPP
-#define SYMCTRL_TRAITS_IS_EXPR_HPP
+#ifndef SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_EXPR_HPP
+#define SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_EXPR_HPP
 
-#include <type_traits>
+#include <utility>
 
-#include <symctrl/math/matrix/expression/expression.hpp>
+#include <symctrl/math/matrix/expression.hpp>
 
 namespace Controls {
 namespace Math {
@@ -41,4 +41,4 @@ struct is_expr : is_expr_t<T>::type {};
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_TRAITS_IS_EXPR_HPP */
+#endif // SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_EXPR_HPP

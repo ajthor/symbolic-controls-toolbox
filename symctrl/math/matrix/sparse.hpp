@@ -33,4 +33,4 @@ inline auto compress(const Matrix<DT> &m)
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_SPARSE_HPP */
+#endif // SYMCTRL_MATH_MATRIX_SPARSE_HPP

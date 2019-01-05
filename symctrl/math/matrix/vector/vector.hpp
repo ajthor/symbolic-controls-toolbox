@@ -3,12 +3,10 @@
 
 #include <vector>
 
-#include <symengine/basic.h>
-#include <symengine/constants.h>
-
 #include <symctrl/assert.hpp>
+#include <symctrl/shims/default.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
-#include <symctrl/traits/is_scalar.hpp>
+#include <symctrl/type_traits/is_scalar.hpp>
 
 namespace Controls {
 namespace Math {
@@ -86,8 +84,8 @@ public:
   inline T &operator[](const size_t pos);
   inline const T &operator[](const size_t pos) const;
 
-  inline T &operator()(const size_t pos);
-  inline const T &operator()(const size_t pos) const;
+  inline T &operator()(const size_t row, const size_t col);
+  inline const T &operator()(const size_t row, const size_t col) const;
 
   inline Vector<T> &transpose();
 
@@ -108,17 +106,7 @@ template<typename T>
 inline Vector<T>::Vector(const size_t count) :
                          n_(count),
                          m_(1) {
-  v_ = std::vector<T>(count);
-}
-
-using RCPBasic = SymEngine::RCP<const SymEngine::Basic>;
-
-template<>
-inline Vector<RCPBasic>::Vector(const size_t count) :
-                                n_(count),
-                                m_(1) {
-  //
-  v_ = std::vector<RCPBasic>(count, SymEngine::zero);
+  v_ = std::vector<T>(count, default_value<T>());
 }
 
 template<typename T>
@@ -264,13 +252,15 @@ inline const T &Vector<T>::operator[](const size_t pos) const {
 }
 
 template<typename T>
-inline T &Vector<T>::operator()(const size_t pos) {
-  return v_[pos];
+inline T &Vector<T>::operator()(const size_t row,
+                                const size_t col) {
+  return v_[row*m_ + col];
 }
 
 template<typename T>
-inline const T &Vector<T>::operator()(const size_t pos) const {
-  return v_[pos];
+inline const T &Vector<T>::operator()(const size_t row,
+                                      const size_t col) const {
+  return v_[row*m_ + col];
 }
 
 // template<typename T>
@@ -317,4 +307,4 @@ inline Vector<T> &Vector<T>::transpose() {
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_VECTOR_VECTOR_HPP */
+#endif // SYMCTRL_MATH_MATRIX_VECTOR_VECTOR_HPP

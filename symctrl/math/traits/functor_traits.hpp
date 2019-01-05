@@ -59,4 +59,4 @@ using functor_args_t = typename functor_args<F>::type;
 
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_TRAITS_FUNCTOR_TRAITS_HPP */
+#endif // SYMCTRL_TRAITS_FUNCTOR_TRAITS_HPP

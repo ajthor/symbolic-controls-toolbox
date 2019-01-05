@@ -11,4 +11,4 @@
 #include <symctrl/math/matrix/expression/transpose.hpp>
 #include <symctrl/math/matrix/expression/neg.hpp>
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_EXPRESSION_HPP */
+#endif // SYMCTRL_MATH_MATRIX_EXPRESSION_HPP

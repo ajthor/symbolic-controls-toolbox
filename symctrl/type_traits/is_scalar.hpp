@@ -4,7 +4,6 @@
 #include <type_traits>
 
 namespace Controls {
-namespace Math {
 
 // ----------------------------------------------------------------------
 // is_scalar_t
@@ -30,7 +29,6 @@ struct enable_if_scalar : std::enable_if<is_scalar<T>::value, R> {};
 template<typename T, typename R = void>
 using enable_if_scalar_t = typename enable_if_scalar<T, R>::type;
 
-} // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_TRAITS_IS_SCALAR_HPP */
+#endif // SYMCTRL_TRAITS_IS_SCALAR_HPP

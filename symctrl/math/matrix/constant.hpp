@@ -7,4 +7,4 @@
 #include <symctrl/math/matrix/constant/zeros.hpp>
 #include <symctrl/math/matrix/expression/constant.hpp>
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_CONSTANT_HPP */
+#endif // SYMCTRL_MATH_MATRIX_CONSTANT_HPP

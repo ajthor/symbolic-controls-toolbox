@@ -1,7 +1,7 @@
-#ifndef SYMCTRL_TRAITS_IS_DENSE_HPP
-#define SYMCTRL_TRAITS_IS_DENSE_HPP
+#ifndef SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_DENSE_HPP
+#define SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_DENSE_HPP
 
-#include <type_traits>
+#include <utility>
 
 #include <symctrl/math/matrix/dense.hpp>
 
@@ -41,4 +41,4 @@ struct is_dense : is_dense_t<T>::type {};
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_TRAITS_IS_DENSE_HPP */
+#endif // SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_DENSE_HPP

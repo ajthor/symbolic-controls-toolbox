@@ -7,7 +7,7 @@
 #include <symctrl/math/matrix/constant/ones.hpp>
 #include <symctrl/math/matrix/constant/zeros.hpp>
 #include <symctrl/math/matrix/expression/unary.hpp>
-#include <symctrl/traits/is_scalar.hpp>
+#include <symctrl/type_traits/is_scalar.hpp>
 
 namespace Controls {
 namespace Math {
@@ -275,4 +275,4 @@ inline bool equal(const Matrix<DT> &lhs, const Zeros<T, N, M> &rhs) {
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_EXPRESSION_CONSTANT_HPP */
+#endif // SYMCTRL_MATH_MATRIX_EXPRESSION_CONSTANT_HPP

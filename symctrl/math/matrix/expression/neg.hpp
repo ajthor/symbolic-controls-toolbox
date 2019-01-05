@@ -4,7 +4,6 @@
 #include <symctrl/assert.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
 #include <symctrl/math/matrix/expression/expression.hpp>
-#include <symctrl/traits/is_expr.hpp>
 
 namespace Controls {
 namespace Math {
@@ -189,4 +188,4 @@ operator-(const ExprNeg<M> &m) {
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_EXPRESSION_NEG_HPP */
+#endif // SYMCTRL_MATH_MATRIX_EXPRESSION_NEG_HPP

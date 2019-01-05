@@ -3,12 +3,9 @@
 
 #include <type_traits>
 
-#include <symengine/basic.h>
-#include <symengine/integer.h>
-#include <symengine/symbol.h>
+#include <symctrl/shims/symbolic.hpp>
 
 namespace Controls {
-namespace Math {
 
 // ----------------------------------------------------------------------
 // SFINAE is_symbolic_helper
@@ -16,27 +13,23 @@ namespace Math {
 template<class T>
 struct is_symbolic_helper {
 private:
-  using RCPBasic = SymEngine::RCP<const SymEngine::Basic>;
-  using RCPInteger = SymEngine::RCP<const SymEngine::Integer>;
-  using RCPSymbol = SymEngine::RCP<const SymEngine::Symbol>;
+  template<template<typename> class DT>
+  static std::true_type test(DT<symbolic_t> &);
 
   template<template<typename> class DT>
-  static std::true_type test(DT<RCPBasic> &);
+  static std::true_type test(const DT<symbolic_t> &);
 
   template<template<typename> class DT>
-  static std::true_type test(const DT<RCPBasic> &);
+  static std::true_type test(DT<symbolic_integer_t> &);
 
   template<template<typename> class DT>
-  static std::true_type test(DT<RCPInteger> &);
+  static std::true_type test(const DT<symbolic_integer_t> &);
 
   template<template<typename> class DT>
-  static std::true_type test(const DT<RCPInteger> &);
+  static std::true_type test(DT<symbolic_symbol_t> &);
 
   template<template<typename> class DT>
-  static std::true_type test(DT<RCPSymbol> &);
-
-  template<template<typename> class DT>
-  static std::true_type test(const DT<RCPSymbol> &);
+  static std::true_type test(const DT<symbolic_symbol_t> &);
 
   static std::false_type test(...);
 
@@ -68,7 +61,6 @@ struct enable_if_symbolic : std::enable_if<is_symbolic<T>::value, R> {};
 template<typename T, typename R = void>
 using enable_if_symbolic_t = typename enable_if_symbolic<T, R>::type;
 
-} // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_TRAITS_IS_SYMBOLIC_HPP */
+#endif // SYMCTRL_TRAITS_IS_SYMBOLIC_HPP

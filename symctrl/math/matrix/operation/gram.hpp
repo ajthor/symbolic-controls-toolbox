@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include <symctrl/math/matrix/dense.hpp>
+#include <symctrl/math/matrix/dense/dense.hpp>
 #include <symctrl/math/functor/kernel.hpp>
 
 namespace Controls {
@@ -35,4 +35,4 @@ inline DenseMatrix<double> gram(KernelFunction &K,
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_GRAM_HPP */
+#endif // SYMCTRL_MATH_MATRIX_GRAM_HPP

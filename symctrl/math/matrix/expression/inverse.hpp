@@ -161,10 +161,12 @@ ExprInverse<M>::operator[](const size_t pos) const {
 template<typename M>
 inline const ExprInverse<M>
 inverse(const Matrix<M> &m) {
+  SYMCTRL_ASSERT(m.nrows() == m.ncols());
+  
   return ExprInverse<M>(~m);
 }
 
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_EXPRESSION_INVERSE_HPP */
+#endif // SYMCTRL_MATH_MATRIX_EXPRESSION_INVERSE_HPP

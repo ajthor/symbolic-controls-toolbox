@@ -61,4 +61,4 @@ inline bool is_a_random_variable(const SymEngine::Basic &b) {
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_RANDOM_RANDOM_VARIABLE_HPP */
+#endif // SYMCTRL_MATH_RANDOM_RANDOM_VARIABLE_HPP

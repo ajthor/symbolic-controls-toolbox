@@ -23,16 +23,18 @@ set(HEADERS
   controller.hpp
   function.hpp
   kernel.hpp
-  mdp.hpp
+  # mdp.hpp
   state_space.hpp
   subs.hpp
   system.hpp
   transfer_function.hpp
   visitor.hpp
   math/math.hpp
+  math/functor.hpp
   math/functor/functor.hpp
   math/functor/kernel.hpp
   math/functor/lambda.hpp
+  math/matrix.hpp
   math/matrix/block.hpp
   math/matrix/block/block.hpp
   math/matrix/constant.hpp
@@ -41,42 +43,53 @@ set(HEADERS
   math/matrix/constant/zeros.hpp
   math/matrix/dense.hpp
   math/matrix/dense/dense.hpp
+  math/matrix/expression.hpp
+  math/matrix/expression/add.hpp
+  math/matrix/expression/block.hpp
+  math/matrix/expression/constant.hpp
+  math/matrix/expression/dense.hpp
+  math/matrix/expression/expression.hpp
+  math/matrix/expression/inverse.hpp
+  math/matrix/expression/matrix.hpp
+  math/matrix/expression/mul.hpp
+  math/matrix/expression/neg.hpp
+  math/matrix/expression/sparse.hpp
+  math/matrix/expression/static.hpp
+  math/matrix/expression/sub.hpp
+  math/matrix/expression/transpose.hpp
+  math/matrix/expression/unary.hpp
+  math/matrix/expression/vector.hpp
+  math/matrix/operation.hpp
+  math/matrix/operation/gram.hpp
+  math/matrix/operation/jacobian.hpp
+  math/matrix/operation/norm.hpp
   math/matrix/matrix.hpp
   math/matrix/sparse.hpp
   math/matrix/sparse/sparse.hpp
   math/matrix/static.hpp
   math/matrix/static/dense.hpp
   math/matrix/static/vector.hpp
+  math/matrix/type_traits/is_constant.hpp
+  math/matrix/type_traits/is_dense.hpp
+  math/matrix/type_traits/is_expr.hpp
+  math/matrix/type_traits/is_lower.hpp
+  math/matrix/type_traits/is_matrix.hpp
+  math/matrix/type_traits/is_square.hpp
+  math/matrix/type_traits/is_static.hpp
+  math/matrix/type_traits/is_symmetric.hpp
+  math/matrix/type_traits/is_upper.hpp
+  math/matrix/type_traits/is_vector.hpp
   math/matrix/vector.hpp
   math/matrix/vector/vector.hpp
-  math/matrix/expression.hpp
-  math/matrix/expression/expression.hpp
-  math/matrix/expression/matrix.hpp
-  math/matrix/expression/symbolic.hpp
-  math/matrix/expression/dense.hpp
-  math/matrix/expression/vector.hpp
-  math/matrix/expression/constant.hpp
-  math/matrix/expression/block.hpp
-  math/matrix/expression/sparse.hpp
-  math/matrix/expression/add.hpp
-  math/matrix/expression/sub.hpp
-  math/matrix/expression/mul.hpp
-  math/matrix/expression/inverse.hpp
-  math/matrix/expression/transpose.hpp
-  math/matrix/expression/neg.hpp
-  math/matrix/operation/gram.hpp
-  math/matrix/operation/jacobian.hpp
-  math/matrix/operation/norm.hpp
+  math/random.hpp
   math/random/random_distribution.hpp
   math/random/random_variable.hpp
-  traits/is_constant.hpp
-  traits/is_dense.hpp
-  traits/is_expr.hpp
-  traits/is_matrix.hpp
-  traits/is_scalar.hpp
-  traits/is_symbolic.hpp
-  traits/is_vector.hpp
   ode/ode.hpp
+  shims/default.hpp
+  shims/symbolic.hpp
+  type_traits/is_default.hpp
+  type_traits/is_scalar.hpp
+  type_traits/is_symbolic.hpp
 )
 
 INSTALL_HEADERS_WITH_DIRECTORY(HEADERS)

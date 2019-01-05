@@ -1,24 +1,24 @@
-#ifndef SYMCTRL_TRAITS_IS_MATRIX_HPP
-#define SYMCTRL_TRAITS_IS_MATRIX_HPP
+#ifndef SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_VECTOR_HPP
+#define SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_VECTOR_HPP
 
-#include <type_traits>
+#include <utility>
 
-#include <symctrl/math/matrix/matrix.hpp>
+#include <symctrl/math/matrix/vector.hpp>
 
 namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// SFINAE is_matrix_helper
+// SFINAE is_vector_helper
 //
 template<class T>
-struct is_matrix_helper {
+struct is_vector_helper {
 private:
   template<typename ...DT>
-  static std::true_type test(Matrix<DT...> &);
+  static std::true_type test(Vector<DT...> &);
 
   template<typename ...DT>
-  static std::true_type test(const Matrix<DT...> &);
+  static std::true_type test(const Vector<DT...> &);
 
   static std::false_type test(...);
 
@@ -27,18 +27,18 @@ public:
 };
 
 // ----------------------------------------------------------------------
-// SFINAE is_matrix_t
+// SFINAE is_vector_t
 //
 template<typename T>
-using is_matrix_t = typename is_matrix_helper<T>::type;
+using is_vector_t = typename is_vector_helper<T>::type;
 
 // ----------------------------------------------------------------------
-// SFINAE is_matrix
+// SFINAE is_vector
 //
 template<typename T>
-struct is_matrix : is_matrix_t<T>::type {};
+struct is_vector : is_vector_t<T>::type {};
 
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_TRAITS_IS_MATRIX_HPP */
+#endif // SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_VECTOR_HPP

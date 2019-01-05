@@ -96,14 +96,16 @@ TEST_CASE("Matrix Operations: Jacobian", "[operations]") {
     REQUIRE(eq(*R(1, 1), *x));
   }
 
-  Vector<int> c({1, 1});
-  Vector<int> d({1, 1});
-  DenseMatrix<int> S(2, 2);
+  {
+    Vector<int> c({1, 1});
+    Vector<int> d({1, 1});
+    DenseMatrix<int> S(2, 2);
 
-  // Fails!
-  // S = jacobian(a, b);
-  // S = jacobian(c, d);
-  // R = jacobian(c, d);
+    // Fails!
+    // S = jacobian(a, b);
+    // S = jacobian(c, d);
+    // R = jacobian(c, d);
+  }
 }
 
 TEST_CASE("Matrix Operations: Norm", "[operations]") {

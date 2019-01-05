@@ -110,7 +110,10 @@ inline void BlockMatrix<T>::apply_mul(const BlockMatrix<DT> &rhs) {
 
 template<typename T>
 template<typename DT>
-inline void BlockMatrix<T>::apply_inverse(const BlockMatrix<DT> &rhs) {}
+inline void BlockMatrix<T>::apply_inverse(const BlockMatrix<DT> &rhs) {
+  SYMCTRL_ASSERT((~rhs).nrows() == (~rhs).ncols());
+
+}
 
 template<typename T>
 template<typename DT>
@@ -150,7 +153,23 @@ inline bool equal(const BlockMatrix<T> &lhs, const BlockMatrix<T> &rhs) {
   return true;
 }
 
+template<typename DT, typename T>
+inline bool equal(const Matrix<DT> &lhs, const BlockMatrix<T> &rhs) {
+  if((~lhs).nrows() != (~rhs).nrows() || (~lhs).ncols() != (~rhs).ncols()) {
+    return false;
+  }
+
+  for(size_t i = 0; i < (~lhs).nrows(); i++) {
+    for(size_t j = 0; j < (~lhs).ncols(); j++) {
+      if(!equal(*(~lhs)(i, j), *(~rhs)(i, j)))
+        return false;
+    }
+  }
+
+  return true;
+}
+
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_EXPRESSION_BLOCK_HPP */
+#endif // SYMCTRL_MATH_MATRIX_EXPRESSION_BLOCK_HPP

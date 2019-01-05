@@ -1,6 +1,8 @@
 #ifndef SYMCTRL_MATH_MATRIX_EXPRESSION_UNARY_HPP
 #define SYMCTRL_MATH_MATRIX_EXPRESSION_UNARY_HPP
 
+#include <symctrl/assert.hpp>
+#include <symctrl/math/matrix/matrix.hpp>
 #include <symctrl/math/matrix/expression/expression.hpp>
 
 namespace Controls {
@@ -154,4 +156,4 @@ ExprUnary<M>::operator[](const size_t pos) const {
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_EXPRESSION_UNARY_HPP */
+#endif // SYMCTRL_MATH_MATRIX_EXPRESSION_UNARY_HPP

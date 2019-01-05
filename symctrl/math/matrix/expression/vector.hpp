@@ -4,10 +4,12 @@
 #include <type_traits>
 #include <vector>
 
+#include <symengine/add.h>
+#include <symengine/mul.h>
+
+#include <symctrl/shims/symbolic.hpp>
 #include <symctrl/math/matrix/vector/vector.hpp>
-#include <symctrl/math/matrix/expression/symbolic.hpp>
-#include <symctrl/math/matrix/expression/transpose.hpp>
-#include <symctrl/traits/is_scalar.hpp>
+#include <symctrl/math/matrix/expression/matrix.hpp>
 
 namespace Controls {
 namespace Math {
@@ -163,11 +165,11 @@ inline bool equal(const Matrix<DT> &lhs, const Vector<T> &rhs) {
 // ----------------------------------------------------------------------
 // SymbolicVector Specialization
 //
-using SymbolicVector = Vector<RCPBasic>;
+using SymbolicVector = Vector<symbolic_t>;
 
 template<>
 inline SymbolicVector&
-SymbolicVector::operator+=(const RCPBasic &rhs) {
+SymbolicVector::operator+=(const symbolic_t &rhs) {
   for(size_t i = 0; i < v_.size(); i++) {
     v_[i] = SymEngine::add(v_[i], rhs);
   }
@@ -177,7 +179,7 @@ SymbolicVector::operator+=(const RCPBasic &rhs) {
 
 template<>
 inline SymbolicVector&
-SymbolicVector::operator-=(const RCPBasic &rhs) {
+SymbolicVector::operator-=(const symbolic_t &rhs) {
   for(size_t i = 0; i < v_.size(); i++) {
     v_[i] = SymEngine::sub(v_[i], rhs);
   }
@@ -187,7 +189,7 @@ SymbolicVector::operator-=(const RCPBasic &rhs) {
 
 template<>
 inline SymbolicVector&
-SymbolicVector::operator*=(const RCPBasic &rhs) {
+SymbolicVector::operator*=(const symbolic_t &rhs) {
   for(size_t i = 0; i < v_.size(); i++) {
     v_[i] = SymEngine::mul(v_[i], rhs);
   }
@@ -197,7 +199,7 @@ SymbolicVector::operator*=(const RCPBasic &rhs) {
 
 template<>
 inline SymbolicVector&
-SymbolicVector::operator/=(const RCPBasic &rhs) {
+SymbolicVector::operator/=(const symbolic_t &rhs) {
   for(size_t i = 0; i < v_.size(); i++) {
     v_[i] = SymEngine::div(v_[i], rhs);
   }
@@ -236,7 +238,7 @@ template<>
 inline void SymbolicVector::apply_mul(const Matrix<SymbolicVector> &rhs) {
   SYMCTRL_ASSERT(m_ == (~rhs).n_);
 
-  std::vector<RCPBasic> t_(n_*(~rhs).m_, SymEngine::zero);
+  std::vector<symbolic_t> t_(n_*(~rhs).m_, SymEngine::zero);
 
   for(size_t i = 0; i < n_; i++) {
     for(size_t j = 0; j < (~rhs).m_; j++) {
@@ -251,24 +253,7 @@ inline void SymbolicVector::apply_mul(const Matrix<SymbolicVector> &rhs) {
   v_ = t_;
 }
 
-// ----------------------------------------------------------------------
-// SymbolicVector Equal
-//
-template<>
-inline bool equal(const SymbolicVector &lhs, const SymbolicVector &rhs) {
-  if((~lhs).nrows() != (~rhs).nrows() || (~lhs).ncols() != (~rhs).ncols()) {
-    return false;
-  }
-
-  for(size_t i = 0; i < (~lhs).size(); i++) {
-    if(!equal((~lhs)[i], (~rhs)[i]))
-      return false;
-  }
-
-  return true;
-}
-
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_MATH_MATRIX_EXPRESSION_VECTOR_HPP */
+#endif // SYMCTRL_MATH_MATRIX_EXPRESSION_VECTOR_HPP

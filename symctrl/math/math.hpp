@@ -5,4 +5,4 @@
 #include <symctrl/math/matrix.hpp>
 #include <symctrl/math/random.hpp>
 
-#endif /* end of include guard: SYMCTRL_MATH_MATH_HPP */
+#endif // SYMCTRL_MATH_MATH_HPP
