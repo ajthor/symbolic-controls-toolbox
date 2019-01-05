@@ -5,6 +5,7 @@
 #include <symengine/constants.h>
 #include <symengine/integer.h>
 #include <symengine/symbol.h>
+#include <symengine/parser.h>
 
 namespace Controls {
 
@@ -38,7 +39,6 @@ using symbolic_symbol_t = typename symbolic_symbol::type;
 // ----------------------------------------------------------------------
 // symbolic_one
 //
-// static symbolic_integer_t symbolic_one = SymEngine::one;
 inline symbolic_t symbolic_one() {
   return SymEngine::one;
 }
@@ -46,7 +46,6 @@ inline symbolic_t symbolic_one() {
 // ----------------------------------------------------------------------
 // symbolic_zero
 //
-// static symbolic_integer_t symbolic_zero = SymEngine::zero;
 inline symbolic_t symbolic_zero() {
   return SymEngine::zero;
 }

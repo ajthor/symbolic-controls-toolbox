@@ -6,16 +6,29 @@ namespace Controls {
 class Visitor;
 
 // ----------------------------------------------------------------------
+// BaseSystem Class
+//
+class BaseSystem {
+public:
+  virtual ~BaseSystem() {}
+  
+  virtual void accept(Visitor &visitor) = 0;
+};
+
+// ----------------------------------------------------------------------
 // System Class
 //
-class System {
+template<typename DT>
+class System : BaseSystem {
 public:
-  virtual ~System() {};
-
-  // Visitor Pattern
-  virtual void accept(Visitor &visitor) = 0;
+  inline DT &operator~() {
+    return *static_cast<DT *>(this);
+  }
+  inline const DT &operator~() const {
+    return *static_cast<const DT *>(this);
+  }
 };
 
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_SYSTEM_HPP */
+#endif // SYMCTRL_SYSTEM_HPP

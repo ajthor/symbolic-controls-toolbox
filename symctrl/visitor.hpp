@@ -29,7 +29,7 @@ public:
 // ----------------------------------------------------------------------
 // SystemVisitor Class
 //
-template<class Derived, class Base = Visitor>
+template<typename Derived, typename Base = Visitor>
 class SystemVisitor : public Base {
 public:
   using Base::Base;
@@ -44,4 +44,4 @@ public:
 
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_VISITOR_HPP */
+#endif // SYMCTRL_VISITOR_HPP
