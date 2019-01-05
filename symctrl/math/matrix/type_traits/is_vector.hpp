@@ -3,7 +3,7 @@
 
 #include <utility>
 
-#include <symctrl/math/matrix/vector.hpp>
+#include <symctrl/math/matrix/vector/vector.hpp>
 
 namespace Controls {
 namespace Math {

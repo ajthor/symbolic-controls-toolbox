@@ -141,9 +141,9 @@ template<typename T>
 template<typename DT>
 inline DenseMatrix<T>::DenseMatrix(const Matrix<DT> &m) :
                                    n_((~m).nrows()),
-                                   m_((~m).ncols()),
-                                   v_((~m).as_vec()) {
+                                   m_((~m).ncols()) {
   //
+  apply_(*this, ~m);
 }
 
 // ----------------------------------------------------------------------

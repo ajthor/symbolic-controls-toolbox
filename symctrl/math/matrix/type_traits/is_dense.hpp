@@ -3,7 +3,7 @@
 
 #include <utility>
 
-#include <symctrl/math/matrix/dense.hpp>
+#include <symctrl/math/matrix/dense/dense.hpp>
 
 namespace Controls {
 namespace Math {

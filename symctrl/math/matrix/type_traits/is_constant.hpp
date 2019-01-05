@@ -3,7 +3,10 @@
 
 #include <utility>
 
-#include <symctrl/math/matrix/static.hpp>
+#include <symctrl/math/matrix/constant/constant.hpp>
+#include <symctrl/math/matrix/constant/identity.hpp>
+#include <symctrl/math/matrix/constant/ones.hpp>
+#include <symctrl/math/matrix/constant/zeros.hpp>
 
 namespace Controls {
 namespace Math {

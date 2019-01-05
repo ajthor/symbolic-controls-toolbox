@@ -9,6 +9,7 @@
 #include <symctrl/shims/default.hpp>
 #include <symctrl/shims/symbolic.hpp>
 #include <symctrl/math/matrix/dense/dense.hpp>
+#include <symctrl/math/matrix/vector/vector.hpp>
 #include <symctrl/type_traits/is_symbolic.hpp>
 
 namespace Controls {

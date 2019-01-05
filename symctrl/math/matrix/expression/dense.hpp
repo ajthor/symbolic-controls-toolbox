@@ -224,10 +224,10 @@ SymbolicDense::operator/=(const symbolic_t &rhs) {
 }
 
 template<>
-template<>
-inline void SymbolicDense::apply_add(const Matrix<SymbolicDense> &rhs) {
-  SYMCTRL_ASSERT(n_ == (~rhs).n_);
-  SYMCTRL_ASSERT(m_ == (~rhs).m_);
+template<typename DT>
+inline void SymbolicDense::apply_add(const Matrix<DT> &rhs) {
+  SYMCTRL_ASSERT(n_ == (~rhs).nrows());
+  SYMCTRL_ASSERT(m_ == (~rhs).ncols());
 
   for(size_t i = 0; i < n_; i++) {
     for(size_t j = 0; j < m_; j++) {
@@ -237,10 +237,10 @@ inline void SymbolicDense::apply_add(const Matrix<SymbolicDense> &rhs) {
 }
 
 template<>
-template<>
-inline void SymbolicDense::apply_sub(const Matrix<SymbolicDense> &rhs) {
-  SYMCTRL_ASSERT(n_ == (~rhs).n_);
-  SYMCTRL_ASSERT(m_ == (~rhs).m_);
+template<typename DT>
+inline void SymbolicDense::apply_sub(const Matrix<DT> &rhs) {
+  SYMCTRL_ASSERT(n_ == (~rhs).nrows());
+  SYMCTRL_ASSERT(m_ == (~rhs).ncols());
 
   for(size_t i = 0; i < n_; i++) {
     for(size_t j = 0; j < m_; j++) {
@@ -250,24 +250,24 @@ inline void SymbolicDense::apply_sub(const Matrix<SymbolicDense> &rhs) {
 }
 
 template<>
-template<>
-inline void SymbolicDense::apply_mul(const Matrix<SymbolicDense> &rhs) {
-  SYMCTRL_ASSERT(m_ == (~rhs).n_);
+template<typename DT>
+inline void SymbolicDense::apply_mul(const Matrix<DT> &rhs) {
+  SYMCTRL_ASSERT(m_ == (~rhs).nrows());
 
-  std::vector<symbolic_t> t_(n_*(~rhs).m_, SymEngine::zero);
+  std::vector<symbolic_t> t_(n_*(~rhs).ncols(), SymEngine::zero);
 
   for(size_t i = 0; i < n_; i++) {
-    for(size_t j = 0; j < (~rhs).m_; j++) {
+    for(size_t j = 0; j < (~rhs).ncols(); j++) {
 
       for(size_t k = 0; k < m_; k++) {
-        t_[i*(~rhs).m_ + j] =
-          SymEngine::add(t_[i*(~rhs).m_ + j],
-            SymEngine::mul(v_[i*m_ + k], (~rhs)[k*(~rhs).m_ + j]));
+        t_[i*(~rhs).ncols() + j] =
+          SymEngine::add(t_[i*(~rhs).ncols() + j],
+            SymEngine::mul(v_[i*m_ + k], (~rhs)[k*(~rhs).ncols() + j]));
       }
     }
   }
 
-  m_ = (~rhs).m_;
+  m_ = (~rhs).ncols();
   v_ = t_;
 }
 

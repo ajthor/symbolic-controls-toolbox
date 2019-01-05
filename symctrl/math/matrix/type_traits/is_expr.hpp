@@ -3,7 +3,7 @@
 
 #include <utility>
 
-#include <symctrl/math/matrix/expression.hpp>
+#include <symctrl/math/matrix/expression/expression.hpp>
 
 namespace Controls {
 namespace Math {

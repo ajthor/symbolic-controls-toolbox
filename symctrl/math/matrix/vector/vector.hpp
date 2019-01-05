@@ -38,6 +38,7 @@ public:
   inline Vector(const Matrix<DT> &m);
 
   inline Vector<T> &operator=(const T &rhs);
+  inline Vector<T> &operator=(std::initializer_list<T> rhs);
   inline Vector<T> &operator=(const std::vector<T> rhs);
   inline Vector<T> &operator=(const Vector<T> &rhs);
 
@@ -88,8 +89,6 @@ public:
   inline const T &operator()(const size_t row, const size_t col) const;
 
   inline Vector<T> &transpose();
-
-  inline T norm();
 };
 
 // ----------------------------------------------------------------------
@@ -129,9 +128,9 @@ template<typename T>
 template<typename DT>
 inline Vector<T>::Vector(const Matrix<DT> &m) :
                          n_((~m).nrows()),
-                         m_((~m).ncols()),
-                         v_((~m).as_vec()) {
+                         m_((~m).ncols()) {
   //
+  apply_(*this, ~m);
 }
 
 // ----------------------------------------------------------------------
@@ -147,9 +146,20 @@ inline Vector<T> &Vector<T>::operator=(const T &rhs) {
 }
 
 template<typename T>
+inline Vector<T> &Vector<T>::operator=(std::initializer_list<T> rhs) {
+  n_ = rhs.size();
+  m_ = 1;
+  v_.resize(n_*m_);
+  std::copy(rhs.begin(), rhs.end(), v_.begin());
+
+  return *this;
+}
+
+template<typename T>
 inline Vector<T> &Vector<T>::operator=(const std::vector<T> rhs) {
   n_ = rhs.size();
   m_ = 1;
+  v_.resize(n_*m_);
   v_ = rhs;
 
   return *this;

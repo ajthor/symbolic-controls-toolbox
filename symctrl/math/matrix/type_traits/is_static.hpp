@@ -4,7 +4,8 @@
 #include <type_traits>
 #include <utility>
 
-#include <symctrl/math/matrix/static.hpp>
+#include <symctrl/math/matrix/static/dense.hpp>
+#include <symctrl/math/matrix/static/vector.hpp>
 
 namespace Controls {
 namespace Math {
