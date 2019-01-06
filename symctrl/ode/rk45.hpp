@@ -89,4 +89,4 @@ void ode_rk45(StateSpace &m,
 
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_ODE_RK45_HPP */
+#endif // SYMCTRL_ODE_RK45_HPP

@@ -11,7 +11,7 @@ set(SRC
   systems/operations/linearize.cc
   systems/operations/observability.cc
   systems/visitors/subs.cc
-  # ode/euler.cc
+  ode/euler/euler.cc
 )
 
 # A list of all header files with C header definitions.

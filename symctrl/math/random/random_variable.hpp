@@ -51,13 +51,6 @@ random_variable(const std::string &name,
     return SymEngine::make_rcp<const RandomVariable>(name, dist);
 }
 
-// ----------------------------------------------------------------------
-// Utility Functions
-//
-inline bool is_a_random_variable(const SymEngine::Basic &b) {
-    return dynamic_cast<const RandomVariable*>(&b) != nullptr;
-}
-
 } // Math
 } // Controls
 

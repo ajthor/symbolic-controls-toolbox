@@ -109,4 +109,4 @@ void odesim(StateSpace &m,
 
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_ODE_SIM_HPP */
+#endif // SYMCTRL_ODE_SIM_HPP

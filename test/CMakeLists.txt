@@ -37,6 +37,6 @@ ADD_TEST_FILE(test_statespace test_statespace.cc)
 ADD_TEST_FILE(test_statespace_operations test_statespace_operations.cc)
 ADD_TEST_FILE(test_transferfunction test_transferfunction.cc)
 
-# ADD_TEST_FILE(test_ode test_ode.cc)
+ADD_TEST_FILE(test_ode test_ode.cc)
 
 # ADD_TEST_FILE(test_mdp test_mdp.cc)
