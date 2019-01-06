@@ -10,6 +10,7 @@ set(SRC
   systems/operations/controllability.cc
   systems/operations/linearize.cc
   systems/operations/observability.cc
+  systems/visitors/subs.cc
   # ode/euler.cc
 )
 
@@ -19,7 +20,6 @@ set(HEADERS
   # c_wrapper.hpp
   controller.hpp
   kernel.hpp
-  subs.hpp
   math/math.hpp
   math/functor.hpp
   math/functor/functor.hpp
@@ -79,6 +79,7 @@ set(HEADERS
   shims/default.hpp
   shims/symbolic.hpp
   systems/functor/functor.hpp
+  systems/hybrid/dtshs.hpp
   systems/mdp/mdp.hpp
   systems/mdp/pomdp.hpp
   systems/operations/controllability.hpp
@@ -88,6 +89,7 @@ set(HEADERS
   systems/traits/is_controllable.hpp
   systems/traits/is_observable.hpp
   systems/transferfunction/transferfunction.hpp
+  systems/visitors/subs.hpp
   systems/mdp.hpp
   systems/statespace.hpp
   systems/system.hpp

@@ -14,14 +14,14 @@ private:
   TransitionFunction *observation_kernel_;
 
 public:
-  POMDP(SetType state_space,
-        SetType input_space,
-        TransitionFunction *T,
-        CostFunction *R,
-        TransitionFunction *Ob,
-        const double gamma) :
-        MDP{state_space, input_space, T, R, gamma},
-        observation_kernel_(Ob) {}
+  // POMDP(SetType state_space,
+  //       SetType input_space,
+  //       TransitionFunction *T,
+  //       CostFunction *R,
+  //       TransitionFunction *Ob,
+  //       const double gamma) :
+  //       MDP{state_space, input_space, T, R, gamma},
+  //       observation_kernel_(Ob) {}
 
   // ~POMDP() {}
 

@@ -11,8 +11,8 @@ namespace Controls {
 //
 class MDP : public System<MDP> {
 private:
-  SetType state_space_;
-  SetType input_space_;
+  // SetType state_space_;
+  // SetType input_space_;
 
   TransitionFunction *transition_kernel_;
   CostFunction *cost_function_;
@@ -20,16 +20,16 @@ private:
   double gamma_;
 
 public:
-  MDP(SetType state_space,
-      SetType input_space,
-      TransitionFunction *T,
-      CostFunction *R,
-      const double gamma) :
-      state_space_(state_space),
-      input_space_(input_space),
-      transition_kernel_(T),
-      cost_function_(R),
-      gamma_(gamma) {}
+  // MDP(SetType state_space,
+  //     SetType input_space,
+  //     TransitionFunction *T,
+  //     CostFunction *R,
+  //     const double gamma) :
+  //     state_space_(state_space),
+  //     input_space_(input_space),
+  //     transition_kernel_(T),
+  //     cost_function_(R),
+  //     gamma_(gamma) {}
 
   // ~MDP() {}
 

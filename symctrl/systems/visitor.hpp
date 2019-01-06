@@ -1,6 +1,7 @@
 #ifndef SYMCTRL_SYSTEMS_VISITOR_HPP
 #define SYMCTRL_SYSTEMS_VISITOR_HPP
 
+#include <symctrl/systems/hybrid/dtshs.hpp>
 #include <symctrl/systems/mdp/mdp.hpp>
 #include <symctrl/systems/mdp/pomdp.hpp>
 #include <symctrl/systems/statespace/statespace.hpp>
@@ -13,7 +14,8 @@ namespace Controls {
 MACRO(StateSpace) \
 MACRO(TransferFunction) \
 MACRO(MDP) \
-MACRO(POMDP)
+MACRO(POMDP) \
+MACRO(DTSHS)
 #endif
 
 // ----------------------------------------------------------------------
