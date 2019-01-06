@@ -27,6 +27,10 @@ public:
   inline const DT &operator~() const {
     return *static_cast<const DT *>(this);
   }
+
+  inline void accept(Visitor &visitor) {
+    (*this).operator~().accept(visitor);
+  }
 };
 
 } // Controls

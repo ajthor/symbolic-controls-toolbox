@@ -7,6 +7,8 @@
 #include <symctrl/math/random/random_variable.hpp>
 #include <symctrl/math/matrix/dense.hpp>
 #include <symctrl/systems/statespace.hpp>
+#include <symctrl/systems/visitor.hpp>
+#include <symctrl/systems/visitors/subs.hpp>
 #include <symctrl/shims/equal.hpp>
 #include <symctrl/shims/symbolic.hpp>
 #include <symctrl/shims/parse.hpp>
@@ -151,4 +153,23 @@ TEST_CASE("StateSpace: Random Variable", "[statespace]") {
 
   REQUIRE(equal(sys.state_equations[0], parse("x2 + w1")));
   REQUIRE(equal(sys.state_equations[1], parse("-sin(x1) - x2 + u + w2")));
+}
+
+TEST_CASE("StateSpace: Subs", "[statespace]") {
+  StateSpace sys({parse("x1"), parse("x2")},
+                 {parse("u")},
+                 {parse("x2"), parse("-sin(x1) - x2 + u")},
+                 {parse("x1"), parse("x2")});
+  //
+  symbolic_symbol_t x3 = symbol("x3");
+
+  subs(sys, parse("x1"), x3);
+
+  SymbolicDense A = state_matrix(sys);
+
+  REQUIRE(equal(sys.state_variables[0], x3));
+  REQUIRE(A == SymbolicDense(2, 2, {parse("0"),         parse("1"),
+                                    parse("-cos(x3)"),  parse("-1")}));
+
+
 }

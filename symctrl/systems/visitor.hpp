@@ -1,9 +1,10 @@
 #ifndef SYMCTRL_SYSTEMS_VISITOR_HPP
 #define SYMCTRL_SYSTEMS_VISITOR_HPP
 
-#include <symctrl/systems/mdp.hpp>
-#include <symctrl/systems/state_space.hpp>
-#include <symctrl/systems/transfer_function.hpp>
+#include <symctrl/systems/mdp/mdp.hpp>
+#include <symctrl/systems/mdp/pomdp.hpp>
+#include <symctrl/systems/statespace/statespace.hpp>
+#include <symctrl/systems/transferfunction/transferfunction.hpp>
 
 namespace Controls {
 
