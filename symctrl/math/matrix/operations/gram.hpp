@@ -1,5 +1,5 @@
-#ifndef SYMCTRL_MATH_MATRIX_GRAM_HPP
-#define SYMCTRL_MATH_MATRIX_GRAM_HPP
+#ifndef SYMCTRL_MATH_MATRIX_OPERATIONS_GRAM_HPP
+#define SYMCTRL_MATH_MATRIX_OPERATIONS_GRAM_HPP
 
 #include <vector>
 
@@ -35,4 +35,4 @@ inline DenseMatrix<double> gram(KernelFunction &K,
 } // Math
 } // Controls
 
-#endif // SYMCTRL_MATH_MATRIX_GRAM_HPP
+#endif // SYMCTRL_MATH_MATRIX_OPERATIONS_GRAM_HPP

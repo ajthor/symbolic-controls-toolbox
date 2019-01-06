@@ -1,5 +1,5 @@
-#ifndef SYMCTRL_SYSTEM_HPP
-#define SYMCTRL_SYSTEM_HPP
+#ifndef SYMCTRL_SYSTEMS_SYSTEM_HPP
+#define SYMCTRL_SYSTEMS_SYSTEM_HPP
 
 namespace Controls {
 
@@ -11,8 +11,8 @@ class Visitor;
 class BaseSystem {
 public:
   virtual ~BaseSystem() {}
-  
-  virtual void accept(Visitor &visitor) = 0;
+
+  // virtual void accept(Visitor &visitor) = 0;
 };
 
 // ----------------------------------------------------------------------
@@ -31,4 +31,4 @@ public:
 
 } // Controls
 
-#endif // SYMCTRL_SYSTEM_HPP
+#endif // SYMCTRL_SYSTEMS_SYSTEM_HPP

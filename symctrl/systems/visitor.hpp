@@ -1,9 +1,9 @@
-#ifndef SYMCTRL_VISITOR_HPP
-#define SYMCTRL_VISITOR_HPP
+#ifndef SYMCTRL_SYSTEMS_VISITOR_HPP
+#define SYMCTRL_SYSTEMS_VISITOR_HPP
 
-#include "mdp.hpp"
-#include "state_space.hpp"
-#include "transfer_function.hpp"
+#include <symctrl/systems/mdp.hpp>
+#include <symctrl/systems/state_space.hpp>
+#include <symctrl/systems/transfer_function.hpp>
 
 namespace Controls {
 
@@ -42,6 +42,16 @@ public:
   #undef SYMCTRL_SYSTEM_VISITOR_DECL
 };
 
+// ----------------------------------------------------------------------
+// System Accept Function Definitions
+//
+#define SYMCTRL_SYSTEM_ACCEPT(Class) \
+inline void Class::accept(Visitor &visitor) { \
+  visitor.visit(*this); \
+}
+SYMCTRL_SYSTEM_ENUM(SYMCTRL_SYSTEM_ACCEPT)
+#undef SYMCTRL_SYSTEM_ACCEPT
+
 } // Controls
 
-#endif // SYMCTRL_VISITOR_HPP
+#endif // SYMCTRL_SYSTEMS_VISITOR_HPP

@@ -6,11 +6,23 @@
 namespace Controls {
 namespace Math {
 
+// ----------------------------------------------------------------------
+// Assert Macro
 //
 #ifndef SYMCTRL_ASSERT
-#define SYMCTRL_ASSERT(expr) assert(expr);
+#define SYMCTRL_ASSERT(expr) assert((expr));
 #endif
 
+// ----------------------------------------------------------------------
+// Static Assert Macro
+//
+#ifndef SYMCTRL_STATIC_ASSERT
+#define SYMCTRL_STATIC_ASSERT(expr, msg) static_assert(expr, msg);
+#endif
+
+// ----------------------------------------------------------------------
+// Debugging
+//
 // Uncomment this line to enable debugging.
 // #define SYMCTRL_DEBUG_OUT
 
@@ -24,4 +36,4 @@ std::cout << msg << '\n';
 } // Math
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_ASSERT_HPP */
+#endif // SYMCTRL_ASSERT_HPP

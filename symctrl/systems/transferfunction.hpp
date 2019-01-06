@@ -1,0 +1,6 @@
+#ifndef SYMCTRL_SYSTEMS_TRANSFERFUNCTION_HPP
+#define SYMCTRL_SYSTEMS_TRANSFERFUNCTION_HPP
+
+#include <symctrl/systems/transferfunction/transferfunction.hpp>
+
+#endif // SYMCTRL_SYSTEMS_TRANSFERFUNCTION_HPP

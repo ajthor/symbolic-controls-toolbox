@@ -1,4 +1,4 @@
-#include <symctrl/math/matrix/operation/gram.hpp>
+#include <symctrl/math/matrix/operations/gram.hpp>
 
 namespace Controls {
 namespace Math {

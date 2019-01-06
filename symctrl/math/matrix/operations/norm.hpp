@@ -1,5 +1,5 @@
-#ifndef SYMCTRL_MATH_MATRIX_OPERATION_NORM
-#define SYMCTRL_MATH_MATRIX_OPERATION_NORM
+#ifndef SYMCTRL_MATH_MATRIX_OPERATIONS_NORM_HPP
+#define SYMCTRL_MATH_MATRIX_OPERATIONS_NORM_HPP
 
 #include <algorithm>
 #include <numeric>
@@ -54,4 +54,4 @@ inline double norm(const Vector<T> &v, unsigned p = 2) {
 } // Math
 } // Controls
 
-#endif // SYMCTRL_MATH_MATRIX_OPERATION_NORM */
+#endif // SYMCTRL_MATH_MATRIX_OPERATIONS_NORM_HPP */

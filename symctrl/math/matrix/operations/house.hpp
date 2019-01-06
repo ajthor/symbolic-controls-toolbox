@@ -1,5 +1,5 @@
-#ifndef SYMCTRL_MATH_MATRIX_OPERATION_HOUSE_HPP
-#define SYMCTRL_MATH_MATRIX_OPERATION_HOUSE_HPP
+#ifndef SYMCTRL_MATH_MATRIX_OPERATIONS_HOUSE_HPP
+#define SYMCTRL_MATH_MATRIX_OPERATIONS_HOUSE_HPP
 
 #include <symctrl/math/matrix/dense.hpp>
 #include <symctrl/math/matrix/vector.hpp>
@@ -19,4 +19,4 @@ inline DenseMatrix<T> householder_reflector(const Vector<T> &m) {
 } // Math
 } // Controls
 
-#endif // SYMCTRL_MATH_MATRIX_OPERATION_HOUSE_HPP
+#endif // SYMCTRL_MATH_MATRIX_OPERATIONS_HOUSE_HPP

@@ -5,15 +5,17 @@
 #include <symengine/parser.h>
 
 #include <symctrl/math/random/random_variable.hpp>
-#include <symctrl/state_space.hpp>
+#include <symctrl/math/matrix/dense.hpp>
+#include <symctrl/systems/statespace.hpp>
 #include <symctrl/shims/equal.hpp>
 #include <symctrl/shims/symbolic.hpp>
 #include <symctrl/shims/parse.hpp>
 
 using Controls::equal;
-using Controls::StateSpace;
-using Controls::parse;
+using Controls::linearize;
 using Controls::Math::SymbolicDense;
+using Controls::parse;
+using Controls::StateSpace;
 using Controls::symbolic_t;
 using Controls::symbolic_symbol_t;
 
@@ -22,7 +24,7 @@ using SymEngine::RCP;
 using SymEngine::symbol;
 using SymEngine::Symbol;
 
-TEST_CASE("State Space: Parse", "[statespace]") {
+TEST_CASE("StateSpace: Parse", "[statespace]") {
   symbolic_symbol_t x1 = symbol("x1");
   symbolic_symbol_t x2 = symbol("x2");
 
@@ -30,7 +32,7 @@ TEST_CASE("State Space: Parse", "[statespace]") {
   REQUIRE(equal(x2, parse("x2")));
 }
 
-TEST_CASE("State Space: Assignment", "[statespace]") {
+TEST_CASE("StateSpace: Assignment", "[statespace]") {
   symbolic_symbol_t x1 = symbol("x1");
   symbolic_symbol_t x2 = symbol("x2");
   symbolic_symbol_t u = symbol("u");
@@ -58,7 +60,7 @@ TEST_CASE("State Space: Assignment", "[statespace]") {
   REQUIRE(sys.output_equations.size() == 2);
 }
 
-TEST_CASE("State Space: ABCD Matrices", "[statespace]") {
+TEST_CASE("StateSpace: ABCD Matrices", "[statespace]") {
   StateSpace sys;
 
   sys.state_variables = {parse("x1"), parse("x2")};
@@ -104,32 +106,6 @@ TEST_CASE("State Space: ABCD Matrices", "[statespace]") {
   REQUIRE(D == DDD);
 }
 
-TEST_CASE("State Space: Linearize", "[statespace]") {
-  StateSpace sys({parse("x1"), parse("x2")},
-                 {parse("u")},
-                 {parse("x2"), parse("-sin(x1) - x2 + u")},
-                 {parse("x1"), parse("x2")});
-
-  StateSpace linsys = linearize(sys);
-
-  SymbolicDense A = state_matrix(linsys);
-  SymbolicDense B = input_matrix(linsys);
-  SymbolicDense C = output_matrix(linsys);
-  SymbolicDense D = feedforward_matrix(linsys);
-
-  REQUIRE(A == SymbolicDense(2, 2, {parse("0"),         parse("1"),
-                                    parse("-1"),        parse("-1")}));
-
-  REQUIRE(B == SymbolicDense(2, 1, {parse("0"),
-                                    parse("1")}));
-
-  REQUIRE(C == SymbolicDense(2, 2, {parse("1"),         parse("0"),
-                                    parse("0"),         parse("1")}));
-
-  REQUIRE(D == SymbolicDense(2, 1, {parse("0"),
-                                    parse("0")}));
-}
-
 // TEST_CASE("State space: nonlinear separation", "[statespace]") {
 //   Controls::StateSpace *ss = new Controls::StateSpace();
 //
@@ -153,7 +129,7 @@ TEST_CASE("State Space: Linearize", "[statespace]") {
 //
 // }
 
-TEST_CASE("State Space: Random Variable", "[statespace]") {
+TEST_CASE("StateSpace: Random Variable", "[statespace]") {
   symbolic_symbol_t x1 = symbol("x1");
   symbolic_symbol_t x2 = symbol("x2");
   symbolic_symbol_t u = symbol("u");

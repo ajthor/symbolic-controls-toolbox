@@ -3,32 +3,23 @@
 # A list of all source files to be included in the shared library. This should
 # point to files with extern "C" function definitions.
 set(SRC
-  analysis.cc
-  c_wrapper.cc
-  controller.cc
-  mdp.cc
-  state_space.cc
-  transfer_function.cc
-  visitor.cc
+  # c_wrapper.cc
+  # controller.cc
   math/functor/kernel.cc
-  math/matrix/operation/gram.cc
-  ode/euler.cc
+  math/matrix/operations/gram.cc
+  systems/operations/controllability.cc
+  systems/operations/linearize.cc
+  systems/operations/observability.cc
+  # ode/euler.cc
 )
 
 # A list of all header files with C header definitions.
 set(HEADERS
   assert.hpp
-  analysis.hpp
-  c_wrapper.hpp
+  # c_wrapper.hpp
   controller.hpp
-  function.hpp
   kernel.hpp
-  # mdp.hpp
-  state_space.hpp
   subs.hpp
-  system.hpp
-  transfer_function.hpp
-  visitor.hpp
   math/math.hpp
   math/functor.hpp
   math/functor/functor.hpp
@@ -59,10 +50,10 @@ set(HEADERS
   math/matrix/expression/transpose.hpp
   math/matrix/expression/unary.hpp
   math/matrix/expression/vector.hpp
-  math/matrix/operation.hpp
-  math/matrix/operation/gram.hpp
-  math/matrix/operation/jacobian.hpp
-  math/matrix/operation/norm.hpp
+  math/matrix/operations.hpp
+  math/matrix/operations/gram.hpp
+  math/matrix/operations/jacobian.hpp
+  math/matrix/operations/norm.hpp
   math/matrix/matrix.hpp
   math/matrix/sparse.hpp
   math/matrix/sparse/sparse.hpp
@@ -87,6 +78,21 @@ set(HEADERS
   ode/ode.hpp
   shims/default.hpp
   shims/symbolic.hpp
+  systems/functor/functor.hpp
+  systems/mdp/mdp.hpp
+  systems/mdp/pomdp.hpp
+  systems/operations/controllability.hpp
+  systems/operations/linearize.hpp
+  systems/operations/observability.hpp
+  systems/statespace/statespace.hpp
+  systems/traits/is_controllable.hpp
+  systems/traits/is_observable.hpp
+  systems/transferfunction/transferfunction.hpp
+  systems/mdp.hpp
+  systems/statespace.hpp
+  systems/system.hpp
+  systems/transferfunction.hpp
+  systems/visitor.hpp
   type_traits/is_default.hpp
   type_traits/is_scalar.hpp
   type_traits/is_symbolic.hpp

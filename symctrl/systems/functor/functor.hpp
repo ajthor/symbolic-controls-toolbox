@@ -1,5 +1,5 @@
-#ifndef SYMCTRL_FUNCTIONS_HPP
-#define SYMCTRL_FUNCTIONS_HPP
+#ifndef SYMCTRL_SYSTEMS_FUNCTOR_FUNCTOR_HPP
+#define SYMCTRL_SYSTEMS_FUNCTOR_FUNCTOR_HPP
 
 #include <vector>
 
@@ -149,4 +149,4 @@ inline bool is_a_transition_function(T &b) {
 
 } // Controls
 
-#endif /* end of include guard: SYMCTRL_FUNCTIONS_HPP */
+#endif // SYMCTRL_SYSTEMS_FUNCTOR_FUNCTOR_HPP

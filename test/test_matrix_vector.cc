@@ -107,6 +107,26 @@ TEST_CASE("Vector: Mul", "[vector]") {
     REQUIRE(r[0] == 5);
     REQUIRE(r[1] == 5);
   }
+
+  {
+    DenseMatrix<int> A(2, 2, {0, 1, 2, 3});
+    Vector<int> x({1, 2});
+    Vector<int> r(2);
+    TEST_DEBUG("r = A * x");
+    r = A * x;
+    REQUIRE(r[0] == 2);
+    REQUIRE(r[1] == 8);
+  }
+
+  {
+    SymbolicDense A(2, 2, {integer(0), integer(1), integer(2), integer(3)});
+    SymbolicVector x({integer(1), integer(2)});
+    SymbolicVector r(2);
+    TEST_DEBUG("r = A * x");
+    r = A * x;
+    REQUIRE(eq(*r[0], *integer(2)));
+    REQUIRE(eq(*r[1], *integer(8)));
+  }
 }
 
 TEST_CASE("Vector: Add/Mul", "[vector]") {

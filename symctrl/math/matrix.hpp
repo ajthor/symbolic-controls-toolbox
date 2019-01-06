@@ -8,7 +8,7 @@
 #include <symctrl/math/matrix/static.hpp>
 #include <symctrl/math/matrix/block.hpp>
 #include <symctrl/math/matrix/expression.hpp>
-#include <symctrl/math/matrix/operation.hpp>
+#include <symctrl/math/matrix/operations.hpp>
 #include <symctrl/math/matrix/type_traits/is_constant.hpp>
 #include <symctrl/math/matrix/type_traits/is_dense.hpp>
 #include <symctrl/math/matrix/type_traits/is_expr.hpp>

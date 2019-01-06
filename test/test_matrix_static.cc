@@ -132,3 +132,96 @@ TEST_CASE("Static: Mul", "[static]") {
     REQUIRE(R[3] == 64);
   }
 }
+
+
+TEST_CASE("Static: Traits", "[static]") {
+  {
+    StaticDense<int, 3, 3> A({0, 1, 2, 3, 4, 5, 6, 7, 8});
+    StaticDense<int, 3, 3> B({0, 1, 2, 3, 4, 5, 6, 7, 8});
+    StaticDense<int, 3, 3> R;
+    using nano = std::chrono::nanoseconds;
+    auto start = std::chrono::high_resolution_clock::now();
+    R = A*B;
+    auto finish = std::chrono::high_resolution_clock::now();
+    std::cout << "duration dense mul: "
+              << std::chrono::duration_cast<nano>(finish - start).count()
+              << '\n';
+  }
+
+  {
+    StaticDense<int, 3, 3> L({1, 0, 0, 1, 1, 0, 1, 1, 1});
+    using nano = std::chrono::nanoseconds;
+    auto start = std::chrono::high_resolution_clock::now();
+    is_lower(L);
+    auto finish = std::chrono::high_resolution_clock::now();
+    std::cout << "duration is_lower static: "
+              << std::chrono::duration_cast<nano>(finish - start).count()
+              << '\n';
+    REQUIRE(is_square(L));
+    REQUIRE(is_lower(L));
+  }
+
+  {
+    DenseMatrix<int> L(3, 3, {1, 0, 0, 1, 1, 0, 1, 1, 1});
+    using nano = std::chrono::nanoseconds;
+    auto start = std::chrono::high_resolution_clock::now();
+    is_lower(L);
+    auto finish = std::chrono::high_resolution_clock::now();
+    std::cout << "duration is_lower dense: "
+              << std::chrono::duration_cast<nano>(finish - start).count()
+              << '\n';
+    REQUIRE(is_square(L));
+    REQUIRE(is_lower(L));
+  }
+
+  {
+    StaticDense<int, 3, 3> S({1, 1, 1, 1, 1, 1, 1, 1, 1});
+    using nano = std::chrono::nanoseconds;
+    auto start = std::chrono::high_resolution_clock::now();
+    is_square(S);
+    auto finish = std::chrono::high_resolution_clock::now();
+    std::cout << "duration is_square static: "
+              << std::chrono::duration_cast<nano>(finish - start).count()
+              << '\n';
+    REQUIRE(is_square(S));
+  }
+
+  {
+    DenseMatrix<int> S(3, 3, {1, 1, 1, 1, 1, 1, 1, 1, 1});
+    using nano = std::chrono::nanoseconds;
+    auto start = std::chrono::high_resolution_clock::now();
+    is_square(S);
+    auto finish = std::chrono::high_resolution_clock::now();
+    std::cout << "duration is_square dense: "
+              << std::chrono::duration_cast<nano>(finish - start).count()
+              << '\n';
+    REQUIRE(is_square(S));
+  }
+
+  {
+    StaticDense<int, 3, 3> U({1, 1, 1, 0, 1, 1, 0, 0, 1});
+    using nano = std::chrono::nanoseconds;
+    auto start = std::chrono::high_resolution_clock::now();
+    is_upper(U);
+    auto finish = std::chrono::high_resolution_clock::now();
+    std::cout << "duration is_upper static: "
+              << std::chrono::duration_cast<nano>(finish - start).count()
+              << '\n';
+    REQUIRE(is_square(U));
+    REQUIRE(is_upper(U));
+  }
+
+  {
+    DenseMatrix<int> U(3, 3, {1, 1, 1, 0, 1, 1, 0, 0, 1});
+    using nano = std::chrono::nanoseconds;
+    auto start = std::chrono::high_resolution_clock::now();
+    is_upper(U);
+    auto finish = std::chrono::high_resolution_clock::now();
+    std::cout << "duration is_upper dense: "
+              << std::chrono::duration_cast<nano>(finish - start).count()
+              << '\n';
+    REQUIRE(is_square(U));
+    REQUIRE(is_upper(U));
+  }
+
+}

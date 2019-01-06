@@ -63,25 +63,25 @@ TEST_CASE("Random Variable: add", "[randomvariable]") {
   REQUIRE(Controls::Math::is_a_random_variable(*search->first));
 }
 
-TEST_CASE("Random Variable: C Wrapper", "[randomvariable]") {
-  auto d = random_number_distribution_new();
-  normal_distribution_set(d, 0, 1);
-
-  auto g = random_device_new();
-  random_device_init(g);
-
-  auto s = random_variable_new();
-  random_variable_set(s, "x", d);
-
-  // std::cout << *(s->m) << '\n';
-
-  double r = random_variable_sample(s, g);
-  // std::cout << "TEST SAMPLE" << '\n';
-  // std::cout << random_variable_sample(s, g) << '\n';
-
-  random_device_free(g);
-  random_variable_free(s);
-  random_number_distribution_free(d);
-
-  // REQUIRE(0 == 1);
-}
+// TEST_CASE("Random Variable: C Wrapper", "[randomvariable]") {
+//   auto d = random_number_distribution_new();
+//   normal_distribution_set(d, 0, 1);
+//
+//   auto g = random_device_new();
+//   random_device_init(g);
+//
+//   auto s = random_variable_new();
+//   random_variable_set(s, "x", d);
+//
+//   // std::cout << *(s->m) << '\n';
+//
+//   double r = random_variable_sample(s, g);
+//   // std::cout << "TEST SAMPLE" << '\n';
+//   // std::cout << random_variable_sample(s, g) << '\n';
+//
+//   random_device_free(g);
+//   random_variable_free(s);
+//   random_number_distribution_free(d);
+//
+//   // REQUIRE(0 == 1);
+// }

@@ -5,7 +5,7 @@
 
 #include <symctrl/math/functor/functor.hpp>
 #include <symctrl/math/functor/lambda.hpp>
-#include <symctrl/function.hpp>
+#include <symctrl/systems/functor/functor.hpp>
 
 TEST_CASE("Functor: Lambda", "[functor]") {
   {
