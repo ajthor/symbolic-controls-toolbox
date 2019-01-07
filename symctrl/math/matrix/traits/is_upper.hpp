@@ -1,5 +1,5 @@
-#ifndef SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_UPPER_HPP
-#define SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_UPPER_HPP
+#ifndef SYMCTRL_MATH_MATRIX_TRAITS_IS_UPPER_HPP
+#define SYMCTRL_MATH_MATRIX_TRAITS_IS_UPPER_HPP
 
 #include <symctrl/type_traits/is_default.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
@@ -11,7 +11,7 @@ namespace Math {
 // is_upper
 //
 template<typename DT>
-bool is_upper(const Matrix<DT> &m) {
+inline bool is_upper(const Matrix<DT> &m) {
   if((~m).nrows() != (~m).ncols()) {
     return false;
   }
@@ -33,4 +33,4 @@ bool is_upper(const Matrix<DT> &m) {
 } // Math
 } // Controls
 
-#endif // SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_UPPER_HPP
+#endif // SYMCTRL_MATH_MATRIX_TRAITS_IS_UPPER_HPP

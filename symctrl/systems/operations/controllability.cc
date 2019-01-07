@@ -2,7 +2,7 @@
 #include <symctrl/math/matrix/block.hpp>
 #include <symctrl/math/matrix/dense.hpp>
 #include <symctrl/math/matrix/expression.hpp>
-#include <symctrl/math/matrix/type_traits/is_square.hpp>
+#include <symctrl/math/matrix/traits/is_square.hpp>
 #include <symctrl/systems/statespace.hpp>
 #include <symctrl/systems/operations/controllability.hpp>
 
@@ -23,10 +23,10 @@ controllability_matrix(const Math::SymbolicDense &A,
 
   Math::BlockMatrix<symbolic_t> R(1, n_);
 
-  *R[0] = B;
+  R[0] = B;
 
   for(size_t i = 1; i < n_; i++) {
-    *R[i] = A * *R[i - 1];
+    R[i] = A * R[i - 1];
   }
 
   return R;

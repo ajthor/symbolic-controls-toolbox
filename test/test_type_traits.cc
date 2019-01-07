@@ -11,6 +11,7 @@
 #include <symctrl/type_traits/is_default.hpp>
 #include <symctrl/type_traits/is_scalar.hpp>
 #include <symctrl/type_traits/is_symbolic.hpp>
+#include <symctrl/math/matrix/type_traits/is_block.hpp>
 #include <symctrl/math/matrix/type_traits/is_constant.hpp>
 #include <symctrl/math/matrix/type_traits/is_dense.hpp>
 #include <symctrl/math/matrix/type_traits/is_expr.hpp>
@@ -18,6 +19,7 @@
 #include <symctrl/math/matrix/type_traits/is_static.hpp>
 #include <symctrl/math/matrix/type_traits/is_vector.hpp>
 
+using Controls::Math::BlockMatrix;
 using Controls::Math::ConstantMatrix;
 using Controls::Math::DenseMatrix;
 using Controls::Math::Expression;
@@ -41,6 +43,8 @@ using SymEngine::Integer;
 using SymEngine::RCP;
 using SymEngine::Symbol;
 
+using Controls::Math::is_block;
+using Controls::Math::is_block_t;
 using Controls::Math::is_constant;
 using Controls::Math::is_constant_t;
 using Controls::is_default;
@@ -58,6 +62,12 @@ using Controls::is_symbolic;
 using Controls::is_symbolic_t;
 using Controls::Math::is_vector;
 using Controls::Math::is_vector_t;
+
+TEST_CASE("Type Traits: is_block", "[typetraits]") {
+  REQUIRE(is_block<BlockMatrix<int>>::value);
+  REQUIRE(is_block<BlockMatrix<int, DenseMatrix>>::value);
+  REQUIRE(is_block<BlockMatrix<int, Vector>>::value);
+}
 
 TEST_CASE("Type Traits: is_constant", "[typetraits]") {
   REQUIRE(is_constant<ConstantMatrix<int, 2, 2, 1>>::value);

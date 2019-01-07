@@ -12,7 +12,7 @@ namespace Math {
 // ----------------------------------------------------------------------
 // Identity
 //
-template<typename T, size_t N, size_t M>
+template<typename T, size_t N, size_t M = N>
 class Identity : public Matrix<Identity<T, N, M>> {
 public:
   using type = T;

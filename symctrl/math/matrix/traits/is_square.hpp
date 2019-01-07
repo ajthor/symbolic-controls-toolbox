@@ -1,5 +1,5 @@
-#ifndef SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_SQUARE_HPP
-#define SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_SQUARE_HPP
+#ifndef SYMCTRL_MATH_MATRIX_TRAITS_IS_SQUARE_HPP
+#define SYMCTRL_MATH_MATRIX_TRAITS_IS_SQUARE_HPP
 
 #include <symctrl/math/matrix/matrix.hpp>
 #include <symctrl/math/matrix/static/dense.hpp>
@@ -11,7 +11,7 @@ namespace Math {
 // is_square
 //
 template<typename T>
-bool is_square(const Matrix<T> &m) {
+inline bool is_square(const Matrix<T> &m) {
   if((~m).nrows() != (~m).ncols()) {
     return false;
   }
@@ -22,4 +22,4 @@ bool is_square(const Matrix<T> &m) {
 } // Math
 } // Controls
 
-#endif // SYMCTRL_MATH_MATRIX_TYPE_TRAITS_IS_SQUARE_HPP
+#endif // SYMCTRL_MATH_MATRIX_TRAITS_IS_SQUARE_HPP

@@ -2,7 +2,7 @@
 #include <symctrl/math/matrix/block.hpp>
 #include <symctrl/math/matrix/dense.hpp>
 #include <symctrl/math/matrix/expression.hpp>
-#include <symctrl/math/matrix/type_traits/is_square.hpp>
+#include <symctrl/math/matrix/traits/is_square.hpp>
 #include <symctrl/systems/statespace.hpp>
 #include <symctrl/systems/operations/observability.hpp>
 
@@ -23,10 +23,10 @@ observability_matrix(const Math::SymbolicDense &A,
 
   Math::BlockMatrix<symbolic_t> R(n_, 1);
 
-  *R[0] = C;
+  R[0] = C;
 
   for(size_t i = 1; i < n_; i++) {
-    *R[i] = *R[i - 1] * A;
+    R[i] = R[i - 1] * A;
   }
 
   return R;

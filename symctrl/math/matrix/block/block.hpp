@@ -13,20 +13,21 @@ namespace Math {
 // ----------------------------------------------------------------------
 // BlockMatrix
 //
-template<typename T>
-class BlockMatrix : public Matrix<BlockMatrix<T>> {
+template<typename T, template<typename> class MT = DenseMatrix>
+class BlockMatrix : public Matrix<BlockMatrix<T, MT>> {
 public:
   using type = T;
 
-  using result_type = BlockMatrix<T>;
+  using result_type = BlockMatrix<T, MT>;
 
 private:
-  using MT = DenseMatrix<T>;
-
   size_t n_;
   size_t m_;
 
-  std::vector<MT> v_;
+  std::vector<size_t> nn_;
+  std::vector<size_t> mm_;
+
+  std::vector<MT<T>> v_;
 
 public:
   explicit inline BlockMatrix();
@@ -34,87 +35,90 @@ public:
                               const size_t ncols);
   explicit inline BlockMatrix(const size_t nrows,
                               const size_t ncols,
-                              const std::vector<MT> v);
+                              const std::vector<MT<T>> v);
 
-  inline BlockMatrix(const BlockMatrix<T> &m);
-
-  inline BlockMatrix<T> &operator=(const T &rhs);
-  inline BlockMatrix<T> &operator=(const MT &rhs);
-  inline BlockMatrix<T> &operator=(const BlockMatrix<T> &rhs);
+  inline BlockMatrix(const BlockMatrix<T, MT> &m);
 
   template<typename DT>
-  inline BlockMatrix<T> &operator=(const Matrix<DT> &rhs);
+  inline BlockMatrix(const Matrix<DT> &m);
 
-  inline BlockMatrix<T> &operator+=(const T &rhs);
-  inline BlockMatrix<T> &operator-=(const T &rhs);
-  inline BlockMatrix<T> &operator*=(const T &rhs);
-  inline BlockMatrix<T> &operator/=(const T &rhs);
+  inline BlockMatrix<T, MT> &operator=(const T &rhs);
+  inline BlockMatrix<T, MT> &operator=(const MT<T> &rhs);
+  inline BlockMatrix<T, MT> &operator=(const BlockMatrix<T, MT> &rhs);
 
   template<typename DT>
-  inline void apply(const BlockMatrix<DT> &rhs);
+  inline BlockMatrix<T, MT> &operator=(const Matrix<DT> &rhs);
+
+  inline BlockMatrix<T, MT> &operator+=(const T &rhs);
+  inline BlockMatrix<T, MT> &operator-=(const T &rhs);
+  inline BlockMatrix<T, MT> &operator*=(const T &rhs);
+  inline BlockMatrix<T, MT> &operator/=(const T &rhs);
+
   template<typename DT>
-  inline void apply_add(const BlockMatrix<DT> &rhs);
+  inline void apply(const Matrix<DT> &rhs);
   template<typename DT>
-  inline void apply_sub(const BlockMatrix<DT> &rhs);
+  inline void apply_add(const Matrix<DT> &rhs);
   template<typename DT>
-  inline void apply_mul(const BlockMatrix<DT> &rhs);
+  inline void apply_sub(const Matrix<DT> &rhs);
   template<typename DT>
-  inline void apply_inverse(const BlockMatrix<DT> &rhs);
+  inline void apply_mul(const Matrix<DT> &rhs);
   template<typename DT>
-  inline void apply_transpose(const BlockMatrix<DT> &rhs);
+  inline void apply_inverse(const Matrix<DT> &rhs);
+  template<typename DT>
+  inline void apply_transpose(const Matrix<DT> &rhs);
 
   inline size_t size() const;
   inline size_t capacity() const;
 
   inline bool empty() const;
 
-  inline typename std::vector<MT>::iterator begin();
-  inline typename std::vector<MT>::iterator end();
-  inline typename std::vector<MT>::const_iterator begin() const;
-  inline typename std::vector<MT>::const_iterator end() const;
-  inline typename std::vector<MT>::const_iterator cbegin() const;
-  inline typename std::vector<MT>::const_iterator cend() const;
+  inline typename std::vector<MT<T>>::iterator begin();
+  inline typename std::vector<MT<T>>::iterator end();
+  inline typename std::vector<MT<T>>::const_iterator begin() const;
+  inline typename std::vector<MT<T>>::const_iterator end() const;
+  inline typename std::vector<MT<T>>::const_iterator cbegin() const;
+  inline typename std::vector<MT<T>>::const_iterator cend() const;
 
   inline size_t nrows() const;
   inline size_t ncols() const;
 
-  inline std::vector<MT> as_vec() const;
-  inline DenseMatrix<T> as_dense() const;
+  inline std::vector<MT<T>> as_vec() const;
+  inline MT<T> as_dense() const;
 
-  inline MT *operator[](const size_t pos);
-  inline const MT *operator[](const size_t pos) const;
+  inline MT<T> &operator[](const size_t pos);
+  inline const MT<T> &operator[](const size_t pos) const;
 
-  inline MT *operator()(const size_t row, const size_t col);
-  inline const MT *operator()(const size_t row, const size_t col) const;
+  inline MT<T> &operator()(const size_t row, const size_t col);
+  inline const MT<T> &operator()(const size_t row, const size_t col) const;
 };
 
 // ----------------------------------------------------------------------
 // BlockMatrix Constructor
 //
-template<typename T>
-inline BlockMatrix<T>::BlockMatrix() :
-                                   n_(0),
-                                   m_(0) {
+template<typename T, template<typename> class MT>
+inline BlockMatrix<T, MT>::BlockMatrix() :
+                                       n_(0),
+                                       m_(0) {
   //
-  v_ = std::vector<MT>(0);
+  v_ = std::vector<MT<T>>(0);
 }
 
-template<typename T>
-inline BlockMatrix<T>::BlockMatrix(const size_t nrows,
-                                   const size_t ncols) :
-                                   n_(nrows),
-                                   m_(ncols) {
+template<typename T, template<typename> class MT>
+inline BlockMatrix<T, MT>::BlockMatrix(const size_t nrows,
+                                       const size_t ncols) :
+                                       n_(nrows),
+                                       m_(ncols) {
   //
-  v_ = std::vector<MT>(nrows*ncols);
+  v_ = std::vector<MT<T>>(nrows * ncols, MT<T>());
 }
 
-template<typename T>
-inline BlockMatrix<T>::BlockMatrix(const size_t nrows,
-                                   const size_t ncols,
-                                   const std::vector<MT> v) :
-                                   n_(nrows),
-                                   m_(ncols),
-                                   v_(v) {
+template<typename T, template<typename> class MT>
+inline BlockMatrix<T, MT>::BlockMatrix(const size_t nrows,
+                                       const size_t ncols,
+                                       const std::vector<MT<T>> v) :
+                                       n_(nrows),
+                                       m_(ncols),
+                                       v_(v) {
   //
   size_t row_size, col_size;
 
@@ -135,21 +139,26 @@ inline BlockMatrix<T>::BlockMatrix(const size_t nrows,
       SYMCTRL_ASSERT(v_[i*m_ + j].ncols() == col_size);
     }
   }
+
+  for(size_t i = 0; i < v.size(); i++) {
+    apply_(~(v_[i]), ~(v[i]));
+  }
 }
 
-template<typename T>
-inline BlockMatrix<T>::BlockMatrix(const BlockMatrix<T> &m) :
-                                   n_(m.n_),
-                                   m_(m.m_),
-                                   v_(m.v_) {
+template<typename T, template<typename> class MT>
+inline BlockMatrix<T, MT>::BlockMatrix(const BlockMatrix<T, MT> &m) :
+                                       n_(m.n_),
+                                       m_(m.m_),
+                                       v_(m.v_) {
   //
 }
 
 // ----------------------------------------------------------------------
 // BlockMatrix Assignment Operator
 //
-template<typename T>
-inline BlockMatrix<T> &BlockMatrix<T>::operator=(const T &rhs) {
+template<typename T, template<typename> class MT>
+inline BlockMatrix<T, MT>&
+BlockMatrix<T, MT>::operator=(const T &rhs) {
   for(size_t i = 0; i < v_.size(); i++) {
     v_[i] = rhs;
   }
@@ -157,17 +166,19 @@ inline BlockMatrix<T> &BlockMatrix<T>::operator=(const T &rhs) {
   return *this;
 }
 
-template<typename T>
-inline BlockMatrix<T> &BlockMatrix<T>::operator=(const MT &rhs) {
+template<typename T, template<typename> class MT>
+inline BlockMatrix<T, MT>&
+BlockMatrix<T, MT>::operator=(const MT<T> &rhs) {
   for(size_t i = 0; i < v_.size(); i++) {
-    v_[i] = rhs;
+    apply_(~(v_[i]), ~rhs);
   }
 
   return *this;
 }
 
-template<typename T>
-inline BlockMatrix<T> &BlockMatrix<T>::operator=(const BlockMatrix<T> &rhs) {
+template<typename T, template<typename> class MT>
+inline BlockMatrix<T, MT>&
+BlockMatrix<T, MT>::operator=(const BlockMatrix<T, MT> &rhs) {
   n_ = rhs.n_;
   m_ = rhs.m_;
   v_ = rhs.v_;
@@ -175,9 +186,10 @@ inline BlockMatrix<T> &BlockMatrix<T>::operator=(const BlockMatrix<T> &rhs) {
   return *this;
 }
 
-template<typename T>
+template<typename T, template<typename> class MT>
 template<typename DT>
-inline BlockMatrix<T> &BlockMatrix<T>::operator=(const Matrix<DT> &rhs) {
+inline BlockMatrix<T, MT>&
+BlockMatrix<T, MT>::operator=(const Matrix<DT> &rhs) {
   apply_(*this, ~rhs);
 
   return *this;
@@ -186,72 +198,72 @@ inline BlockMatrix<T> &BlockMatrix<T>::operator=(const Matrix<DT> &rhs) {
 // ----------------------------------------------------------------------
 // BlockMatrix Member Function Definitions
 //
-template<typename T>
-inline size_t BlockMatrix<T>::size() const {
+template<typename T, template<typename> class MT>
+inline size_t BlockMatrix<T, MT>::size() const {
   return v_.size();
 }
-template<typename T>
-inline size_t BlockMatrix<T>::capacity() const {
+template<typename T, template<typename> class MT>
+inline size_t BlockMatrix<T, MT>::capacity() const {
   return v_.capacity();
 }
 
-template<typename T>
-inline bool BlockMatrix<T>::empty() const {
+template<typename T, template<typename> class MT>
+inline bool BlockMatrix<T, MT>::empty() const {
   return v_.empty();
 }
 
-template<typename T>
-inline typename std::vector<DenseMatrix<T>>::iterator
-BlockMatrix<T>::begin() {
+template<typename T, template<typename> class MT>
+inline typename std::vector<MT<T>>::iterator
+BlockMatrix<T, MT>::begin() {
   return v_.begin();
 }
 
-template<typename T>
-inline typename std::vector<DenseMatrix<T>>::iterator
-BlockMatrix<T>::end() {
+template<typename T, template<typename> class MT>
+inline typename std::vector<MT<T>>::iterator
+BlockMatrix<T, MT>::end() {
   return v_.begin();
 }
 
-template<typename T>
-inline typename std::vector<DenseMatrix<T>>::const_iterator
-BlockMatrix<T>::begin() const {
+template<typename T, template<typename> class MT>
+inline typename std::vector<MT<T>>::const_iterator
+BlockMatrix<T, MT>::begin() const {
   return v_.begin();
 }
 
-template<typename T>
-inline typename std::vector<DenseMatrix<T>>::const_iterator
-BlockMatrix<T>::end() const {
+template<typename T, template<typename> class MT>
+inline typename std::vector<MT<T>>::const_iterator
+BlockMatrix<T, MT>::end() const {
   return v_.begin();
 }
 
-template<typename T>
-inline typename std::vector<DenseMatrix<T>>::const_iterator
-BlockMatrix<T>::cbegin() const {
+template<typename T, template<typename> class MT>
+inline typename std::vector<MT<T>>::const_iterator
+BlockMatrix<T, MT>::cbegin() const {
   return v_.begin();
 }
 
-template<typename T>
-inline typename std::vector<DenseMatrix<T>>::const_iterator
-BlockMatrix<T>::cend() const {
+template<typename T, template<typename> class MT>
+inline typename std::vector<MT<T>>::const_iterator
+BlockMatrix<T, MT>::cend() const {
   return v_.begin();
 }
 
-template<typename T>
-inline size_t BlockMatrix<T>::nrows() const {
+template<typename T, template<typename> class MT>
+inline size_t BlockMatrix<T, MT>::nrows() const {
   return n_;
 }
-template<typename T>
-inline size_t BlockMatrix<T>::ncols() const {
+template<typename T, template<typename> class MT>
+inline size_t BlockMatrix<T, MT>::ncols() const {
   return m_;
 }
 
-template<typename T>
-inline std::vector<DenseMatrix<T>> BlockMatrix<T>::as_vec() const {
+template<typename T, template<typename> class MT>
+inline std::vector<MT<T>> BlockMatrix<T, MT>::as_vec() const {
   return v_;
 }
 
-template<typename T>
-inline DenseMatrix<T> BlockMatrix<T>::as_dense() const {
+template<typename T, template<typename> class MT>
+inline MT<T> BlockMatrix<T, MT>::as_dense() const {
   size_t nn_, mm_;
   size_t cn_ = 0;
   size_t cm_ = 0;
@@ -294,28 +306,26 @@ inline DenseMatrix<T> BlockMatrix<T>::as_dense() const {
   return DenseMatrix<T>(tn_, tm_, t_);
 }
 
-template<typename T>
-inline DenseMatrix<T>*
-BlockMatrix<T>::operator[](const size_t pos) {
-  return &v_[pos];
+template<typename T, template<typename> class MT>
+inline MT<T> &BlockMatrix<T, MT>::operator[](const size_t pos) {
+  return v_[pos];
 }
 
-template<typename T>
-inline const DenseMatrix<T>*
-BlockMatrix<T>::operator[](const size_t pos) const {
-  return &v_[pos];
+template<typename T, template<typename> class MT>
+inline const MT<T> &BlockMatrix<T, MT>::operator[](const size_t pos) const {
+  return v_[pos];
 }
 
-template<typename T>
-inline DenseMatrix<T>*
-BlockMatrix<T>::operator()(const size_t row, const size_t col) {
-  return &v_[row*m_ + col];
+template<typename T, template<typename> class MT>
+inline MT<T> &BlockMatrix<T, MT>::operator()(const size_t row,
+                                             const size_t col) {
+  return v_[row*m_ + col];
 }
 
-template<typename T>
-inline const DenseMatrix<T>*
-BlockMatrix<T>::operator()(const size_t row, const size_t col) const {
-  return &v_[row*m_ + col];
+template<typename T, template<typename> class MT>
+inline const MT<T> &BlockMatrix<T, MT>::operator()(const size_t row,
+                                                   const size_t col) const {
+  return v_[row*m_ + col];
 }
 
 

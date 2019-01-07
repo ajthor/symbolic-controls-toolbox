@@ -16,7 +16,7 @@ namespace Math {
 // ----------------------------------------------------------------------
 // Zeros
 //
-template<typename T, size_t N, size_t M>
+template<typename T, size_t N, size_t M = N>
 class Zeros : public Matrix<Zeros<T, N, M>> {
 public:
   using type = T;
