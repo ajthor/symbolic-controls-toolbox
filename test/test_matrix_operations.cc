@@ -169,3 +169,15 @@ TEST_CASE("Matrix Operations: QR Decomposition", "[operations]") {
     REQUIRE(::fabs(R[8] - 35.0000) < 1e-3);
   }
 }
+
+TEST_CASE("Matrix Operations: Trace", "[operations]") {
+  {
+    DenseMatrix<int> A(2, 2, {0, 1, 2, 3});
+    REQUIRE(Controls::Math::trace(A) == 3);
+  }
+
+  {
+    DenseMatrix<int> A(2, 2, {5, 1, 2, 3});
+    REQUIRE(Controls::Math::trace(A) == 8);
+  }
+}
