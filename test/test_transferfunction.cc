@@ -20,16 +20,70 @@ using SymEngine::symbol;
 TEST_CASE("TransferFunction: Assignment", "[transferfunction]") {
   symbolic_symbol_t s = symbol("s");
 
-  Controls::TransferFunction tf(s);
+  {
+    TransferFunction tf(s, parse("1"), parse("s"));
+    REQUIRE(equal(tf.var(), s));
+    REQUIRE(equal(tf.numerator(), parse("1")));
+    REQUIRE(equal(tf.denominator(), parse("s")));
+  }
 
-  REQUIRE(equal(tf.var(), s));
+  {
+    TransferFunction tf(s, parse("s"), parse("s^2"));
+    REQUIRE(equal(tf.var(), s));
+    REQUIRE(equal(tf.numerator(), parse("s")));
+    REQUIRE(equal(tf.denominator(), parse("s^2")));
 
-  tf.numerator =   {parse("1"), parse("1 + s")};
-  tf.denominator = {parse("s"), parse("1 + s^2")};
+    // When the transfer function is converted to a symbolic variable, it
+    // performs pole/zero cancellations automatically.
+    symbolic_t R = tf;
+    REQUIRE(equal(R, parse("1/s")));
+  }
+}
 
-  REQUIRE(equal(tf.numerator[0], parse("1")));
-  REQUIRE(equal(tf.numerator[1], parse("1 + s")));
+TEST_CASE("TransferFunction: Series", "[transferfunction]") {
+  symbolic_symbol_t s = symbol("s");
 
-  REQUIRE(equal(tf.denominator[0], parse("s")));
-  REQUIRE(equal(tf.denominator[1], parse("1 + s^2")));
+  {
+    TransferFunction H1(s, parse("1"), parse("s"));
+    TransferFunction H2(s, parse("2"), parse("s"));
+
+    TransferFunction H = H1 * H2;
+
+    REQUIRE(equal(H.numerator(), parse("3*s")));
+    REQUIRE(equal(H.denominator(), parse("s^2")));
+  }
+
+  {
+    TransferFunction H1(s, parse("2"), parse("s^2 + 3*s"));
+    TransferFunction H2(s, parse("5"), parse("s + 5"));
+
+    TransferFunction H = H1 * H2;
+
+    REQUIRE(equal(H.numerator(), parse("2*(5 + s) + 5*(3*s + s^2)")));
+    REQUIRE(equal(H.denominator(), parse("(5 + s)*(3*s + s^2)")));
+  }
+}
+
+TEST_CASE("TransferFunction: Parallel", "[transferfunction]") {
+  symbolic_symbol_t s = symbol("s");
+
+  {
+    TransferFunction H1(s, parse("1"), parse("s"));
+    TransferFunction H2(s, parse("2"), parse("s"));
+
+    TransferFunction H = H1 + H2;
+
+    REQUIRE(equal(H.numerator(), parse("2")));
+    REQUIRE(equal(H.denominator(), parse("s^2")));
+  }
+
+  {
+    TransferFunction H1(s, parse("2"), parse("s^2 + 3*s"));
+    TransferFunction H2(s, parse("5"), parse("s + 5"));
+
+    TransferFunction H = H1 + H2;
+
+    REQUIRE(equal(H.numerator(), parse("10")));
+    REQUIRE(equal(H.denominator(), parse("(5 + s)*(3*s + s^2)")));
+  }
 }

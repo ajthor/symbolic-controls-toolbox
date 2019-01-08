@@ -11,8 +11,6 @@ class Visitor;
 class BaseSystem {
 public:
   virtual ~BaseSystem() {}
-
-  // virtual void accept(Visitor &visitor) = 0;
 };
 
 // ----------------------------------------------------------------------
@@ -28,10 +26,16 @@ public:
     return *static_cast<const DT *>(this);
   }
 
-  inline void accept(Visitor &visitor) {
-    (*this).operator~().accept(visitor);
-  }
+  inline void accept(Visitor &visitor);
 };
+
+// ----------------------------------------------------------------------
+// System Member Function Definitions
+//
+template<typename DT>
+inline void System<DT>::accept(Visitor &visitor) {
+  (*this).operator~().accept(visitor);
+}
 
 } // Controls
 

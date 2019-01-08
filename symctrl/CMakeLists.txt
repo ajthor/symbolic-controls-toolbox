@@ -18,7 +18,6 @@ set(SRC
 set(HEADERS
   assert.hpp
   # c_wrapper.hpp
-  controller.hpp
   kernel.hpp
   math/math.hpp
   math/functor.hpp
@@ -60,15 +59,15 @@ set(HEADERS
   math/matrix/static.hpp
   math/matrix/static/dense.hpp
   math/matrix/static/vector.hpp
+  math/matrix/traits/is_lower.hpp
+  math/matrix/traits/is_square.hpp
+  math/matrix/traits/is_symmetric.hpp
+  math/matrix/traits/is_upper.hpp
   math/matrix/type_traits/is_constant.hpp
   math/matrix/type_traits/is_dense.hpp
   math/matrix/type_traits/is_expr.hpp
-  math/matrix/type_traits/is_lower.hpp
   math/matrix/type_traits/is_matrix.hpp
-  math/matrix/type_traits/is_square.hpp
   math/matrix/type_traits/is_static.hpp
-  math/matrix/type_traits/is_symmetric.hpp
-  math/matrix/type_traits/is_upper.hpp
   math/matrix/type_traits/is_vector.hpp
   math/matrix/vector.hpp
   math/matrix/vector/vector.hpp
@@ -82,6 +81,7 @@ set(HEADERS
   systems/hybrid/dtshs.hpp
   systems/mdp/mdp.hpp
   systems/mdp/pomdp.hpp
+  systems/expression/transferfunction.hpp
   systems/operations/controllability.hpp
   systems/operations/linearize.hpp
   systems/operations/observability.hpp
@@ -89,6 +89,7 @@ set(HEADERS
   systems/traits/is_controllable.hpp
   systems/traits/is_observable.hpp
   systems/transferfunction/transferfunction.hpp
+  systems/transferfunction/transfermatrix.hpp
   systems/visitors/subs.hpp
   systems/mdp.hpp
   systems/statespace.hpp

@@ -39,19 +39,12 @@ void SubsVisitor::visit(StateSpace &sys) {
 // SubsVisitor TransferFunction
 //
 void SubsVisitor::visit(TransferFunction &sys) {
-  size_t n_ = sys.numerator.size();
-  size_t d_ = sys.denominator.size();
-
   SymEngine::map_basic_basic d;
   d[key_] = map_;
 
-  for(size_t i = 0; i < n_; i++) {
-    sys.numerator[i] = SymEngine::ssubs(sys.numerator[i], d);
-  }
+  sys.numerator() = SymEngine::ssubs(sys.numerator(), d);
 
-  for(size_t i = 0; i < d_; i++) {
-    sys.denominator[i] = SymEngine::ssubs(sys.denominator[i], d);
-  }
+  sys.denominator() = SymEngine::ssubs(sys.denominator(), d);
 }
 
 } // Controls
