@@ -2,8 +2,9 @@
 #define SYMCTRL_MATH_MATRIX_EXPRESSION_UNARY_HPP
 
 #include <symctrl/assert.hpp>
+#include <symctrl/math/expression.hpp>
+#include <symctrl/math/expression/unary.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
-#include <symctrl/math/matrix/expression/expression.hpp>
 
 namespace Controls {
 namespace Math {
@@ -11,22 +12,23 @@ namespace Math {
 // ----------------------------------------------------------------------
 // ExprUnary
 //
-template<typename M>
-class ExprUnary : public Expression<Matrix<ExprUnary<M>>> {
+template<typename T>
+class ExprUnary<Matrix, T> :
+  public Expression<Matrix<ExprUnary<Matrix, T>>> {
 public:
-  using type = typename M::type;
+  using type = typename T::type;
 
-  using result_type = result_type_t<M>;
+  using result_type = result_type_t<T>;
 
 private:
-  const M m_;
+  const T m_;
 
 public:
-  explicit inline ExprUnary(const M &m);
+  explicit inline ExprUnary(const T &m);
 
-  inline ExprUnary(const ExprUnary<M> &m);
+  inline ExprUnary(const ExprUnary<Matrix, T> &m);
 
-  inline const M get_operand();
+  inline const T get_operand();
 
   operator type() const;
 
@@ -44,37 +46,37 @@ public:
 private:
   template<typename DT>
   friend inline void
-  apply_(Matrix<DT> &lhs, const ExprUnary<M> &rhs) {
+  apply_(Matrix<DT> &lhs, const ExprUnary<Matrix, T> &rhs) {
     apply_(~lhs, rhs.m_);
   }
 
   template<typename DT>
   friend inline void
-  apply_add_(Matrix<DT> &lhs, const ExprUnary<M> &rhs) {
+  apply_add_(Matrix<DT> &lhs, const ExprUnary<Matrix, T> &rhs) {
     apply_add_(~lhs, rhs.m_);
   }
 
   template<typename DT>
   friend inline void
-  apply_sub_(Matrix<DT> &lhs, const ExprUnary<M> &rhs) {
+  apply_sub_(Matrix<DT> &lhs, const ExprUnary<Matrix, T> &rhs) {
     apply_sub_(~lhs, rhs.m_);
   }
 
   template<typename DT>
   friend inline void
-  apply_mul_(Matrix<DT> &lhs, const ExprUnary<M> &rhs) {
+  apply_mul_(Matrix<DT> &lhs, const ExprUnary<Matrix, T> &rhs) {
     apply_mul_(~lhs, rhs.m_);
   }
 
   template<typename DT>
   friend inline void
-  apply_inverse_(Matrix<DT> &lhs, const ExprUnary<M> &rhs) {
+  apply_inverse_(Matrix<DT> &lhs, const ExprUnary<Matrix, T> &rhs) {
     apply_inverse_(~lhs, rhs.m_);
   }
 
   template<typename DT>
   friend inline void
-  apply_transpose_(Matrix<DT> &lhs, const ExprUnary<M> &rhs) {
+  apply_transpose_(Matrix<DT> &lhs, const ExprUnary<Matrix, T> &rhs) {
     apply_transpose_(~lhs, rhs.m_);
   }
 };
@@ -82,28 +84,28 @@ private:
 // ----------------------------------------------------------------------
 // ExprUnary Constructor
 //
-template<typename M>
-inline ExprUnary<M>::ExprUnary(const M &m) :
+template<typename T>
+inline ExprUnary<Matrix, T>::ExprUnary(const T &m) :
                                m_(m) {
   //
 }
 
-template<typename M>
-inline ExprUnary<M>::ExprUnary(const ExprUnary<M> &m) :
+template<typename T>
+inline ExprUnary<Matrix, T>::ExprUnary(const ExprUnary<Matrix, T> &m) :
                                m_(m.m_) {
   //
 }
 
-template<typename M>
-inline const M ExprUnary<M>::get_operand() {
+template<typename T>
+inline const T ExprUnary<Matrix, T>::get_operand() {
   return m_;
 }
 
 // ----------------------------------------------------------------------
 // ExprUnary Type Conversion Operator
 //
-template<typename M>
-ExprUnary<M>::operator ExprUnary<M>::type() const {
+template<typename T>
+ExprUnary<Matrix, T>::operator ExprUnary<Matrix, T>::type() const {
   result_type r;
   apply_(r, *this);
 
@@ -116,40 +118,40 @@ ExprUnary<M>::operator ExprUnary<M>::type() const {
 // ----------------------------------------------------------------------
 // ExprUnary Member Function Definitions
 //
-template<typename M>
-inline size_t ExprUnary<M>::size() const {
+template<typename T>
+inline size_t ExprUnary<Matrix, T>::size() const {
   return m_.size();
 }
 
-template<typename M>
-inline size_t ExprUnary<M>::capacity() const {
+template<typename T>
+inline size_t ExprUnary<Matrix, T>::capacity() const {
   return m_.capacity();
 }
 
-template<typename M>
-inline bool ExprUnary<M>::empty() const {
+template<typename T>
+inline bool ExprUnary<Matrix, T>::empty() const {
   return m_.empty();
 }
 
-template<typename M>
-inline size_t ExprUnary<M>::nrows() const {
+template<typename T>
+inline size_t ExprUnary<Matrix, T>::nrows() const {
   return m_.nrows();
 }
 
-template<typename M>
-inline size_t ExprUnary<M>::ncols() const {
+template<typename T>
+inline size_t ExprUnary<Matrix, T>::ncols() const {
   return m_.ncols();
 }
 
-template<typename M>
-inline typename ExprUnary<M>::type&
-ExprUnary<M>::operator[](const size_t pos) {
+template<typename T>
+inline typename ExprUnary<Matrix, T>::type&
+ExprUnary<Matrix, T>::operator[](const size_t pos) {
   return m_[pos];
 }
 
-template<typename M>
-inline const typename ExprUnary<M>::type&
-ExprUnary<M>::operator[](const size_t pos) const {
+template<typename T>
+inline const typename ExprUnary<Matrix, T>::type&
+ExprUnary<Matrix, T>::operator[](const size_t pos) const {
   return m_[pos];
 }
 

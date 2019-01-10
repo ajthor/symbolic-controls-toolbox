@@ -1,11 +1,20 @@
 #ifndef SYMCTRL_SHIMS_SYMBOLIC_HPP
 #define SYMCTRL_SHIMS_SYMBOLIC_HPP
 
+#include <type_traits>
+
+#include <symengine/add.h>
 #include <symengine/basic.h>
 #include <symengine/constants.h>
 #include <symengine/integer.h>
-#include <symengine/symbol.h>
+#include <symengine/mul.h>
+#include <symengine/pow.h>
 #include <symengine/parser.h>
+#include <symengine/real_double.h>
+#include <symengine/symbol.h>
+
+#include <symctrl/math/random/random_variable.hpp>
+#include <symctrl/type_traits/is_scalar.hpp>
 
 namespace Controls {
 
@@ -35,6 +44,15 @@ struct symbolic_symbol {
 };
 
 using symbolic_symbol_t = typename symbolic_symbol::type;
+
+// ----------------------------------------------------------------------
+// symbolic_rv
+//
+struct symbolic_rv {
+  using type = SymEngine::RCP<const Controls::Math::RandomVariable>;
+};
+
+using symbolic_rv_t = typename symbolic_rv::type;
 
 // ----------------------------------------------------------------------
 // symbolic_one

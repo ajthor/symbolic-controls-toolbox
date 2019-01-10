@@ -1,0 +1,73 @@
+#ifndef SYMCTRL_MATH_SYMBOLIC_EXPRESSION_UNARY_HPP
+#define SYMCTRL_MATH_SYMBOLIC_EXPRESSION_UNARY_HPP
+
+#include <symctrl/assert.hpp>
+#include <symctrl/math/expression.hpp>
+#include <symctrl/math/expression/unary.hpp>
+#include <symctrl/math/symbolic/symbolic.hpp>
+#include <symctrl/shims/hash.hpp>
+
+namespace Controls {
+namespace Math {
+
+// ----------------------------------------------------------------------
+// ExprUnary
+//
+template<typename T>
+class ExprUnary<Symbolic, T> :
+  public Expression<Symbolic<ExprUnary<Symbolic, T>>> {
+public:
+  using type = typename T::type;
+
+  using result_type = result_type_t<T>;
+
+private:
+  const T m_;
+
+public:
+  explicit inline ExprUnary(const T &m);
+
+  inline ExprUnary(const ExprUnary<Symbolic, T> &m);
+
+  operator type() const;
+
+  inline hash_t hash() const;
+
+private:
+  template<typename DT>
+  friend inline void
+  apply_(Symbolic<DT> &lhs, const ExprUnary<Symbolic, T> &rhs) {
+    apply_(~lhs, rhs.m_);
+  }
+};
+
+// ----------------------------------------------------------------------
+// ExprUnary Constructor
+//
+template<typename T>
+inline ExprUnary<Symbolic, T>::ExprUnary(const T &m) :
+                                          m_(m) {
+  //
+}
+
+template<typename T>
+inline ExprUnary<Symbolic, T>::ExprUnary(const ExprUnary<Symbolic, T> &m) :
+                                         m_(m.m_) {
+  //
+}
+
+// ----------------------------------------------------------------------
+// ExprUnary Type Conversion Operator
+//
+template<typename T>
+ExprUnary<Symbolic, T>::operator ExprUnary<Symbolic, T>::type() const {
+  // result_type r;
+  // apply_(r, *this);
+
+  // return r;
+}
+
+} // Math
+} // Controls
+
+#endif // SYMCTRL_MATH_SYMBOLIC_EXPRESSION_UNARY_HPP

@@ -10,7 +10,7 @@
 #include <symctrl/shims/symbolic.hpp>
 #include <symctrl/math/matrix/dense/dense.hpp>
 #include <symctrl/math/matrix/vector/vector.hpp>
-#include <symctrl/type_traits/is_symbolic.hpp>
+#include <symctrl/math/matrix/type_traits/is_symbolic.hpp>
 
 namespace Controls {
 namespace Math {
@@ -20,7 +20,7 @@ namespace Math {
 //
 template<typename DT>
 auto jacobian(const Matrix<DT> &f, const Matrix<DT> &v)
--> enable_if_symbolic_t<DT, SymbolicDense> {
+-> enable_if_symbolic_m_t<DT, SymbolicDense> {
   size_t n_ = (~f).size();
   size_t m_ = (~v).size();
 

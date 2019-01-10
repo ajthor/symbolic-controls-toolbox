@@ -19,6 +19,9 @@ macro(ADD_TEST_FILE TEST_NAME FILE_NAME)
   add_test(${TEST_NAME} ${PROJECT_BINARY_DIR}/${TEST_NAME})
 endmacro()
 
+ADD_TEST_FILE(test_symbolic_number test_symbolic_number.cc)
+ADD_TEST_FILE(test_symbolic_variable test_symbolic_variable.cc)
+
 ADD_TEST_FILE(test_type_traits test_type_traits.cc)
 ADD_TEST_FILE(test_function test_function.cc)
 ADD_TEST_FILE(test_kernel test_kernel.cc)
@@ -33,10 +36,10 @@ ADD_TEST_FILE(test_matrix_vector test_matrix_vector.cc)
 
 ADD_TEST_FILE(test_random_variable test_random_variable.cc)
 
-ADD_TEST_FILE(test_statespace test_statespace.cc)
-ADD_TEST_FILE(test_statespace_operations test_statespace_operations.cc)
-ADD_TEST_FILE(test_transferfunction test_transferfunction.cc)
+# ADD_TEST_FILE(test_statespace test_statespace.cc)
+# ADD_TEST_FILE(test_statespace_operations test_statespace_operations.cc)
+# ADD_TEST_FILE(test_transferfunction test_transferfunction.cc)
 
-ADD_TEST_FILE(test_ode test_ode.cc)
+# ADD_TEST_FILE(test_ode test_ode.cc)
 
 # ADD_TEST_FILE(test_mdp test_mdp.cc)

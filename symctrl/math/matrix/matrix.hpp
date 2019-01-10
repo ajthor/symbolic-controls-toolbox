@@ -60,12 +60,6 @@ size_t ncols(Matrix<DT> &m) {
 }
 
 // ----------------------------------------------------------------------
-// Result Type
-//
-template<typename T>
-using result_type_t = typename T::result_type;
-
-// ----------------------------------------------------------------------
 // Stream Output
 //
 // template<template<typename> class DT, typename T>

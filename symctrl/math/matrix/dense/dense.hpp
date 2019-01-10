@@ -9,7 +9,6 @@
 #include <symctrl/math/matrix/matrix.hpp>
 #include <symctrl/math/matrix/vector.hpp>
 
-
 namespace Controls {
 namespace Math {
 

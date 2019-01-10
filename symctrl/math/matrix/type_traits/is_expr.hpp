@@ -3,22 +3,22 @@
 
 #include <utility>
 
-#include <symctrl/math/matrix/expression/expression.hpp>
+#include <symctrl/math/expression.hpp>
 
 namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// SFINAE is_expr_helper
+// SFINAE is_expr_m_helper
 //
 template<class T>
-struct is_expr_helper {
+struct is_expr_m_helper {
 private:
   template<typename ...DT>
-  static std::true_type test(Expression<DT...> &);
+  static std::true_type test(Expression<Matrix<DT...>> &);
 
   template<typename ...DT>
-  static std::true_type test(const Expression<DT...> &);
+  static std::true_type test(const Expression<Matrix<DT...>> &);
 
   static std::false_type test(...);
 
@@ -27,16 +27,16 @@ public:
 };
 
 // ----------------------------------------------------------------------
-// SFINAE is_expr_t
+// SFINAE is_expr_m_t
 //
 template<class T>
-using is_expr_t = typename is_expr_helper<T>::type;
+using is_expr_m_t = typename is_expr_m_helper<T>::type;
 
 // ----------------------------------------------------------------------
-// SFINAE is_expr
+// SFINAE is_expr_m
 //
 template<typename T>
-struct is_expr : is_expr_t<T>::type {};
+struct is_expr_m : is_expr_m_t<T>::type {};
 
 } // Math
 } // Controls

@@ -2,8 +2,9 @@
 #define SYMCTRL_MATH_MATRIX_EXPRESSION_INVERSE_HPP
 
 #include <symctrl/assert.hpp>
+#include <symctrl/math/expression.hpp>
+#include <symctrl/math/expression/inverse.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
-#include <symctrl/math/matrix/expression/expression.hpp>
 
 namespace Controls {
 namespace Math {
@@ -11,18 +12,19 @@ namespace Math {
 // ----------------------------------------------------------------------
 // ExprInverse
 //
-template<typename M>
-class ExprInverse : public Expression<Matrix<ExprInverse<M>>> {
+template<typename T>
+class ExprInverse<Matrix, T> :
+  public Expression<Matrix<ExprInverse<Matrix, T>>> {
 public:
-  using type = typename M::type;
+  using type = typename T::type;
 
-  using result_type = result_type_t<M>;
+  using result_type = result_type_t<T>;
 
 private:
-  const M &m_;
+  const T &m_;
 
 public:
-  explicit inline ExprInverse(const M &m);
+  explicit inline ExprInverse(const T &m);
 
   operator type() const;
 
@@ -41,7 +43,7 @@ private:
   // A^-1
   template<typename DT>
   friend inline void
-  apply_(Matrix<DT> &lhs, const ExprInverse<M> &rhs) {
+  apply_(Matrix<DT> &lhs, const ExprInverse<Matrix, T> &rhs) {
     SYMCTRL_DEBUG("result = A^-1");
     apply_inverse_(~lhs, rhs.m_);
   }
@@ -49,9 +51,9 @@ private:
   // A + B^-1
   template<typename DT>
   friend inline void
-  apply_add_(Matrix<DT> &lhs, const ExprInverse<M> &rhs) {
+  apply_add_(Matrix<DT> &lhs, const ExprInverse<Matrix, T> &rhs) {
     SYMCTRL_DEBUG("result = A + B^-1");
-    M tmp(rhs.m_);
+    T tmp(rhs.m_);
     apply_inverse_(tmp, rhs.m_);
     apply_add_(~lhs, tmp);
   }
@@ -59,9 +61,9 @@ private:
   // A - B^-1
   template<typename DT>
   friend inline void
-  apply_sub_(Matrix<DT> &lhs, const ExprInverse<M> &rhs) {
+  apply_sub_(Matrix<DT> &lhs, const ExprInverse<Matrix, T> &rhs) {
     SYMCTRL_DEBUG("result = A - B^-1");
-    M tmp(rhs.m_);
+    T tmp(rhs.m_);
     apply_inverse_(tmp, rhs.m_);
     apply_sub_(~lhs, tmp);
   }
@@ -69,9 +71,9 @@ private:
   // A * B^-1
   template<typename DT>
   friend inline void
-  apply_mul_(Matrix<DT> &lhs, const ExprInverse<M> &rhs) {
+  apply_mul_(Matrix<DT> &lhs, const ExprInverse<Matrix, T> &rhs) {
     SYMCTRL_DEBUG("result = A * B^-1");
-    M tmp(rhs.m_);
+    T tmp(rhs.m_);
     apply_inverse_(tmp, rhs.m_);
     apply_mul_(~lhs, tmp);
   }
@@ -79,7 +81,7 @@ private:
   // (A^-1)^-1
   template<typename DT>
   friend inline void
-  apply_inverse_(Matrix<DT> &lhs, const ExprInverse<M> &rhs) {
+  apply_inverse_(Matrix<DT> &lhs, const ExprInverse<Matrix, T> &rhs) {
     SYMCTRL_DEBUG("result = (A^-1)^-1");
     apply_(~lhs, rhs.m_);
   }
@@ -87,9 +89,9 @@ private:
   // (A^-1)^T
   template<typename DT>
   friend inline void
-  apply_transpose_(Matrix<DT> &lhs, const ExprInverse<M> &rhs) {
+  apply_transpose_(Matrix<DT> &lhs, const ExprInverse<Matrix, T> &rhs) {
     SYMCTRL_DEBUG("result = (A^-1)^T");
-    M tmp(rhs.m_);
+    T tmp(rhs.m_);
     apply_transpose_(tmp, rhs.m_);
     apply_inverse_(~lhs, tmp);
   }
@@ -98,8 +100,8 @@ private:
 // ----------------------------------------------------------------------
 // ExprInverse Constructor
 //
-template<typename M>
-inline ExprInverse<M>::ExprInverse(const M &m) :
+template<typename T>
+inline ExprInverse<Matrix, T>::ExprInverse(const T &m) :
                                    m_(m) {
   //
 }
@@ -107,8 +109,8 @@ inline ExprInverse<M>::ExprInverse(const M &m) :
 // ----------------------------------------------------------------------
 // ExprInverse Type Conversion Operator
 //
-template<typename M>
-ExprInverse<M>::operator ExprInverse<M>::type() const {
+template<typename T>
+ExprInverse<Matrix, T>::operator ExprInverse<Matrix, T>::type() const {
   result_type r;
   apply_inverse_(r, m_);
 
@@ -121,49 +123,49 @@ ExprInverse<M>::operator ExprInverse<M>::type() const {
 // ----------------------------------------------------------------------
 // ExprInverse Member Function Definitions
 //
-template<typename M>
-inline size_t ExprInverse<M>::size() const {
+template<typename T>
+inline size_t ExprInverse<Matrix, T>::size() const {
   return m_.size();
 }
 
-template<typename M>
-inline size_t ExprInverse<M>::capacity() const {
+template<typename T>
+inline size_t ExprInverse<Matrix, T>::capacity() const {
   return m_.capacity();
 }
 
-template<typename M>
-inline bool ExprInverse<M>::empty() const {
+template<typename T>
+inline bool ExprInverse<Matrix, T>::empty() const {
   return m_.empty();
 }
 
-template<typename M>
-inline size_t ExprInverse<M>::nrows() const {
+template<typename T>
+inline size_t ExprInverse<Matrix, T>::nrows() const {
   return m_.nrows();
 }
 
-template<typename M>
-inline size_t ExprInverse<M>::ncols() const {
+template<typename T>
+inline size_t ExprInverse<Matrix, T>::ncols() const {
   return m_.ncols();
 }
 
-template<typename M>
-inline typename ExprInverse<M>::type&
-ExprInverse<M>::operator[](const size_t pos) {
+template<typename T>
+inline typename ExprInverse<Matrix, T>::type&
+ExprInverse<Matrix, T>::operator[](const size_t pos) {
   return m_[pos];
 }
 
-template<typename M>
-inline const typename ExprInverse<M>::type&
-ExprInverse<M>::operator[](const size_t pos) const {
+template<typename T>
+inline const typename ExprInverse<Matrix, T>::type&
+ExprInverse<Matrix, T>::operator[](const size_t pos) const {
   return m_[pos];
 }
 
-template<typename M>
-inline const ExprInverse<M>
-inverse(const Matrix<M> &m) {
+template<typename T>
+inline const ExprInverse<Matrix, T>
+inverse(const Matrix<T> &m) {
   SYMCTRL_ASSERT(m.nrows() == m.ncols());
-  
-  return ExprInverse<M>(~m);
+
+  return ExprInverse<Matrix, T>(~m);
 }
 
 } // Math

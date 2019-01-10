@@ -8,23 +8,28 @@
 #include <symctrl/c_wrapper.hpp>
 
 #include <symctrl/math/random.hpp>
+#include <symctrl/shims/symbolic.hpp>
+
+using Controls::symbolic_t;
+using Controls::symbolic_rv_t;
 
 using SymEngine::add;
 using SymEngine::Add;
 using SymEngine::Basic;
 using SymEngine::RCP;
+using SymEngine::symbol;
+using SymEngine::Symbol;
 
 TEST_CASE("Random Variable", "[randomvariable]") {
   std::random_device gen;
   Controls::Math::normal_distribution<> d{5,2};
 
-  RCP<const Controls::Math::RandomVariable> X;
-  X = Controls::Math::random_variable("X", &d);
+  symbolic_rv_t X = Controls::Math::random_variable("X", &d);
 
   REQUIRE(Controls::Math::is_random_variable(*X));
   REQUIRE(X->get_name() == "X");
 
-  RCP<const Basic> y = SymEngine::symbol("y");
+  symbolic_t y = symbol("y");
 
   REQUIRE(not Controls::Math::is_random_variable(*y));
 
@@ -39,15 +44,14 @@ TEST_CASE("Random Variable: add", "[randomvariable]") {
   std::random_device gen;
   Controls::Math::normal_distribution<> d{5,2};
 
-  RCP<const Controls::Math::RandomVariable> X;
-  X = Controls::Math::random_variable("X", &d);
+  symbolic_rv_t X = Controls::Math::random_variable("X", &d);
 
-  RCP<const Basic> y = SymEngine::symbol("y");
+  symbolic_t y = symbol("y");
 
-  RCP<const Basic> r = add(add(X, y), y);
+  symbolic_t r = add(add(X, y), y);
 
   std::string s;
-  RCP<const Basic> res;
+  symbolic_t res;
 
   s = "X + 2*y";
   res = SymEngine::parse(s);

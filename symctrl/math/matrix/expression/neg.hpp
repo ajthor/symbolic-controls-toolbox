@@ -2,8 +2,9 @@
 #define SYMCTRL_MATH_MATRIX_EXPRESSION_NEG_HPP
 
 #include <symctrl/assert.hpp>
+#include <symctrl/math/expression.hpp>
+#include <symctrl/math/expression/neg.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
-#include <symctrl/math/matrix/expression/expression.hpp>
 
 namespace Controls {
 namespace Math {
@@ -11,22 +12,23 @@ namespace Math {
 // ----------------------------------------------------------------------
 // ExprNeg
 //
-template<typename M>
-class ExprNeg : public Expression<Matrix<ExprNeg<M>>> {
+template<typename T>
+class ExprNeg<Matrix, T> :
+  public Expression<Matrix<ExprNeg<Matrix, T>>> {
 public:
-  using type = typename M::type;
+  using type = typename T::type;
 
-  using result_type = result_type_t<M>;
+  using result_type = result_type_t<T>;
 
 private:
-  const M m_;
+  const T m_;
 
 public:
-  explicit inline ExprNeg(const M &m);
+  explicit inline ExprNeg(const T &m);
 
-  inline ExprNeg(const ExprNeg<M> &m);
+  inline ExprNeg(const ExprNeg<Matrix, T> &m);
 
-  inline const M get_operand();
+  inline const T get_operand();
 
   operator type() const;
 
@@ -45,7 +47,7 @@ private:
   // -A
   template<typename DT>
   friend inline void
-  apply_(Matrix<DT> &lhs, const ExprNeg<M> &rhs) {
+  apply_(Matrix<DT> &lhs, const ExprNeg<Matrix, T> &rhs) {
     SYMCTRL_DEBUG("result = -A");
     apply_(~lhs, rhs.m_);
     ~lhs *= -1;
@@ -54,7 +56,7 @@ private:
   // A + -B
   template<typename DT>
   friend inline void
-  apply_add_(Matrix<DT> &lhs, const ExprNeg<M> &rhs) {
+  apply_add_(Matrix<DT> &lhs, const ExprNeg<Matrix, T> &rhs) {
     SYMCTRL_DEBUG("result = A + -B");
     apply_sub_(~lhs, rhs.m_);
   }
@@ -62,7 +64,7 @@ private:
   // A - -B
   template<typename DT>
   friend inline void
-  apply_sub_(Matrix<DT> &lhs, const ExprNeg<M> &rhs) {
+  apply_sub_(Matrix<DT> &lhs, const ExprNeg<Matrix, T> &rhs) {
     SYMCTRL_DEBUG("result = A - -B");
     apply_add_(~lhs, rhs.m_);
   }
@@ -70,7 +72,7 @@ private:
   // A * -B
   template<typename DT>
   friend inline void
-  apply_mul_(Matrix<DT> &lhs, const ExprNeg<M> &rhs) {
+  apply_mul_(Matrix<DT> &lhs, const ExprNeg<Matrix, T> &rhs) {
     SYMCTRL_DEBUG("result = A * -B");
     apply_mul_(~lhs, rhs.m_);
     ~lhs *= -1;
@@ -79,7 +81,7 @@ private:
   // (-A)^-1
   template<typename DT>
   friend inline void
-  apply_inverse_(Matrix<DT> &lhs, const ExprNeg<M> &rhs) {
+  apply_inverse_(Matrix<DT> &lhs, const ExprNeg<Matrix, T> &rhs) {
     SYMCTRL_DEBUG("result = (-A)^-1");
     apply_inverse_(~lhs, rhs.m_);
     ~lhs *= -1;
@@ -88,7 +90,7 @@ private:
   // (-A)^T
   template<typename DT>
   friend inline void
-  apply_transpose_(Matrix<DT> &lhs, const ExprNeg<M> &rhs) {
+  apply_transpose_(Matrix<DT> &lhs, const ExprNeg<Matrix, T> &rhs) {
     SYMCTRL_DEBUG("result = (-A)^T");
     apply_transpose_(~lhs, rhs.m_);
     ~lhs *= -1;
@@ -98,28 +100,28 @@ private:
 // ----------------------------------------------------------------------
 // ExprNeg Constructor
 //
-template<typename M>
-inline ExprNeg<M>::ExprNeg(const M &m) :
+template<typename T>
+inline ExprNeg<Matrix, T>::ExprNeg(const T &m) :
                            m_(m) {
   //
 }
 
-template<typename M>
-inline ExprNeg<M>::ExprNeg(const ExprNeg<M> &m) :
+template<typename T>
+inline ExprNeg<Matrix, T>::ExprNeg(const ExprNeg<Matrix, T> &m) :
                            m_(m.m_) {
   //
 }
 
-template<typename M>
-inline const M ExprNeg<M>::get_operand() {
+template<typename T>
+inline const T ExprNeg<Matrix, T>::get_operand() {
   return m_;
 }
 
 // ----------------------------------------------------------------------
 // ExprNeg Type Conversion Operator
 //
-template<typename M>
-ExprNeg<M>::operator ExprNeg<M>::type() const {
+template<typename T>
+ExprNeg<Matrix, T>::operator ExprNeg<Matrix, T>::type() const {
   result_type r;
   apply_(r, m_);
   r *= -1;
@@ -133,55 +135,55 @@ ExprNeg<M>::operator ExprNeg<M>::type() const {
 // ----------------------------------------------------------------------
 // ExprNeg Member Function Definitions
 //
-template<typename M>
-inline size_t ExprNeg<M>::size() const {
+template<typename T>
+inline size_t ExprNeg<Matrix, T>::size() const {
   return m_.size();
 }
 
-template<typename M>
-inline size_t ExprNeg<M>::capacity() const {
+template<typename T>
+inline size_t ExprNeg<Matrix, T>::capacity() const {
   return m_.capacity();
 }
 
-template<typename M>
-inline bool ExprNeg<M>::empty() const {
+template<typename T>
+inline bool ExprNeg<Matrix, T>::empty() const {
   return m_.empty();
 }
 
-template<typename M>
-inline size_t ExprNeg<M>::nrows() const {
+template<typename T>
+inline size_t ExprNeg<Matrix, T>::nrows() const {
   return m_.nrows();
 }
 
-template<typename M>
-inline size_t ExprNeg<M>::ncols() const {
+template<typename T>
+inline size_t ExprNeg<Matrix, T>::ncols() const {
   return m_.ncols();
 }
 
-template<typename M>
-inline typename ExprNeg<M>::type&
-ExprNeg<M>::operator[](const size_t pos) {
+template<typename T>
+inline typename ExprNeg<Matrix, T>::type&
+ExprNeg<Matrix, T>::operator[](const size_t pos) {
   return -m_[pos];
 }
 
-template<typename M>
-inline const typename ExprNeg<M>::type&
-ExprNeg<M>::operator[](const size_t pos) const {
+template<typename T>
+inline const typename ExprNeg<Matrix, T>::type&
+ExprNeg<Matrix, T>::operator[](const size_t pos) const {
   return -m_[pos];
 }
 
 // ----------------------------------------------------------------------
 // ExprNeg Operator
 //
-template<typename M>
-inline const ExprNeg<M>
-operator-(const Matrix<M> &m) {
-  return ExprNeg<M>(~m);
+template<typename T>
+inline const ExprNeg<Matrix, T>
+operator-(const Matrix<T> &m) {
+  return ExprNeg<Matrix, T>(~m);
 }
 
-template<typename M>
-inline const M
-operator-(const ExprNeg<M> &m) {
+template<typename T>
+inline const T
+operator-(const ExprNeg<Matrix, T> &m) {
   return m.get_operand();
 }
 

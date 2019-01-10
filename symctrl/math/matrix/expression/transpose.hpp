@@ -2,8 +2,8 @@
 #define SYMCTRL_MATH_MATRIX_EXPRESSION_TRANSPOSE_HPP
 
 #include <symctrl/assert.hpp>
+#include <symctrl/math/expression.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
-#include <symctrl/math/matrix/expression/expression.hpp>
 
 namespace Controls {
 namespace Math {

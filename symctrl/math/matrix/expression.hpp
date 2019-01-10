@@ -1,7 +1,7 @@
 #ifndef SYMCTRL_MATH_MATRIX_EXPRESSION_HPP
 #define SYMCTRL_MATH_MATRIX_EXPRESSION_HPP
 
-#include <symctrl/math/matrix/expression/expression.hpp>
+#include <symctrl/math/expression.hpp>
 #include <symctrl/math/matrix/expression/matrix.hpp>
 #include <symctrl/math/matrix/expression/unary.hpp>
 #include <symctrl/math/matrix/expression/add.hpp>
