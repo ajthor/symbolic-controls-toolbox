@@ -80,7 +80,7 @@ inline void Number<T>::apply_div(const Number<DT> &rhs) {
 //
 template<typename T>
 inline bool equal(const Number<T> &lhs, const Number<T> &rhs) {
-  return lhs.value() == rhs.value();
+  return lhs.hash() == rhs.hash();
 }
 
 template<typename DT, typename T>

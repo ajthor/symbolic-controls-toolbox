@@ -20,6 +20,8 @@ class Number : public Symbolic<Number<T>> {
 public:
   using type = T;
 
+  using this_type = Number<T>;
+
   using result_type = Number<T>;
 
 private:
@@ -60,10 +62,12 @@ public:
   template<typename DT>
   inline void apply_div(const Number<DT> &rhs);
 
-  inline hash_t hash() const;
+  inline auto value() const -> const result_type&;
 
-  inline T &value();
-  inline const T &value() const;
+  // inline T &value();
+  // inline const T &value() const;
+
+  inline hash_t hash() const;
 };
 
 // ----------------------------------------------------------------------
@@ -130,18 +134,23 @@ inline Number<T>::operator T() const {
 }
 
 template<typename T>
+inline auto Number<T>::value() const -> const result_type& {
+  return *this;
+}
+
+// template<typename T>
+// inline T &Number<T>::value() {
+//   return value_;
+// }
+//
+// template<typename T>
+// inline const T &Number<T>::value() const {
+//   return value_;
+// }
+
+template<typename T>
 inline hash_t Number<T>::hash() const {
   return hash_;
-}
-
-template<typename T>
-inline T &Number<T>::value() {
-  return value_;
-}
-
-template<typename T>
-inline const T &Number<T>::value() const {
-  return value_;
 }
 
 } // Math

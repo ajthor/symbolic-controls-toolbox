@@ -35,6 +35,16 @@ inline void apply_div_(Symbolic<D1> &lhs, const Symbolic<D2> &rhs) {
 }
 
 // ----------------------------------------------------------------------
+// Symbolic Equal
+//
+template<typename D1, typename D2>
+inline bool equal(const Symbolic<D1> &lhs, const Symbolic<D2> &rhs) {
+  return (std::is_same<D1, D2>::value &&
+          reinterpret_cast<const void *>(&lhs) ==
+          reinterpret_cast<const void *>(&rhs));
+}
+
+// ----------------------------------------------------------------------
 // Symbolic Equality Operator
 //
 template<typename D1, typename D2>

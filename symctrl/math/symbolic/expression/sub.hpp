@@ -34,6 +34,8 @@ public:
 
   operator type() const;
 
+  inline auto value() const -> const result_type&;
+
   inline hash_t hash() const;
 
 private:
@@ -79,6 +81,13 @@ ExprSub<Symbolic, T1, T2>::operator ExprSub<Symbolic, T1, T2>::type() const {
 // ----------------------------------------------------------------------
 // ExprSub Member Function Definitions
 //
+template<typename T1, typename T2>
+inline auto ExprSub<Symbolic, T1, T2>::value() const -> const result_type& {
+  result_type r;
+  apply_(r, *this);
+  return r;
+}
+
 template<typename T1, typename T2>
 inline hash_t ExprSub<Symbolic, T1, T2>::hash() const {
   result_type r;

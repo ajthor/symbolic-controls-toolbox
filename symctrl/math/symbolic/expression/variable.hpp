@@ -12,8 +12,40 @@ namespace Math {
 // Variable Expressions
 //
 template<typename DT>
+inline Variable &Variable::operator+=(const Symbolic<DT> &rhs) {
+  // value_ += rhs.value();
+  // value_ = value_ + rhs.value();
+  // hash_ = hash_f<T>{}(value_);
+  return *this;
+}
+
+template<typename DT>
+inline Variable &Variable::operator-=(const Symbolic<DT> &rhs) {
+  // value_ -= rhs.value();
+  // value_ = value_ - rhs.value();
+  // hash_ = hash_f<T>{}(value_);
+  return *this;
+}
+
+template<typename DT>
+inline Variable &Variable::operator*=(const Symbolic<DT> &rhs) {
+  // value_ *= rhs.value();
+  // value_ = value_ * rhs.value();
+  // hash_ = hash_f<T>{}(value_);
+  return *this;
+}
+
+template<typename DT>
+inline Variable &Variable::operator/=(const Symbolic<DT> &rhs) {
+  // value_ /= rhs.value();
+  // value_ = value_ / rhs.value();
+  // hash_ = hash_f<T>{}(value_);
+  return *this;
+}
+
+template<typename DT>
 inline void Variable::apply(const Symbolic<DT> &rhs) {
-  // value_
+
 }
 
 template<typename DT>

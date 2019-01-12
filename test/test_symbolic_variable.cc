@@ -5,6 +5,7 @@
 
 using Controls::Math::BaseSymbolic;
 using Controls::Math::Number;
+using Controls::Math::sym_t;
 using Controls::Math::Symbolic;
 using Controls::Math::Variable;
 
@@ -20,37 +21,42 @@ std::cout << msg << '\n';
 
 TEST_CASE("Symbolic: Assignment", "[symbolic]") {
   Variable x("x");
+
+  {
+    // BaseSymbolic *y = &x;
+
+    REQUIRE(x == Variable("x"));
+    // REQUIRE(*y == Variable("x"));
+  }
 }
 
 TEST_CASE("Symbolic: Addition", "[symbolic]") {
-  Number<int> a = 1;
-  Number<int> b = 2;
+  Variable x("x");
+  Variable y("y");
+
+  auto expr = x + y;
+  // decltype(expr)::show;
+  // y = 1 + x;
 
   {
-    REQUIRE(a == Number<int>(1));
-    REQUIRE(a == 1);
+    TEST_DEBUG("*z = &x");
+    BaseSymbolic* z = &x;
+    // z = x;
+    // REQUIRE(x == Number<int>(3));
   }
 
   {
-    Number<int> r;
-    TEST_DEBUG("r = a + b");
-    r = a + b;
-    REQUIRE(r == Number<int>(3));
+    TEST_DEBUG("z = x");
+    sym_t z = x;
+    // REQUIRE(x == Number<int>(3));
   }
 
-  {
-    Number<int> r;
-    TEST_DEBUG("r = a + 2");
-    r = a + 2;
-    REQUIRE(r == Number<int>(3));
-  }
-
-  {
-    Number<int> r;
-    TEST_DEBUG("r = 2 + a");
-    r = 2 + a;
-    REQUIRE(r == Number<int>(3));
-  }
+  // {
+  //   sym_t z;
+  //   TEST_DEBUG("z = x + y");
+  //   z = x + y;
+  //   // REQUIRE(x == Number<int>(3));
+  // }
 }
 // TEST_CASE("Symbolic: Parse", "[statespace]") {
 //   symbolic_symbol_t x1 = symbol("x1");

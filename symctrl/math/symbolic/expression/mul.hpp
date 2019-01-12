@@ -5,6 +5,7 @@
 #include <symctrl/math/expression.hpp>
 #include <symctrl/math/expression/add.hpp>
 #include <symctrl/math/symbolic/symbolic.hpp>
+#include <symctrl/math/symbolic/type_traits/is_numeric.hpp>
 #include <symctrl/shims/hash.hpp>
 
 namespace Controls {
@@ -32,6 +33,8 @@ public:
 
   operator type() const;
 
+  inline auto value() const -> const result_type&;
+
   inline hash_t hash() const;
 
 private:
@@ -40,8 +43,45 @@ private:
   friend inline void
   apply_(Symbolic<DT> &lhs, const ExprMul<Symbolic, T1, T2> &rhs) {
     SYMCTRL_DEBUG("result = A * B");
-    apply_(~lhs, rhs.lhs_);
-    apply_mul_(~lhs, rhs.rhs_);
+    // Handle multiplication by zero or one.
+    if(is_numeric_s<T1>::value) {
+      if(lhs_ == 0) {
+        apply_(~lhs, Number<int>(0));
+      }
+      else if(lhs_ == 1) {
+        apply_(~lhs, rhs.rhs_);
+      }
+      else {
+        apply_(~lhs, rhs.lhs_);
+        apply_mul_(~lhs, rhs.rhs_);
+      }
+    }
+    else if(is_numeric_s<T2>::value) {
+      if(rhs_ == 0) {
+        apply_(~lhs, Number<int>(0));
+      }
+      else if(rhs_ == 1) {
+        apply_(~lhs, rhs.lhs_);
+      }
+      else {
+        apply_(~lhs, rhs.lhs_);
+        apply_mul_(~lhs, rhs.rhs_);
+      }
+    }
+    else {
+      apply_(~lhs, rhs.lhs_);
+      apply_mul_(~lhs, rhs.rhs_);
+    }
+  }
+
+  // A * (B * C)
+  template<typename DT>
+  friend inline void
+  apply_mul_(Symbolic<DT> &lhs, const ExprMul<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = A * (B * C)");
+    result_type tmp(rhs.lhs_);
+    apply_mul_(tmp, rhs.rhs_);
+    apply_mul_(~lhs, tmp);
   }
 };
 
@@ -77,6 +117,13 @@ ExprMul<Symbolic, T1, T2>::operator ExprMul<Symbolic, T1, T2>::type() const {
 // ----------------------------------------------------------------------
 // ExprMul Member Function Definitions
 //
+template<typename T1, typename T2>
+inline auto ExprMul<Symbolic, T1, T2>::value() const -> const result_type& {
+  result_type r;
+  apply_(r, *this);
+  return r;
+}
+
 template<typename T1, typename T2>
 inline hash_t ExprMul<Symbolic, T1, T2>::hash() const {
   result_type r;

@@ -1,12 +1,14 @@
 #ifndef SYMCTRL_MATH_SYMBOLIC_VARIABLE_VARIABLE_HPP
 #define SYMCTRL_MATH_SYMBOLIC_VARIABLE_VARIABLE_HPP
 
+// #include <memory>
 #include <string>
 
+#include <symctrl/math/expression.hpp>
 #include <symctrl/math/symbolic/symbolic.hpp>
 #include <symctrl/math/symbolic/expression/symbolic.hpp>
+#include <symctrl/math/symbolic/expression/unary.hpp>
 #include <symctrl/shims/hash.hpp>
-#include <symctrl/type_traits/is_string.hpp>
 
 namespace Controls {
 namespace Math {
@@ -16,9 +18,17 @@ namespace Math {
 //
 class Variable : public Symbolic<Variable> {
 public:
+  using type = Variable;
+
+  using this_type = Variable;
+
   using result_type = Variable;
 
 private:
+  // std::shared_ptr<BaseExpression> value_;
+  // ExprUnary<Symbolic, Variable> value_;
+
+  std::string name_;
   hash_t hash_;
 
 public:
@@ -29,14 +39,20 @@ public:
   template<typename DT>
   inline Variable(const Symbolic<DT> &m);
 
-  template<typename T>
-  inline auto operator=(const T &rhs)
-  -> enable_if_string_t<T, Variable&>;
-
+  inline Variable &operator=(const std::string &rhs);
   inline Variable &operator=(const Variable &rhs);
 
   template<typename DT>
   inline Variable &operator=(const Symbolic<DT> &rhs);
+
+  template<typename DT>
+  inline Variable &operator+=(const Symbolic<DT> &rhs);
+  template<typename DT>
+  inline Variable &operator-=(const Symbolic<DT> &rhs);
+  template<typename DT>
+  inline Variable &operator*=(const Symbolic<DT> &rhs);
+  template<typename DT>
+  inline Variable &operator/=(const Symbolic<DT> &rhs);
 
   template<typename DT>
   inline void apply(const Symbolic<DT> &rhs);
@@ -49,6 +65,11 @@ public:
   template<typename DT>
   inline void apply_div(const Symbolic<DT> &rhs);
 
+  inline auto value() const -> const result_type&;
+
+  inline std::string &name();
+  inline const std::string &name() const;
+
   inline hash_t hash() const;
 };
 
@@ -56,10 +77,15 @@ public:
 // Variable Constructor
 //
 inline Variable::Variable(const std::string &str) {
+  // value_ = std::make_shared<ExprUnary<Symbolic, Variable>>(*this);
+  // value_ = ExprUnary<Symbolic, Variable>(*this);
+  name_ = str;
   hash_ = hash_string{}(str);
 }
 
 inline Variable::Variable(const Variable &m) :
+                          // value_(m.value_),
+                          name_(m.name_),
                           hash_(m.hash_) {
   //
 }
@@ -73,15 +99,22 @@ inline Variable::Variable(const Symbolic<DT> &m) {
 // ----------------------------------------------------------------------
 // Variable Assignment Operator
 //
-template<typename T>
-inline auto Variable::operator=(const T &rhs)
--> enable_if_string_t<T, Variable&> {
+inline Variable &Variable::operator=(const std::string &rhs) {
+  name_ = rhs;
   hash_ = hash_string{}(rhs);
 
   return *this;
 }
 
 inline Variable &Variable::operator=(const Variable &rhs) {
+  name_ = rhs.name();
+  hash_ = rhs.hash();
+
+  return *this;
+}
+
+template<typename DT>
+inline Variable &Variable::operator=(const Symbolic<DT> &rhs) {
   apply_(*this, ~rhs);
 
   return *this;
@@ -90,6 +123,18 @@ inline Variable &Variable::operator=(const Variable &rhs) {
 // ----------------------------------------------------------------------
 // Variable Member Function Definitions
 //
+inline auto Variable::value() const -> const result_type& {
+  return *this;
+}
+
+inline std::string &Variable::name() {
+  return name_;
+}
+
+inline const std::string &Variable::name() const {
+  return name_;
+}
+
 inline hash_t Variable::hash() const {
   return hash_;
 }

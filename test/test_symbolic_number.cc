@@ -19,9 +19,6 @@ std::cout << msg << '\n';
 #endif
 
 TEST_CASE("Symbolic: Assignment", "[symbolic]") {
-  Number<int> n = 3;
-  Number<int> m = 2;
-
   {
     Number<int> a(1);
     REQUIRE(a == Number<int>(1));
@@ -34,36 +31,42 @@ TEST_CASE("Symbolic: Assignment", "[symbolic]") {
     REQUIRE(a == 1);
   }
 
-  char a = '4';
-  char b = '6';
+  {
+    Number<double> a = 1.0;
+    REQUIRE(a == Number<double>(1.0));
+    REQUIRE(a == 1.0);
+  }
 
-  std::cout << a + b << '\n';
-  std::cout << char(a + b) << '\n';
+  // char a = '4';
+  // char b = '6';
+  //
+  // std::cout << a + b << '\n';
+  // std::cout << char(a + b) << '\n';
 }
 
 TEST_CASE("Symbolic: Add", "[symbolic]") {
-  Number<int> a = 1;
-  Number<int> b = 2;
+  Number<int> a = 2;
+  Number<int> b = 3;
 
   {
     Number<int> r;
     TEST_DEBUG("r = a + b");
     r = a + b;
-    REQUIRE(r == 3);
+    REQUIRE(r == 5);
   }
 
   {
     Number<int> r;
     TEST_DEBUG("r = a + 2");
     r = a + 2;
-    REQUIRE(r == 3);
+    REQUIRE(r == 4);
   }
 
   {
     Number<int> r;
     TEST_DEBUG("r = 2 + a");
     r = 2 + a;
-    REQUIRE(r == 3);
+    REQUIRE(r == 4);
   }
 
   {
@@ -71,33 +74,33 @@ TEST_CASE("Symbolic: Add", "[symbolic]") {
     Number<double> r;
     TEST_DEBUG("r = a + c");
     r = a + c;
-    REQUIRE(r == 3.0);
+    REQUIRE(r == 4.0);
   }
 }
 
 TEST_CASE("Symbolic: Mul", "[symbolic]") {
-  Number<int> a = 1;
-  Number<int> b = 2;
+  Number<int> a = 2;
+  Number<int> b = 3;
 
   {
     Number<int> r;
     TEST_DEBUG("r = a * b");
     r = a * b;
-    REQUIRE(r == 2);
+    REQUIRE(r == 6);
   }
 
   {
     Number<int> r;
     TEST_DEBUG("r = a * 2");
     r = a * 2;
-    REQUIRE(r == 2);
+    REQUIRE(r == 4);
   }
 
   {
     Number<int> r;
     TEST_DEBUG("r = 2 * a");
     r = 2 * a;
-    REQUIRE(r == 2);
+    REQUIRE(r == 4);
   }
 
   {
@@ -105,7 +108,7 @@ TEST_CASE("Symbolic: Mul", "[symbolic]") {
     Number<double> r;
     TEST_DEBUG("r = a * c");
     r = a * c;
-    REQUIRE(r == 2.0);
+    REQUIRE(r == 4.0);
   }
 }
 // TEST_CASE("Symbolic: Parse", "[statespace]") {

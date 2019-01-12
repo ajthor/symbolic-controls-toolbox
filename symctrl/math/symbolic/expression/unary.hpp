@@ -31,6 +31,8 @@ public:
 
   operator type() const;
 
+  inline auto value() const -> const result_type&;
+
   inline hash_t hash() const;
 
 private:
@@ -46,7 +48,7 @@ private:
 //
 template<typename T>
 inline ExprUnary<Symbolic, T>::ExprUnary(const T &m) :
-                                          m_(m) {
+                                         m_(m) {
   //
 }
 
@@ -61,10 +63,20 @@ inline ExprUnary<Symbolic, T>::ExprUnary(const ExprUnary<Symbolic, T> &m) :
 //
 template<typename T>
 ExprUnary<Symbolic, T>::operator ExprUnary<Symbolic, T>::type() const {
-  // result_type r;
-  // apply_(r, *this);
+  result_type r;
+  apply_(r, *this);
 
-  // return r;
+  return r;
+}
+
+// ----------------------------------------------------------------------
+// ExprUnary Member Function Definitions
+//
+template<typename T>
+inline auto ExprUnary<Symbolic, T>::value() const -> const result_type& {
+  result_type r;
+  apply_(r, *this);
+  return r;
 }
 
 } // Math
