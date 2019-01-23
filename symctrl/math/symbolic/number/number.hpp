@@ -16,7 +16,8 @@ namespace Math {
 // Symbolic Number
 //
 template<typename T>
-class Number : public Symbolic<Number<T>> {
+class Number
+    : public Symbolic<Number<T>> {
 public:
   using type = T;
 
@@ -52,20 +53,18 @@ public:
   inline Number<T> &operator/=(const T &rhs);
 
   template<typename DT>
-  inline void apply(const Number<DT> &rhs);
+  inline void apply(const Symbolic<DT> &rhs);
   template<typename DT>
-  inline void apply_add(const Number<DT> &rhs);
+  inline void apply_add(const Symbolic<DT> &rhs);
   template<typename DT>
-  inline void apply_sub(const Number<DT> &rhs);
+  inline void apply_sub(const Symbolic<DT> &rhs);
   template<typename DT>
-  inline void apply_mul(const Number<DT> &rhs);
+  inline void apply_mul(const Symbolic<DT> &rhs);
   template<typename DT>
-  inline void apply_div(const Number<DT> &rhs);
+  inline void apply_div(const Symbolic<DT> &rhs);
 
-  inline auto value() const -> const result_type&;
-
-  // inline T &value();
-  // inline const T &value() const;
+  // inline const Symbolic<Number<T>> &as_ref() const;
+  inline std::string as_str() const;
 
   inline hash_t hash() const;
 };
@@ -86,11 +85,9 @@ inline Number<T>::Number(const T &value) {
 }
 
 template<typename T>
-inline Number<T>::Number(const Number<T> &m) :
-                         value_(m.value_),
-                         hash_(m.hash_) {
-  //
-}
+inline Number<T>::Number(const Number<T> &m)
+    : value_(m.value_),
+      hash_(m.hash_) {}
 
 template<typename T>
 template<typename DT>
@@ -130,12 +127,18 @@ inline Number<T> &Number<T>::operator=(const Symbolic<DT> &rhs) {
 //
 template<typename T>
 inline Number<T>::operator T() const {
-  return value_;
+  return T(value_);
 }
 
+// template<typename T>
+// inline auto Number<T>::as_ref() const
+// -> const Symbolic<Number<T>>& {
+//   return *this;
+// }
+
 template<typename T>
-inline auto Number<T>::value() const -> const result_type& {
-  return *this;
+inline std::string Number<T>::as_str() const {
+  return std::to_string(value_);
 }
 
 // template<typename T>

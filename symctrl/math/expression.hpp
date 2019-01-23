@@ -5,15 +5,10 @@ namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// BaseExpression
-//
-struct BaseExpression {};
-
-// ----------------------------------------------------------------------
 // Expression
 //
 template<typename DT>
-class Expression : public DT, public BaseExpression {};
+class Expression : public DT {};
 
 // ----------------------------------------------------------------------
 // result_type_t

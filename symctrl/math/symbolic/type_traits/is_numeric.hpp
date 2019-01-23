@@ -14,11 +14,11 @@ namespace Math {
 template<class T>
 struct is_numeric_s_helper {
 private:
-  template<typename ...DT>
-  static std::true_type test(Number<DT...> &);
+  template<typename DT>
+  static std::true_type test(Number<DT> &);
 
-  template<typename ...DT>
-  static std::true_type test(const Number<DT...> &);
+  template<typename DT>
+  static std::true_type test(const Number<DT> &);
 
   static std::false_type test(...);
 

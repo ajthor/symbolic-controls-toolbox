@@ -16,8 +16,8 @@ namespace Math {
 // ExprAdd
 //
 template<typename T1, typename T2>
-class ExprAdd<Symbolic, T1, T2> :
-  public Expression<Symbolic<ExprAdd<Symbolic, T1, T2>>> {
+class ExprAdd<Symbolic, T1, T2>
+    : public Expression<Symbolic<ExprAdd<Symbolic, T1, T2>>> {
 public:
   using type = typename T1::type;
 
@@ -32,9 +32,12 @@ public:
 
   inline ExprAdd(const ExprAdd<Symbolic, T1, T2> &m);
 
-  operator type() const;
+  // operator type() const;
 
-  inline auto value() const -> const result_type;
+  // inline ExprAdd<Symbolic, T1, T2> &value();
+  // inline const ExprAdd<Symbolic, T1, T2> &as_ref() const;
+
+  inline std::string as_str() const;
 
   inline hash_t hash() const;
 
@@ -53,39 +56,38 @@ private:
 // ExprAdd Constructor
 //
 template<typename T1, typename T2>
-inline ExprAdd<Symbolic, T1, T2>::ExprAdd(const T1 &lhs,
-                                          const T2 &rhs) :
-                                          lhs_(lhs),
-                                          rhs_(rhs) {
-  //
-}
+inline ExprAdd<Symbolic, T1, T2>::ExprAdd(const T1 &lhs, const T2 &rhs)
+    : lhs_(lhs),
+      rhs_(rhs) {}
 
 template<typename T1, typename T2>
-inline ExprAdd<Symbolic, T1, T2>::ExprAdd(const ExprAdd<Symbolic, T1, T2> &m) :
-                                          lhs_(m.lhs_),
-                                          rhs_(m.rhs_) {
-  //
-}
+inline ExprAdd<Symbolic, T1, T2>::ExprAdd(const ExprAdd<Symbolic, T1, T2> &m)
+    : lhs_(m.lhs_),
+      rhs_(m.rhs_) {}
 
 // ----------------------------------------------------------------------
 // ExprAdd Type Conversion Operator
 //
-template<typename T1, typename T2>
-ExprAdd<Symbolic, T1, T2>::operator ExprAdd<Symbolic, T1, T2>::type() const {
-  result_type r;
-  apply_(r, *this);
-
-  return r;
-}
+// template<typename T1, typename T2>
+// ExprAdd<Symbolic, T1, T2>::operator ExprAdd<Symbolic, T1, T2>::type() const {
+//   result_type r;
+//   apply_(r, *this);
+//
+//   return r;
+// }
 
 // ----------------------------------------------------------------------
 // ExprAdd Member Function Definitions
 //
+// template<typename T1, typename T2>
+// inline auto ExprAdd<Symbolic, T1, T2>::as_ref() const
+// -> const ExprAdd<Symbolic, T1, T2>& {
+//   return *this;
+// }
+
 template<typename T1, typename T2>
-inline auto ExprAdd<Symbolic, T1, T2>::value() const -> const result_type {
-  result_type r;
-  apply_(r, *this);
-  return r;
+inline std::string ExprAdd<Symbolic, T1, T2>::as_str() const {
+  return lhs_.as_str() + " + " + rhs_.as_str();
 }
 
 template<typename T1, typename T2>
@@ -100,8 +102,8 @@ inline hash_t ExprAdd<Symbolic, T1, T2>::hash() const {
 // ExprAdd Operator
 //
 template<typename T1, typename T2>
-inline const ExprAdd<Symbolic, T1, T2>
-operator+(const Symbolic<T1> &lhs, const Symbolic<T2> &rhs) {
+inline auto operator+(const Symbolic<T1> &lhs, const Symbolic<T2> &rhs)
+-> ExprAdd<Symbolic, T1, T2> {
   return ExprAdd<Symbolic, T1, T2>(~lhs, ~rhs);
 }
 
@@ -109,19 +111,28 @@ operator+(const Symbolic<T1> &lhs, const Symbolic<T2> &rhs) {
 // ExprAdd Scalar Operator
 //
 template<typename T1, typename T2>
-inline auto
-operator+(const Symbolic<T1> &lhs, const T2 rhs)
+inline auto operator+(const Symbolic<T1> &lhs, const T2 rhs)
 -> enable_if_scalar_t<T2, const ExprUnary<Symbolic, T1>> {
   T1 tmp(~lhs);
   return ExprUnary<Symbolic, T1>(tmp += rhs);
 }
 
 template<typename T1, typename T2>
-inline auto
-operator+(const T1 lhs, const Symbolic<T2> &rhs)
+inline auto operator+(const T1 lhs, const Symbolic<T2> &rhs)
 -> enable_if_scalar_t<T1, const ExprUnary<Symbolic, T2>> {
   T2 tmp(~rhs);
   return ExprUnary<Symbolic, T2>(tmp += lhs);
+}
+
+// ----------------------------------------------------------------------
+// ExprAdd equal
+//
+template<typename T1, typename T2, typename DT>
+inline bool equal(const ExprAdd<Symbolic, T1, T2> &lhs,
+                  const Symbolic<DT> &rhs) {
+  typename ExprAdd<Symbolic, T1, T2>::result_type r;
+  apply_(r, ~lhs);
+  return r.hash() == (~rhs).hash();
 }
 
 } // Math

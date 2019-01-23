@@ -7,6 +7,7 @@
 #include <symctrl/math/expression.hpp>
 #include <symctrl/math/symbolic/symbolic.hpp>
 #include <symctrl/math/symbolic/expression/symbolic.hpp>
+#include <symctrl/math/symbolic/sym/sym.hpp>
 #include <symctrl/math/symbolic/expression/unary.hpp>
 #include <symctrl/shims/hash.hpp>
 
@@ -16,18 +17,16 @@ namespace Math {
 // ----------------------------------------------------------------------
 // Symbolic Variable
 //
-class Variable : public Symbolic<Variable> {
+class Variable
+    : public Symbolic<Variable> {
 public:
   using type = Variable;
 
   using this_type = Variable;
 
-  using result_type = Variable;
+  using result_type = sym_t;
 
 private:
-  // std::shared_ptr<BaseExpression> value_;
-  // ExprUnary<Symbolic, Variable> value_;
-
   std::string name_;
   hash_t hash_;
 
@@ -65,10 +64,10 @@ public:
   template<typename DT>
   inline void apply_div(const Symbolic<DT> &rhs);
 
-  inline auto value() const -> const result_type&;
-
-  inline std::string &name();
   inline const std::string &name() const;
+
+  // inline const Symbolic<Variable> &as_ref() const;
+  inline std::string as_str() const;
 
   inline hash_t hash() const;
 };
@@ -78,21 +77,16 @@ public:
 //
 inline Variable::Variable(const std::string &str) {
   // value_ = std::make_shared<ExprUnary<Symbolic, Variable>>(*this);
-  // value_ = ExprUnary<Symbolic, Variable>(*this);
   name_ = str;
   hash_ = hash_string{}(str);
 }
 
-inline Variable::Variable(const Variable &m) :
-                          // value_(m.value_),
-                          name_(m.name_),
-                          hash_(m.hash_) {
-  //
-}
+inline Variable::Variable(const Variable &m)
+    : name_(m.name_),
+      hash_(m.hash_) {}
 
 template<typename DT>
 inline Variable::Variable(const Symbolic<DT> &m) {
-  //
   apply_(*this, ~m);
 }
 
@@ -123,15 +117,16 @@ inline Variable &Variable::operator=(const Symbolic<DT> &rhs) {
 // ----------------------------------------------------------------------
 // Variable Member Function Definitions
 //
-inline auto Variable::value() const -> const result_type& {
-  return *this;
-}
-
-inline std::string &Variable::name() {
+inline const std::string &Variable::name() const {
   return name_;
 }
 
-inline const std::string &Variable::name() const {
+// inline auto Variable::as_ref() const
+// -> const Symbolic<Variable>& {
+//   return *this;
+// }
+
+inline std::string Variable::as_str() const {
   return name_;
 }
 

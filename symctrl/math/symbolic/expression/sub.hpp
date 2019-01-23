@@ -32,9 +32,12 @@ public:
 
   inline ExprSub(const ExprSub<Symbolic, T1, T2> &m);
 
-  operator type() const;
+  // operator type() const;
 
-  inline auto value() const -> const result_type&;
+  // inline ExprSub<Symbolic, T1, T2> &value();
+  // inline const ExprSub<Symbolic, T1, T2> &as_ref() const;
+
+  inline std::string as_str() const;
 
   inline hash_t hash() const;
 
@@ -70,22 +73,26 @@ inline ExprSub<Symbolic, T1, T2>::ExprSub(const ExprSub<Symbolic, T1, T2> &m) :
 // ----------------------------------------------------------------------
 // ExprSub Type Conversion Operator
 //
-template<typename T1, typename T2>
-ExprSub<Symbolic, T1, T2>::operator ExprSub<Symbolic, T1, T2>::type() const {
-  result_type r;
-  apply_(r, *this);
-
-  return r;
-}
+// template<typename T1, typename T2>
+// ExprSub<Symbolic, T1, T2>::operator ExprSub<Symbolic, T1, T2>::type() const {
+//   result_type r;
+//   apply_(r, *this);
+//
+//   return r;
+// }
 
 // ----------------------------------------------------------------------
 // ExprSub Member Function Definitions
 //
+// template<typename T1, typename T2>
+// inline auto ExprSub<Symbolic, T1, T2>::as_ref() const
+// -> const ExprSub<Symbolic, T1, T2>& {
+//   return *this;
+// }
+
 template<typename T1, typename T2>
-inline auto ExprSub<Symbolic, T1, T2>::value() const -> const result_type& {
-  result_type r;
-  apply_(r, *this);
-  return r;
+inline std::string ExprSub<Symbolic, T1, T2>::as_str() const {
+  return lhs_.as_str() + " - " + rhs_.as_str();
 }
 
 template<typename T1, typename T2>

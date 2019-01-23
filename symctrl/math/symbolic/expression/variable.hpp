@@ -1,6 +1,7 @@
 #ifndef SYMCTRL_MATH_SYMBOLIC_EXPRESSION_VARIABLE_HPP
 #define SYMCTRL_MATH_SYMBOLIC_EXPRESSION_VARIABLE_HPP
 
+#include <symctrl/assert.hpp>
 #include <symctrl/math/symbolic/symbolic.hpp>
 #include <symctrl/math/symbolic/expression/symbolic.hpp>
 #include <symctrl/math/symbolic/variable/variable.hpp>
@@ -71,13 +72,14 @@ inline void Variable::apply_div(const Symbolic<DT> &rhs) {
 // ----------------------------------------------------------------------
 // Variable Equal
 //
-inline bool equal(const Variable &lhs, const Variable &rhs) {
-  return lhs.hash() == rhs.hash();
-}
+// inline bool equal(const Variable &lhs, const Variable &rhs) {
+//   return lhs.hash() == rhs.hash();
+// }
 
 template<typename DT>
-inline bool equal(const Symbolic<DT> &lhs, const Variable &rhs) {
-  return (~lhs).hash() == rhs.hash();
+inline bool equal(const Variable &lhs, const Symbolic<DT> &rhs) {
+  SYMCTRL_DEBUG("Variable == Symbolic");
+  return lhs.hash() == (~rhs).hash();
 }
 
 } // Math
