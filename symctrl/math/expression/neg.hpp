@@ -7,8 +7,10 @@ namespace Math {
 // ----------------------------------------------------------------------
 // ExprNeg
 //
-template<template<typename> class DT, typename T>
-class ExprNeg : public Expression<DT<ExprNeg<DT, T>>> {};
+template< template<typename> class DT,  // Derived type.
+          typename T >                  // Operand type.
+class ExprNeg
+    : public Expression<DT<ExprNeg<DT, T>>> {};
 
 } // Math
 } // Controls

@@ -22,21 +22,21 @@ public:
   using result_type = result_type_t<T>;
 
 private:
-  const T m_;
+  sym_t m_;
 
 public:
   explicit inline ExprUnary(const T &m);
 
-  inline ExprUnary(const ExprUnary<Symbolic, T> &m);
+  inline ExprUnary(ExprUnary<Symbolic, T> &m);
 
   // operator type() const;
 
   // inline ExprUnary<Symbolic, T> &value();
   // inline const ExprUnary<Symbolic, T> &as_ref() const;
 
-  inline std::string as_str() const;
+  inline std::string _as_str() const;
 
-  inline hash_t hash() const;
+  inline hash_t _hash() const;
 
 private:
   template<typename DT>
@@ -50,16 +50,12 @@ private:
 // ExprUnary Constructor
 //
 template<typename T>
-inline ExprUnary<Symbolic, T>::ExprUnary(const T &m) :
-                                         m_(m) {
-  //
-}
+inline ExprUnary<Symbolic, T>::ExprUnary(const T &m)
+    : m_(m) {}
 
 template<typename T>
-inline ExprUnary<Symbolic, T>::ExprUnary(const ExprUnary<Symbolic, T> &m) :
-                                         m_(m.m_) {
-  //
-}
+inline ExprUnary<Symbolic, T>::ExprUnary(ExprUnary<Symbolic, T> &m)
+    : m_(m.m_) {}
 
 // ----------------------------------------------------------------------
 // ExprUnary Type Conversion Operator
@@ -82,16 +78,17 @@ inline ExprUnary<Symbolic, T>::ExprUnary(const ExprUnary<Symbolic, T> &m) :
 // }
 
 template<typename T>
-inline std::string ExprUnary<Symbolic, T>::as_str() const {
+inline std::string ExprUnary<Symbolic, T>::_as_str() const {
   return m_.as_str();
 }
 
 template<typename T>
-inline hash_t ExprUnary<Symbolic, T>::hash() const {
-  result_type r;
-  apply_(r, *this);
-
-  return r.hash();
+inline hash_t ExprUnary<Symbolic, T>::_hash() const {
+  // result_type r;
+  // apply_(r, *this);
+  //
+  // return r.hash();
+  return 0;
 }
 
 } // Math

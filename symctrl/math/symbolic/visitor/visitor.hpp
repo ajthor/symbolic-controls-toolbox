@@ -37,7 +37,9 @@ private:
 public:
   // virtual ~SymbolicVisitor() {};
 
-  virtual void visit(const BaseSymbolic &m) {}
+  virtual void visit(const BaseSymbolic &m) {
+    SYMCTRL_DEBUG("Inside the SystemVisitor for BaseSymbolic visit function.");
+  }
 
   template<typename DT>
   void visit(const Symbolic<DT> &m) {

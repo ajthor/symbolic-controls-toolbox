@@ -4,7 +4,7 @@
 #include <symctrl/assert.hpp>
 #include <symctrl/math/symbolic/symbolic.hpp>
 #include <symctrl/math/symbolic/sym/sym.hpp>
-#include <symctrl/math/symbolic/visitor/compare.hpp>
+#include <symctrl/math/symbolic/sym/sym_t.hpp>
 
 namespace Controls {
 namespace Math {
@@ -12,30 +12,30 @@ namespace Math {
 // ----------------------------------------------------------------------
 // sym_t
 //
-template<typename DT>
-inline void sym_t::apply(const Symbolic<DT> &rhs) {
-  // apply_(*ptr_, ~rhs);
-}
-
-template<typename DT>
-inline void sym_t::apply_add(const Symbolic<DT> &rhs) {
-  // apply_add_(*ptr_, ~rhs);
-}
-
-template<typename DT>
-inline void sym_t::apply_sub(const Symbolic<DT> &rhs) {
-  // apply_sub_(*ptr_, ~rhs);
-}
-
-template<typename DT>
-inline void sym_t::apply_mul(const Symbolic<DT> &rhs) {
-  // apply_mul_(*ptr_, ~rhs);
-}
-
-template<typename DT>
-inline void sym_t::apply_div(const Symbolic<DT> &rhs) {
-  // apply_div_(*ptr_, ~rhs);
-}
+// template<typename DT>
+// inline void sym_t::apply(const Symbolic<DT> &rhs) {
+//   // apply_(*ptr_, ~rhs);
+// }
+//
+// template<typename DT>
+// inline void sym_t::apply_add(const Symbolic<DT> &rhs) {
+//   // apply_add_(*ptr_, ~rhs);
+// }
+//
+// template<typename DT>
+// inline void sym_t::apply_sub(const Symbolic<DT> &rhs) {
+//   // apply_sub_(*ptr_, ~rhs);
+// }
+//
+// template<typename DT>
+// inline void sym_t::apply_mul(const Symbolic<DT> &rhs) {
+//   // apply_mul_(*ptr_, ~rhs);
+// }
+//
+// template<typename DT>
+// inline void sym_t::apply_div(const Symbolic<DT> &rhs) {
+//   // apply_div_(*ptr_, ~rhs);
+// }
 
 // ----------------------------------------------------------------------
 // sym_t equal
@@ -44,30 +44,31 @@ inline void sym_t::apply_div(const Symbolic<DT> &rhs) {
 //   return equal(lhs.as_ref(), rhs.as_ref());
 //   // return lhs.as_ref() == ~rhs;
 // }
+inline bool equal(const sym_t &lhs, const sym_t &rhs) {
+  return lhs.hash() == rhs.hash();
+}
 
 template<typename DT>
 inline bool equal(const sym_t &lhs, const Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_t == Symbolic");
-  // auto casted = lhs.cast<DT>();
-  // if(casted == nullptr) {
-  //   return false;
-  // }
-  //
-  // return equal(*casted, ~rhs);
+  return lhs.hash() == (~rhs).hash();
+}
 
-  // decltype(lhs->as_ref())::show;
+inline bool operator==(const sym_t &lhs, const sym_t &rhs) {
+  return equal(lhs, rhs);
+}
 
-  // const BaseSymbolic *p = lhs.ptr_;
-  // *p::this_type;
-  // return false;
-  // return equal(lhs.ref_, ~rhs);
-  // return lhs.as_ref() == ~rhs;
+template<typename DT>
+inline bool operator==(const sym_t &lhs, const Symbolic<DT> &rhs) {
+  return equal(lhs, ~rhs);
+}
 
-  return compare(*(lhs.ptr_), ~rhs);
-  // return lhs.eq_(~rhs);
+inline bool operator!=(const sym_t &lhs, const sym_t &rhs) {
+  return !equal(lhs, rhs);
+}
 
-  // return lhs->get_ref() == ~rhs;
-  // return equal(lhs->get_ref(), ~rhs);
+template<typename DT>
+inline bool operator!=(const sym_t &lhs, const Symbolic<DT> &rhs) {
+  return !equal(lhs, ~rhs);
 }
 
 } // Math

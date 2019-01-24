@@ -2,6 +2,7 @@
 #define SYMCTRL_MATH_SYMBOLIC_EXPRESSION_HPP
 
 #include <symctrl/math/expression.hpp>
+#include <symctrl/math/symbolic/expression/symbolic.hpp>
 #include <symctrl/math/symbolic/expression/add.hpp>
 #include <symctrl/math/symbolic/expression/mul.hpp>
 

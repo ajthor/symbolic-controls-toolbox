@@ -2,163 +2,81 @@
 #define SYMCTRL_MATH_SYMBOLIC_SYM_SYM_HPP
 
 #include <memory>
-#include <type_traits>
+#include <string>
 
 #include <symctrl/assert.hpp>
+#include <symctrl/shims/hash.hpp>
 #include <symctrl/math/symbolic/symbolic.hpp>
 
 namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// sym_t
+// sym
 //
-class sym_t
-    : public Symbolic<sym_t> {
-    // : public BaseSymbolic {
+class sym
+    : public Symbolic<sym> {
 public:
-  using type = sym_t;
+  using this_type = sym;
 
-  using this_type = sym_t;
+private:
+  std::string name_;
 
-  using result_type = sym_t;
-
-// private:
-  BaseSymbolic *ptr_;
+  hash_t hash_;
 
 public:
-  // explicit inline sym_t();
-  inline sym_t(const sym_t &m);
-  template<typename DT>
-  inline sym_t(Symbolic<DT> &m);
-  template<typename DT>
-  inline sym_t(Symbolic<DT> &&m);
+  explicit inline sym();
+  explicit inline sym(std::string name);
+  inline sym(const sym &m);
 
-  inline sym_t &operator=(const sym_t &rhs);
-  template<typename DT>
-  inline sym_t &operator=(Symbolic<DT> &rhs);
-  template<typename DT>
-  inline sym_t &operator=(Symbolic<DT> &&rhs);
+  inline sym &operator=(std::string name);
+  inline sym &operator=(const sym &rhs);
 
-  inline BaseSymbolic &operator*();
-  inline const BaseSymbolic &operator*() const;
-  inline const BaseSymbolic *operator->() const;
+  inline std::shared_ptr<sym> as_ptr();
 
-  // template<typename DT>
-  // inline const DT *cast() const;
-
-  template<typename DT>
-  inline void apply(const Symbolic<DT> &rhs);
-  template<typename DT>
-  inline void apply_add(const Symbolic<DT> &rhs);
-  template<typename DT>
-  inline void apply_sub(const Symbolic<DT> &rhs);
-  template<typename DT>
-  inline void apply_mul(const Symbolic<DT> &rhs);
-  template<typename DT>
-  inline void apply_div(const Symbolic<DT> &rhs);
-
-  inline std::string as_str() const;
-
-  inline hash_t hash() const;
-
-  template<typename DT>
-  inline bool eq_(const Symbolic<DT> &rhs) const {
-    return equal(*ptr_, ~rhs);
-  }
+  inline std::string _as_str() const;
+  inline hash_t _hash() const;
 };
 
 // ----------------------------------------------------------------------
-// sym_t Constructor
+// sym Constructor
 //
-// inline sym_t::sym_t()
-//     : ptr_() {
-//   SYMCTRL_DEBUG("sym_t default constructor");
-// }
+inline sym::sym()
+    : name_(std::string()),
+      hash_(0) {}
 
-inline sym_t::sym_t(const sym_t &m)
-    : ptr_(m.ptr_) {
-  SYMCTRL_DEBUG("sym_t copy constructor");
-}
+inline sym::sym(const sym &m)
+    : name_(m.name_),
+      hash_(m.hash_) {}
 
-template<typename DT>
-inline sym_t::sym_t(Symbolic<DT> &m)
-    : ptr_(&m) {
-  SYMCTRL_DEBUG("sym_t copy constructor");
-}
-
-template<typename DT>
-inline sym_t::sym_t(Symbolic<DT> &&m)
-    : ptr_(&m) {
-  SYMCTRL_DEBUG("sym_t move constructor");
-}
+inline sym::sym(std::string name)
+    : name_(name),
+      hash_(hash_string{}(name)) {}
 
 // ----------------------------------------------------------------------
-// sym_t Assignment Operator
+// sym Assignment Operator
 //
-template<typename DT>
-inline sym_t &sym_t::operator=(Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_t copy assignment operator");
-  ptr_ = ~rhs;
-
+inline sym &sym::operator=(const sym &rhs) {
+  name_ = rhs.as_str();
+  hash_ = rhs.hash();
   return *this;
 }
-template<typename DT>
-inline sym_t &sym_t::operator=(Symbolic<DT> &&rhs) {
-  SYMCTRL_DEBUG("sym_t move assignment operator");
-  ptr_ = &rhs;
 
+inline sym &sym::operator=(std::string name) {
+  name_ = name;
+  hash_ = hash_string{}(name);
   return *this;
 }
 
 // ----------------------------------------------------------------------
-// sym_t Pointer Dereference Operators
+// Symbolic Member Function Definitions
 //
-inline BaseSymbolic &sym_t::operator*() {
-  SYMCTRL_DEBUG("Pointer dereference operator (const).");
-  return *ptr_;
+inline std::string sym::_as_str() const {
+  return name_;
 }
 
-inline const BaseSymbolic &sym_t::operator*() const {
-  SYMCTRL_DEBUG("Pointer dereference operator.");
-  return *ptr_;
-}
-
-inline const BaseSymbolic *sym_t::operator->() const {
-  SYMCTRL_DEBUG("Arrow operator.");
-  return ptr_;
-}
-
-// template<typename DT>
-// inline const DT *sym_t::cast() const {
-//   return dynamic_cast<const DT *>(ptr_);
-// }
-
-// ----------------------------------------------------------------------
-// sym_t Member Function Definitions
-//
-// template<typename DT>
-// inline sym_t::operator Symbolic<DT>() const {
-//   return ptr_->as_ref();
-// }
-
-// inline auto sym_t::as_ref() const
-// -> const Symbolic<sym_t>& {
-//   return *this;
-// }
-
-inline std::string sym_t::as_str() const {
-  // return ptr_->operator std::string();
-  // return ptr_.as_str();
-  // return ptr_->get_ref().operator std::string();
-  return std::string();
-}
-
-inline hash_t sym_t::hash() const {
-  // return ptr_->as_ref().hash();
-  // std::cout << "sym_t hash" << '\n';
-  // return ptr_->as_ref().hash();
-  return 0;
+inline hash_t sym::_hash() const {
+  return hash_;
 }
 
 } // Math

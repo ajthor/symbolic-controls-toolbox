@@ -7,8 +7,10 @@ namespace Math {
 // ----------------------------------------------------------------------
 // ExprUnary
 //
-template<template<typename> class DT, typename T>
-class ExprUnary : public Expression<DT<ExprUnary<DT, T>>> {};
+template< template<typename> class DT,  // Derived type.
+          typename T >                  // Operand type.
+class ExprUnary
+    : public Expression<DT<ExprUnary<DT, T>>> {};
 
 } // Math
 } // Controls

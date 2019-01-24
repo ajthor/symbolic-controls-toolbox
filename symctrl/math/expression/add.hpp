@@ -7,8 +7,11 @@ namespace Math {
 // ----------------------------------------------------------------------
 // ExprAdd
 //
-template<template<typename> class DT, typename T1, typename T2>
-class ExprAdd : public Expression<DT<ExprAdd<DT, T1, T2>>> {};
+template< template<typename> class DT,  // Derived type.
+          typename T1,                  // Lhs type.
+          typename T2 >                 // Rhs type.
+class ExprAdd
+    : public Expression<DT<ExprAdd<DT, T1, T2>>> {};
 
 } // Math
 } // Controls
