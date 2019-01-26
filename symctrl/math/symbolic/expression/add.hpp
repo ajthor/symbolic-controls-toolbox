@@ -50,12 +50,12 @@ inline ExprAdd<Symbolic, T1, T2>::ExprAdd(const T1 &lhs, const T2 &rhs)
 //
 template<typename T1, typename T2>
 inline std::string ExprAdd<Symbolic, T1, T2>::_as_str() const {
-  return (~lhs_).as_str() + " + " + (~rhs_).as_str();
+  return lhs_.as_str() + " + " + rhs_.as_str();
 }
 
 template<typename T1, typename T2>
 inline hash_t ExprAdd<Symbolic, T1, T2>::_hash() const {
-  return 0;
+  return lhs_.hash() ^ rhs_.hash() ^ 100;
 }
 
 // ----------------------------------------------------------------------

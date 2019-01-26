@@ -1,17 +1,37 @@
-#ifndef SYMCTRL_MATH_SYMBOLIC_EXPRESSION_SYM_HPP
-#define SYMCTRL_MATH_SYMBOLIC_EXPRESSION_SYM_HPP
+#ifndef SYMCTRL_MATH_SYMBOLIC_EXPRESSION_SYM_T_HPP
+#define SYMCTRL_MATH_SYMBOLIC_EXPRESSION_SYM_T_HPP
 
 #include <symctrl/assert.hpp>
 #include <symctrl/math/symbolic/symbolic.hpp>
-#include <symctrl/math/symbolic/sym/sym.hpp>
-#include <symctrl/math/symbolic/sym/sym_t.hpp>
+#include <symctrl/math/symbolic/expression/symbolic.hpp>
+#include <symctrl/math/symbolic/sym_t/sym_t.hpp>
 
 namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// sym_t
+// sym_t Expressions
 //
+template<typename T>
+inline sym_t &sym_t::operator+=(const T &rhs) {
+  *ptr_ += ~rhs;
+  return *this;
+}
+template<typename T>
+inline sym_t &sym_t::operator-=(const T &rhs) {
+  *ptr_ -= ~rhs;
+  return *this;
+}
+template<typename T>
+inline sym_t &sym_t::operator*=(const T &rhs) {
+  *ptr_ *= ~rhs;
+  return *this;
+}
+template<typename T>
+inline sym_t &sym_t::operator/=(const T &rhs) {
+  *ptr_ /= ~rhs;
+  return *this;
+}
 // template<typename DT>
 // inline void sym_t::apply(const Symbolic<DT> &rhs) {
 //   // apply_(*ptr_, ~rhs);
@@ -74,4 +94,4 @@ inline bool operator!=(const sym_t &lhs, const Symbolic<DT> &rhs) {
 } // Math
 } // Controls
 
-#endif // SYMCTRL_MATH_SYMBOLIC_EXPRESSION_SYM_HPP
+#endif // SYMCTRL_MATH_SYMBOLIC_EXPRESSION_SYM_T_HPP

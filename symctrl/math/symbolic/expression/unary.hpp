@@ -17,25 +17,19 @@ template<typename T>
 class ExprUnary<Symbolic, T>
     : public Expression<Symbolic<ExprUnary<Symbolic, T>>> {
 public:
-  using type = typename T::type;
+  // using type = typename T::type;
 
-  using result_type = result_type_t<T>;
+  // using result_type = result_type_t<T>;
 
 private:
-  sym_t m_;
+  const T &m_;
 
 public:
   explicit inline ExprUnary(const T &m);
 
-  inline ExprUnary(ExprUnary<Symbolic, T> &m);
-
-  // operator type() const;
-
-  // inline ExprUnary<Symbolic, T> &value();
-  // inline const ExprUnary<Symbolic, T> &as_ref() const;
+  // inline ExprUnary(ExprUnary<Symbolic, T> &m);
 
   inline std::string _as_str() const;
-
   inline hash_t _hash() const;
 
 private:
@@ -53,9 +47,9 @@ template<typename T>
 inline ExprUnary<Symbolic, T>::ExprUnary(const T &m)
     : m_(m) {}
 
-template<typename T>
-inline ExprUnary<Symbolic, T>::ExprUnary(ExprUnary<Symbolic, T> &m)
-    : m_(m.m_) {}
+// template<typename T>
+// inline ExprUnary<Symbolic, T>::ExprUnary(ExprUnary<Symbolic, T> &m)
+//     : m_(m.m_) {}
 
 // ----------------------------------------------------------------------
 // ExprUnary Type Conversion Operator
@@ -71,12 +65,6 @@ inline ExprUnary<Symbolic, T>::ExprUnary(ExprUnary<Symbolic, T> &m)
 // ----------------------------------------------------------------------
 // ExprUnary Member Function Definitions
 //
-// template<typename T>
-// inline auto ExprUnary<Symbolic, T>::as_ref() const
-// -> const ExprUnary<Symbolic, T>& {
-//   return *this;
-// }
-
 template<typename T>
 inline std::string ExprUnary<Symbolic, T>::_as_str() const {
   return m_.as_str();
@@ -84,11 +72,7 @@ inline std::string ExprUnary<Symbolic, T>::_as_str() const {
 
 template<typename T>
 inline hash_t ExprUnary<Symbolic, T>::_hash() const {
-  // result_type r;
-  // apply_(r, *this);
-  //
-  // return r.hash();
-  return 0;
+  return m_.hash();
 }
 
 } // Math

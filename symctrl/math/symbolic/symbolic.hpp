@@ -62,6 +62,7 @@ inline const DT &Symbolic<DT>::operator~() const {
   return *static_cast<const DT *>(this);
 }
 
+// Uses static_pointer_cast to down cast the shared pointer to the derived type.
 template<typename DT>
 inline std::shared_ptr<DT> Symbolic<DT>::as_ptr() {
   return std::static_pointer_cast<DT>(shared_from_this());

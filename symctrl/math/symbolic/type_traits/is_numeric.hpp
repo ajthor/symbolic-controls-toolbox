@@ -3,7 +3,7 @@
 
 #include <utility>
 
-#include <symctrl/math/symbolic/number/number.hpp>
+#include <symctrl/math/symbolic/sym_number/sym_number.hpp>
 
 namespace Controls {
 namespace Math {
@@ -15,10 +15,10 @@ template<class T>
 struct is_numeric_s_helper {
 private:
   template<typename DT>
-  static std::true_type test(Number<DT> &);
+  static std::true_type test(sym_number<DT> &);
 
   template<typename DT>
-  static std::true_type test(const Number<DT> &);
+  static std::true_type test(const sym_number<DT> &);
 
   static std::false_type test(...);
 
