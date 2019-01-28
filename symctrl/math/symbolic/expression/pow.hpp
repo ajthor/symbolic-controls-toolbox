@@ -19,8 +19,8 @@ class ExprPow<Symbolic, T1, T2>
 public:
 
 private:
-  const T1 &lhs_;
-  const T2 &rhs_;
+  const T1 lhs_;
+  const T2 rhs_;
 
 public:
   explicit inline ExprPow(const T1 &lhs, const T2 &rhs);

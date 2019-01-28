@@ -1,11 +1,14 @@
 #ifndef SYMCTRL_MATH_SYMBOLIC_EXPRESSION_ADD_HPP
 #define SYMCTRL_MATH_SYMBOLIC_EXPRESSION_ADD_HPP
 
+#include <utility>
+
 #include <symctrl/assert.hpp>
 #include <symctrl/math/expression.hpp>
 #include <symctrl/math/expression/add.hpp>
 #include <symctrl/math/symbolic/expression/unary.hpp>
 #include <symctrl/math/symbolic/symbolic.hpp>
+#include <symctrl/math/symbolic/sym_number/sym_number.hpp>
 #include <symctrl/shims/hash.hpp>
 #include <symctrl/type_traits/is_scalar.hpp>
 
@@ -21,8 +24,8 @@ class ExprAdd<Symbolic, T1, T2>
 public:
 
 private:
-  const T1 &lhs_;
-  const T2 &rhs_;
+  const T1 lhs_;
+  const T2 rhs_;
 
 public:
   explicit inline ExprAdd(const T1 &lhs, const T2 &rhs);
@@ -65,6 +68,13 @@ template<typename T1, typename T2>
 inline auto operator+(const Symbolic<T1> &lhs, const Symbolic<T2> &rhs)
 -> const ExprAdd<Symbolic, T1, T2> {
   return ExprAdd<Symbolic, T1, T2>(~lhs, ~rhs);
+}
+
+template<typename T1, typename T2>
+inline auto operator+(const sym_number<T1> &lhs, const sym_number<T2> &rhs)
+-> decltype(std::declval<T1>() + std::declval<T2>()) {
+  SYMCTRL_DEBUG("adding two numbers")
+  return lhs.value() + rhs.value();
 }
 
 } // Math

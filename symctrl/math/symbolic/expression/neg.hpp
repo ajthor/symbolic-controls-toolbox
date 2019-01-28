@@ -22,7 +22,7 @@ public:
   // using result_type = result_type_t<T>;
 
 private:
-  const T &m_;
+  const T m_;
 
 public:
   explicit inline ExprNeg(const T &m);

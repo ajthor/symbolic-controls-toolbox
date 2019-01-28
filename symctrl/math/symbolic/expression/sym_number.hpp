@@ -14,33 +14,33 @@ namespace Math {
 // ----------------------------------------------------------------------
 // sym_number Expressions
 //
-template<typename T>
-inline sym_number<T> &sym_number<T>::operator+=(const T &rhs) {
-  value_ += rhs;
-  hash_ = hash_f<T>{}(value_);
-  return *this;
-}
-
-template<typename T>
-inline sym_number<T> &sym_number<T>::operator-=(const T &rhs) {
-  value_ -= rhs;
-  hash_ = hash_f<T>{}(value_);
-  return *this;
-}
-
-template<typename T>
-inline sym_number<T> &sym_number<T>::operator*=(const T &rhs) {
-  value_ *= rhs;
-  hash_ = hash_f<T>{}(value_);
-  return *this;
-}
-
-template<typename T>
-inline sym_number<T> &sym_number<T>::operator/=(const T &rhs) {
-  value_ /= rhs;
-  hash_ = hash_f<T>{}(value_);
-  return *this;
-}
+// template<typename T>
+// inline sym_number<T> &sym_number<T>::operator+=(const T &rhs) {
+//   value_ += rhs;
+//   hash_ = hash_f<T>{}(value_);
+//   return *this;
+// }
+//
+// template<typename T>
+// inline sym_number<T> &sym_number<T>::operator-=(const T &rhs) {
+//   value_ -= rhs;
+//   hash_ = hash_f<T>{}(value_);
+//   return *this;
+// }
+//
+// template<typename T>
+// inline sym_number<T> &sym_number<T>::operator*=(const T &rhs) {
+//   value_ *= rhs;
+//   hash_ = hash_f<T>{}(value_);
+//   return *this;
+// }
+//
+// template<typename T>
+// inline sym_number<T> &sym_number<T>::operator/=(const T &rhs) {
+//   value_ /= rhs;
+//   hash_ = hash_f<T>{}(value_);
+//   return *this;
+// }
 
 // template<typename T>
 // template<typename DT>

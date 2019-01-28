@@ -13,25 +13,29 @@ namespace Math {
 // sym_t Expressions
 //
 template<typename T>
-inline sym_t &sym_t::operator+=(const T &rhs) {
-  *ptr_ += ~rhs;
-  return *this;
+inline sym_t &operator+=(sym_t &lhs, const T &rhs) {
+  return lhs + rhs;
 }
 template<typename T>
-inline sym_t &sym_t::operator-=(const T &rhs) {
-  *ptr_ -= ~rhs;
-  return *this;
+inline sym_t &operator-=(sym_t &lhs, const T &rhs) {
+  return lhs - rhs;
 }
 template<typename T>
-inline sym_t &sym_t::operator*=(const T &rhs) {
-  *ptr_ *= ~rhs;
-  return *this;
+inline sym_t &operator*=(sym_t &lhs, const T &rhs) {
+  return lhs * rhs;
 }
 template<typename T>
-inline sym_t &sym_t::operator/=(const T &rhs) {
-  *ptr_ /= ~rhs;
-  return *this;
+inline sym_t &operator/=(sym_t &lhs, const T &rhs) {
+  return lhs / rhs;
 }
+
+// inline auto operator+(const sym_t &lhs, const sym_t &rhs) 
+// ->  {
+//   // Check if the sym_t variables hold a number.
+//   if(lhs) {
+//
+//   }
+// }
 // template<typename DT>
 // inline void sym_t::apply(const Symbolic<DT> &rhs) {
 //   // apply_(*ptr_, ~rhs);

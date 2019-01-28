@@ -7,11 +7,12 @@
 #include <type_traits>
 
 #include <symctrl/assert.hpp>
-#include <symctrl/shims/hash.hpp>
 #include <symctrl/math/symbolic/symbolic.hpp>
 #include <symctrl/math/symbolic/sym_var/sym_var.hpp>
 #include <symctrl/math/symbolic/sym_number/sym_number.hpp>
+#include <symctrl/shims/hash.hpp>
 #include <symctrl/type_traits/is_numeric.hpp>
+#include <symctrl/type_traits/is_string.hpp>
 
 namespace Controls {
 namespace Math {
@@ -27,10 +28,12 @@ private:
   std::shared_ptr<BaseSymbolic> ptr_;
 
 public:
-  explicit inline sym_t(std::string name);
+  template<typename T, enable_if_string_t<T, int> = 0>
+  explicit inline sym_t(const T m);
 
-  inline sym_t(const int &m);
-  inline sym_t(const double &m);
+  template<typename T, enable_if_numeric_t<T, int> = 0>
+  inline sym_t(const T m);
+  // inline sym_t(const double &m);
 
   // template<typename DT>
   // inline sym_t(const Symbolic<DT> &m);
@@ -58,14 +61,14 @@ public:
   // inline sym_t &operator*=(const Symbolic<DT> &rhs);
   // template<typename DT>
   // inline sym_t &operator/=(const Symbolic<DT> &rhs);
-  template<typename T>
-  inline sym_t &operator+=(const T &rhs);
-  template<typename T>
-  inline sym_t &operator-=(const T &rhs);
-  template<typename T>
-  inline sym_t &operator*=(const T &rhs);
-  template<typename T>
-  inline sym_t &operator/=(const T &rhs);
+  // template<typename T>
+  // inline sym_t &operator+=(const T &rhs);
+  // template<typename T>
+  // inline sym_t &operator-=(const T &rhs);
+  // template<typename T>
+  // inline sym_t &operator*=(const T &rhs);
+  // template<typename T>
+  // inline sym_t &operator/=(const T &rhs);
 
   inline std::string _as_str() const;
   inline hash_t _hash() const;
@@ -74,14 +77,19 @@ public:
 // ----------------------------------------------------------------------
 // sym_t Constructor
 //
-inline sym_t::sym_t(std::string name)
-    : ptr_(std::make_shared<sym_var>(name)) {}
+template<typename T, enable_if_string_t<T, int>>
+inline sym_t::sym_t(const T m)
+    : ptr_(std::make_shared<sym_var>(std::string(m))) {}
 
-inline sym_t::sym_t(const int &m)
-    : ptr_(std::make_shared<sym_number<int>>(m)) {}
+template<typename T, enable_if_numeric_t<T, int>>
+inline sym_t::sym_t(const T m)
+    : ptr_(std::make_shared<sym_number<T>>(m)) {}
 
-inline sym_t::sym_t(const double &m)
-    : ptr_(std::make_shared<sym_number<double>>(m)) {}
+// inline sym_t::sym_t(const int &m)
+//     : ptr_(std::make_shared<sym_number<int>>(m)) {}
+//
+// inline sym_t::sym_t(const double &m)
+//     : ptr_(std::make_shared<sym_number<double>>(m)) {}
 
 // template<typename DT>
 // inline sym_t::sym_t(const Symbolic<DT> &m)
@@ -109,7 +117,7 @@ inline sym_t::sym_t(const Symbolic<DT> &&m)
 
 template<typename DT>
 inline sym_t &sym_t::operator=(const Symbolic<DT> &&m) {
-  SYMCTRL_DEBUG("sym_t move assignment operator");
+  // SYMCTRL_DEBUG("sym_t move assignment operator");
   // ptr_.reset(std::move((~m)));
   ptr_ = std::make_shared<DT>(std::move(~m));
   // ptr_ = (~m).as_ptr();

@@ -27,10 +27,14 @@ private:
 public:
   explicit inline sym_var();
   explicit inline sym_var(std::string name);
-  inline sym_var(const sym_var &m);
+
+  inline sym_var(const sym_var &) = default;
+  inline sym_var(sym_var &&) = default;
 
   inline sym_var &operator=(std::string name);
-  inline sym_var &operator=(const sym_var &rhs);
+
+  inline sym_var &operator=(const sym_var &) = default;
+  inline sym_var &operator=(sym_var &&) = default;
 
   inline std::shared_ptr<sym_var> as_ptr();
 
@@ -45,10 +49,6 @@ inline sym_var::sym_var()
     : name_(std::string()),
       hash_(0) {}
 
-inline sym_var::sym_var(const sym_var &m)
-    : name_(m.name_),
-      hash_(m.hash_) {}
-
 inline sym_var::sym_var(std::string name)
     : name_(name),
       hash_(hash_string{}(name)) {}
@@ -56,11 +56,6 @@ inline sym_var::sym_var(std::string name)
 // ----------------------------------------------------------------------
 // sym_var Assignment Operator
 //
-inline sym_var &sym_var::operator=(const sym_var &rhs) {
-  name_ = rhs.as_str();
-  hash_ = rhs.hash();
-  return *this;
-}
 
 inline sym_var &sym_var::operator=(std::string name) {
   name_ = name;

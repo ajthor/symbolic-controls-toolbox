@@ -33,23 +33,26 @@ public:
   explicit inline sym_number();
   explicit inline sym_number(const T &m);
 
-  inline sym_number(const sym_number<T> &m);
+  inline sym_number(const sym_number<T> &) = default;
+  inline sym_number(sym_number<T> &&) = default;
 
   // template<typename DT>
   // inline sym_number(const Symbolic<DT> &m);
 
   inline sym_number<T> &operator=(const T &rhs);
-  inline sym_number<T> &operator=(const sym_number<T> &rhs);
+
+  inline sym_number<T> &operator=(const sym_number<T> &) = default;
+  inline sym_number<T> &operator=(sym_number<T> &&) = default;
 
   // template<typename DT>
   // inline sym_number<T> &operator=(const Symbolic<DT> &rhs);
 
   inline operator T() const;
 
-  inline sym_number<T> &operator+=(const T &rhs);
-  inline sym_number<T> &operator-=(const T &rhs);
-  inline sym_number<T> &operator*=(const T &rhs);
-  inline sym_number<T> &operator/=(const T &rhs);
+  // inline sym_number<T> &operator+=(const T &rhs);
+  // inline sym_number<T> &operator-=(const T &rhs);
+  // inline sym_number<T> &operator*=(const T &rhs);
+  // inline sym_number<T> &operator/=(const T &rhs);
 
   // template<typename DT>
   // inline void apply(const Symbolic<DT> &rhs);
@@ -81,11 +84,6 @@ inline sym_number<T>::sym_number(const T &m)
     : value_(m),
       hash_(hash_string{}(std::to_string(m))) {}
 
-template<typename T>
-inline sym_number<T>::sym_number(const sym_number<T> &m)
-    : value_(m.value_),
-      hash_(m.hash_) {}
-
 // template<typename T>
 // template<typename DT>
 // inline sym_number<T>::sym_number(const Symbolic<DT> &m) {
@@ -99,14 +97,6 @@ template<typename T>
 inline sym_number<T> &sym_number<T>::operator=(const T &rhs) {
   value_ = rhs;
   hash_ = hash_string{}(std::to_string(rhs));
-
-  return *this;
-}
-
-template<typename T>
-inline sym_number<T> &sym_number<T>::operator=(const sym_number<T> &rhs) {
-  value_ = rhs;
-  hash_ = rhs.hash();
 
   return *this;
 }
@@ -126,12 +116,6 @@ template<typename T>
 inline sym_number<T>::operator T() const {
   return value_;
 }
-
-// template<typename T>
-// inline auto sym_number<T>::as_ref() const
-// -> const Symbolic<sym_number<T>>& {
-//   return *this;
-// }
 
 template<typename T>
 inline std::string sym_number<T>::_as_str() const {

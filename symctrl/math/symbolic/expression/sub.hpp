@@ -24,8 +24,8 @@ public:
   // using result_type = result_type_t<T1>;
 
 private:
-  const T1 &lhs_;
-  const T2 &rhs_;
+  const T1 lhs_;
+  const T2 rhs_;
 
 public:
   explicit inline ExprSub(const T1 &lhs, const T2 &rhs);
