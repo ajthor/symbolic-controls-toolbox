@@ -18,9 +18,7 @@ template<typename T1, typename T2>
 class ExprDiv<Symbolic, T1, T2> :
   public Expression<Symbolic<ExprDiv<Symbolic, T1, T2>>> {
 public:
-  // using type = typename T1::type;
-
-  // using result_type = result_type_t<T1>;
+  static constexpr bool isNumeric = (T1::isNumeric && T2::isNumeric);
 
 private:
   const T1 lhs_;
@@ -30,55 +28,75 @@ public:
   explicit inline ExprDiv(const T1 &lhs, const T2 &rhs);
   // inline ExprDiv(const ExprDiv<Symbolic, T1, T2> &m);
 
-  inline std::string _as_str() const;
-  inline hash_t _hash() const;
+  inline std::string as_str() const;
+  inline hash_t hash() const;
+
+  inline bool canEvaluate() const;
 
 private:
-  // // A + B
-  // template<typename DT>
-  // friend inline void
-  // apply_(Symbolic<DT> &lhs, const ExprDiv<Symbolic, T1, T2> &rhs) {
-  //   SYMCTRL_DEBUG("result = A * B");
-  //   // Handle multiplication by zero or one.
-  //   if(is_numeric_s<T1>::value) {
-  //     if(lhs_ == 0) {
-  //       apply_(~lhs, Number<int>(0));
-  //     }
-  //     else if(lhs_ == 1) {
-  //       apply_(~lhs, rhs.rhs_);
-  //     }
-  //     else {
-  //       apply_(~lhs, rhs.lhs_);
-  //       apply_mul_(~lhs, rhs.rhs_);
-  //     }
-  //   }
-  //   else if(is_numeric_s<T2>::value) {
-  //     if(rhs_ == 0) {
-  //       apply_(~lhs, Number<int>(0));
-  //     }
-  //     else if(rhs_ == 1) {
-  //       apply_(~lhs, rhs.lhs_);
-  //     }
-  //     else {
-  //       apply_(~lhs, rhs.lhs_);
-  //       apply_mul_(~lhs, rhs.rhs_);
-  //     }
-  //   }
-  //   else {
-  //     apply_(~lhs, rhs.lhs_);
-  //     apply_mul_(~lhs, rhs.rhs_);
-  //   }
-  // }
-  //
-  // // A * (B * C)
-  // template<typename DT>
-  // friend inline void
-  // apply_mul_(Symbolic<DT> &lhs, const ExprDiv<Symbolic, T1, T2> &rhs) {
-  //   SYMCTRL_DEBUG("result = A * (B * C)");
-  //   result_type tmp(rhs.lhs_);
-  //   apply_mul_(tmp, rhs.rhs_);
-  //   apply_mul_(~lhs, tmp);
-  // }
+  template<typename DT>
+  friend inline void
+  apply_(Symbolic<DT> &lhs, const ExprDiv<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = A / B");
+    apply_(~lhs, rhs.lhs_);
+    apply_add_(~lhs, rhs.rhs_);
+  }
+
+  template<typename DT>
+  friend inline void
+  apply_add_(Symbolic<DT> &lhs, const ExprDiv<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = A + (B / C)");
+    apply_add_(~lhs, rhs.lhs_);
+    apply_div_(~lhs, rhs.rhs_);
+  }
+
+  template<typename DT>
+  friend inline void
+  apply_diff_(Symbolic<DT> &lhs, const ExprDiv<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = diff(A / B)");
+    apply_(~lhs, rhs.lhs_);
+    apply_add_(~lhs, rhs.rhs_);
+  }
+
+  template<typename DT>
+  friend inline void
+  apply_div_(Symbolic<DT> &lhs, const ExprDiv<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = A / (B / C)");
+    apply_(~lhs, rhs.lhs_);
+    apply_add_(~lhs, rhs.rhs_);
+  }
+
+  template<typename DT>
+  friend inline void
+  apply_mul_(Symbolic<DT> &lhs, const ExprDiv<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = A * (B / C)");
+    apply_(~lhs, rhs.lhs_);
+    apply_add_(~lhs, rhs.rhs_);
+  }
+
+  template<typename DT>
+  friend inline void
+  apply_neg_(Symbolic<DT> &lhs, const ExprDiv<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = -(A / B)");
+    apply_(~lhs, rhs.lhs_);
+    apply_add_(~lhs, rhs.rhs_);
+  }
+
+  template<typename DT>
+  friend inline void
+  apply_pow_(Symbolic<DT> &lhs, const ExprDiv<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = (A / B)^C");
+    apply_(~lhs, rhs.lhs_);
+    apply_add_(~lhs, rhs.rhs_);
+  }
+
+  template<typename DT>
+  friend inline void
+  apply_sub_(Symbolic<DT> &lhs, const ExprDiv<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = A - (B / C)");
+    apply_(~lhs, rhs.lhs_);
+    apply_add_(~lhs, rhs.rhs_);
+  }
 };
 
 // ----------------------------------------------------------------------
@@ -109,13 +127,18 @@ inline ExprDiv<Symbolic, T1, T2>::ExprDiv(const T1 &lhs, const T2 &rhs)
 // ExprDiv Member Function Definitions
 //
 template<typename T1, typename T2>
-inline std::string ExprDiv<Symbolic, T1, T2>::_as_str() const {
+inline std::string ExprDiv<Symbolic, T1, T2>::as_str() const {
   return (~lhs_).as_str() + "/" + (~rhs_).as_str();
 }
 
 template<typename T1, typename T2>
-inline hash_t ExprDiv<Symbolic, T1, T2>::_hash() const {
+inline hash_t ExprDiv<Symbolic, T1, T2>::hash() const {
   return lhs_.hash() ^ (rhs_.hash() << 1) ^ 250;
+}
+
+template<typename T1, typename T2>
+inline bool ExprDiv<Symbolic, T1, T2>::canEvaluate() const {
+  return (lhs_.canEvaluate() && rhs_.canEvaluate());
 }
 
 // ----------------------------------------------------------------------

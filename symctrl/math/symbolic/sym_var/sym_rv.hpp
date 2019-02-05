@@ -15,10 +15,15 @@ namespace Math {
 // ----------------------------------------------------------------------
 // sym_rv
 //
+template<typename T = double>
 class sym_rv
     : public Symbolic<sym_rv> {
 public:
   using this_type = sym_rv;
+
+  static constexpr bool isNumeric = false;
+
+  static inline constexpr bool canEvaluate() noexcept { return false; }
 
 private:
   std::string name_;
@@ -29,15 +34,17 @@ private:
 public:
   explicit inline sym_rv();
   explicit inline sym_rv(std::string name, RandomNumberDistribution &dist);
-  inline sym_rv(const sym_rv &m);
 
-  inline sym_rv &operator=(std::string name);
-  inline sym_rv &operator=(const sym_rv &rhs);
+  template<typename DT>
+  inline void apply(const Symbolic<DT> &rhs);
 
-  inline std::shared_ptr<sym_rv> as_ptr();
+  inline std::string as_str() const;
+  inline hash_t hash() const;
 
-  inline std::string _as_str() const;
-  inline hash_t _hash() const;
+  inline T real_value() const;
+  inline T imag_value() const;
+
+  inline T sample() const;
 };
 
 // ----------------------------------------------------------------------
@@ -47,39 +54,36 @@ inline sym_rv::sym_rv()
     : name_(std::string()),
       hash_(0) {}
 
-inline sym_rv::sym_rv(const sym_rv &m)
-    : name_(m.name_),
-      hash_(m.hash_) {}
-
 inline sym_rv::sym_rv(std::string name, RandomNumberDistribution &dist)
     : name_(name),
       hash_(hash_string{}(name)),
       dist_(make_unique(dist)) {}
 
 // ----------------------------------------------------------------------
-// sym_rv Assignment Operator
-//
-inline sym_rv &sym_rv::operator=(const sym_rv &rhs) {
-  name_ = rhs.as_str();
-  hash_ = rhs.hash();
-  return *this;
-}
-
-inline sym_rv &sym_rv::operator=(std::string name) {
-  name_ = name;
-  hash_ = hash_string{}(name);
-  return *this;
-}
-
-// ----------------------------------------------------------------------
 // Symbolic Member Function Definitions
 //
-inline std::string sym_rv::_as_str() const {
+inline std::string sym_rv::as_str() const {
   return name_;
 }
 
-inline hash_t sym_rv::_hash() const {
+inline hash_t sym_rv::hash() const {
   return hash_;
+}
+
+template<typename T>
+inline T sym_number<T>::real_value() const {
+  return (*this).sample();
+}
+
+template<typename T>
+inline T sym_number<T>::imag_value() const {
+  return T(0);
+}
+
+template<typename T>
+inline T sym_number<T>::sample() const {
+  // Sample from the distribution.
+  return 0;
 }
 
 } // Math

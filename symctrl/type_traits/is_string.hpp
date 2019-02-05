@@ -12,7 +12,9 @@ template<typename T>
 struct is_cstr : std::integral_constant<bool,
   std::is_same<typename std::remove_cv<T>::type, char>::value ||
   std::is_same<typename std::remove_cv<T>::type, char*>::value ||
-  std::is_same<typename std::remove_cv<T>::type, char[]>::value >
+  std::is_same<typename std::remove_cv<T>::type, const char*>::value ||
+  std::is_same<typename std::remove_cv<T>::type, char[]>::value ||
+  std::is_same<typename std::remove_cv<T>::type, const char[]>::value >
 {};
 
 // ----------------------------------------------------------------------

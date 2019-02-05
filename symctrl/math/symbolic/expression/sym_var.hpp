@@ -43,38 +43,43 @@ namespace Math {
 //   // hash_ = hash_f<T>{}(value_);
 //   return *this;
 // }
-//
-// template<typename DT>
-// inline void sym_var::apply(const Symbolic<DT> &rhs) {
-//
-// }
-//
-// template<typename DT>
-// inline void sym_var::apply_add(const Symbolic<DT> &rhs) {
-//
-// }
-//
+
+template<typename DT>
+inline void sym_var::apply(const Symbolic<DT> &rhs) {
+  SYMCTRL_DEBUG("sym_var::apply");
+
+}
+
 // template<typename DT>
 // inline void sym_var::apply_sub(const Symbolic<DT> &rhs) {
+//   SYMCTRL_DEBUG("sym_var::apply_sub");
 //
 // }
 //
 // template<typename DT>
 // inline void sym_var::apply_mul(const Symbolic<DT> &rhs) {
+//   SYMCTRL_DEBUG("sym_var::apply_mul");
 //
 // }
 //
 // template<typename DT>
 // inline void sym_var::apply_div(const Symbolic<DT> &rhs) {
+//   SYMCTRL_DEBUG("sym_var::apply_div");
+//
+// }
+//
+// template<typename DT>
+// inline void sym_var::apply_diff(const Symbolic<DT> &rhs) {
+//   SYMCTRL_DEBUG("sym_var::apply_diff");
 //
 // }
 
 // ----------------------------------------------------------------------
 // sym_var Equal
 //
-// inline bool equal(const sym_var &lhs, const sym_var &rhs) {
-//   return lhs.hash() == rhs.hash();
-// }
+inline bool equal(const sym_var &lhs, const sym_var &rhs) {
+  return lhs.hash() == rhs.hash();
+}
 
 template<typename DT>
 inline bool equal(const sym_var &lhs, const Symbolic<DT> &rhs) {

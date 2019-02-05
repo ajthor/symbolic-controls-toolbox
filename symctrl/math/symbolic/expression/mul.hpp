@@ -18,9 +18,7 @@ template<typename T1, typename T2>
 class ExprMul<Symbolic, T1, T2> :
   public Expression<Symbolic<ExprMul<Symbolic, T1, T2>>> {
 public:
-  // using type = typename T1::type;
-
-  // using result_type = result_type_t<T1>;
+  static constexpr bool isNumeric = (T1::isNumeric && T2::isNumeric);
 
 private:
   const T1 lhs_;
@@ -28,57 +26,77 @@ private:
 
 public:
   explicit inline ExprMul(const T1 &lhs, const T2 &rhs);
-  // inline ExprMul(const ExprMul<Symbolic, T1, T2> &m);
 
-  inline std::string _as_str() const;
-  inline hash_t _hash() const;
+  inline std::string as_str() const;
+  inline hash_t hash() const;
+
+  inline bool canEvaluate() const;
 
 private:
-  // // A + B
-  // template<typename DT>
-  // friend inline void
-  // apply_(Symbolic<DT> &lhs, const ExprMul<Symbolic, T1, T2> &rhs) {
-  //   SYMCTRL_DEBUG("result = A * B");
-  //   // Handle multiplication by zero or one.
-  //   if(is_numeric_s<T1>::value) {
-  //     if(lhs_ == 0) {
-  //       apply_(~lhs, Number<int>(0));
-  //     }
-  //     else if(lhs_ == 1) {
-  //       apply_(~lhs, rhs.rhs_);
-  //     }
-  //     else {
-  //       apply_(~lhs, rhs.lhs_);
-  //       apply_mul_(~lhs, rhs.rhs_);
-  //     }
-  //   }
-  //   else if(is_numeric_s<T2>::value) {
-  //     if(rhs_ == 0) {
-  //       apply_(~lhs, Number<int>(0));
-  //     }
-  //     else if(rhs_ == 1) {
-  //       apply_(~lhs, rhs.lhs_);
-  //     }
-  //     else {
-  //       apply_(~lhs, rhs.lhs_);
-  //       apply_mul_(~lhs, rhs.rhs_);
-  //     }
-  //   }
-  //   else {
-  //     apply_(~lhs, rhs.lhs_);
-  //     apply_mul_(~lhs, rhs.rhs_);
-  //   }
-  // }
-  //
-  // // A * (B * C)
-  // template<typename DT>
-  // friend inline void
-  // apply_mul_(Symbolic<DT> &lhs, const ExprMul<Symbolic, T1, T2> &rhs) {
-  //   SYMCTRL_DEBUG("result = A * (B * C)");
-  //   result_type tmp(rhs.lhs_);
-  //   apply_mul_(tmp, rhs.rhs_);
-  //   apply_mul_(~lhs, tmp);
-  // }
+  template<typename DT>
+  friend inline void
+  apply_(Symbolic<DT> &lhs, const ExprMul<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = A * B");
+    apply_(~lhs, rhs.lhs_);
+    apply_mul_(~lhs, rhs.rhs_);
+  }
+
+  template<typename DT>
+  friend inline void
+  apply_add_(Symbolic<DT> &lhs, const ExprMul<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = A + (B * C)");
+    apply_(~lhs, rhs.lhs_);
+    apply_add_(~lhs, rhs.rhs_);
+  }
+
+  template<typename DT>
+  friend inline void
+  apply_diff_(Symbolic<DT> &lhs, const ExprMul<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = diff(A * B)");
+    // Product rule.
+    apply_(~lhs, rhs.lhs_);
+    apply_add_(~lhs, rhs.rhs_);
+  }
+
+  template<typename DT>
+  friend inline void
+  apply_div_(Symbolic<DT> &lhs, const ExprMul<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = A / (B * C)");
+    apply_(~lhs, rhs.lhs_);
+    apply_add_(~lhs, rhs.rhs_);
+  }
+
+  template<typename DT>
+  friend inline void
+  apply_mul_(Symbolic<DT> &lhs, const ExprMul<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = A * (B * C)");
+    apply_(~lhs, rhs.lhs_);
+    apply_add_(~lhs, rhs.rhs_);
+  }
+
+  template<typename DT>
+  friend inline void
+  apply_neg_(Symbolic<DT> &lhs, const ExprMul<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = -(A * B)");
+    apply_(~lhs, rhs.lhs_);
+    apply_add_(~lhs, rhs.rhs_);
+  }
+
+  template<typename DT>
+  friend inline void
+  apply_pow_(Symbolic<DT> &lhs, const ExprMul<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = (A * B)^C");
+    apply_(~lhs, rhs.lhs_);
+    apply_add_(~lhs, rhs.rhs_);
+  }
+
+  template<typename DT>
+  friend inline void
+  apply_sub_(Symbolic<DT> &lhs, const ExprMul<Symbolic, T1, T2> &rhs) {
+    SYMCTRL_DEBUG("result = A - (B * C)");
+    apply_(~lhs, rhs.lhs_);
+    apply_add_(~lhs, rhs.rhs_);
+  }
 };
 
 // ----------------------------------------------------------------------
@@ -88,11 +106,6 @@ template<typename T1, typename T2>
 inline ExprMul<Symbolic, T1, T2>::ExprMul(const T1 &lhs, const T2 &rhs)
     : lhs_(lhs),
       rhs_(rhs) {}
-
-// template<typename T1, typename T2>
-// inline ExprMul<Symbolic, T1, T2>::ExprMul(ExprMul<Symbolic, T1, T2> &m)
-//     : lhs_(m.lhs_),
-//       rhs_(m.rhs_) {}
 
 // ----------------------------------------------------------------------
 // ExprMul Type Conversion Operator
@@ -109,13 +122,18 @@ inline ExprMul<Symbolic, T1, T2>::ExprMul(const T1 &lhs, const T2 &rhs)
 // ExprMul Member Function Definitions
 //
 template<typename T1, typename T2>
-inline std::string ExprMul<Symbolic, T1, T2>::_as_str() const {
+inline std::string ExprMul<Symbolic, T1, T2>::as_str() const {
   return (~lhs_).as_str() + "*" + (~rhs_).as_str();
 }
 
 template<typename T1, typename T2>
-inline hash_t ExprMul<Symbolic, T1, T2>::_hash() const {
+inline hash_t ExprMul<Symbolic, T1, T2>::hash() const {
   return lhs_.hash() ^ rhs_.hash() ^ 200;
+}
+
+template<typename T1, typename T2>
+inline bool ExprMul<Symbolic, T1, T2>::canEvaluate() const {
+  return (lhs_.canEvaluate() && rhs_.canEvaluate());
 }
 
 // ----------------------------------------------------------------------
@@ -125,6 +143,13 @@ template<typename T1, typename T2>
 inline auto operator*(const Symbolic<T1> &lhs, const Symbolic<T2> &rhs)
 -> const ExprMul<Symbolic, T1, T2> {
   return ExprMul<Symbolic, T1, T2>(~lhs, ~rhs);
+}
+
+template<typename T1, typename T2>
+inline auto operator*(const sym_number<T1> &lhs, const sym_number<T2> &rhs)
+-> const sym_number<common_type_t<T1, T2>> {
+  using ReturnType = sym_number<common_type_t<T1, T2>>;
+  return ReturnType(lhs.real_value() * rhs.real_value());
 }
 
 // // ----------------------------------------------------------------------

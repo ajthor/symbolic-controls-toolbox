@@ -19,6 +19,10 @@ class sym_var
 public:
   using this_type = sym_var;
 
+  static constexpr bool isNumeric = false;
+
+  static inline constexpr bool canEvaluate() noexcept { return false; }
+
 private:
   std::string name_;
 
@@ -26,20 +30,13 @@ private:
 
 public:
   explicit inline sym_var();
-  explicit inline sym_var(std::string name);
+  inline sym_var(std::string name);
 
-  inline sym_var(const sym_var &) = default;
-  inline sym_var(sym_var &&) = default;
+  template<typename DT>
+  inline void apply(const Symbolic<DT> &rhs);
 
-  inline sym_var &operator=(std::string name);
-
-  inline sym_var &operator=(const sym_var &) = default;
-  inline sym_var &operator=(sym_var &&) = default;
-
-  inline std::shared_ptr<sym_var> as_ptr();
-
-  inline std::string _as_str() const;
-  inline hash_t _hash() const;
+  inline std::string as_str() const;
+  inline hash_t hash() const;
 };
 
 // ----------------------------------------------------------------------
@@ -54,23 +51,13 @@ inline sym_var::sym_var(std::string name)
       hash_(hash_string{}(name)) {}
 
 // ----------------------------------------------------------------------
-// sym_var Assignment Operator
-//
-
-inline sym_var &sym_var::operator=(std::string name) {
-  name_ = name;
-  hash_ = hash_string{}(name);
-  return *this;
-}
-
-// ----------------------------------------------------------------------
 // Symbolic Member Function Definitions
 //
-inline std::string sym_var::_as_str() const {
+inline std::string sym_var::as_str() const {
   return name_;
 }
 
-inline hash_t sym_var::_hash() const {
+inline hash_t sym_var::hash() const {
   return hash_;
 }
 

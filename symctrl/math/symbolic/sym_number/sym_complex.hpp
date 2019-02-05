@@ -1,5 +1,5 @@
-#ifndef SYMCTRL_MATH_SYMBOLIC_SYM_NUMBER_SYM_NUMBER_HPP
-#define SYMCTRL_MATH_SYMBOLIC_SYM_NUMBER_SYM_NUMBER_HPP
+#ifndef SYMCTRL_MATH_SYMBOLIC_SYM_NUMBER_SYM_COMPLEX_HPP
+#define SYMCTRL_MATH_SYMBOLIC_SYM_NUMBER_SYM_COMPLEX_HPP
 
 #include <memory>
 #include <string>
@@ -12,13 +12,13 @@ namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// sym_number
+// sym_complex
 //
-template<typename T = double>
-class sym_number
-    : public Symbolic<sym_number<T>> {
+template<typename T>
+class sym_complex
+    : public Symbolic<sym_complex<T>> {
 public:
-  using this_type = sym_number<T>;
+  using this_type = sym_complex<T>;
 
   static constexpr bool isNumeric = true;
 
@@ -26,20 +26,19 @@ public:
 
 private:
   T real_;
+  T imag_;
 
   mutable hash_t hash_;
 
 public:
-  explicit inline sym_number();
-  inline sym_number(T m);
+  explicit inline sym_complex();
+  inline sym_complex(T real, T imag);
 
-  template<typename DT>
-  inline sym_number(const Symbolic<DT> &m);
+  // inline sym_complex(const sym_complex<T> &) = default;
+  // inline sym_complex(sym_complex<T> &&) = default;
 
-  inline sym_number<T> &operator=(T rhs);
-
-  template<typename DT>
-  inline sym_number<T> &operator=(const Symbolic<DT> &rhs);
+  // inline sym_complex<T> &operator=(const sym_complex<T> &) = default;
+  // inline sym_complex<T> &operator=(sym_complex<T> &&) = default;
 
   template<typename DT>
   inline void apply(const Symbolic<DT> &rhs);
@@ -66,70 +65,47 @@ public:
 };
 
 // ----------------------------------------------------------------------
-// sym_number Constructor
+// sym_complex Constructor
 //
 template<typename T>
-inline sym_number<T>::sym_number()
+inline sym_complex<T>::sym_complex()
     : real_(T(0)),
+      imag_(T(0)),
       hash_(0) {}
 
 template<typename T>
-inline sym_number<T>::sym_number(T m)
-    : real_(std::move(m)),
+inline sym_complex<T>::sym_complex(T real, T imag)
+    : real_(std::move(real)),
+      imag_(std::move(imag)),
       hash_(0) {}
 
-template<typename T>
-template<typename DT>
-inline sym_number<T>::sym_number(const Symbolic<DT> &m) {
-  apply_(*this, ~m);
-}
-
 // ----------------------------------------------------------------------
-// sym_number Assignment Operator
+// sym_complex Member Function Definitions
 //
 template<typename T>
-inline sym_number<T> &sym_number<T>::operator=(T rhs) {
-  real_ = rhs;
-  hash_ = 0;
-
-  return *this;
-}
-
-template<typename T>
-template<typename DT>
-inline sym_number<T> &sym_number<T>::operator=(const Symbolic<DT> &rhs) {
-  apply_(*this, ~rhs);
-
-  return *this;
-}
-
-// ----------------------------------------------------------------------
-// sym_number Member Function Definitions
-//
-template<typename T>
-inline std::string sym_number<T>::as_str() const {
+inline std::string sym_complex<T>::as_str() const {
   return std::to_string(real_);
 }
 
 template<typename T>
-inline hash_t sym_number<T>::hash() const {
+inline hash_t sym_complex<T>::hash() const {
   if(hash_ == 0) {
-    hash_ = hash_string{}(std::to_string(real_));
+    hash_ = hash_string{}(std::to_string(real_ ^ imag_));
   }
   return hash_;
 }
 
 template<typename T>
-inline T sym_number<T>::real_value() const {
+inline T sym_complex<T>::real_value() const {
   return real_;
 }
 
 template<typename T>
-inline T sym_number<T>::imag_value() const {
-  return T(0);
+inline T sym_complex<T>::imag_value() const {
+  return imag_;
 }
 
 } // Math
 } // Controls
 
-#endif // SYMCTRL_MATH_SYMBOLIC_SYM_NUMBER_SYM_NUMBER_HPP
+#endif // SYMCTRL_MATH_SYMBOLIC_SYM_NUMBER_SYM_COMPLEX_HPP
