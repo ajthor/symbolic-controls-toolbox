@@ -10,9 +10,10 @@ namespace Math {
 // ----------------------------------------------------------------------
 // Utility Functions
 //
-template<typename InputIt1, typename InputIt2>
-inline double gk_euclidean_distance(InputIt1 first1, InputIt1 last1,
-                                    InputIt2 first2) {
+template< typename InputIt1,
+          typename InputIt2 >
+inline double
+gk_euclidean_distance(InputIt1 first1, InputIt1 last1, InputIt2 first2) {
   //
   double init = 0;
   while (first1 != last1) {

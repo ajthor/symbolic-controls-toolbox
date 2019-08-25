@@ -1,29 +1,13 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
 
-#include <symengine/add.h>
-#include <symengine/mul.h>
-#include <symengine/basic.h>
-#include <symengine/integer.h>
-#include <symengine/symbol.h>
-
 #include <symctrl/math/matrix.hpp>
 #include <symctrl/math/matrix/dense.hpp>
 #include <symctrl/math/matrix/expression.hpp>
 #include <symctrl/math/matrix/vector.hpp>
 
 using Controls::Math::DenseMatrix;
-using Controls::Math::SymbolicDense;
 using Controls::Math::Vector;
-using Controls::Math::SymbolicVector;
-
-using SymEngine::add;
-using SymEngine::Basic;
-using SymEngine::integer;
-using SymEngine::Integer;
-using SymEngine::RCP;
-using SymEngine::symbol;
-using SymEngine::Symbol;
 
 // Uncomment this line to enable debugging.
 // #define TEST_DEBUG_OUT
@@ -356,94 +340,10 @@ TEST_CASE("Dense: transpose", "[dense]") {
   }
 }
 
-TEST_CASE("Dense: DenseMatrix RCP<const Basic>", "[dense]") {
-  SymbolicDense A(2, 2, {integer(0), integer(1), integer(2), integer(3)});
-  SymbolicDense B(2, 2, {integer(1), integer(1), integer(1), integer(1)});
-
-  // // Assignment
-  {
-    SymbolicDense C(2, 2);
-    C = integer(5);
-
-    REQUIRE(eq(*C(0, 0), *integer(5)));
-    REQUIRE(eq(*C(0, 1), *integer(5)));
-    REQUIRE(eq(*C(1, 0), *integer(5)));
-    REQUIRE(eq(*C(1, 1), *integer(5)));
-  }
-
-  {
-    SymbolicDense C(2, 2);
-    C = A;
-
-    REQUIRE(C == A);
-  }
-
-  {
-    SymbolicDense C(2, 2);
-    C(0, 0) = integer(2);
-
-    REQUIRE(C != A);
-  }
-
-  // Addition
-  {
-    SymbolicDense C(2, 2);
-    TEST_DEBUG("C = A + B");
-    C = A + B;
-
-    REQUIRE(eq(*C(0, 0), *integer(1)));
-    REQUIRE(eq(*C(0, 1), *integer(2)));
-    REQUIRE(eq(*C(1, 0), *integer(3)));
-    REQUIRE(eq(*C(1, 1), *integer(4)));
-  }
-
-  {
-    SymbolicDense C(2, 2);
-    TEST_DEBUG("C = A + A + A + A");
-    C = A + A + A + A;
-
-    REQUIRE(eq(*C(0, 0), *integer(0)));
-    REQUIRE(eq(*C(0, 1), *integer(4)));
-    REQUIRE(eq(*C(1, 0), *integer(8)));
-    REQUIRE(eq(*C(1, 1), *integer(12)));
-  }
-
-  // Multiplication
-  {
-    SymbolicDense C(2, 2);
-    TEST_DEBUG("C = A * B");
-    C = A * B;
-
-    REQUIRE(eq(*C(0, 0), *integer(1)));
-    REQUIRE(eq(*C(0, 1), *integer(1)));
-    REQUIRE(eq(*C(1, 0), *integer(5)));
-    REQUIRE(eq(*C(1, 1), *integer(5)));
-  }
-
-  {
-    SymbolicDense C(2, 2);
-    TEST_DEBUG("C = A * A * A * A");
-    C = A * A * A * A;
-
-    REQUIRE(eq(*C(0, 0), *integer(22)));
-    REQUIRE(eq(*C(0, 1), *integer(39)));
-    REQUIRE(eq(*C(1, 0), *integer(78)));
-    REQUIRE(eq(*C(1, 1), *integer(139)));
-  }
-}
-
 TEST_CASE("Dense: DenseMatrix checks", "[dense]") {
   {
     DenseMatrix<int> A(2, 2, {1, 2, 2, 1});
     DenseMatrix<int> B(2, 2, {1, 2, 3, 1});
-
-    REQUIRE(is_symmetric(A));
-    REQUIRE(!is_symmetric(B));
-  }
-
-  {
-    SymbolicDense A(2, 2, {integer(1), integer(2), integer(2), integer(1)});
-    SymbolicDense B(2, 2, {integer(1), integer(2), integer(3), integer(1)});
 
     REQUIRE(is_symmetric(A));
     REQUIRE(!is_symmetric(B));
@@ -458,27 +358,10 @@ TEST_CASE("Dense: DenseMatrix checks", "[dense]") {
   }
 
   {
-    SymbolicDense A(2, 2, {integer(1), integer(1), integer(0), integer(1)});
-    SymbolicDense B(2, 2, {integer(1), integer(0), integer(1), integer(1)});
-
-    REQUIRE(is_upper(A));
-    REQUIRE(!is_upper(B));
-  }
-
-  {
     DenseMatrix<int> A(2, 2, {1, 0, 1, 1});
     DenseMatrix<int> B(2, 2, {1, 1, 0, 1});
 
     REQUIRE(is_lower(A));
     REQUIRE(!is_lower(B));
   }
-
-  {
-    SymbolicDense A(2, 2, {integer(1), integer(0), integer(1), integer(1)});
-    SymbolicDense B(2, 2, {integer(1), integer(1), integer(0), integer(1)});
-
-    REQUIRE(is_lower(A));
-    REQUIRE(!is_lower(B));
-  }
-
 }

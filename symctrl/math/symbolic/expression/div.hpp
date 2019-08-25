@@ -5,7 +5,7 @@
 #include <symctrl/math/expression.hpp>
 #include <symctrl/math/expression/div.hpp>
 #include <symctrl/math/symbolic/symbolic.hpp>
-#include <symctrl/math/symbolic/type_traits/is_numeric.hpp>
+// #include <symctrl/math/symbolic/type_traits/is_numeric.hpp>
 #include <symctrl/shims/hash.hpp>
 
 namespace Controls {
@@ -18,6 +18,7 @@ template<typename T1, typename T2>
 class ExprDiv<Symbolic, T1, T2> :
   public Expression<Symbolic<ExprDiv<Symbolic, T1, T2>>> {
 public:
+  using Type = ExprDiv<Symbolic, T1, T2>;
   static constexpr bool isNumeric = (T1::isNumeric && T2::isNumeric);
 
 private:
@@ -26,7 +27,6 @@ private:
 
 public:
   explicit inline ExprDiv(const T1 &lhs, const T2 &rhs);
-  // inline ExprDiv(const ExprDiv<Symbolic, T1, T2> &m);
 
   inline std::string as_str() const;
   inline hash_t hash() const;
@@ -148,6 +148,13 @@ template<typename T1, typename T2>
 inline auto operator/(const Symbolic<T1> &lhs, const Symbolic<T2> &rhs)
 -> const ExprDiv<Symbolic, T1, T2> {
   return ExprDiv<Symbolic, T1, T2>(~lhs, ~rhs);
+}
+
+template<typename T1, typename T2>
+inline auto operator/(const sym_number<T1> &lhs, const sym_number<T2> &rhs)
+-> const sym_number<common_type_t<T1, T2>> {
+  using ReturnType = sym_number<common_type_t<T1, T2>>;
+  return ReturnType(lhs.real() / rhs.real());
 }
 
 // // ----------------------------------------------------------------------

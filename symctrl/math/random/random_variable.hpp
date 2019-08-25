@@ -1,8 +1,8 @@
 #ifndef SYMCTRL_MATH_RANDOM_RANDOM_VARIABLE_HPP
 #define SYMCTRL_MATH_RANDOM_RANDOM_VARIABLE_HPP
 
-#include <symengine/basic.h>
-#include <symengine/symbol.h>
+// #include <symengine/basic.h>
+// #include <symengine/symbol.h>
 
 #include <symctrl/math/random/random_distribution.hpp>
 

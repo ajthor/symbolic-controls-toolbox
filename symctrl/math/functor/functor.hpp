@@ -7,9 +7,11 @@ namespace Math {
 // ----------------------------------------------------------------------
 // BaseFunctor Class
 //
-template<typename R = void, typename ...Args>
+template< typename R = void,  // Return type.
+          typename ...Args >  // Functor args.
 class BaseFunctor {
 public:
+  // Virtual functor evaluation function.
   virtual R eval(Args... args) = 0;
   virtual R operator()(Args... args) = 0;
 };
@@ -17,8 +19,11 @@ public:
 // ----------------------------------------------------------------------
 // Functor Class
 //
-template<typename DT, typename R = void, typename ...Args>
-class Functor : public BaseFunctor<R, Args...> {
+template< typename DT,        // Derived type.
+          typename R = void,  // Return type.
+          typename ...Args>   // Functor args.
+class Functor
+    : public BaseFunctor<R, Args...> {
 public:
   using BaseFunctor<R, Args...>::BaseFunctor;
 

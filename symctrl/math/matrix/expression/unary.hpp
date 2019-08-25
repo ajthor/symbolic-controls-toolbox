@@ -40,8 +40,8 @@ public:
   inline size_t nrows() const;
   inline size_t ncols() const;
 
-  inline type &operator[](const size_t pos);
-  inline const type &operator[](const size_t pos) const;
+  inline type operator[](const size_t pos);
+  inline const type operator[](const size_t pos) const;
 
 private:
   template<typename DT>
@@ -144,13 +144,13 @@ inline size_t ExprUnary<Matrix, T>::ncols() const {
 }
 
 template<typename T>
-inline typename ExprUnary<Matrix, T>::type&
+inline typename ExprUnary<Matrix, T>::type
 ExprUnary<Matrix, T>::operator[](const size_t pos) {
   return m_[pos];
 }
 
 template<typename T>
-inline const typename ExprUnary<Matrix, T>::type&
+inline const typename ExprUnary<Matrix, T>::type
 ExprUnary<Matrix, T>::operator[](const size_t pos) const {
   return m_[pos];
 }

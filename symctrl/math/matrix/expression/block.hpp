@@ -154,16 +154,16 @@ inline bool equal(const BlockMatrix<T, MT> &lhs, const BlockMatrix<T, MT> &rhs) 
   return true;
 }
 
-template<typename DT, typename T, template<typename> class MT>
-inline bool equal(const Matrix<DT> &lhs, const BlockMatrix<T, MT> &rhs) {
+template<typename T, template<typename> class MT, typename DT>
+inline bool equal(const BlockMatrix<T, MT> &lhs, const Matrix<DT> &rhs) {
   if((~lhs).nrows() != (~rhs).nrows() || (~lhs).ncols() != (~rhs).ncols()) {
     return false;
   }
 
-  DenseMatrix<T> tmp = (~rhs).as_dense();
+  DenseMatrix<T> tmp = (~lhs).as_dense();
 
-  for(size_t i = 0; i < (~rhs).size(); i++) {
-    if(!equal((~lhs)[i], (~tmp)[i]))
+  for(size_t i = 0; i < (~lhs).size(); i++) {
+    if(!equal((~rhs)[i], (~tmp)[i]))
       return false;
   }
 

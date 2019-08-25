@@ -5,7 +5,7 @@
 #include <symctrl/math/expression.hpp>
 #include <symctrl/math/expression/mul.hpp>
 #include <symctrl/math/symbolic/symbolic.hpp>
-#include <symctrl/math/symbolic/type_traits/is_numeric.hpp>
+// #include <symctrl/math/symbolic/type_traits/is_numeric.hpp>
 #include <symctrl/shims/hash.hpp>
 
 namespace Controls {
@@ -18,6 +18,7 @@ template<typename T1, typename T2>
 class ExprMul<Symbolic, T1, T2> :
   public Expression<Symbolic<ExprMul<Symbolic, T1, T2>>> {
 public:
+  using Type = ExprMul<Symbolic, T1, T2>;
   static constexpr bool isNumeric = (T1::isNumeric && T2::isNumeric);
 
 private:
@@ -108,17 +109,6 @@ inline ExprMul<Symbolic, T1, T2>::ExprMul(const T1 &lhs, const T2 &rhs)
       rhs_(rhs) {}
 
 // ----------------------------------------------------------------------
-// ExprMul Type Conversion Operator
-//
-// template<typename T1, typename T2>
-// ExprMul<Symbolic, T1, T2>::operator ExprMul<Symbolic, T1, T2>::type() const {
-//   result_type r;
-//   apply_(r, *this);
-//
-//   return r;
-// }
-
-// ----------------------------------------------------------------------
 // ExprMul Member Function Definitions
 //
 template<typename T1, typename T2>
@@ -149,27 +139,8 @@ template<typename T1, typename T2>
 inline auto operator*(const sym_number<T1> &lhs, const sym_number<T2> &rhs)
 -> const sym_number<common_type_t<T1, T2>> {
   using ReturnType = sym_number<common_type_t<T1, T2>>;
-  return ReturnType(lhs.real_value() * rhs.real_value());
+  return ReturnType(lhs.real() * rhs.real());
 }
-
-// // ----------------------------------------------------------------------
-// // ExprMul Scalar Operator
-// //
-// template<typename T1, typename T2>
-// inline auto
-// operator*(const Symbolic<T1> &lhs, const T2 rhs)
-// -> enable_if_scalar_t<T2, const ExprUnary<Symbolic, T1>> {
-//   T1 tmp(~lhs);
-//   return ExprUnary<Symbolic, T1>(tmp *= rhs);
-// }
-//
-// template<typename T1, typename T2>
-// inline auto
-// operator*(const T1 lhs, const Symbolic<T2> &rhs)
-// -> enable_if_scalar_t<T1, const ExprUnary<Symbolic, T2>> {
-//   T2 tmp(~rhs);
-//   return ExprUnary<Symbolic, T2>(tmp *= lhs);
-// }
 
 } // Math
 } // Controls

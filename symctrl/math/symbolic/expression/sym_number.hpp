@@ -14,29 +14,29 @@ namespace Math {
 // ----------------------------------------------------------------------
 // sym_number Expressions
 //
-// template<typename T>
-// inline sym_number<T> &sym_number<T>::operator+=(const T &rhs) {
+//
+// inline sym_number &sym_number::operator+=(const T &rhs) {
 //   real_ += rhs;
 //   hash_ = hash_f<T>{}(real_);
 //   return *this;
 // }
 //
-// template<typename T>
-// inline sym_number<T> &sym_number<T>::operator-=(const T &rhs) {
+//
+// inline sym_number &sym_number::operator-=(const T &rhs) {
 //   real_ -= rhs;
 //   hash_ = hash_f<T>{}(real_);
 //   return *this;
 // }
 //
-// template<typename T>
-// inline sym_number<T> &sym_number<T>::operator*=(const T &rhs) {
+//
+// inline sym_number &sym_number::operator*=(const T &rhs) {
 //   real_ *= rhs;
 //   hash_ = hash_f<T>{}(real_);
 //   return *this;
 // }
 //
-// template<typename T>
-// inline sym_number<T> &sym_number<T>::operator/=(const T &rhs) {
+//
+// inline sym_number &sym_number::operator/=(const T &rhs) {
 //   real_ /= rhs;
 //   hash_ = hash_f<T>{}(real_);
 //   return *this;
@@ -45,8 +45,9 @@ namespace Math {
 template<typename T>
 template<typename DT>
 inline void sym_number<T>::apply(const Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_number<T>::apply");
-  real_ = (~rhs).real_value();
+  SYMCTRL_DEBUG("sym_number::apply");
+  SYMCTRL_STATIC_ASSERT((~rhs).canEvaluate(), "Cannot evaluate rhs.");
+  real_ = (~rhs).real();
   if(hash_) {
     hash_ = 0;
   }
@@ -55,8 +56,9 @@ inline void sym_number<T>::apply(const Symbolic<DT> &rhs) {
 template<typename T>
 template<typename DT>
 inline void sym_number<T>::apply_add(const Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_number<T>::apply_add");
-  real_ += (~rhs).real_value();
+  SYMCTRL_DEBUG("sym_number::apply_add");
+  SYMCTRL_STATIC_ASSERT((~rhs).canEvaluate(), "Cannot evaluate rhs.");
+  real_ += (~rhs).real();
   if(hash_) {
     hash_ = 0;
   }
@@ -65,8 +67,9 @@ inline void sym_number<T>::apply_add(const Symbolic<DT> &rhs) {
 template<typename T>
 template<typename DT>
 inline void sym_number<T>::apply_diff(const Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_number<T>::apply_diff");
-  real_ = T(0);
+  SYMCTRL_DEBUG("sym_number::apply_diff");
+  SYMCTRL_STATIC_ASSERT((~rhs).canEvaluate(), "Cannot evaluate rhs.");
+  real_ = 0;
   if(hash_) {
     hash_ = 0;
   }
@@ -75,8 +78,9 @@ inline void sym_number<T>::apply_diff(const Symbolic<DT> &rhs) {
 template<typename T>
 template<typename DT>
 inline void sym_number<T>::apply_div(const Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_number<T>::apply_div");
-  real_ /= (~rhs).real_value();
+  SYMCTRL_DEBUG("sym_number::apply_div");
+  SYMCTRL_STATIC_ASSERT((~rhs).canEvaluate(), "Cannot evaluate rhs.");
+  real_ /= (~rhs).real();
   if(hash_) {
     hash_ = 0;
   }
@@ -85,8 +89,9 @@ inline void sym_number<T>::apply_div(const Symbolic<DT> &rhs) {
 template<typename T>
 template<typename DT>
 inline void sym_number<T>::apply_mul(const Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_number<T>::apply_mul");
-  real_ *= (~rhs).real_value();
+  SYMCTRL_DEBUG("sym_number::apply_mul");
+  SYMCTRL_STATIC_ASSERT((~rhs).canEvaluate(), "Cannot evaluate rhs.");
+  real_ *= (~rhs).real();
   if(hash_) {
     hash_ = 0;
   }
@@ -95,8 +100,9 @@ inline void sym_number<T>::apply_mul(const Symbolic<DT> &rhs) {
 template<typename T>
 template<typename DT>
 inline void sym_number<T>::apply_neg(const Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_number<T>::apply_neg");
-  real_ = -1*(~rhs).real_value();
+  SYMCTRL_DEBUG("sym_number::apply_neg");
+  SYMCTRL_STATIC_ASSERT((~rhs).canEvaluate(), "Cannot evaluate rhs.");
+  real_ = -1*(~rhs).real();
   if(hash_) {
     hash_ = 0;
   }
@@ -105,8 +111,9 @@ inline void sym_number<T>::apply_neg(const Symbolic<DT> &rhs) {
 template<typename T>
 template<typename DT>
 inline void sym_number<T>::apply_pow(const Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_number<T>::apply_pow");
-  // real_ = (~rhs).real_value();
+  SYMCTRL_DEBUG("sym_number::apply_pow");
+  SYMCTRL_STATIC_ASSERT((~rhs).canEvaluate(), "Cannot evaluate rhs.");
+  // real_ = (~rhs).real();
   if(hash_) {
     hash_ = 0;
   }
@@ -115,8 +122,9 @@ inline void sym_number<T>::apply_pow(const Symbolic<DT> &rhs) {
 template<typename T>
 template<typename DT>
 inline void sym_number<T>::apply_sub(const Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_number<T>::apply_sub");
-  real_ -= (~rhs).real_value();
+  SYMCTRL_DEBUG("sym_number::apply_sub");
+  SYMCTRL_STATIC_ASSERT((~rhs).canEvaluate(), "Cannot evaluate rhs.");
+  real_ -= (~rhs).real();
   if(hash_) {
     hash_ = 0;
   }
@@ -125,24 +133,26 @@ inline void sym_number<T>::apply_sub(const Symbolic<DT> &rhs) {
 // ----------------------------------------------------------------------
 // sym_number Equal
 //
-template<typename T>
-inline bool equal(const sym_number<T> &lhs, const sym_number<T> &rhs) {
-  std::cout << "sym_number == sym_number" << '\n';
-  return lhs.real_value() == rhs.real_value();
+template<typename T1, typename T2>
+inline bool equal(const sym_number<T1> &lhs, const sym_number<T2> &rhs) {
+  return lhs.real() == rhs.real();
 }
 
 template<typename T, typename DT>
 inline bool equal(const sym_number<T> &lhs, const Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_number == Symbolic");
   return lhs.hash() == (~rhs).hash();
 }
 
-template<typename T>
-inline auto operator==(const sym_number<T> &lhs, const T &rhs)
--> enable_if_numeric_t<T, bool> {
-  SYMCTRL_DEBUG("sym_number == Number");
-  // return lhs.hash() == hash_string{}(std::to_string(rhs));
-  return lhs.real_value() == rhs;
+template<typename T1, typename T2>
+inline auto operator==(const sym_number<T1> &lhs, const T2 &rhs)
+-> enable_if_numeric_t<T2, bool> {
+  return lhs.real() == rhs;
+}
+
+template<typename T1, typename T2>
+inline auto operator!=(const sym_number<T1> &lhs, const T2 &rhs)
+-> enable_if_numeric_t<T2, bool> {
+  return lhs.real() != rhs;
 }
 
 } // Math

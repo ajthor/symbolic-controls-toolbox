@@ -10,18 +10,10 @@ namespace Controls {
 namespace Math {
 
 // ----------------------------------------------------------------------
-// BaseMatrix
-//
-class BaseMatrix {
-public:
-  virtual ~BaseMatrix() {}
-};
-
-// ----------------------------------------------------------------------
 // Matrix
 //
 template<typename DT>
-class Matrix : public BaseMatrix {
+class Matrix {
 public:
   inline DT &operator~() {
     return *static_cast<DT *>(this);

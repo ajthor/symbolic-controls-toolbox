@@ -6,6 +6,7 @@
 
 #include <symctrl/assert.hpp>
 #include <symctrl/math/symbolic/symbolic.hpp>
+#include <symctrl/math/symbolic/recover.hpp>
 #include <symctrl/shims/hash.hpp>
 
 namespace Controls {
@@ -17,9 +18,10 @@ namespace Math {
 class sym_var
     : public Symbolic<sym_var> {
 public:
-  using this_type = sym_var;
+  using Type = sym_var;
 
   static constexpr bool isNumeric = false;
+  static constexpr bool isComplex = false;
 
   static inline constexpr bool canEvaluate() noexcept { return false; }
 
@@ -32,11 +34,11 @@ public:
   explicit inline sym_var();
   inline sym_var(std::string name);
 
-  template<typename DT>
-  inline void apply(const Symbolic<DT> &rhs);
-
   inline std::string as_str() const;
   inline hash_t hash() const;
+
+private:
+  // friend type recover<type>(std::shared_ptr<void>);
 };
 
 // ----------------------------------------------------------------------

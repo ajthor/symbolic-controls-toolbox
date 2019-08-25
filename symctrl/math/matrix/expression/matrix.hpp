@@ -1,7 +1,6 @@
 #ifndef SYMCTRL_MATH_MATRIX_EXPRESSION_MATRIX_HPP
 #define SYMCTRL_MATH_MATRIX_EXPRESSION_MATRIX_HPP
 
-#include <symctrl/shims/symbolic.hpp>
 #include <symctrl/math/matrix/matrix.hpp>
 
 namespace Controls {
@@ -53,11 +52,6 @@ inline bool equal(const Matrix<D1> &lhs, const Matrix<D2> &rhs) {
 template<typename T>
 inline bool equal(const T lhs, const T rhs) {
   return lhs == rhs;
-}
-
-template<>
-inline bool equal(const symbolic_t lhs, const symbolic_t rhs) {
-  return SymEngine::eq(*lhs, *rhs);
 }
 
 // ----------------------------------------------------------------------

@@ -6,6 +6,7 @@
 
 #include <symctrl/assert.hpp>
 #include <symctrl/math/symbolic/symbolic.hpp>
+#include <symctrl/math/symbolic/recover.hpp>
 #include <symctrl/shims/hash.hpp>
 
 namespace Controls {
@@ -14,13 +15,14 @@ namespace Math {
 // ----------------------------------------------------------------------
 // sym_number
 //
-template<typename T = double>
+template<typename T>
 class sym_number
     : public Symbolic<sym_number<T>> {
 public:
-  using this_type = sym_number<T>;
+  using Type = sym_number<T>;
 
   static constexpr bool isNumeric = true;
+  static constexpr bool isComplex = false;
 
   static inline constexpr bool canEvaluate() noexcept { return true; }
 
@@ -36,10 +38,10 @@ public:
   template<typename DT>
   inline sym_number(const Symbolic<DT> &m);
 
-  inline sym_number<T> &operator=(T rhs);
+  inline sym_number &operator=(T rhs);
 
   template<typename DT>
-  inline sym_number<T> &operator=(const Symbolic<DT> &rhs);
+  inline sym_number &operator=(const Symbolic<DT> &rhs);
 
   template<typename DT>
   inline void apply(const Symbolic<DT> &rhs);
@@ -61,8 +63,11 @@ public:
   inline std::string as_str() const;
   inline hash_t hash() const;
 
-  inline T real_value() const;
-  inline T imag_value() const;
+  inline T real() const;
+  inline T imag() const;
+
+private:
+  // friend type recover<type>(std::shared_ptr<void>);
 };
 
 // ----------------------------------------------------------------------
@@ -70,7 +75,7 @@ public:
 //
 template<typename T>
 inline sym_number<T>::sym_number()
-    : real_(T(0)),
+    : real_(0),
       hash_(0) {}
 
 template<typename T>
@@ -120,13 +125,13 @@ inline hash_t sym_number<T>::hash() const {
 }
 
 template<typename T>
-inline T sym_number<T>::real_value() const {
+inline T sym_number<T>::real() const {
   return real_;
 }
 
 template<typename T>
-inline T sym_number<T>::imag_value() const {
-  return T(0);
+inline T sym_number<T>::imag() const {
+  return 0;
 }
 
 } // Math

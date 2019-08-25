@@ -19,6 +19,7 @@ template<typename T1, typename T2>
 class ExprSub<Symbolic, T1, T2> :
   public Expression<Symbolic<ExprSub<Symbolic, T1, T2>>> {
 public:
+  using Type = ExprSub<Symbolic, T1, T2>;
   static constexpr bool isNumeric = (T1::isNumeric && T2::isNumeric);
 
 private:
@@ -27,8 +28,6 @@ private:
 
 public:
   explicit inline ExprSub(const T1 &lhs, const T2 &rhs);
-
-  // inline ExprSub(const ExprSub<Symbolic, T1, T2> &m);
 
   inline std::string as_str() const;
   inline hash_t hash() const;
@@ -109,24 +108,6 @@ inline ExprSub<Symbolic, T1, T2>::ExprSub(const T1 &lhs, const T2 &rhs)
     : lhs_(lhs),
       rhs_(rhs) {}
 
-// template<typename T1, typename T2>
-// inline ExprSub<Symbolic, T1, T2>::ExprSub(const ExprSub<Symbolic, T1, T2> &m) :
-//                                           lhs_(m.lhs_),
-//                                           rhs_(m.rhs_) {
-//   //
-// }
-
-// ----------------------------------------------------------------------
-// ExprSub Type Conversion Operator
-//
-// template<typename T1, typename T2>
-// ExprSub<Symbolic, T1, T2>::operator ExprSub<Symbolic, T1, T2>::type() const {
-//   result_type r;
-//   apply_(r, *this);
-//
-//   return r;
-// }
-
 // ----------------------------------------------------------------------
 // ExprSub Member Function Definitions
 //
@@ -154,25 +135,12 @@ inline auto operator-(const Symbolic<T1> &lhs, const Symbolic<T2> &rhs)
   return ExprSub<Symbolic, T1, T2>(~lhs, ~rhs);
 }
 
-// // ----------------------------------------------------------------------
-// // ExprSub Scalar Operator
-// //
-// template<typename T1, typename T2>
-// inline auto
-// operator-(const Symbolic<T1> &lhs, const T2 rhs)
-// -> enable_if_scalar_t<T2, const ExprUnary<Symbolic, T1>> {
-//   T1 tmp(~lhs);
-//   return ExprUnary<Symbolic, T1>(tmp -= rhs);
-// }
-//
-// template<typename T1, typename T2>
-// inline auto
-// operator-(const T1 lhs, const Symbolic<T2> &rhs)
-// -> enable_if_scalar_t<T1, const ExprUnary<Symbolic, T2>> {
-//   T2 tmp(~rhs);
-//   tmp *= -1;
-//   return ExprUnary<Symbolic, T2>(tmp += lhs);
-// }
+template<typename T1, typename T2>
+inline auto operator-(const sym_number<T1> &lhs, const sym_number<T2> &rhs)
+-> const sym_number<common_type_t<T1, T2>> {
+  using ReturnType = sym_number<common_type_t<T1, T2>>;
+  return ReturnType(lhs.real() - rhs.real());
+}
 
 } // Math
 } // Controls

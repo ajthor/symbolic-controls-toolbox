@@ -9,6 +9,7 @@
 #include <symctrl/math/matrix/block.hpp>
 #include <symctrl/math/matrix/expression.hpp>
 #include <symctrl/math/matrix/operations.hpp>
+#include <symctrl/math/matrix/traits/is_hamiltonian.hpp>
 #include <symctrl/math/matrix/traits/is_lower.hpp>
 #include <symctrl/math/matrix/traits/is_square.hpp>
 #include <symctrl/math/matrix/traits/is_symmetric.hpp>

@@ -1,6 +1,8 @@
 #ifndef SYMCTRL_MATH_SYMBOLIC_EXPRESSION_POW_HPP
 #define SYMCTRL_MATH_SYMBOLIC_EXPRESSION_POW_HPP
 
+#include <cmath>
+
 #include <symctrl/assert.hpp>
 #include <symctrl/math/expression.hpp>
 #include <symctrl/math/expression/pow.hpp>
@@ -17,6 +19,7 @@ template<typename T1, typename T2>
 class ExprPow<Symbolic, T1, T2>
     : public Expression<Symbolic<ExprPow<Symbolic, T1, T2>>> {
 public:
+  using Type = ExprPow<Symbolic, T1, T2>;
   static constexpr bool isNumeric = (T1::isNumeric && T2::isNumeric);
 
 private:
@@ -25,7 +28,6 @@ private:
 
 public:
   explicit inline ExprPow(const T1 &lhs, const T2 &rhs);
-  // inline ExprPow(ExprPow<Symbolic, sym_t, sym_t> &m);
 
   inline std::string as_str() const;
   inline hash_t hash() const;
@@ -106,11 +108,6 @@ inline ExprPow<Symbolic, T1, T2>::ExprPow(const T1 &lhs, const T2 &rhs)
     : lhs_(lhs),
       rhs_(rhs) {}
 
-// template<>
-// inline ExprPow<Symbolic, sym_t, sym_t>::ExprPow(ExprPow<Symbolic, sym_t, sym_t> &m)
-//     : lhs_(m.lhs_),
-//       rhs_(m.rhs_) {}
-
 // ----------------------------------------------------------------------
 // ExprPow Member Function Definitions
 //
@@ -136,6 +133,13 @@ template<typename T1, typename T2>
 inline auto operator^(const Symbolic<T1> &lhs, const Symbolic<T2> &rhs)
 -> const ExprPow<Symbolic, T1, T2> {
   return ExprPow<Symbolic, T1, T2>(~lhs, ~rhs);
+}
+
+template<typename T1, typename T2>
+inline auto operator^(const sym_number<T1> &lhs, const sym_number<T2> &rhs)
+-> const sym_number<common_type_t<T1, T2>> {
+  using ReturnType = sym_number<common_type_t<T1, T2>>;
+  return ReturnType(std::pow(lhs.real(), rhs.real()));
 }
 
 } // Math

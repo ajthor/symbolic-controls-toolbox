@@ -17,6 +17,7 @@ template<typename T>
 class ExprDiff<Symbolic, T>
     : public Expression<Symbolic<ExprDiff<Symbolic, T>>> {
 public:
+  using Type = ExprDiff<Symbolic, T>;
   static constexpr bool isNumeric = T::isNumeric;
 
 private:
@@ -24,7 +25,6 @@ private:
 
 public:
   explicit inline ExprDiff(const T &m);
-  // inline ExprDiff(ExprDiff<Symbolic, T> &m);
 
   inline std::string as_str() const;
   inline hash_t hash() const;
@@ -121,6 +121,13 @@ template<typename DT>
 inline auto diff(const Symbolic<DT> &m)
 -> const ExprDiff<Symbolic, DT> {
   return ExprDiff<Symbolic, DT>(~m);
+}
+
+template<typename T>
+inline auto diff(const sym_number<T> &m)
+-> const sym_number<T> {
+  using ReturnType = sym_number<T>;
+  return ReturnType(0);
 }
 
 } // Math

@@ -19,9 +19,10 @@ template<typename T = double>
 class sym_rv
     : public Symbolic<sym_rv> {
 public:
-  using this_type = sym_rv;
+  using Type = sym_rv;
 
   static constexpr bool isNumeric = false;
+  static constexpr bool isComplex = false;
 
   static inline constexpr bool canEvaluate() noexcept { return false; }
 
@@ -34,9 +35,6 @@ private:
 public:
   explicit inline sym_rv();
   explicit inline sym_rv(std::string name, RandomNumberDistribution &dist);
-
-  template<typename DT>
-  inline void apply(const Symbolic<DT> &rhs);
 
   inline std::string as_str() const;
   inline hash_t hash() const;

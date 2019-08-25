@@ -12,8 +12,11 @@ namespace Math {
 // ----------------------------------------------------------------------
 // LambdaFunctor
 //
-template<typename F, typename R, typename ...Args>
-class LambdaFunctor : public Functor<LambdaFunctor<F, R, Args...>, R, Args...> {
+template< typename F,        // Function type.
+          typename R,        // Return type.
+          typename ...Args > // Function args.
+class LambdaFunctor
+    : public Functor<LambdaFunctor<F, R, Args...>, R, Args...> {
 private:
   std::function<R(Args...)> f_;
 
@@ -28,10 +31,14 @@ public:
 // ----------------------------------------------------------------------
 // Utility Functions
 //
-template<typename F, typename R, typename>
+template< typename F,      // Functor type.
+          typename R,      // Return type.
+          typename >       // Empty typename.
 struct lambda_shim;
 
-template<typename F, typename R, typename ...T>
+template< typename F,      // Functor type.
+          typename R,      // Return type.
+          typename ...T >  // Tuple args.
 struct lambda_shim<F, R, std::tuple<T...>> {
   using type = LambdaFunctor<F, R, T...>;
 };

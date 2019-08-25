@@ -17,7 +17,7 @@ inline typename DT::type trace(const Matrix<DT> &m) {
   typename DT::type result = 0;
   size_t m_ = (~m).ncols();
 
-  for(size_t i = 0; i < (~m).size(); i++) {
+  for(size_t i = 0; i < m_; i++) {
     result += (~m)[i*m_ + i];
   }
 

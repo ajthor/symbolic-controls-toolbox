@@ -124,14 +124,14 @@ inline bool equal(const StaticDense<T, N, M> &lhs,
   return true;
 }
 
-template<typename DT, typename T, size_t N, size_t M>
-inline auto equal(const Matrix<DT> &lhs, const StaticDense<T, N, M> &rhs)
+template<typename T, size_t N, size_t M, typename DT>
+inline auto equal(const StaticDense<T, N, M> &lhs, const Matrix<DT> &rhs)
 -> disable_if_static_t<DT, bool> {
-  if((~lhs).nrows() != N || (~lhs).ncols() != M) {
+  if((~rhs).nrows() != N || (~rhs).ncols() != M) {
     return false;
   }
 
-  for(size_t i = 0; i < (~rhs).size(); i++) {
+  for(size_t i = 0; i < N*M; i++) {
     if(!equal((~lhs)[i], (~rhs)[i]))
       return false;
   }
@@ -271,10 +271,10 @@ inline bool equal(const StaticVector<T, N, M> &lhs,
   return true;
 }
 
-template<typename DT, typename T, size_t N, size_t M>
-inline auto equal(const Matrix<DT> &lhs, const StaticVector<T, N, M> &rhs)
+template<typename T, size_t N, size_t M, typename DT>
+inline auto equal(const StaticVector<T, N, M> &lhs, const Matrix<DT> &rhs)
 -> disable_if_static_t<DT, bool> {
-  if((~lhs).nrows() != N || (~lhs).ncols() != M) {
+  if((~rhs).nrows() != N || (~rhs).ncols() != M) {
     return false;
   }
 

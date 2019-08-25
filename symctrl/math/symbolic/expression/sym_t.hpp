@@ -37,37 +37,31 @@ inline sym_t &operator/=(sym_t &lhs, const T &rhs) {
   return lhs / rhs;
 }
 
-template<typename DT>
-inline void sym_t::apply(const Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_t::apply");
-  ptr_.reset();
-  ptr_ = std::make_shared<Model<DT>>(~rhs);
-}
-
-template<typename DT>
-inline void sym_t::apply_add(const Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_t::apply_add");
-  // // std::cout << "tmp: " << tmp->as_str() << '\n';
-  // // tmp->printType();
-  // // std::cout << "rhs: " << (~rhs).as_str() << '\n';
-  // // ptr_ = eval_add_(*tmp, ~rhs);
-  // // ptr_->printType();
-  // // std::cout << "final result: " << ptr_->as_str() << '\n';
-  // // std::shared_ptr<const Concept> tmp = ptr_;
-  // // ptr_ = eval_add_(*tmp, ~rhs);
-  // std::cout << "symbolic type: " << typeid(std::declval<DT>()).name() << '\n';
-  // std::shared_ptr<const Concept> tmp = eval_add_(*ptr_, ~rhs);
-  // std::cout << "tmp: " << tmp->as_str() << '\n';
-  // ptr_.swap(tmp);
-  // std::cout << "ptr_: " << ptr_->as_str() << '\n';
-  // ptr_->printType();
-  // // ptr_.reset();
-  // // ptr_ = tmp;
-
-  std::shared_ptr<const Concept> tmp;
-  ptr_.swap(tmp);
-  // ptr_ = eval_add_(*tmp, ~rhs);
-}
+// template<typename DT>
+// inline void sym_t::apply(Symbolic<DT> &lhs) const {
+//   SYMCTRL_DEBUG("sym_t::apply");
+//
+//   // inl_apply_(~lhs, *ptr_);
+//
+//   // ptr_.reset();
+//   // ptr_ = std::make_shared<Model<DT>>(~rhs);
+// }
+//
+// template<typename DT>
+// inline void sym_t::apply_add(Symbolic<DT> &lhs) const {
+//   SYMCTRL_DEBUG("sym_t::apply_add");
+//
+//   // inl_apply_add_(~lhs, *ptr_);
+//
+//   // std::shared_ptr<const Concept> tmp;
+//   // ptr_.swap(tmp);
+//   // cast_apply_add_(*tmp, ~rhs);
+//
+//   // RightDispatcher<Model<DT>> dis;
+//   // ptr_->accept_r(Model<DT>(rhs), dis);
+//
+//   // ptr_->apply_impl(Model<DT>(~rhs));
+// }
 
 // template<typename DT>
 // inline void sym_t::apply_sub(const Symbolic<DT> &rhs) {
@@ -75,16 +69,16 @@ inline void sym_t::apply_add(const Symbolic<DT> &rhs) {
 //   // ptr_->apply_sub(~rhs);
 //
 // }
-
-template<typename DT>
-inline void sym_t::apply_mul(const Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_t::apply_mul");
-  // ptr_->apply_mul(~rhs);
-
-  std::shared_ptr<const Concept> tmp;
-  ptr_.swap(tmp);
-  // ptr_ = eval_mul_(*tmp, ~rhs);
-}
+//
+// template<typename DT>
+// inline void sym_t::apply_mul(const Symbolic<DT> &lhs) {
+//   SYMCTRL_DEBUG("sym_t::apply_mul");
+//   // ptr_->apply_mul(~rhs);
+//
+//   // std::shared_ptr<const Concept> tmp;
+//   // ptr_.swap(tmp);
+//   // ptr_ = eval_mul_(*tmp, ~rhs);
+// }
 //
 // template<typename DT>
 // inline void sym_t::apply_div(const Symbolic<DT> &rhs) {

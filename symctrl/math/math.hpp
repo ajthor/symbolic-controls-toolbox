@@ -3,6 +3,6 @@
 
 #include <symctrl/math/functor.hpp>
 #include <symctrl/math/matrix.hpp>
-#include <symctrl/math/random.hpp>
+// #include <symctrl/math/random.hpp>
 
 #endif // SYMCTRL_MATH_MATH_HPP

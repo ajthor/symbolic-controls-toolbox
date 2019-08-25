@@ -42,8 +42,8 @@ public:
   inline size_t nrows() const;
   inline size_t ncols() const;
 
-  inline type &operator[](const size_t pos);
-  inline const type &operator[](const size_t pos) const;
+  inline type operator[](const size_t pos);
+  inline const type operator[](const size_t pos) const;
 
 private:
   // A - B
@@ -173,13 +173,13 @@ inline size_t ExprSub<Matrix, T1, T2>::ncols() const {
 }
 
 template<typename T1, typename T2>
-inline typename ExprSub<Matrix, T1, T2>::type&
+inline typename ExprSub<Matrix, T1, T2>::type
 ExprSub<Matrix, T1, T2>::operator[](const size_t pos) {
   return lhs_[pos] - rhs_[pos];
 }
 
 template<typename T1, typename T2>
-inline const typename ExprSub<Matrix, T1, T2>::type&
+inline const typename ExprSub<Matrix, T1, T2>::type
 ExprSub<Matrix, T1, T2>::operator[](const size_t pos) const {
   return lhs_[pos] - rhs_[pos];
 }

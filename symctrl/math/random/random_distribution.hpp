@@ -23,25 +23,25 @@ public:
 //
 #ifndef SYMCTRL_RANDOM_DISTRIBUTIONS
 #define SYMCTRL_RANDOM_DISTRIBUTIONS(MACRO) \
-  MACRO(UNIFORM_INT_DISTRIBUTION, uniform_int_distribution) \
-  MACRO(UNIFORM_REAL_DISTRIBUTION, uniform_real_distribution) \
-  MACRO(BINOMIAL_DISTRIBUTION, binomial_distribution) \
-  MACRO(NEGATIVE_BINOMIAL_DISTRIBUTION, negative_binomial_distribution) \
-  MACRO(GEOMETRIC_DISTRIBUTION, geometric_distribution) \
-  MACRO(POISSON_DISTRIBUTION, poisson_distribution) \
-  MACRO(EXPONENTIAL_DISTRIBUTION, exponential_distribution) \
-  MACRO(GAMMA_DISTRIBUTION, gamma_distribution) \
-  MACRO(WEIBULL_DISTRIBUTION, weibull_distribution) \
-  MACRO(EXTREME_VALUE_DISTRIBUTION, extreme_value_distribution) \
-  MACRO(NORMAL_DISTRIBUTION, normal_distribution) \
-  MACRO(LOGNORMAL_DISTRIBUTION, lognormal_distribution) \
-  MACRO(CHI_SQUARED_DISTRIBUTION, chi_squared_distribution) \
-  MACRO(CAUCHY_DISTRIBUTION, cauchy_distribution) \
-  MACRO(FISHER_F_DISTRIBUTION, fisher_f_distribution) \
-  MACRO(STUDENT_T_DISTRIBUTION, student_t_distribution) \
-  MACRO(DISCRETE_DISTRIBUTION, discrete_distribution) \
-  MACRO(PIECEWISE_CONSTANT_DISTRIBUTION, piecewise_constant_distribution) \
-  MACRO(PIECEWISE_LINEAR_DISTRIBUTION, piecewise_linear_distribution)
+MACRO(UNIFORM_INT_DISTRIBUTION, uniform_int_distribution) \
+MACRO(UNIFORM_REAL_DISTRIBUTION, uniform_real_distribution) \
+MACRO(BINOMIAL_DISTRIBUTION, binomial_distribution) \
+MACRO(NEGATIVE_BINOMIAL_DISTRIBUTION, negative_binomial_distribution) \
+MACRO(GEOMETRIC_DISTRIBUTION, geometric_distribution) \
+MACRO(POISSON_DISTRIBUTION, poisson_distribution) \
+MACRO(EXPONENTIAL_DISTRIBUTION, exponential_distribution) \
+MACRO(GAMMA_DISTRIBUTION, gamma_distribution) \
+MACRO(WEIBULL_DISTRIBUTION, weibull_distribution) \
+MACRO(EXTREME_VALUE_DISTRIBUTION, extreme_value_distribution) \
+MACRO(NORMAL_DISTRIBUTION, normal_distribution) \
+MACRO(LOGNORMAL_DISTRIBUTION, lognormal_distribution) \
+MACRO(CHI_SQUARED_DISTRIBUTION, chi_squared_distribution) \
+MACRO(CAUCHY_DISTRIBUTION, cauchy_distribution) \
+MACRO(FISHER_F_DISTRIBUTION, fisher_f_distribution) \
+MACRO(STUDENT_T_DISTRIBUTION, student_t_distribution) \
+MACRO(DISCRETE_DISTRIBUTION, discrete_distribution) \
+MACRO(PIECEWISE_CONSTANT_DISTRIBUTION, piecewise_constant_distribution) \
+MACRO(PIECEWISE_LINEAR_DISTRIBUTION, piecewise_linear_distribution)
 #endif
 
 // ----------------------------------------------------------------------
@@ -75,7 +75,6 @@ template<typename... Args> class Class : \
 public: \
   using std::Class<Args...>::Class; \
   using std::Class<Args...>::operator(); \
-  using std::Class<Args...>::min; \
   \
   void accept(SampleVisitor &visitor); \
 };
@@ -114,7 +113,9 @@ inline double sample_distribution(RandomNumberDistribution &m,
 //
 #define SYMCTRL_RANDOM_DISTRIBUTION_VISITOR_DEC(type, Class) \
 template<typename... Args> \
-void Class<Args...>::accept(SampleVisitor &visitor) { visitor.visit(*this); }
+void Class<Args...>::accept(SampleVisitor &visitor) { \
+  visitor.visit(*this); \
+}
 SYMCTRL_RANDOM_DISTRIBUTIONS(SYMCTRL_RANDOM_DISTRIBUTION_VISITOR_DEC)
 #undef SYMCTRL_RANDOM_DISTRIBUTION_VISITOR
 

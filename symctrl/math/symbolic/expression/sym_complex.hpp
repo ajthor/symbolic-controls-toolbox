@@ -46,8 +46,8 @@ template<typename T>
 template<typename DT>
 inline void sym_complex<T>::apply(const Symbolic<DT> &rhs) {
   SYMCTRL_DEBUG("sym_complex<T>::apply");
-  real_ = (~rhs).real_value();
-  imag_ = (~rhs).imag_value();
+  real_ = (~rhs).real();
+  imag_ = (~rhs).imag();
   if(hash_) {
     hash_ = 0;
   }
@@ -57,8 +57,8 @@ template<typename T>
 template<typename DT>
 inline void sym_complex<T>::apply_add(const Symbolic<DT> &rhs) {
   SYMCTRL_DEBUG("sym_complex<T>::apply_add");
-  real_ += (~rhs).real_value();
-  imag_ += (~rhs).imag_value();
+  real_ += (~rhs).real();
+  imag_ += (~rhs).imag();
   if(hash_) {
     hash_ = 0;
   }
@@ -79,8 +79,8 @@ template<typename T>
 template<typename DT>
 inline void sym_complex<T>::apply_div(const Symbolic<DT> &rhs) {
   SYMCTRL_DEBUG("sym_complex<T>::apply_div");
-  real_ /= (~rhs).real_value();
-  imag_ /= (~rhs).imag_value();
+  real_ /= (~rhs).real();
+  imag_ /= (~rhs).imag();
   if(hash_) {
     hash_ = 0;
   }
@@ -90,8 +90,8 @@ template<typename T>
 template<typename DT>
 inline void sym_complex<T>::apply_mul(const Symbolic<DT> &rhs) {
   SYMCTRL_DEBUG("sym_complex<T>::apply_mul");
-  real_ *= (~rhs).real_value();
-  imag_ *= (~rhs).imag_value();
+  real_ *= (~rhs).real();
+  imag_ *= (~rhs).imag();
   if(hash_) {
     hash_ = 0;
   }
@@ -101,8 +101,8 @@ template<typename T>
 template<typename DT>
 inline void sym_complex<T>::apply_neg(const Symbolic<DT> &rhs) {
   SYMCTRL_DEBUG("sym_complex<T>::apply_neg");
-  real_ = -1*(~rhs).real_value();
-  imag_ = -1*(~rhs).imag_value();
+  real_ = -1*(~rhs).real();
+  imag_ = -1*(~rhs).imag();
   if(hash_) {
     hash_ = 0;
   }
@@ -112,8 +112,8 @@ template<typename T>
 template<typename DT>
 inline void sym_complex<T>::apply_pow(const Symbolic<DT> &rhs) {
   SYMCTRL_DEBUG("sym_complex<T>::apply_pow");
-  // real_ = (~rhs).real_value();
-  // imag_ = (~rhs).imag_value();
+  // real_ = (~rhs).real();
+  // imag_ = (~rhs).imag();
   if(hash_) {
     hash_ = 0;
   }
@@ -123,8 +123,8 @@ template<typename T>
 template<typename DT>
 inline void sym_complex<T>::apply_sub(const Symbolic<DT> &rhs) {
   SYMCTRL_DEBUG("sym_complex<T>::apply_sub");
-  real_ -= (~rhs).real_value();
-  imag_ -= (~rhs).imag_value();
+  real_ -= (~rhs).real();
+  imag_ -= (~rhs).imag();
   if(hash_) {
     hash_ = 0;
   }
@@ -136,8 +136,8 @@ inline void sym_complex<T>::apply_sub(const Symbolic<DT> &rhs) {
 template<typename T>
 inline bool equal(const sym_complex<T> &lhs, const sym_complex<T> &rhs) {
   std::cout << "sym_complex == sym_complex" << '\n';
-  return (lhs.real_value() == rhs.real_value() &&
-          lhs.imag_value() == rhs.imag_value());
+  return (lhs.real() == rhs.real() &&
+          lhs.imag() == rhs.imag());
 }
 
 template<typename T, typename DT>

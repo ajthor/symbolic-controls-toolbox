@@ -1,29 +1,13 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
 
-#include <symengine/add.h>
-#include <symengine/mul.h>
-#include <symengine/basic.h>
-#include <symengine/integer.h>
-#include <symengine/symbol.h>
-
 #include <symctrl/math/matrix.hpp>
 #include <symctrl/math/matrix/dense.hpp>
 #include <symctrl/math/matrix/expression.hpp>
 #include <symctrl/math/matrix/vector.hpp>
 
 using Controls::Math::DenseMatrix;
-using Controls::Math::SymbolicDense;
 using Controls::Math::Vector;
-using Controls::Math::SymbolicVector;
-
-using SymEngine::add;
-using SymEngine::Basic;
-using SymEngine::integer;
-using SymEngine::Integer;
-using SymEngine::RCP;
-using SymEngine::symbol;
-using SymEngine::Symbol;
 
 // Uncomment this line to enable debugging.
 // #define TEST_DEBUG_OUT
@@ -121,15 +105,15 @@ TEST_CASE("Vector: Mul", "[vector]") {
     REQUIRE(r[1] == 8);
   }
 
-  {
-    SymbolicDense A(2, 2, {integer(0), integer(1), integer(2), integer(3)});
-    SymbolicVector x({integer(1), integer(2)});
-    SymbolicVector r(2);
-    TEST_DEBUG("r = A * x");
-    r = A * x;
-    REQUIRE(eq(*r[0], *integer(2)));
-    REQUIRE(eq(*r[1], *integer(8)));
-  }
+  // {
+  //   SymbolicDense A(2, 2, {integer(0), integer(1), integer(2), integer(3)});
+  //   SymbolicVector x({integer(1), integer(2)});
+  //   SymbolicVector r(2);
+  //   TEST_DEBUG("r = A * x");
+  //   r = A * x;
+  //   REQUIRE(eq(*r[0], *integer(2)));
+  //   REQUIRE(eq(*r[1], *integer(8)));
+  // }
 }
 
 TEST_CASE("Vector: Add/Mul", "[vector]") {
@@ -333,34 +317,4 @@ TEST_CASE("Vector: transpose", "[vector]") {
 //     REQUIRE(eq(*C[3], *x));
 //   }
 //
-// }
-//
-// TEST_CASE("Vector: Vector RCP<const Basic>", "[vector]") {
-//   Vector<RCP<const Basic>> a({integer(1), integer(1)});
-//   Vector<RCP<const Basic>> r(2);
-//
-//   // Assignment
-//   r = integer(5);
-//
-//   REQUIRE(eq(*r[0], *integer(5)));
-//   REQUIRE(eq(*r[1], *integer(5)));
-//
-//   r = a;
-//
-//   REQUIRE(r == a);
-//
-//   r[0] = integer(2);
-//
-//   REQUIRE(r != a);
-//
-//   // // Addition
-//   // v = v + w;
-//   //
-//   // REQUIRE(eq(*v[0], *integer(3)));
-//   // REQUIRE(eq(*v[1], *integer(4)));
-//   //
-//   // v = w + w + w + w;
-//   //
-//   // REQUIRE(eq(*v[0], *integer(4)));
-//   // REQUIRE(eq(*v[1], *integer(8)));
 // }

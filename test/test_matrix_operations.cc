@@ -1,29 +1,13 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
 
-#include <symengine/add.h>
-#include <symengine/mul.h>
-#include <symengine/basic.h>
-#include <symengine/integer.h>
-#include <symengine/symbol.h>
-
 #include <symctrl/math/matrix/dense.hpp>
 #include <symctrl/math/matrix/expression.hpp>
 #include <symctrl/math/matrix/operations.hpp>
 #include <symctrl/math/matrix/vector.hpp>
 
 using Controls::Math::DenseMatrix;
-using Controls::Math::SymbolicDense;
 using Controls::Math::Vector;
-using Controls::Math::SymbolicVector;
-
-using SymEngine::add;
-using SymEngine::Basic;
-using SymEngine::integer;
-using SymEngine::Integer;
-using SymEngine::RCP;
-using SymEngine::symbol;
-using SymEngine::Symbol;
 
 // Uncomment this line to enable debugging.
 // #define TEST_DEBUG_OUT
@@ -46,70 +30,70 @@ TEST_CASE("Matrix Operations: Type Conversion", "[operations]") {
   }
 }
 
-TEST_CASE("Matrix Operations: Jacobian", "[operations]") {
-  RCP<const Symbol> x = symbol("x");
-  RCP<const Symbol> y = symbol("y");
-
-  SymbolicVector a({x, mul(x, y)});
-  SymbolicVector b({x, y});
-  SymbolicDense C(2, 2);
-  C = integer(1);
-
-  {
-    REQUIRE(a != b);
-  }
-
-  {
-    SymbolicDense R(2, 2);
-    TEST_DEBUG("R = jacobian(a, b)");
-    R = jacobian(a, b);
-    REQUIRE(eq(*R(0, 0), *integer(1)));
-    REQUIRE(eq(*R(0, 1), *integer(0)));
-    REQUIRE(eq(*R(1, 0), *y));
-    REQUIRE(eq(*R(1, 1), *x));
-  }
-
-  {
-    SymbolicDense R(2, 2);
-    TEST_DEBUG("R = C + jacobian(a, b)");
-    R = C + jacobian(a, b);
-    REQUIRE(eq(*R(0, 0), *integer(2)));
-    REQUIRE(eq(*R(0, 1), *integer(1)));
-    REQUIRE(eq(*R(1, 0), *add(y, integer(1))));
-    REQUIRE(eq(*R(1, 1), *add(x, integer(1))));
-  }
-
-  {
-    SymbolicDense R(2, 2);
-    TEST_DEBUG("R = C * jacobian(a, b)");
-    R = C * jacobian(a, b);
-    REQUIRE(eq(*R(0, 0), *add(y, integer(1))));
-    REQUIRE(eq(*R(0, 1), *x));
-    REQUIRE(eq(*R(1, 0), *add(y, integer(1))));
-    REQUIRE(eq(*R(1, 1), *x));
-  }
-
-  {
-    SymbolicDense R(2, 2);
-    TEST_DEBUG("R = transpose(jacobian(a, b))");
-    R = transpose(jacobian(a, b));
-    REQUIRE(eq(*R(0, 0), *integer(1)));
-    REQUIRE(eq(*R(0, 1), *y));
-    REQUIRE(eq(*R(1, 0), *integer(0)));
-    REQUIRE(eq(*R(1, 1), *x));
-  }
-
-  {
-    Vector<int> c({1, 1});
-    Vector<int> d({1, 1});
-    DenseMatrix<int> S(2, 2);
-
-    // Fails!
-    // S = jacobian(a, b);
-    // S = jacobian(c, d);
-    // R = jacobian(c, d);
-  }
-}
+// TEST_CASE("Matrix Operations: Jacobian", "[operations]") {
+//   RCP<const Symbol> x = symbol("x");
+//   RCP<const Symbol> y = symbol("y");
+//
+//   SymbolicVector a({x, mul(x, y)});
+//   SymbolicVector b({x, y});
+//   SymbolicDense C(2, 2);
+//   C = integer(1);
+//
+//   {
+//     REQUIRE(a != b);
+//   }
+//
+//   {
+//     SymbolicDense R(2, 2);
+//     TEST_DEBUG("R = jacobian(a, b)");
+//     R = jacobian(a, b);
+//     REQUIRE(eq(*R(0, 0), *integer(1)));
+//     REQUIRE(eq(*R(0, 1), *integer(0)));
+//     REQUIRE(eq(*R(1, 0), *y));
+//     REQUIRE(eq(*R(1, 1), *x));
+//   }
+//
+//   {
+//     SymbolicDense R(2, 2);
+//     TEST_DEBUG("R = C + jacobian(a, b)");
+//     R = C + jacobian(a, b);
+//     REQUIRE(eq(*R(0, 0), *integer(2)));
+//     REQUIRE(eq(*R(0, 1), *integer(1)));
+//     REQUIRE(eq(*R(1, 0), *add(y, integer(1))));
+//     REQUIRE(eq(*R(1, 1), *add(x, integer(1))));
+//   }
+//
+//   {
+//     SymbolicDense R(2, 2);
+//     TEST_DEBUG("R = C * jacobian(a, b)");
+//     R = C * jacobian(a, b);
+//     REQUIRE(eq(*R(0, 0), *add(y, integer(1))));
+//     REQUIRE(eq(*R(0, 1), *x));
+//     REQUIRE(eq(*R(1, 0), *add(y, integer(1))));
+//     REQUIRE(eq(*R(1, 1), *x));
+//   }
+//
+//   {
+//     SymbolicDense R(2, 2);
+//     TEST_DEBUG("R = transpose(jacobian(a, b))");
+//     R = transpose(jacobian(a, b));
+//     REQUIRE(eq(*R(0, 0), *integer(1)));
+//     REQUIRE(eq(*R(0, 1), *y));
+//     REQUIRE(eq(*R(1, 0), *integer(0)));
+//     REQUIRE(eq(*R(1, 1), *x));
+//   }
+//
+//   {
+//     Vector<int> c({1, 1});
+//     Vector<int> d({1, 1});
+//     DenseMatrix<int> S(2, 2);
+//
+//     // Fails!
+//     // S = jacobian(a, b);
+//     // S = jacobian(c, d);
+//     // R = jacobian(c, d);
+//   }
+// }
 
 TEST_CASE("Matrix Operations: Norm", "[operations]") {
   Vector<int> v({1, -2, 3});

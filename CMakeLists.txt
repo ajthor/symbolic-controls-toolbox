@@ -11,13 +11,17 @@ set(CTRLLIB_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
 
 # set_target_properties(ctrllib PROPERTIES VERSION ${CTRLLIB_VERSION})
 
-find_package(SymEngine CONFIG REQUIRED)
+# find_package(SymEngine CONFIG REQUIRED)
 
 include(GenerateExportHeader)
 include(GNUInstallDirs)
 include(ExternalProject)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+SET(CMAKE_CXX_STANDARD 14)
+SET(CMAKE_CXX_STANDARD_REQUIRED ON)
+SET(CMAKE_CXX_EXTENSIONS OFF)
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
 
 # Macro to install header files to the include directory.
@@ -79,9 +83,9 @@ target_include_directories(symctrl PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
-target_include_directories(symctrl PUBLIC ${SYMENGINE_INCLUDE_DIRS})
+# target_include_directories(symctrl PUBLIC ${SYMENGINE_INCLUDE_DIRS})
 
-target_link_libraries(symctrl ${SYMENGINE_LIBRARIES})
+# target_link_libraries(symctrl ${SYMENGINE_LIBRARIES})
 
 install(TARGETS symctrl
   EXPORT symctrl

@@ -14,7 +14,7 @@ namespace Math {
 // QR Decomposition (Gram-Schmidt)
 //
 template<typename T>
-void qr(const DenseMatrix<T> &A, DenseMatrix<T> &Q, DenseMatrix<T> &R) {
+inline void qr(const DenseMatrix<T> &A, DenseMatrix<T> &Q, DenseMatrix<T> &R) {
   size_t n_ = A.nrows();
   size_t m_ = A.ncols();
   SYMCTRL_ASSERT(n_ == Q.nrows());

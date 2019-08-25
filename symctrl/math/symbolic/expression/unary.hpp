@@ -5,7 +5,7 @@
 #include <symctrl/math/expression.hpp>
 #include <symctrl/math/expression/unary.hpp>
 #include <symctrl/math/symbolic/symbolic.hpp>
-#include <symctrl/math/symbolic/type_traits/is_numeric.hpp>
+// #include <symctrl/math/symbolic/type_traits/is_numeric.hpp>
 #include <symctrl/shims/hash.hpp>
 
 namespace Controls {
@@ -18,6 +18,7 @@ template<typename T>
 class ExprUnary<Symbolic, T>
     : public Expression<Symbolic<ExprUnary<Symbolic, T>>> {
 public:
+  using Type = ExprUnary<Symbolic, T>;
   static constexpr bool isNumeric = T::isNumeric;
 
 private:
@@ -25,8 +26,6 @@ private:
 
 public:
   explicit inline ExprUnary(const T &m);
-
-  // inline ExprUnary(ExprUnary<Symbolic, T> &m);
 
   inline std::string as_str() const;
   inline hash_t hash() const;
@@ -89,21 +88,6 @@ private:
 template<typename T>
 inline ExprUnary<Symbolic, T>::ExprUnary(const T &m)
     : m_(m) {}
-
-// template<typename T>
-// inline ExprUnary<Symbolic, T>::ExprUnary(ExprUnary<Symbolic, T> &m)
-//     : m_(m.m_) {}
-
-// ----------------------------------------------------------------------
-// ExprUnary Type Conversion Operator
-//
-// template<typename T>
-// ExprUnary<Symbolic, T>::operator ExprUnary<Symbolic, T>::type() const {
-//   result_type r;
-//   apply_(r, *this);
-//
-//   return r;
-// }
 
 // ----------------------------------------------------------------------
 // ExprUnary Member Function Definitions

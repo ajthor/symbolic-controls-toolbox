@@ -17,6 +17,7 @@ template<typename T>
 class ExprNeg<Symbolic, T>
     : public Expression<Symbolic<ExprNeg<Symbolic, T>>> {
 public:
+  using Type = ExprNeg<Symbolic, T>;
   static constexpr bool isNumeric = T::isNumeric;
 
 private:
@@ -24,8 +25,6 @@ private:
 
 public:
   explicit inline ExprNeg(const T &m);
-
-  // inline ExprNeg(ExprNeg<Symbolic, T> &m);
 
   inline std::string as_str() const;
   inline hash_t hash() const;
@@ -97,21 +96,6 @@ template<typename T>
 inline ExprNeg<Symbolic, T>::ExprNeg(const T &m)
     : m_(m) {}
 
-// template<typename T>
-// inline ExprNeg<Symbolic, T>::ExprNeg(ExprNeg<Symbolic, T> &m)
-//     : m_(m.m_) {}
-
-// ----------------------------------------------------------------------
-// ExprNeg Type Conversion Operator
-//
-// template<typename T>
-// ExprNeg<Symbolic, T>::operator ExprNeg<Symbolic, T>::type() const {
-//   result_type r;
-//   apply_(r, *this);
-//
-//   return r;
-// }
-
 // ----------------------------------------------------------------------
 // ExprNeg Member Function Definitions
 //
@@ -137,6 +121,13 @@ template<typename T>
 inline auto operator-(const Symbolic<T> &m)
 -> const ExprNeg<Symbolic, T> {
   return ExprNeg<Symbolic, T>(~m);
+}
+
+template<typename T>
+inline auto operator-(const sym_number<T> &m)
+-> const sym_number<T> {
+  using ReturnType = sym_number<T>;
+  return ReturnType(-1*m.real());
 }
 
 template<typename T>

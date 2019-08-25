@@ -3,12 +3,6 @@
 
 #include <chrono>
 
-#include <symengine/add.h>
-#include <symengine/mul.h>
-#include <symengine/basic.h>
-#include <symengine/integer.h>
-#include <symengine/symbol.h>
-
 #include <symctrl/math/matrix.hpp>
 #include <symctrl/math/matrix/dense.hpp>
 #include <symctrl/math/matrix/expression.hpp>
@@ -16,9 +10,7 @@
 #include <symctrl/math/matrix/vector.hpp>
 
 using Controls::Math::DenseMatrix;
-using Controls::Math::SymbolicDense;
 using Controls::Math::Vector;
-using Controls::Math::SymbolicVector;
 
 using Controls::Math::StaticDense;
 using Controls::Math::StaticVector;
@@ -26,14 +18,6 @@ using Controls::Math::StaticVector;
 using Controls::Math::is_lower;
 using Controls::Math::is_square;
 using Controls::Math::is_upper;
-
-using SymEngine::add;
-using SymEngine::Basic;
-using SymEngine::integer;
-using SymEngine::Integer;
-using SymEngine::RCP;
-using SymEngine::symbol;
-using SymEngine::Symbol;
 
 // Uncomment this line to enable debugging.
 // #define TEST_DEBUG_OUT

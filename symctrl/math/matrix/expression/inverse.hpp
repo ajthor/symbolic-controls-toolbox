@@ -36,8 +36,8 @@ public:
   inline size_t nrows() const;
   inline size_t ncols() const;
 
-  inline type &operator[](const size_t pos);
-  inline const type &operator[](const size_t pos) const;
+  inline type operator[](const size_t pos);
+  inline const type operator[](const size_t pos) const;
 
 private:
   // A^-1
@@ -149,13 +149,13 @@ inline size_t ExprInverse<Matrix, T>::ncols() const {
 }
 
 template<typename T>
-inline typename ExprInverse<Matrix, T>::type&
+inline typename ExprInverse<Matrix, T>::type
 ExprInverse<Matrix, T>::operator[](const size_t pos) {
   return m_[pos];
 }
 
 template<typename T>
-inline const typename ExprInverse<Matrix, T>::type&
+inline const typename ExprInverse<Matrix, T>::type
 ExprInverse<Matrix, T>::operator[](const size_t pos) const {
   return m_[pos];
 }

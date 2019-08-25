@@ -11,7 +11,7 @@
 #include <symctrl/math/symbolic/symbolic.hpp>
 #include <symctrl/math/symbolic/sym_number/sym_number.hpp>
 #include <symctrl/math/symbolic/type_traits/is_expr.hpp>
-#include <symctrl/math/symbolic/type_traits/is_numeric.hpp>
+// #include <symctrl/math/symbolic/type_traits/is_numeric.hpp>
 #include <symctrl/shims/hash.hpp>
 #include <symctrl/type_traits/common_type.hpp>
 #include <symctrl/type_traits/is_scalar.hpp>
@@ -26,6 +26,7 @@ template<typename T1, typename T2>
 class ExprAdd<Symbolic, T1, T2>
     : public Expression<Symbolic<ExprAdd<Symbolic, T1, T2>>> {
 public:
+  using Type = ExprAdd<Symbolic, T1, T2>;
   static constexpr bool isNumeric = (T1::isNumeric && T2::isNumeric);
 
 private:
@@ -34,7 +35,6 @@ private:
 
 public:
   explicit inline ExprAdd(const T1 &lhs, const T2 &rhs);
-  // inline ExprAdd(ExprAdd<Symbolic, sym_t, sym_t> &m);
 
   inline std::string as_str() const;
   inline hash_t hash() const;
@@ -115,11 +115,6 @@ inline ExprAdd<Symbolic, T1, T2>::ExprAdd(const T1 &lhs, const T2 &rhs)
     : lhs_(lhs),
       rhs_(rhs) {}
 
-// template<>
-// inline ExprAdd<Symbolic, sym_t, sym_t>::ExprAdd(ExprAdd<Symbolic, sym_t, sym_t> &m)
-//     : lhs_(m.lhs_),
-//       rhs_(m.rhs_) {}
-
 // ----------------------------------------------------------------------
 // ExprAdd Member Function Definitions
 //
@@ -151,7 +146,7 @@ template<typename T1, typename T2>
 inline auto operator+(const sym_number<T1> &lhs, const sym_number<T2> &rhs)
 -> const sym_number<common_type_t<T1, T2>> {
   using ReturnType = sym_number<common_type_t<T1, T2>>;
-  return ReturnType(lhs.real_value() + rhs.real_value());
+  return ReturnType(lhs.real() + rhs.real());
 }
 
 } // Math

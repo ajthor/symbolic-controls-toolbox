@@ -13,10 +13,10 @@ inline bool is_default(const T v) {
   return v == T();
 }
 
-template<>
-inline bool is_default(const symbolic_t v) {
-  return SymEngine::eq(*v, *symbolic_zero());
-}
+// template<>
+// inline bool is_default(const symbolic_t v) {
+//   return SymEngine::eq(*v, *symbolic_zero());
+// }
 
 } // Controls
 

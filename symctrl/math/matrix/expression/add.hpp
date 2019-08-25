@@ -15,9 +15,10 @@ namespace Math {
 // ----------------------------------------------------------------------
 // ExprAdd
 //
-template<typename T1, typename T2>
-class ExprAdd<Matrix, T1, T2> :
-  public Expression<Matrix<ExprAdd<Matrix, T1, T2>>> {
+template< typename T1,   // First operand type.
+          typename T2 >  // Second operand type.
+class ExprAdd<Matrix, T1, T2>
+    : public Expression<Matrix<ExprAdd<Matrix, T1, T2>>> {
 public:
   using type = typename T1::type;
 
@@ -42,8 +43,8 @@ public:
   inline size_t nrows() const;
   inline size_t ncols() const;
 
-  inline type &operator[](const size_t pos);
-  inline const type &operator[](const size_t pos) const;
+  inline type operator[](const size_t pos);
+  inline const type operator[](const size_t pos) const;
 
 private:
   // A + B
@@ -86,7 +87,7 @@ private:
   friend inline void
   apply_mul_(Matrix<DT> &lhs, const ExprAdd<Matrix, T1, T2> &rhs) {
     SYMCTRL_DEBUG("result = A * (B + C)");
-    T1 tmp(rhs.lhs_);
+    result_type tmp(rhs.lhs_);
     apply_add_(tmp, rhs.rhs_);
     apply_mul_(~lhs, tmp);
   }
@@ -96,7 +97,7 @@ private:
   friend inline void
   apply_inverse_(Matrix<DT> &lhs, const ExprAdd<Matrix, T1, T2> &rhs) {
     SYMCTRL_DEBUG("result = (A + B)^-1");
-    T1 tmp(rhs.lhs_);
+    result_type tmp(rhs.lhs_);
     apply_add_(tmp, rhs.rhs_);
     apply_inverse_(~lhs, tmp);
   }
@@ -106,7 +107,7 @@ private:
   friend inline void
   apply_transpose_(Matrix<DT> &lhs, const ExprAdd<Matrix, T1, T2> &rhs) {
     SYMCTRL_DEBUG("result = (A + B)^T");
-    T1 tmp(rhs.lhs_);
+    result_type tmp(rhs.lhs_);
     apply_add_(tmp, rhs.rhs_);
     apply_transpose_(~lhs, tmp);
   }
@@ -116,19 +117,14 @@ private:
 // ExprAdd Constructor
 //
 template<typename T1, typename T2>
-inline ExprAdd<Matrix, T1, T2>::ExprAdd(const T1 &lhs,
-                                        const T2 &rhs) :
-                                        lhs_(lhs),
-                                        rhs_(rhs) {
-  //
-}
+inline ExprAdd<Matrix, T1, T2>::ExprAdd(const T1 &lhs, const T2 &rhs)
+    : lhs_(lhs),
+      rhs_(rhs) {}
 
 template<typename T1, typename T2>
-inline ExprAdd<Matrix, T1, T2>::ExprAdd(const ExprAdd<Matrix, T1, T2> &m) :
-                                        lhs_(m.lhs_),
-                                        rhs_(m.rhs_) {
-  //
-}
+inline ExprAdd<Matrix, T1, T2>::ExprAdd(const ExprAdd<Matrix, T1, T2> &m)
+    : lhs_(m.lhs_),
+      rhs_(m.rhs_) {}
 
 // ----------------------------------------------------------------------
 // ExprAdd Type Conversion Operator
@@ -173,14 +169,14 @@ inline size_t ExprAdd<Matrix, T1, T2>::ncols() const {
 }
 
 template<typename T1, typename T2>
-inline typename ExprAdd<Matrix, T1, T2>::type&
-ExprAdd<Matrix, T1, T2>::operator[](const size_t pos) {
+inline auto ExprAdd<Matrix, T1, T2>::operator[](const size_t pos)
+-> typename ExprAdd<Matrix, T1, T2>::type {
   return lhs_[pos] + rhs_[pos];
 }
 
 template<typename T1, typename T2>
-inline const typename ExprAdd<Matrix, T1, T2>::type&
-ExprAdd<Matrix, T1, T2>::operator[](const size_t pos) const {
+inline auto ExprAdd<Matrix, T1, T2>::operator[](const size_t pos) const
+-> const typename ExprAdd<Matrix, T1, T2>::type {
   return lhs_[pos] + rhs_[pos];
 }
 
@@ -188,25 +184,25 @@ ExprAdd<Matrix, T1, T2>::operator[](const size_t pos) const {
 // ExprAdd Operator
 //
 template<typename T1, typename T2>
-inline const ExprAdd<Matrix, T1, T2>
-operator+(const Matrix<T1> &lhs, const Matrix<T2> &rhs) {
+inline auto operator+(const Matrix<T1> &lhs, const Matrix<T2> &rhs)
+-> const ExprAdd<Matrix, T1, T2> {
   return ExprAdd<Matrix, T1, T2>(~lhs, ~rhs);
 }
 
 // ----------------------------------------------------------------------
 // ExprAdd Scalar Operator
 //
-template<typename T1, typename T2>
-inline auto
-operator+(const Matrix<T1> &lhs, const T2 rhs)
+template< typename T1,   // Matrix type.
+          typename T2 >  // Scalar type.
+inline auto operator+(const Matrix<T1> &lhs, const T2 rhs)
 -> enable_if_scalar_t<T2, const ExprUnary<Matrix, T1>> {
   T1 tmp(~lhs);
   return ExprUnary<Matrix, T1>(tmp += rhs);
 }
 
-template<typename T1, typename T2>
-inline auto
-operator+(const T1 lhs, const Matrix<T2> &rhs)
+template< typename T1,   // Scalar type.
+          typename T2 >  // Matrix type.
+inline auto operator+(const T1 lhs, const Matrix<T2> &rhs)
 -> enable_if_scalar_t<T1, const ExprUnary<Matrix, T2>> {
   T2 tmp(~rhs);
   return ExprUnary<Matrix, T2>(tmp += lhs);

@@ -3,132 +3,189 @@
 
 #include <symctrl/math/symbolic.hpp>
 
-using Controls::Math::BaseSymbolic;
-using Controls::Math::Number;
-using Controls::Math::Symbolic;
-using Controls::Math::Variable;
+using Controls::Math::sym_t;
+using Controls::Math::sym_number;
+using Controls::Math::sym_var;
 
 // Uncomment this line to enable debugging.
-#define TEST_DEBUG_OUT
+// #define TEST_DEBUG_OUT
 
 #ifdef TEST_DEBUG_OUT
 #define TEST_DEBUG(msg) \
-std::cout << msg << '\n';
+std::cout << "----------" << '\n' << msg << '\n';
 #else
 #define TEST_DEBUG(msg) // msg
 #endif
 
-TEST_CASE("Symbolic: Assignment", "[symbolic]") {
+TEST_CASE("Symbolic Number: Assignment", "[symbolic]") {
   {
-    Number<int> a(1);
-    REQUIRE(a == Number<int>(1));
+    sym_number<double> a = 1;
     REQUIRE(a == 1);
+    REQUIRE(a == sym_number<double>(1));
+    REQUIRE(a == a);
   }
 
   {
-    Number<int> a = 1;
-    REQUIRE(a == Number<int>(1));
+    sym_number<double> a(1);
+    sym_number<double> b(1);
+    sym_number<double> c(2);
+    REQUIRE(a == b);
+    REQUIRE(b == a);
+    REQUIRE(a != c);
+    REQUIRE(b != c);
+    REQUIRE(c != a);
+    REQUIRE(c != b);
+  }
+
+  {
+    sym_number<double> a = 1;
+    sym_number<double> b = 1;
+    sym_number<double> c = 2;
+    REQUIRE(a == b);
+    REQUIRE(b == a);
+    REQUIRE(a != c);
+    REQUIRE(b != c);
+    REQUIRE(c != a);
+    REQUIRE(c != b);
+  }
+
+  {
+    sym_number<double> a = 1;
+    sym_number<double> b = a;
     REQUIRE(a == 1);
-  }
-
-  {
-    Number<double> a = 1.0;
-    REQUIRE(a == Number<double>(1.0));
-    REQUIRE(a == 1.0);
-  }
-
-  // char a = '4';
-  // char b = '6';
-  //
-  // std::cout << a + b << '\n';
-  // std::cout << char(a + b) << '\n';
-}
-
-TEST_CASE("Symbolic: Add", "[symbolic]") {
-  Number<int> a = 2;
-  Number<int> b = 3;
-
-  {
-    Number<int> r;
-    TEST_DEBUG("r = a + b");
-    r = a + b;
-    REQUIRE(r == 5);
-  }
-
-  {
-    Number<int> r;
-    TEST_DEBUG("r = a + 2");
-    r = a + 2;
-    REQUIRE(r == 4);
-  }
-
-  {
-    Number<int> r;
-    TEST_DEBUG("r = 2 + a");
-    r = 2 + a;
-    REQUIRE(r == 4);
-  }
-
-  {
-    Number<double> c = 2.0;
-    Number<double> r;
-    TEST_DEBUG("r = a + c");
-    r = a + c;
-    REQUIRE(r == 4.0);
+    REQUIRE(b == 1);
+    a = 2;
+    REQUIRE(a == 2);
+    REQUIRE(b == 1);
   }
 }
 
-TEST_CASE("Symbolic: Mul", "[symbolic]") {
-  Number<int> a = 2;
-  Number<int> b = 3;
+TEST_CASE("Symbolic Number: Add", "[symbolic]") {
+  {
+    sym_number<double> a = 1;
+    sym_number<double> b = 2;
+    TEST_DEBUG("r = a + b")
+    sym_number<double> r = a + b;
+    REQUIRE(r == 3);
+  }
 
   {
-    Number<int> r;
-    TEST_DEBUG("r = a * b");
-    r = a * b;
+    sym_number<double> a = 1;
+    TEST_DEBUG("r = diff(a)")
+    sym_number<double> r = diff(a);
+    REQUIRE(r == 0);
+  }
+
+  {
+    sym_number<double> a = 1;
+    sym_number<double> b = 2;
+    TEST_DEBUG("r = a + b")
+    sym_number<double> r = a + b;
+    REQUIRE(r == 3);
+  }
+
+  {
+    sym_number<double> a = 1;
+    sym_number<double> b = 2;
+    sym_number<double> c = 3;
+    TEST_DEBUG("r = a + b + c");
+    sym_number<double> r = a + b + c;
     REQUIRE(r == 6);
   }
 
   {
-    Number<int> r;
-    TEST_DEBUG("r = a * 2");
-    r = a * 2;
-    REQUIRE(r == 4);
+    sym_number<double> a = 1;
+    sym_number<double> b = 2;
+    REQUIRE(a == 1);
+    REQUIRE(b == 2);
+    TEST_DEBUG("a = a + b");
+    a = a + b;
+    REQUIRE(a == 3);
+    REQUIRE(b == 2);
+  }
+
+  // {
+  //   sym_number<double> a = 1;
+  //   sym_number<double> b = a;
+  //   // sym_number<double> c = b + 1;
+  //   // REQUIRE(c == 2);
+  // }
+  //
+  // {
+  //   sym_number<double> a = 1;
+  //   // a += 1;
+  //   // REQUIRE(a == 2);
+  // }
+}
+
+TEST_CASE("Symbolic Number: Mul", "[symbolic]") {
+  {
+    TEST_DEBUG("r = 1 * 2");
+    sym_number<double> r = 1 * 2;
+    REQUIRE(r == 2);
+    REQUIRE(r == 1 * 2);
   }
 
   {
-    Number<int> r;
-    TEST_DEBUG("r = 2 * a");
-    r = 2 * a;
-    REQUIRE(r == 4);
+    sym_number<double> a = 1;
+    sym_number<double> b = 2;
+    TEST_DEBUG("r = a * b");
+    sym_number<double> r = a * b;
+    REQUIRE(r == 2);
   }
 
   {
-    Number<double> c = 2.0;
-    Number<double> r;
-    TEST_DEBUG("r = a * c");
-    r = a * c;
-    REQUIRE(r == 4.0);
+    sym_number<double> a = 1;
+    sym_number<double> b = 2;
+    sym_number<double> c = 3;
+    TEST_DEBUG("r = a * b * c");
+    sym_number<double> r = a * b * c;
+    REQUIRE(r == 6);
   }
 }
-// TEST_CASE("Symbolic: Parse", "[statespace]") {
-//   symbolic_symbol_t x1 = symbol("x1");
-//   symbolic_symbol_t x2 = symbol("x2");
-//
-//   REQUIRE(equal(x1, parse("x1")));
-//   REQUIRE(equal(x2, parse("x2")));
-// }
-//
-// TEST_CASE("Symbolic: Operators", "[symbolic]") {
-//   symbolic_symbol_t x = symbol("x");
-//   // symbolic_t expr = 1 + 2*x + 2*x^2 + 2*x^3;
-//
-//   {
-//     symbolic_t expr = 1 + x;
-//     REQUIRE(equal(expr, parse("1 + x")));
-//   }
-// }
-//
-// TEST_CASE("Symbolic: Coefficients", "[symbolic]") {
-//   symbolic_t expr = parse("1 + 2*x + 2*x^2 + 2*x3");
-// }
+
+TEST_CASE("Symbolic Number: Add/Mul", "[symbolic]") {
+  {
+    sym_number<double> a = 1;
+    sym_number<double> b = 2;
+    TEST_DEBUG("r = a + b != a * b");
+    sym_number<double> r = a + b;
+    REQUIRE(r == 3);
+    REQUIRE(r != 2);
+  }
+
+  {
+    sym_number<double> a = 1;
+    sym_number<double> b = 2;
+    sym_number<double> c = 3;
+    TEST_DEBUG("r = a + b * c");
+    sym_number<double> r = a + b * c;
+    REQUIRE(r == a + b * c);
+    REQUIRE(r == a + c * b);
+    REQUIRE(r == b * c + a);
+    REQUIRE(r == c * b + a);
+  }
+}
+
+TEST_CASE("Symbolic Number: Pow", "[symbolic]") {
+  {
+    sym_number<double> a = 1;
+    sym_number<double> b = 2;
+    TEST_DEBUG("r = a ^ b");
+    sym_number<double> r = (a ^ b);
+    REQUIRE(r == (a ^ b));
+    REQUIRE(r != (b ^ a));
+  }
+
+  {
+    sym_number<double> a = 1;
+    sym_number<double> b = 2;
+    sym_number<double> c = 3;
+    TEST_DEBUG("r = a ^ b * c");
+    sym_number<double> r = (a ^ b) * c;
+    REQUIRE(r == (a ^ b) * c);
+    REQUIRE(r == c * (a ^ b));
+    REQUIRE(r != (b ^ a) * c);
+    REQUIRE(r != c * (b ^ a));
+  }
+}

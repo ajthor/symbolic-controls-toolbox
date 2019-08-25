@@ -1,81 +1,67 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
 
+#include <memory>
+
 #include <symctrl/math/symbolic.hpp>
 
-using Controls::Math::BaseSymbolic;
-using Controls::Math::Number;
 using Controls::Math::sym_t;
-using Controls::Math::Symbolic;
-using Controls::Math::Variable;
+using Controls::Math::sym_number;
+using Controls::Math::sym_var;
 
 // Uncomment this line to enable debugging.
-#define TEST_DEBUG_OUT
+// #define TEST_DEBUG_OUT
 
 #ifdef TEST_DEBUG_OUT
 #define TEST_DEBUG(msg) \
-std::cout << msg << '\n';
+std::cout << "----------" << '\n' << msg << '\n';
 #else
 #define TEST_DEBUG(msg) // msg
 #endif
 
-TEST_CASE("Symbolic: Assignment", "[symbolic]") {
-  Variable x("x");
+TEST_CASE("Symbolic Variable: Assignment", "[symbolic]") {
+  {
+    sym_var x("x");
+    REQUIRE(x.as_str() == "x");
+    REQUIRE(x == x);
+  }
 
   {
-    // BaseSymbolic *y = &x;
+    sym_var x("x");
+    REQUIRE(x.as_str() == "x");
+    REQUIRE(x == x);
+    sym_var y = x;
+    REQUIRE(y.as_str() == "x");
+    REQUIRE(x == y);
+    REQUIRE(y == x);
+    REQUIRE(y == y);
+    sym_var z = y;
+    REQUIRE(z.as_str() == "x");
+    REQUIRE(x == z);
+    REQUIRE(z == x);
+    REQUIRE(y == z);
+    REQUIRE(z == y);
+    REQUIRE(z == z);
+  }
 
-    REQUIRE(x == Variable("x"));
-    // REQUIRE(*y == Variable("x"));
+  {
+    sym_var x("x");
+    sym_var y = x;
+    sym_var z = y;
+    REQUIRE(z.as_str() == "x");
+    REQUIRE(z == x);
+    REQUIRE(z == y);
+  }
+
+  {
+    sym_var x("x");
+    sym_var y("x");
+    sym_var z("z");
+    REQUIRE(x == y);
+    REQUIRE(y == x);
+    REQUIRE(x != z);
+    REQUIRE(y != z);
+    REQUIRE(z != x);
+    REQUIRE(z != y);
   }
 }
-
-TEST_CASE("Symbolic: Addition", "[symbolic]") {
-  Variable x("x");
-  Variable y("y");
-
-  auto expr = x + y;
-  // decltype(expr)::show;
-  // y = 1 + x;
-
-  {
-    TEST_DEBUG("*z = &x");
-    BaseSymbolic* z = &x;
-    // z = x;
-    // REQUIRE(x == Number<int>(3));
-  }
-
-  {
-    TEST_DEBUG("z = x");
-    sym_t z = x;
-    // REQUIRE(x == Number<int>(3));
-  }
-
-  // {
-  //   sym_t z;
-  //   TEST_DEBUG("z = x + y");
-  //   z = x + y;
-  //   // REQUIRE(x == Number<int>(3));
-  // }
-}
-// TEST_CASE("Symbolic: Parse", "[statespace]") {
-//   symbolic_symbol_t x1 = symbol("x1");
-//   symbolic_symbol_t x2 = symbol("x2");
-//
-//   REQUIRE(equal(x1, parse("x1")));
-//   REQUIRE(equal(x2, parse("x2")));
-// }
-//
-// TEST_CASE("Symbolic: Operators", "[symbolic]") {
-//   symbolic_symbol_t x = symbol("x");
-//   // symbolic_t expr = 1 + 2*x + 2*x^2 + 2*x^3;
-//
-//   {
-//     symbolic_t expr = 1 + x;
-//     REQUIRE(equal(expr, parse("1 + x")));
-//   }
-// }
-//
-// TEST_CASE("Symbolic: Coefficients", "[symbolic]") {
-//   symbolic_t expr = parse("1 + 2*x + 2*x^2 + 2*x3");
-// }

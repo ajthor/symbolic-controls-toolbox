@@ -44,11 +44,11 @@ namespace Math {
 //   return *this;
 // }
 
-template<typename DT>
-inline void sym_var::apply(const Symbolic<DT> &rhs) {
-  SYMCTRL_DEBUG("sym_var::apply");
-
-}
+// template<typename DT>
+// inline void sym_var::apply(const Symbolic<DT> &rhs) {
+//   SYMCTRL_DEBUG("sym_var::apply");
+//
+// }
 
 // template<typename DT>
 // inline void sym_var::apply_sub(const Symbolic<DT> &rhs) {

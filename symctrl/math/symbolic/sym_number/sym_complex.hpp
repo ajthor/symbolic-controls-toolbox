@@ -18,9 +18,10 @@ template<typename T>
 class sym_complex
     : public Symbolic<sym_complex<T>> {
 public:
-  using this_type = sym_complex<T>;
+  using Type = sym_complex<T>;
 
   static constexpr bool isNumeric = true;
+  static constexpr bool isComplex = true;
 
   static inline constexpr bool canEvaluate() noexcept { return true; }
 
@@ -60,8 +61,8 @@ public:
   inline std::string as_str() const;
   inline hash_t hash() const;
 
-  inline T real_value() const;
-  inline T imag_value() const;
+  inline T real() const;
+  inline T imag() const;
 };
 
 // ----------------------------------------------------------------------
@@ -69,8 +70,8 @@ public:
 //
 template<typename T>
 inline sym_complex<T>::sym_complex()
-    : real_(T(0)),
-      imag_(T(0)),
+    : real_(0),
+      imag_(0),
       hash_(0) {}
 
 template<typename T>
@@ -96,12 +97,12 @@ inline hash_t sym_complex<T>::hash() const {
 }
 
 template<typename T>
-inline T sym_complex<T>::real_value() const {
+inline T sym_complex<T>::real() const {
   return real_;
 }
 
 template<typename T>
-inline T sym_complex<T>::imag_value() const {
+inline T sym_complex<T>::imag() const {
   return imag_;
 }
 

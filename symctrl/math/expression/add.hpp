@@ -1,6 +1,9 @@
 #ifndef SYMCTRL_MATH_EXPRESSION_ADD_HPP
 #define SYMCTRL_MATH_EXPRESSION_ADD_HPP
 
+#include <symctrl/math/expression.hpp>
+#include <symctrl/shims/hash.hpp>
+
 namespace Controls {
 namespace Math {
 
