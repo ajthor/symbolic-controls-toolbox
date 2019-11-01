@@ -24,7 +24,7 @@ namespace Math {
 // Debugging
 //
 // Uncomment this line to enable debugging.
-// #define SYMCTRL_DEBUG_OUT
+#define SYMCTRL_DEBUG_OUT
 
 #ifdef SYMCTRL_DEBUG_OUT
 #define SYMCTRL_DEBUG(msg) \

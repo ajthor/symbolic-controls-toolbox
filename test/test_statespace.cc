@@ -6,6 +6,7 @@
 
 #include <symctrl/math/random/random_variable.hpp>
 #include <symctrl/math/matrix/dense.hpp>
+#include <symctrl/math/matrix/vector.hpp>
 #include <symctrl/systems/statespace.hpp>
 #include <symctrl/systems/visitor.hpp>
 #include <symctrl/systems/visitors/subs.hpp>
@@ -16,23 +17,17 @@
 using Controls::equal;
 using Controls::linearize;
 using Controls::Math::SymbolicDense;
+using Controls::Math::SymbolicVector;
 using Controls::parse;
 using Controls::StateSpace;
 using Controls::symbolic_t;
 using Controls::symbolic_symbol_t;
+using Controls::symbolic_rv_t;
 
 using SymEngine::Basic;
 using SymEngine::RCP;
 using SymEngine::symbol;
 using SymEngine::Symbol;
-
-TEST_CASE("StateSpace: Parse", "[statespace]") {
-  symbolic_symbol_t x1 = symbol("x1");
-  symbolic_symbol_t x2 = symbol("x2");
-
-  REQUIRE(equal(x1, parse("x1")));
-  REQUIRE(equal(x2, parse("x2")));
-}
 
 TEST_CASE("StateSpace: Assignment", "[statespace]") {
   symbolic_symbol_t x1 = symbol("x1");
@@ -108,29 +103,6 @@ TEST_CASE("StateSpace: ABCD Matrices", "[statespace]") {
   REQUIRE(D == DDD);
 }
 
-// TEST_CASE("State space: nonlinear separation", "[statespace]") {
-//   Controls::StateSpace *ss = new Controls::StateSpace();
-//
-//   RCP<const Symbol> x = symbol("x");
-//   RCP<const Symbol> u = symbol("u");
-//   RCP<const Symbol> a = symbol("a");
-//   RCP<const Symbol> b = symbol("b");
-//
-//   ss->add_state(x);
-//   ss->add_input(u);
-//
-//   std::string s;
-//   RCP<const Basic> res, V;
-//
-//   s = "a*x - b*x^3 + u";
-//   res = SymEngine::parse(s);
-//   ss->add_f(res);
-//
-//   s = "x^2/2";
-//   V = SymEngine::parse(s);
-//
-// }
-
 TEST_CASE("StateSpace: Random Variable", "[statespace]") {
   symbolic_symbol_t x1 = symbol("x1");
   symbolic_symbol_t x2 = symbol("x2");
@@ -139,10 +111,8 @@ TEST_CASE("StateSpace: Random Variable", "[statespace]") {
   Controls::Math::normal_distribution<> d1{0, 1};
   Controls::Math::normal_distribution<> d2{0, 1};
 
-  RCP<const Controls::Math::RandomVariable> w1;
-  RCP<const Controls::Math::RandomVariable> w2;
-  w1 = Controls::Math::random_variable("w1", &d1);
-  w2 = Controls::Math::random_variable("w2", &d2);
+  symbolic_rv_t w1 = Controls::Math::random_variable("w1", &d1);
+  symbolic_rv_t w2 = Controls::Math::random_variable("w2", &d2);
 
   StateSpace sys;
 
@@ -172,4 +142,90 @@ TEST_CASE("StateSpace: Subs", "[statespace]") {
                                     parse("-cos(x3)"),  parse("-1")}));
 
 
+}
+
+TEST_CASE("StateSpace: Add", "[statespace]") {
+  {
+    StateSpace sys({parse("x1"), parse("x2")},
+                   {parse("u")},
+                   {parse("x2"), parse("-sin(x1) - x2 + u")},
+                   {parse("x1"), parse("x2")});
+    //
+    SymbolicDense G(2, 2, {parse("1"), parse("0"), parse("0"), parse("1")});
+    SymbolicVector w({parse("w1"), parse("w2")});
+
+    SymbolicVector f(2);
+
+    f = sys + G*w;
+
+    REQUIRE(equal(f[0], parse("x2 + w1")));
+    REQUIRE(equal(f[1], parse("u + w2 - x2 - sin(x1)")));
+  }
+
+  {
+    StateSpace sys({parse("x1"), parse("x2")},
+                   {parse("u")},
+                   {parse("x2"), parse("-sin(x1) - x2 + u")},
+                   {parse("x1"), parse("x2")});
+    //
+    SymbolicDense G(2, 2, {parse("1"), parse("0"), parse("0"), parse("1")});
+    SymbolicVector w({parse("w1"), parse("w2")});
+
+    SymbolicVector f(2);
+
+    sys = sys + G*w;
+
+    REQUIRE(equal(sys.state_variables[0], parse("x1")));
+    REQUIRE(equal(sys.state_variables[1], parse("x2")));
+    REQUIRE(sys.state_variables.size() == 2);
+
+    REQUIRE(equal(sys.input_variables[0], parse("u")));
+    REQUIRE(sys.input_variables.size() == 1);
+
+    REQUIRE(equal(sys.state_equations[0], parse("x2 + w1")));
+    REQUIRE(equal(sys.state_equations[1], parse("u + w2 - x2 - sin(x1)")));
+  }
+}
+
+TEST_CASE("StateSpace: Mul", "[statespace]") {
+  {
+    StateSpace sys({parse("x1"), parse("x2")},
+                   {parse("u")},
+                   {parse("x2"), parse("-sin(x1) - x2 + u")},
+                   {parse("x1"), parse("x2")});
+    //
+    SymbolicVector w({parse("w1"), parse("w2")});
+
+    SymbolicDense f(2, 2);
+
+    f = sys * transpose(w);
+
+    REQUIRE(equal(f[0], parse("w1*x2")));
+    REQUIRE(equal(f[1], parse("w2*x2")));
+    REQUIRE(equal(f[2], parse("w1*(u - x2 - sin(x1))")));
+    REQUIRE(equal(f[3], parse("w2*(u - x2 - sin(x1))")));
+  }
+
+  {
+    StateSpace sys({parse("x1"), parse("x2")},
+                   {parse("u")},
+                   {parse("x2"), parse("-sin(x1) - x2 + u")},
+                   {parse("x1"), parse("x2")});
+    //
+    symbolic_symbol_t w = symbol("w1");
+
+    SymbolicDense f(2, 2);
+
+    sys = sys * w;
+
+    REQUIRE(equal(sys.state_variables[0], parse("x1")));
+    REQUIRE(equal(sys.state_variables[1], parse("x2")));
+    REQUIRE(sys.state_variables.size() == 2);
+
+    REQUIRE(equal(sys.input_variables[0], parse("u")));
+    REQUIRE(sys.input_variables.size() == 1);
+
+    REQUIRE(equal(sys.state_equations[0], parse("w1*x2")));
+    REQUIRE(equal(sys.state_equations[1], parse("w1*(u - x2 - sin(x1))")));
+  }
 }

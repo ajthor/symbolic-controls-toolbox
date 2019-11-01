@@ -29,7 +29,8 @@ const std::vector<double> &
 //   [1.0, 1.0]
 //   [1.2, 2.1]
 //   [1.4, 3.6]
-class KernelFunction : public Functor<KernelFunction, KERNEL_FUNCTION_PARAMS> {
+class KernelFunction
+    : public Functor<KernelFunction, KERNEL_FUNCTION_PARAMS> {
 public:
   using type = BaseFunctor<KERNEL_FUNCTION_PARAMS>;
 
@@ -50,7 +51,8 @@ inline bool is_a_kernel_function(T &b) {
 // ----------------------------------------------------------------------
 // Dot Kernel
 //
-class DotKernel : public KernelFunction {
+class DotKernel
+    : public KernelFunction {
 public:
   explicit inline DotKernel() {}
 
@@ -61,7 +63,8 @@ public:
 // ----------------------------------------------------------------------
 // Polynomial Kernel
 //
-class PolynomialKernel : public KernelFunction {
+class PolynomialKernel
+    : public KernelFunction {
 private:
   double scale_;
   double offset_;
@@ -70,29 +73,36 @@ private:
 public:
   explicit inline PolynomialKernel(const double scale,
                                    const double offset,
-                                   const int degree) :
-                                   scale_(scale),
-                                   offset_(offset),
-                                   degree_(degree) {}
+                                   const int degree);
 
   double eval(const std::vector<double> &x,
               const std::vector<double> &y);
 };
+
+inline PolynomialKernel::PolynomialKernel(const double scale,
+                                          const double offset,
+                                          const int degree)
+    : scale_(scale),
+      offset_(offset),
+      degree_(degree) {}
 
 // ----------------------------------------------------------------------
 // Gaussian Kernel
 //
-class GaussianKernel : public KernelFunction {
+class GaussianKernel
+    : public KernelFunction {
 private:
   double sigma_;
 
 public:
-  explicit inline GaussianKernel(const double sigma) :
-                                 sigma_(sigma) {}
+  explicit inline GaussianKernel(const double sigma);
 
   double eval(const std::vector<double> &x,
               const std::vector<double> &y);
 };
+
+inline GaussianKernel::GaussianKernel(const double sigma)
+    : sigma_(sigma) {}
 
 } // Math
 } // Controls

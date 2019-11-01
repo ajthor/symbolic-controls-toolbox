@@ -89,9 +89,17 @@ void ml_transferfunction_den_get(TransferFunction_C *obj, char **result);
 void ml_transferfunction_den_set(TransferFunction_C *obj, int len, const char** arg);
 int ml_transferfunction_den_size(TransferFunction_C *obj);
 
-// // ----------------------------------------------------------------------
-// // MDP wrapper functions.
-// //
+// ----------------------------------------------------------------------
+// StdFunction wrapper functions.
+//
+typedef struct StdFunction_C StdFunction_C;
+
+StdFunction_C* ml_std_function_new(int (*arg)(int));
+void ml_std_function_free(StdFunction_C *obj);
+
+// ----------------------------------------------------------------------
+// MDP wrapper functions.
+//
 // typedef struct MDP_C MDP_C;
 //
 // MDP_C* ml_mdp_new(unsigned long x, unsigned long u);
@@ -232,4 +240,4 @@ void ml_statespace_random_variable_replace(StateSpace_C *obj,
 }
 #endif
 
-#endif /* end of include guard: CONTROL_MATLAB_MATLAB_WRAPPER_HPP */
+#endif // CONTROL_MATLAB_MATLAB_WRAPPER_HPP

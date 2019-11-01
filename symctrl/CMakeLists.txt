@@ -7,11 +7,11 @@ set(SRC
   # controller.cc
   math/functor/kernel.cc
   math/matrix/operations/gram.cc
-  systems/operations/controllability.cc
-  systems/operations/linearize.cc
-  systems/operations/observability.cc
-  systems/visitors/subs.cc
-  ode/euler/euler.cc
+  # systems/operations/controllability.cc
+  # systems/operations/linearize.cc
+  # systems/operations/observability.cc
+  # systems/visitors/subs.cc
+  # ode/euler/euler.cc
 )
 
 # A list of all header files with C header definitions.
@@ -20,6 +20,7 @@ set(HEADERS
   # c_wrapper.hpp
   kernel.hpp
   math/math.hpp
+  math/expression.hpp
   math/functor.hpp
   math/functor/functor.hpp
   math/functor/kernel.hpp
@@ -38,7 +39,6 @@ set(HEADERS
   math/matrix/expression/block.hpp
   math/matrix/expression/constant.hpp
   math/matrix/expression/dense.hpp
-  math/matrix/expression/expression.hpp
   math/matrix/expression/inverse.hpp
   math/matrix/expression/matrix.hpp
   math/matrix/expression/mul.hpp
@@ -53,12 +53,14 @@ set(HEADERS
   math/matrix/operations/gram.hpp
   math/matrix/operations/jacobian.hpp
   math/matrix/operations/norm.hpp
+  math/matrix/operations/trace.hpp
   math/matrix/matrix.hpp
   math/matrix/sparse.hpp
   math/matrix/sparse/sparse.hpp
   math/matrix/static.hpp
   math/matrix/static/dense.hpp
   math/matrix/static/vector.hpp
+  math/matrix/traits/is_hamiltonian.hpp
   math/matrix/traits/is_lower.hpp
   math/matrix/traits/is_square.hpp
   math/matrix/traits/is_symmetric.hpp

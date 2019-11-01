@@ -50,8 +50,8 @@ TEST_CASE("ODE: Euler", "[ODE]") {
   REQUIRE(::fabs(x_result.front() - 1.0) < 1e-9);
   REQUIRE(::fabs(x_result.back() - 10.5614685855) < 1e-9);
 
-  REQUIRE(x_result.size() == 1001);
   REQUIRE(t_result.size() == 1001);
+  REQUIRE(x_result.size() == 1001);
 }
 
 TEST_CASE("ODE: Euler Pendulum", "[ODE]") {
@@ -78,12 +78,32 @@ TEST_CASE("ODE: Euler Pendulum", "[ODE]") {
   REQUIRE(::fabs(x_result.at(40000) - 6.283) < 1e-3);
   REQUIRE(::fabs(x_result.at(40001) - 0.000) < 1e-3);
 
-  REQUIRE(x_result.size() == 40002);
   REQUIRE(t_result.size() == 20001);
+  REQUIRE(x_result.size() == 40002);
+}
+
+TEST_CASE("ODE: Euler Pendulum Profile", "[ODE]") {
+  symbolic_symbol_t x1 = symbol("x1");
+  symbolic_symbol_t x2 = symbol("x2");
+
+  StateSpace sys;
+
+  sys.state_variables = {x1, x2};
+  sys.state_equations = {parse("x2"), parse("-sin(x1) - x2")};
+
+  std::vector<double> x0 = {4, 0};
+  std::vector<double> t_result;
+  std::vector<double> x_result;
+  Controls::ode_options options;
+  options.t_begin(0);
+  options.t_end(20);
+  options.step_size(0.001);
 
   using nano = std::chrono::nanoseconds;
   auto start = std::chrono::high_resolution_clock::now();
+
   Controls::ode_euler(sys, x0, t_result, x_result, options);
+
   auto finish = std::chrono::high_resolution_clock::now();
   std::cout << "duration ode euler: "
             << std::chrono::duration_cast<nano>(finish - start).count()

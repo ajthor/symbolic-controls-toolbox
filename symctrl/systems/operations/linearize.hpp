@@ -1,7 +1,7 @@
 #ifndef SYMCTRL_SYSTEMS_OPERATIONS_LINEARIZE_HPP
 #define SYMCTRL_SYSTEMS_OPERATIONS_LINEARIZE_HPP
 
-#include <symctrl/systems/statespace.hpp>
+#include <symctrl/systems/statespace/statespace.hpp>
 
 namespace Controls {
 

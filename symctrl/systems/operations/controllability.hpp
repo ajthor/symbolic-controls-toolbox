@@ -3,7 +3,7 @@
 
 #include <symctrl/math/matrix/block.hpp>
 #include <symctrl/math/matrix/dense.hpp>
-#include <symctrl/systems/statespace.hpp>
+#include <symctrl/systems/statespace/statespace.hpp>
 
 namespace Controls {
 

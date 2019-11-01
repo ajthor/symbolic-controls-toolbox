@@ -36,6 +36,8 @@ public:
   inline TransferFunction &operator+=(const TransferFunction &rhs);
   inline TransferFunction &operator*=(const TransferFunction &rhs);
 
+  inline operator symbolic_t() const;
+
 private:
   // Transfer function variable.
   symbolic_symbol_t var_;
@@ -50,8 +52,6 @@ private:
 
 public:
   inline symbolic_symbol_t var() const;
-
-  inline operator symbolic_t() const;
 
   inline symbolic_t &numerator();
   inline const symbolic_t &numerator() const;
@@ -104,12 +104,12 @@ TransferFunction::operator=(const TransferFunction &rhs) {
 // ----------------------------------------------------------------------
 // TransferFunction Member Function Definitions
 //
-inline symbolic_symbol_t TransferFunction::var() const {
-  return var_;
-}
-
 inline TransferFunction::operator symbolic_t() const {
   return SymEngine::div(num_, den_);
+}
+
+inline symbolic_symbol_t TransferFunction::var() const {
+  return var_;
 }
 
 inline symbolic_t &TransferFunction::numerator() {

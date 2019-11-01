@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <functional>
 #include <random>
 #include <vector>
 
@@ -65,40 +66,40 @@ struct CMapBasicBasic {
     SymEngine::map_basic_basic m;
 };
 
-// ----------------------------------------------------------------------
-// Linear Algebra Function Definitions
+// // ----------------------------------------------------------------------
+// // Linear Algebra Function Definitions
+// //
+// void linalg_hessenberg(CDenseMatrix *A, CDenseMatrix *result) {
+//   C_WRAPPER_BEGIN
 //
-void linalg_hessenberg(CDenseMatrix *A, CDenseMatrix *result) {
-  C_WRAPPER_BEGIN
-
-  Controls::hessenberg(A->m, result->m);
-
-  C_WRAPPER_END()
-}
-
-void linalg_schur(CDenseMatrix *A, CDenseMatrix *U, CDenseMatrix *T) {
-  C_WRAPPER_BEGIN
-
-  Controls::schur(A->m, U->m, T->m);
-
-  C_WRAPPER_END()
-}
-
-void linalg_eigenvalues(CDenseMatrix *A, CVecBasic *l, CDenseMatrix *v) {
-  C_WRAPPER_BEGIN
-
-  Controls::eigenvalues(A->m, l->m, v->m);
-
-  C_WRAPPER_END()
-}
-
-void linalg_first_eigenvalue(CDenseMatrix *A, CRCPBasic *l, double tol) {
-  C_WRAPPER_BEGIN
-
-  l->m = Controls::get_first_eigenvalue(A->m, tol);
-
-  C_WRAPPER_END()
-}
+//   Controls::hessenberg(A->m, result->m);
+//
+//   C_WRAPPER_END()
+// }
+//
+// void linalg_schur(CDenseMatrix *A, CDenseMatrix *U, CDenseMatrix *T) {
+//   C_WRAPPER_BEGIN
+//
+//   Controls::schur(A->m, U->m, T->m);
+//
+//   C_WRAPPER_END()
+// }
+//
+// void linalg_eigenvalues(CDenseMatrix *A, CVecBasic *l, CDenseMatrix *v) {
+//   C_WRAPPER_BEGIN
+//
+//   Controls::eigenvalues(A->m, l->m, v->m);
+//
+//   C_WRAPPER_END()
+// }
+//
+// void linalg_first_eigenvalue(CDenseMatrix *A, CRCPBasic *l, double tol) {
+//   C_WRAPPER_BEGIN
+//
+//   l->m = Controls::get_first_eigenvalue(A->m, tol);
+//
+//   C_WRAPPER_END()
+// }
 
 // ----------------------------------------------------------------------
 // Analysis Function Definitions
@@ -408,34 +409,58 @@ size_t transferfunction_den_size(TransferFunction_C *obj) {
   return obj->m.get_num_dens();
 }
 
-// // ----------------------------------------------------------------------
-// // MDP Function Definitions
-// //
+// ----------------------------------------------------------------------
+// CostFunction Function Definitions
+//
+struct StdFunction_C {
+  // std::function<int(int)> m;
+  int (*m)(int);
+};
+
+StdFunction_C *std_function_new(int (*arg)(int)) {
+  auto s = new StdFunction_C;
+  s->m = arg;
+  return s;
+  // return new StdFunction_C;
+}
+void std_function_free(StdFunction_C *obj) {
+  if(!obj) {
+    return;
+  }
+  delete obj;
+}
+
+// struct CostFunction_C {
+//   Controls::CostFunction m;
+// };
+//
+// CostFunction_C *cost_function_new() {
+//   return new CostFunction_C;
+// }
+// void cost_function_free(CostFunction_C *obj) {
+//   if(!obj) {
+//     return;
+//   }
+//   delete obj;
+// }
+
+// ----------------------------------------------------------------------
+// MDP Function Definitions
+//
 // struct MDP_C {
 //   Controls::MDP m;
 // };
 //
-// // struct SparseMatrix_key {
-// //   sparse_key_t k
-// // };
-// // typedef struct SparseMatrix_key SparseMatrix_key;
-// //
-// // struct SparseMatrix_C {
-// //   SparseMatrix<double> m;
-// // };
-// // typedef struct SparseMatrix_C SparseMatrix_C;
-//
-// MDP_C *mdp_new(const size_t x, const size_t u) {
-//   return new MDP_C({{x, u}});
+// MDP_C *mdp_new() {
+//   // return new MDP_C;
 // }
-//
 // void mdp_free(MDP_C *obj) {
 //   if(!obj) {
 //     return;
 //   }
 //   delete obj;
 // }
-//
+
 // size_t mdp_nstates(MDP_C *obj) {
 //   return obj->m.nstates();
 // }
@@ -644,7 +669,7 @@ void slv_ode_euler(StateSpace_C *obj,
 }
 
 // ----------------------------------------------------------------------
-// RandomVariable Function Definitions
+// RandomDevice Function Definitions
 //
 struct RandomDevice_C {
   std::random_device *m;
@@ -663,8 +688,11 @@ void random_device_free(generator *obj) {
   delete obj;
 }
 
+// ----------------------------------------------------------------------
+// RandomDistribution Function Definitions
+//
 struct RandomDistribution_C {
-  Controls::RandomNumberDistribution *m;
+  Controls::Math::RandomNumberDistribution *m;
 };
 
 RandomDistribution_C *random_number_distribution_new() {
@@ -703,58 +731,61 @@ void random_number_distribution_free(RandomDistribution_C *obj) {
 // // void ##name##_set(dist *obj, __VA_ARGS__)
 
 void uniform_int_distribution_set(dist *obj, const int a, const int b) {
-  obj->m = new Controls::uniform_int_distribution<>(a, b);
+  obj->m = new Controls::Math::uniform_int_distribution<>(a, b);
 }
 void uniform_real_distribution_set(dist *obj, const double a, const double b) {
-  obj->m = new Controls::uniform_real_distribution<>(a, b);
+  obj->m = new Controls::Math::uniform_real_distribution<>(a, b);
 }
 void bernoulli_distribution_set(dist *obj, const double p) {
-  // obj->m = new Controls::bernoulli_distribution(p);
+  // obj->m = new Controls::Math::bernoulli_distribution(p);
 }
 void negative_binomial_distribution_set(dist *obj,
                                         const int k,
                                         const double p) {
-  obj->m = new Controls::negative_binomial_distribution<>(k, p);
+  obj->m = new Controls::Math::negative_binomial_distribution<>(k, p);
 }
 void geometric_distribution_set(dist *obj, const double p) {
-  obj->m = new Controls::geometric_distribution<>(p);
+  obj->m = new Controls::Math::geometric_distribution<>(p);
 }
 void poisson_distribution_set(dist *obj, const double mean) {
-  obj->m = new Controls::poisson_distribution<>(mean);
+  obj->m = new Controls::Math::poisson_distribution<>(mean);
 }
 void exponential_distribution_set(dist *obj, const double lambda) {
-  obj->m = new Controls::exponential_distribution<>(lambda);
+  obj->m = new Controls::Math::exponential_distribution<>(lambda);
 }
 void gamma_distribution_set(dist *obj, const double alpha, const double beta) {
-  obj->m = new Controls::gamma_distribution<>(alpha, beta);
+  obj->m = new Controls::Math::gamma_distribution<>(alpha, beta);
 }
 void weibull_distribution_set(dist *obj, const double a, const double b) {
-  obj->m = new Controls::weibull_distribution<>(a, b);
+  obj->m = new Controls::Math::weibull_distribution<>(a, b);
 }
 void extreme_value_distribution_set(dist *obj, const double a, const double b) {
-  obj->m = new Controls::extreme_value_distribution<>(a, b);
+  obj->m = new Controls::Math::extreme_value_distribution<>(a, b);
 }
 void normal_distribution_set(dist *obj, const double mean, const double stddev) {
-  obj->m = new Controls::normal_distribution<>(mean, stddev);
+  obj->m = new Controls::Math::normal_distribution<>(mean, stddev);
 }
 void lognormal_distribution_set(dist *obj, const double m, const double s) {
-  obj->m = new Controls::lognormal_distribution<>(m, s);
+  obj->m = new Controls::Math::lognormal_distribution<>(m, s);
 }
 void chi_squared_distribution_set(dist *obj, const double n) {
-  obj->m = new Controls::chi_squared_distribution<>(n);
+  obj->m = new Controls::Math::chi_squared_distribution<>(n);
 }
 void cauchy_distribution_set(dist *obj, const double a, const double b) {
-  obj->m = new Controls::cauchy_distribution<>(a, b);
+  obj->m = new Controls::Math::cauchy_distribution<>(a, b);
 }
 void fisher_f_distribution_set(dist *obj, const double m, const double n) {
-  obj->m = new Controls::fisher_f_distribution<>(m, n);
+  obj->m = new Controls::Math::fisher_f_distribution<>(m, n);
 }
 void student_t_distribution_set(dist *obj, const double n) {
-  obj->m = new Controls::student_t_distribution<>(n);
+  obj->m = new Controls::Math::student_t_distribution<>(n);
 }
 
+// ----------------------------------------------------------------------
+// RandomVariable Function Definitions
+//
 struct RandomVariable_C {
-  SymEngine::RCP<const Controls::RandomVariable> m;
+  SymEngine::RCP<const Controls::Math::RandomVariable> m;
 };
 
 RandomVariable_C *random_variable_new() {
@@ -772,7 +803,7 @@ void random_variable_set(RandomVariable_C *obj,
                          const RandomDistribution_C *d) {
   C_WRAPPER_BEGIN
 
-  obj->m = Controls::random_variable(std::string(arg), d->m);
+  obj->m = Controls::Math::random_variable(std::string(arg), d->m);
 
   C_WRAPPER_END()
 }

@@ -22,20 +22,20 @@ namespace Controls {
 // EulerVisitor (StateSpace)
 //
 void EulerVisitor::visit(StateSpace &sys) {
-  size_t n = sys.state_equations.size();
+  size_t n_ = sys.state_equations.size();
 
-  std::vector<LambdaRealDoubleVisitor> v(n);
+  std::vector<LambdaRealDoubleVisitor> v(n_);
 
   // Create a list of "parameters" that will be passed to dx/dt = f(...)
-  std::vector<symbolic_t> fun_params = sys.state_variables.as_vec();
+  std::vector<symbolic_t> params = sys.state_variables.as_vec();
 
   // Make sure t is one of the function parameters.
   symbolic_symbol_t t = symbol("t");
-  auto it = fun_params.begin();
-  fun_params.insert(it, t);
+  auto it = params.begin();
+  params.insert(it, t);
 
   //
-  std::vector<symbolic_t> funs = sys.state_equations.as_vec();
+  std::vector<symbolic_t> equations = sys.state_equations.as_vec();
 
   // Initialize the RNG.
   std::random_device gen;
@@ -44,7 +44,7 @@ void EulerVisitor::visit(StateSpace &sys) {
   std::vector<symbolic_t> rv_vec;
 
   // Find all random variables in the state equations.
-  for(size_t i = 0; i < n; i++) {
+  for(size_t i = 0; i < n_; i++) {
     args = sys.state_equations[i]->get_args();
 
     if(!args.empty()) {
@@ -60,25 +60,25 @@ void EulerVisitor::visit(StateSpace &sys) {
   if(rv_vec.size() > 0) {
     // Add the RVs to the parameters list.
     for(auto it = rv_vec.begin(); it != rv_vec.end(); ++it) {
-      fun_params.push_back(*it);
+      params.push_back(*it);
     }
   }
 
   // Initialize Lambda functions.
-  for(size_t i = 0; i < n; i++) {
-    v[i].init({fun_params}, *funs[i]);
+  for(size_t i = 0; i < n_; i++) {
+    v[i].init({params}, *equations[i]);
   }
 
   // Initialize the time counters.
-  double t_begin = options_.t_begin();
-  double t_end = options_.t_end();
+  double t_begin   = options_.t_begin();
+  double t_end     = options_.t_end();
   double t_current = t_begin;
 
-  double dt = options_.step_size();
+  double step_size = options_.step_size();
 
   // Add the initial contition to the result.
-  for(size_t i = 0; i < n; i++) {
-    x_result_.push_back(x0_[i]);
+  for(size_t i = 0; i < n_; i++) {
+    x_result_.emplace_back(initial_condition_[i]);
   }
 
   // Add the initial time to the result.
@@ -91,8 +91,6 @@ void EulerVisitor::visit(StateSpace &sys) {
   auto pos = current_val.begin();
   auto rv_pos = current_val.end();
 
-  double d;
-
   // Main ODE loop.
   do {
     // Get the current n values.
@@ -100,6 +98,7 @@ void EulerVisitor::visit(StateSpace &sys) {
 
     pos = current_val.begin();
     pos = current_val.insert(pos, t_current);
+    // current_val[0] = t_current;
 
     if(rv_vec.size() > 0) {
       rv_pos = current_val.end();
@@ -109,16 +108,15 @@ void EulerVisitor::visit(StateSpace &sys) {
     }
 
     // Evaluate the state functions.
-    for(size_t i = 0; i < n; i++) {
+    for(size_t i = 0; i < n_; i++) {
       // Store the result in last_val.
-      d = v[i].call(current_val);
-      last_val[i] = last_val[i] + (dt*d);
+      last_val[i] += step_size * v[i].call(current_val);
       // Add the result to the result vector.
       x_result_.push_back(last_val[i]);
     }
 
     // Advance the time.
-    t_current += dt;
+    t_current += step_size;
     t_result_.push_back(t_current);
 
   } while(t_current <= t_end);

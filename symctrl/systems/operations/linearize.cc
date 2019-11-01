@@ -7,15 +7,47 @@
 #include <symctrl/math/matrix/dense.hpp>
 #include <symctrl/math/matrix/vector.hpp>
 #include <symctrl/math/matrix/expression.hpp>
-#include <symctrl/systems/statespace.hpp>
+#include <symctrl/math/matrix/type_traits/is_symbolic.hpp>
+// #include <symctrl/systems/statespace/statespace.hpp>
 #include <symctrl/systems/operations/linearize.hpp>
 #include <symctrl/shims/default.hpp>
+#include <symctrl/type_traits/is_symbolic.hpp>
 
 namespace Controls {
 
 // ----------------------------------------------------------------------
 // linearize
 //
+// template<typename T>
+// T &linearize(T &f, const SymbolicVector &x)
+// -> enable_if_symbolic_t<T> {
+//   size_t n_ = x.size();
+//   SymEngine::map_basic_basic d;
+//
+//   for(size_t i = 0; i < n_; i++) {
+//     d[(~x)[i]] = default_value<symbolic_t>();
+//   }
+//
+//   return SymEngine::ssubs((~f), d);
+// }
+//
+// template<typename T>
+// T &linearize(T &f, const SymbolicVector &x)
+// -> enable_if_symbolic_m_t<T> {
+//   size_t n_ = x.size();
+//   SymEngine::map_basic_basic d;
+//
+//   for(size_t i = 0; i < n_; i++) {
+//     d[(~x)[i]] = default_value<symbolic_t>();
+//   }
+//
+//   for(size_t i = 0; i < A.nrows(); i++) {
+//     (~f)[i] = SymEngine::ssubs((~f)[i], d);
+//   }
+//
+//   return f;
+// }
+
 // Substitute x and u for 0 in A, B, C, D.
 StateSpace linearize(const StateSpace &sys) {
   size_t n = sys.state_variables.size();

@@ -21,21 +21,21 @@ std::cout << "----------" << '\n' << msg << '\n';
 
 TEST_CASE("Symbolic Variable: Assignment", "[symbolic]") {
   {
-    sym_var x("x");
+    sym_t x("x");
     REQUIRE(x.as_str() == "x");
     REQUIRE(x == x);
   }
 
   {
-    sym_var x("x");
+    sym_t x("x");
     REQUIRE(x.as_str() == "x");
     REQUIRE(x == x);
-    sym_var y = x;
+    sym_t y = x;
     REQUIRE(y.as_str() == "x");
     REQUIRE(x == y);
     REQUIRE(y == x);
     REQUIRE(y == y);
-    sym_var z = y;
+    sym_t z = y;
     REQUIRE(z.as_str() == "x");
     REQUIRE(x == z);
     REQUIRE(z == x);
@@ -45,18 +45,18 @@ TEST_CASE("Symbolic Variable: Assignment", "[symbolic]") {
   }
 
   {
-    sym_var x("x");
-    sym_var y = x;
-    sym_var z = y;
+    sym_t x("x");
+    sym_t y = x;
+    sym_t z = y;
     REQUIRE(z.as_str() == "x");
     REQUIRE(z == x);
     REQUIRE(z == y);
   }
 
   {
-    sym_var x("x");
-    sym_var y("x");
-    sym_var z("z");
+    sym_t x("x");
+    sym_t y("x");
+    sym_t z("z");
     REQUIRE(x == y);
     REQUIRE(y == x);
     REQUIRE(x != z);

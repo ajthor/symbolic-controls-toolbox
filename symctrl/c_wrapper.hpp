@@ -14,21 +14,21 @@
 extern "C" {
 #endif
 
-// ---------------------------------------------------------------------------
-// C Wrapper for Linear Algebra Functions
+// // ---------------------------------------------------------------------------
+// // C Wrapper for Linear Algebra Functions
+// //
+// SYMCTRL_EXPORT void linalg_hessenberg(CDenseMatrix *A, CDenseMatrix *result);
+// SYMCTRL_EXPORT void linalg_schur(CDenseMatrix *A,
+//                                  CDenseMatrix *U,
+//                                  CDenseMatrix *T);
 //
-SYMCTRL_EXPORT void linalg_hessenberg(CDenseMatrix *A, CDenseMatrix *result);
-SYMCTRL_EXPORT void linalg_schur(CDenseMatrix *A,
-                                 CDenseMatrix *U,
-                                 CDenseMatrix *T);
-
-SYMCTRL_EXPORT void linalg_eigenvalues(CDenseMatrix *A,
-                                       CVecBasic *l,
-                                       CDenseMatrix *v);
-
-SYMCTRL_EXPORT void linalg_first_eigenvalue(CDenseMatrix *A,
-                                            CRCPBasic *l,
-                                            double tol);
+// SYMCTRL_EXPORT void linalg_eigenvalues(CDenseMatrix *A,
+//                                        CVecBasic *l,
+//                                        CDenseMatrix *v);
+//
+// SYMCTRL_EXPORT void linalg_first_eigenvalue(CDenseMatrix *A,
+//                                             CRCPBasic *l,
+//                                             double tol);
 
 // ---------------------------------------------------------------------------
 // C Wrapper for Analysis Functions
@@ -131,14 +131,22 @@ SYMCTRL_EXPORT void transferfunction_den_set(TransferFunction_C *obj,
                                              const basic arg);
 SYMCTRL_EXPORT size_t transferfunction_den_size(TransferFunction_C *obj);
 
-// // ---------------------------------------------------------------------------
-// // C Wrapper for MDP Interface
-// //
+// ---------------------------------------------------------------------------
+// C Wrapper for std::function Interface
+//
+typedef struct StdFunction_C StdFunction_C;
+
+SYMCTRL_EXPORT StdFunction_C *std_function_new(int (*arg)(int));
+SYMCTRL_EXPORT void std_function_free(StdFunction_C *obj);
+
+// ---------------------------------------------------------------------------
+// C Wrapper for MDP Interface
+//
 // typedef struct MDP_C MDP_C;
 //
-// SYMCTRL_EXPORT MDP_C *mdp_new(const size_t x, const size_t u);
+// SYMCTRL_EXPORT MDP_C *mdp_new();
 // SYMCTRL_EXPORT void mdp_free(MDP_C *obj);
-//
+
 // SYMCTRL_EXPORT size_t mdp_num_states_get(MDP_C *obj);
 //
 // SYMCTRL_EXPORT size_t mdp_num_inputs_get(MDP_C *obj);
@@ -212,7 +220,7 @@ SYMCTRL_EXPORT void slv_ode_euler(StateSpace_C *obj,
 //
 
 // ---------------------------------------------------------------------------
-// C Wrapper for RandomVariable Interface
+// C Wrapper for RandomDevice Interface
 //
 typedef struct RandomDevice_C RandomDevice_C;
 typedef struct RandomDevice_C generator;
@@ -221,6 +229,9 @@ SYMCTRL_EXPORT RandomDevice_C *random_device_new();
 SYMCTRL_EXPORT void random_device_init(generator *obj);
 SYMCTRL_EXPORT void random_device_free(generator *obj);
 
+// ---------------------------------------------------------------------------
+// C Wrapper for RandomDistribution Interface
+//
 typedef struct RandomDistribution_C RandomDistribution_C;
 typedef struct RandomDistribution_C dist;
 
@@ -315,9 +326,20 @@ SYMCTRL_EXPORT
 void statespace_random_variable_replace(StateSpace_C *obj,
                                         const basic key,
                                         RandomVariable_C *mapped);
+//
+
+// ---------------------------------------------------------------------------
+// C Wrapper for RandomVariable Replacement Functions
+//
+typedef struct LambdaFunction_C LambdaFunction_C;
+
+SYMCTRL_EXPORT LambdaFunction_C *lambda_function_new();
+SYMCTRL_EXPORT void lambda_function_free(LambdaFunction_C *obj);
+
+SYMCTRL_EXPORT void lambda_function_set(LambdaFunction_C *obj);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* end of include guard: SYMCTRL_C_WRAPPER_HPP */
+#endif // SYMCTRL_C_WRAPPER_HPP

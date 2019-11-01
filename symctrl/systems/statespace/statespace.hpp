@@ -6,12 +6,19 @@
 #include <vector>
 
 #include <symctrl/systems/system.hpp>
+#include <symctrl/math/matrix/expression/matrix.hpp>
 #include <symctrl/math/matrix/dense.hpp>
 #include <symctrl/math/matrix/vector.hpp>
 #include <symctrl/math/matrix/operations/jacobian.hpp>
 #include <symctrl/shims/symbolic.hpp>
+#include <symctrl/type_traits/is_symbolic.hpp>
 
 namespace Controls {
+
+// class BaseController;
+//
+// template<typename CT>
+// class Controller : public BaseController;
 
 // ----------------------------------------------------------------------
 // StateSpace
@@ -41,6 +48,22 @@ public:
 
   inline StateSpace &operator=(const StateSpace &rhs);
 
+  template<typename DT>
+  inline StateSpace &operator=(const Math::Matrix<DT> &rhs);
+
+  template<typename T>
+  inline auto operator+=(const T &rhs)
+  -> enable_if_symbolic_t<T, StateSpace&>;
+  template<typename T>
+  inline auto operator-=(const T &rhs)
+  -> enable_if_symbolic_t<T, StateSpace&>;
+  template<typename T>
+  inline auto operator*=(const T &rhs)
+  -> enable_if_symbolic_t<T, StateSpace&>;
+  template<typename T>
+  inline auto operator/=(const T &rhs)
+  -> enable_if_symbolic_t<T, StateSpace&>;
+
 private:
   // Using a private nested class allows implementation details to be
   // abstracted from the public member variables.
@@ -63,11 +86,15 @@ public:
   // Vector of output equations.
   ExpressionVector output_equations;
 
+public:
   // System matrices.
   inline Math::SymbolicDense A() const;
   inline Math::SymbolicDense B() const;
   inline Math::SymbolicDense C() const;
   inline Math::SymbolicDense D() const;
+
+  // template<typename CT>
+  // inline void apply_(Controller<CT> &controller);
 
   inline void accept(Visitor &visitor);
 };
@@ -77,6 +104,10 @@ public:
 //
 inline StateSpace::StateSpace() {
   //
+  state_variables = ExpressionVector(0);
+  input_variables = ExpressionVector(0);
+  state_equations = ExpressionVector(0);
+  output_equations = ExpressionVector(0);
 }
 
 inline StateSpace::StateSpace(std::initializer_list<symbolic_t> x,
@@ -137,6 +168,13 @@ inline StateSpace &StateSpace::operator=(const StateSpace &rhs) {
   input_variables = rhs.input_variables;
   state_equations = rhs.state_equations;
   output_equations = rhs.output_equations;
+
+  return *this;
+}
+
+template<typename DT>
+inline StateSpace &StateSpace::operator=(const Math::Matrix<DT> &rhs) {
+  apply_(state_equations, ~rhs);
 
   return *this;
 }

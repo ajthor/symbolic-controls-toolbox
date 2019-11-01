@@ -19,10 +19,10 @@ namespace Controls {
 // TransferMatrix
 //
 class TransferMatrix : public System<TransferMatrix>,
-                       public DenseMatrix<TransferFunction> {
+                       public Math::DenseMatrix<TransferFunction> {
 public:
-  using DenseMatrix<TransferFunction>::DenseMatrix;
-  using DenseMatrix<TransferFunction>::operator=;
+  using Math::DenseMatrix<TransferFunction>::DenseMatrix;
+  using Math::DenseMatrix<TransferFunction>::operator=;
 };
 
 } // Controls

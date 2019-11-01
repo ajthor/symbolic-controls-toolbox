@@ -241,12 +241,12 @@ classdef (SupportExtensionMethods = true, InferiorClasses = {?sym}) randomvar < 
 
         function C = uminus(A)
             %UMINUS Overloaded to allow symbolic manipulation.
-            C = -A;
+            C = -A.sym();
         end
 
         function C = uplus(A)
             %UPLUS Overloaded to allow symbolic manipulation.
-            C = +A;
+            C = A.sym();
         end
 
         function C = mtimes(A, B)

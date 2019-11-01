@@ -124,10 +124,16 @@ public:
   inline hash_t hash() const;
   inline bool canEvaluate() const;
 
-private:
   // template<typename DT>
   // friend inline void apply_(Symbolic<DT> &lhs, const sym_t &rhs) {
   //   SYMCTRL_DEBUG("sym_t::apply_");
+  //   // apply_f(~lhs, *rhs.ptr_);
+  //   // rhs.apply_f2(~lhs);
+  //   // auto v = ApplyVisitor<DT>(~lhs);
+  // }
+  // template<typename DT>
+  // friend inline void apply_add_(Symbolic<DT> &lhs, const sym_t &rhs) {
+  //   SYMCTRL_DEBUG("sym_t::apply_add_");
   //   // apply_f(~lhs, *rhs.ptr_);
   //   // rhs.apply_f2(~lhs);
   //   // auto v = ApplyVisitor<DT>(~lhs);

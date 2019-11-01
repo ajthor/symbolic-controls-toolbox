@@ -642,6 +642,16 @@ int ml_transferfunction_den_size(TransferFunction_C *obj) {
   return transferfunction_den_size(obj);
 }
 
+// ----------------------------------------------------------------------
+// StdFunction wrapper functions.
+//
+StdFunction_C* ml_std_function_new(int (*arg)(int)) {
+  return std_function_new(arg);
+}
+void ml_std_function_free(StdFunction_C *obj) {
+  std_function_free(obj);
+}
+
 // // ----------------------------------------------------------------------
 // // MDP wrapper functions.
 // //

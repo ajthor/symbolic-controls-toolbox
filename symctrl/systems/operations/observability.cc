@@ -3,7 +3,7 @@
 #include <symctrl/math/matrix/dense.hpp>
 #include <symctrl/math/matrix/expression.hpp>
 #include <symctrl/math/matrix/traits/is_square.hpp>
-#include <symctrl/systems/statespace.hpp>
+#include <symctrl/systems/statespace/statespace.hpp>
 #include <symctrl/systems/operations/observability.hpp>
 
 namespace Controls {
